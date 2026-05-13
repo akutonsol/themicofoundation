@@ -1,0 +1,158 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import TeamProfileModal from "@/components/team/TeamProfileModal";
+
+const staffMembers = [
+  {
+    id: 1,
+    role: "Secretary Manager",
+    name: "Mr. Burchell Duhaney J.P.",
+    department: "Operations & Administration",
+    email: "burchell@example.com",
+    tenure: "7 years",
+    bio: "Burchell Duhaney leads the Foundation’s day-to-day administration and strategic operations, helping guide mission delivery through partnership management, governance support, and community-centered execution.",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    id: 2,
+    role: "Program Coordinator",
+    name: "Ms. Alicia Brown",
+    department: "Programs",
+    email: "alicia@example.com",
+    tenure: "4 years",
+    bio: "Alicia supports program design and implementation across education and community initiatives, coordinating logistics and maintaining partner relationships.",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    id: 3,
+    role: "Communications Officer",
+    name: "Mr. David Clarke",
+    department: "Communications",
+    email: "david@example.com",
+    tenure: "3 years",
+    bio: "David leads communications strategy, digital storytelling, and public-facing content that helps strengthen awareness of the Foundation’s mission and impact.",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    id: 4,
+    role: "Administrative Officer",
+    name: "Ms. Tanesha Williams",
+    department: "Administration",
+    email: "tanesha@example.com",
+    tenure: "5 years",
+    bio: "Tanesha oversees administrative workflows and internal coordination, ensuring smooth support for staff, board activity, and institutional operations.",
+    image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=1200&q=80",
+  },
+];
+
+function Sparkle({ className = "" }) {
+  return (
+    <svg
+      className={className}
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14 0L16.5 11.5L28 14L16.5 16.5L14 28L11.5 16.5L0 14L11.5 11.5L14 0Z"
+        fill="#D9D9D9"
+      />
+    </svg>
+  );
+}
+
+function StaffCard({ member, onOpen }) {
+  return (
+    <motion.button
+      type="button"
+      onClick={() => onOpen(member)}
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.35 }}
+      whileHover={{ y: -4 }}
+      className="group text-left"
+    >
+      <div className="relative overflow-hidden rounded-[20px] border border-[#E5E6EB] bg-[#FFFDF9]">
+        <div className="pointer-events-none absolute right-3 top-3 opacity-20">
+          <Sparkle />
+        </div>
+
+        <div className="aspect-[0.84/1] overflow-hidden">
+          <img
+            src={member.image}
+            alt={member.name}
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+          />
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <p
+          className="text-[16px] leading-[1.35] text-[#8A8E9D] sm:text-[18px]"
+          style={{ fontFamily: "'inter', sans-serif" }}
+        >
+          {member.role}
+        </p>
+
+        <h3
+          className="mt-1 text-[28px] font-semibold leading-[1.1] tracking-[-0.04em] text-[#040617] sm:text-[32px]"
+          style={{ fontFamily: "'inter', sans-serif" }}
+        >
+          {member.name}
+        </h3>
+      </div>
+    </motion.button>
+  );
+}
+
+export default function StaffSection() {
+  const [selectedMember, setSelectedMember] = useState(null);
+
+  return (
+    <>
+      <section className="mt-24">
+        <div className="mb-10 grid gap-8 lg:grid-cols-[1fr_520px] lg:items-start">
+          <h1
+            className="text-[56px] font-semibold leading-[0.95] tracking-[-0.06em] text-[#040617] sm:text-[78px] lg:text-[88px]"
+            style={{ fontFamily: "'inter', sans-serif" }}
+          >
+            Staff
+          </h1>
+
+          <div className="lg:border-l lg:border-[#E5E6EB] lg:pl-6">
+            <p
+              className="max-w-[520px] text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]"
+              style={{ fontFamily: "'inter', sans-serif" }}
+            >
+              The Mico Foundation is run by a 7-member team led by Secretary
+              Manager Burchell Duhaney, a former Mico Vice Principal and Edna
+              Manley College Principal, committed to delivering impactful,
+              values-driven work.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {staffMembers.map((member) => (
+            <StaffCard
+              key={member.id}
+              member={member}
+              onOpen={setSelectedMember}
+            />
+          ))}
+        </div>
+      </section>
+
+      <TeamProfileModal
+        member={selectedMember}
+        isOpen={!!selectedMember}
+        onClose={() => setSelectedMember(null)}
+      />
+    </>
+  );
+}

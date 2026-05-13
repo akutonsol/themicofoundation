@@ -1,0 +1,131 @@
+/* ============================================
+   MICO FOUNDATION — MOBILE RESPONSIVE STYLES
+   Breakpoints: sm=640px, md=768px, lg=1024px
+   ============================================ */
+
+/* ---- GLOBAL ---- */
+* { box-sizing: border-box; }
+
+/* ---- NAVBAR ---- */
+@media (max-width: 1024px) {
+  .navbar-inner { padding: 0 24px !important; height: 80px !important; }
+}
+
+/* ---- HERO ---- */
+@media (max-width: 1024px) {
+  .hero-section { padding: 40px 0 60px !important; }
+  .hero-container { padding: 0 24px !important; }
+  .hero-h1 { font-size: clamp(2rem, 8vw, 3.5rem) !important; white-space: normal !important; }
+  .hero-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .col-tall { height: 320px !important; }
+  .col-mid { margin-top: 0 !important; }
+}
+
+/* ---- TRUSTED BY ---- */
+@media (max-width: 768px) {
+  .marquee-track { gap: 40px !important; }
+}
+
+/* ---- MISSION ---- */
+@media (max-width: 1024px) {
+  .mission-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+  .values-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .mission-h2 { font-size: 2.5rem !important; white-space: normal !important; }
+}
+@media (max-width: 480px) {
+  .values-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ---- PROJECTS ---- */
+@media (max-width: 1024px) {
+  .projects-layout { grid-template-columns: 1fr !important; padding: 40px 24px !important; gap: 40px !important; }
+  .projects-layout .col-photo { height: 400px !important; }
+}
+
+/* ---- COMMUNITY ---- */
+@media (max-width: 900px) {
+  .comm-photo { display: none !important; }
+  .community-section { padding: 60px 24px !important; }
+  .comm-counter { font-size: clamp(3rem, 15vw, 6rem) !important; }
+}
+
+/* ---- MARQUEE LINES ---- */
+@media (max-width: 768px) {
+  .marquee-section { height: 240px !important; }
+}
+
+/* ---- MESSAGES ---- */
+@media (max-width: 1024px) {
+  .messages-section { padding: 60px 24px !important; }
+  .messages-header { flex-direction: column !important; gap: 24px !important; }
+  .messages-header h2 { font-size: 2.5rem !important; white-space: normal !important; }
+  .messages-carousel { flex-direction: column !important; align-items: center !important; }
+  .msg-side-card { display: none !important; }
+  .msg-nav-btn span { display: none !important; }
+}
+
+/* ---- DONATION FORM ---- */
+@media (max-width: 1024px) {
+  .don-grid { grid-template-columns: 1fr !important; }
+  .donation-section { padding: 60px 24px !important; }
+  .don-h2 { font-size: 2.5rem !important; white-space: normal !important; }
+  .don-steps { flex-direction: column !important; gap: 16px !important; }
+  .don-step-chevron { display: none !important; }
+  .don-amounts { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .don-amounts { grid-template-columns: 1fr !important; }
+}
+
+/* ---- PEOPLE IMPACT ---- */
+@media (max-width: 1200px) {
+  .impact-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+  .impact-section { padding: 60px 24px !important; }
+  .impact-h2 { font-size: 2.5rem !important; }
+  .impact-photo { width: 100% !important; max-width: 400px !important; margin: 0 auto !important; height: 500px !important; }
+  .impact-namecard { left: 0 !important; }
+}
+
+/* ---- NEWS & EVENTS ---- */
+@media (max-width: 1200px) {
+  .news-grid { grid-template-columns: 1fr !important; }
+  .news-section { padding: 60px 24px !important; }
+  .news-h2 { font-size: clamp(2rem, 8vw, 4rem) !important; }
+}
+
+/* ---- PUBLICATIONS ---- */
+@media (max-width: 1024px) {
+  .pub-section { padding: 60px 24px !important; }
+  .pub-h2 { font-size: 2.5rem !important; white-space: normal !important; }
+  .pub-card-inner { flex-direction: column !important; }
+  .pub-thumb { width: 100% !important; height: 180px !important; }
+}
+
+/* ---- NEWSLETTER ---- */
+@media (max-width: 1024px) {
+  .newsletter-section { padding: 60px 24px !important; }
+  .newsletter-h2 { font-size: 2.5rem !important; white-space: normal !important; }
+  .newsletter-form { flex-direction: column !important; align-items: stretch !important; gap: 24px !important; }
+  .newsletter-fields { flex-direction: column !important; gap: 16px !important; }
+  .newsletter-btn { margin-left: 0 !important; width: 100% !important; }
+}
+
+/* ---- FAQ ---- */
+@media (max-width: 1024px) {
+  .faq-section { padding: 40px 24px !important; }
+  .faq-card { padding: 32px 24px !important; }
+  .faq-h2 { font-size: 2.5rem !important; }
+  .faq-q { font-size: 1.25rem !important; white-space: normal !important; }
+}
+
+/* ---- FOOTER ---- */
+@media (max-width: 1200px) {
+  .footer-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+  .footer-inner { padding: 48px 24px !important; }
+  .links-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .go-top-btn { position: static !important; margin-top: 32px !important; }
+  .footer-bottom { flex-direction: column !important; gap: 16px !important; align-items: center !important; text-align: center !important; }
+}
+@media (max-width: 480px) {
+  .links-grid { grid-template-columns: 1fr !important; }
+}
