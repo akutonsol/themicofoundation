@@ -1,86 +1,143 @@
-export default {
+import { defineType } from 'sanity'
+
+export default defineType({
   name: 'legacyImpact',
-  title: 'Legacy & Impact Section',
+  title: 'Legacy Impact Section',
   type: 'document',
   fields: [
     {
-      name: 'heading',
-      title: 'Section Heading',
+      name: 'badge',
+      title: 'Section Badge',
       type: 'string',
+      description: 'Small badge text above the headline',
+      validation: Rule => Rule.required(),
+      initialValue: 'Why The Foundation Exists'
+    },
+    {
+      name: 'headline',
+      title: 'Main Headline',
+      type: 'string',
+      description: 'Large headline text',
+      validation: Rule => Rule.required(),
+      initialValue: 'Preserving Legacy. Empowering Futures.'
+    },
+    {
+      name: 'paragraph1',
+      title: 'First Paragraph',
+      type: 'text',
+      description: 'First paragraph of body text',
       validation: Rule => Rule.required()
     },
     {
-      name: 'subheading',
-      title: 'Subheading',
+      name: 'paragraph2',
+      title: 'Second Paragraph',
       type: 'text',
-      rows: 3
+      description: 'Second paragraph of body text',
+      validation: Rule => Rule.required()
     },
     {
-      name: 'impactStats',
-      title: 'Impact Statistics',
+      name: 'button1',
+      title: 'Primary Button',
+      type: 'object',
+      fields: [
+        {
+          name: 'text',
+          title: 'Button Text',
+          type: 'string',
+          validation: Rule => Rule.required(),
+          initialValue: 'Explore Projects'
+        },
+        {
+          name: 'link',
+          title: 'Button Link',
+          type: 'string',
+          validation: Rule => Rule.required(),
+          initialValue: '/projects'
+        }
+      ]
+    },
+    {
+      name: 'button2',
+      title: 'Secondary Button',
+      type: 'object',
+      fields: [
+        {
+          name: 'text',
+          title: 'Button Text',
+          type: 'string',
+          validation: Rule => Rule.required(),
+          initialValue: 'Become a Donor'
+        },
+        {
+          name: 'link',
+          title: 'Button Link',
+          type: 'string',
+          validation: Rule => Rule.required(),
+          initialValue: '/donate'
+        }
+      ]
+    },
+    {
+      name: 'heroImage',
+      title: 'Hero Image',
+      type: 'image',
+      description: 'Main image for the section',
+      validation: Rule => Rule.required()
+    },
+    {
+      name: 'locationBadge',
+      title: 'Location Badge Text',
+      type: 'string',
+      description: 'Badge text on the image',
+      validation: Rule => Rule.required(),
+      initialValue: 'Jamaica • Education • Legacy'
+    },
+    {
+      name: 'bottomQuote',
+      title: 'Bottom Quote',
+      type: 'text',
+      description: 'Large quote at the bottom of image',
+      validation: Rule => Rule.required(),
+      initialValue: 'Every generation deserves access to educational opportunity.'
+    },
+    {
+      name: 'stats',
+      title: 'Statistics Cards',
       type: 'array',
       of: [
         {
           type: 'object',
           fields: [
             {
-              name: 'number',
-              title: 'Number',
+              name: 'value',
+              title: 'Stat Value',
               type: 'string',
-              description: 'E.g., "50K+", "200", "95%"',
+              description: 'Number or text',
               validation: Rule => Rule.required()
             },
             {
               name: 'label',
-              title: 'Label',
+              title: 'Stat Label',
               type: 'string',
-              description: 'E.g., "Students Educated", "Projects Completed"',
+              description: 'Description text',
               validation: Rule => Rule.required()
-            },
-            {
-              name: 'description',
-              title: 'Description',
-              type: 'text',
-              rows: 2,
-              description: 'Optional additional context'
             }
           ],
           preview: {
             select: {
-              title: 'label',
-              subtitle: 'number'
+              title: 'value',
+              subtitle: 'label'
             }
           }
         }
       ],
-      validation: Rule => Rule.min(1).max(6)
-    },
-    {
-      name: 'backgroundImage',
-      title: 'Background Image',
-      type: 'image'
-    },
-    {
-      name: 'ctaButton',
-      title: 'Call to Action',
-      type: 'object',
-      fields: [
-        {
-          name: 'text',
-          title: 'Button Text',
-          type: 'string'
-        },
-        {
-          name: 'link',
-          title: 'Button Link',
-          type: 'string'
-        }
-      ]
+      validation: Rule => Rule.required().length(3)
     }
   ],
   preview: {
     select: {
-      title: 'heading'
+      title: 'headline',
+      subtitle: 'badge'
     }
   }
-}
+})

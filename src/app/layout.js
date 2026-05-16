@@ -1,8 +1,4 @@
-import { Inter, Sora } from 'next/font/google'
 import './globals.css'
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const sora = Sora({ subsets: ['latin'], variable: '--font-sora' })
 
 export const metadata = {
   title: 'Mico Foundation',
@@ -12,7 +8,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${sora.variable}`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" 
+          rel="stylesheet" 
+        />
+      </head>
+      <body style={{ fontFamily: "'Inter', -apple-system, sans-serif" }} suppressHydrationWarning>
         {children}
       </body>
     </html>

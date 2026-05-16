@@ -1,18 +1,34 @@
 // ============================================================================
 // FILE: sanity/schemas/hero.js
 // ============================================================================
-export default {
+import { defineType } from 'sanity'
+
+export default defineType({
   name: 'hero',
   title: 'Hero Section',
   type: 'document',
   fields: [
     {
+      name: 'mainHeadline',
+      title: 'Main Headline',
+      type: 'string',
+      description: 'Primary hero headline',
+      validation: Rule => Rule.required()
+    },
+    {
+      name: 'subHeadLine',
+      title: 'Sub Headline',
+      type: 'text',
+      description: 'Supporting text under main headline',
+      validation: Rule => Rule.required()
+    },
+    {
       name: 'heroImages',
       title: 'Hero Rotating Images (6 images)',
       type: 'array',
       of: [{ type: 'image' }],
-      validation: Rule => Rule.required().min(6).max(6),
-      description: 'Upload exactly 6 images that will rotate in the hero section'
+      description: 'Upload exactly 6 images that will rotate in the hero section',
+      validation: Rule => Rule.required().length(6).error('Upload exactly 6 images')
     },
     {
       name: 'videoId',
@@ -22,32 +38,82 @@ export default {
       validation: Rule => Rule.required()
     },
     {
-      name: 'mainHeadline',
-      title: 'Main Headline',
+      name: 'locationText',
+      title: 'Location Description',
       type: 'string',
-      description: 'Primary hero headline',
-      validation: Rule => Rule.required()
+      description: 'Location text displayed on images (e.g., "Jamaica, Buxton")',
+      validation: Rule => Rule.required(),
+      initialValue: 'Jamaica, Buxton'
     },
     {
-      name: 'subHeadline',
-      title: 'Sub Headline',
-      type: 'text',
-      rows: 3,
-      description: 'Supporting text under main headline'
+      name: 'totalMoneyDonated',
+      title: 'Total Money Donated',
+      type: 'string',
+      description: 'Display value for total donations (e.g., "$34M")',
+      validation: Rule => Rule.required(),
+      initialValue: '$34M'
+    },
+    {
+      name: 'totalMoneyDonatedText',
+      title: 'Total Money Donated Label',
+      type: 'string',
+      description: 'Label text below the amount',
+      validation: Rule => Rule.required(),
+      initialValue: 'Total money donated.'
+    },
+    {
+      name: 'completedProjects',
+      title: 'Completed Projects Count',
+      type: 'string',
+      description: 'Display value for completed projects (e.g., "45+")',
+      validation: Rule => Rule.required(),
+      initialValue: '45+'
+    },
+    {
+      name: 'completedProjectsText',
+      title: 'Completed Projects Label',
+      type: 'string',
+      description: 'Label text below the count',
+      validation: Rule => Rule.required(),
+      initialValue: 'Completed Projects.'
+    },
+    {
+      name: 'currentTargetName',
+      title: 'Current Target Name',
+      type: 'string',
+      description: 'Name of the current target (e.g., "Bruxton College")',
+      validation: Rule => Rule.required(),
+      initialValue: 'Bruxton College'
+    },
+    {
+      name: 'targetAmount',
+      title: 'Target Amount ($)',
+      type: 'number',
+      description: 'Total target amount in dollars (e.g., 10000000 for $10M)',
+      validation: Rule => Rule.required().min(0),
+      initialValue: 10000000
+    },
+    {
+      name: 'amountDonated',
+      title: 'Amount Donated ($)',
+      type: 'number',
+      description: 'Current amount donated in dollars (e.g., 6500000 for $6.5M)',
+      validation: Rule => Rule.required().min(0),
+      initialValue: 6500000
     },
     {
       name: 'donationCount',
       title: 'Total Donations Count',
       type: 'string',
       description: 'Display text for total donations (e.g., "12391+")',
-      initialValue: '12391+'
+      validation: Rule => Rule.required()
     },
     {
       name: 'donationText',
-      title: 'Donation Stats Text',
+      title: 'Donation Count Label',
       type: 'string',
-      description: 'Text shown below donation count',
-      initialValue: 'donation already sented'
+      description: 'Text shown next to donation count',
+      validation: Rule => Rule.required()
     },
     {
       name: 'ctaButton',
@@ -58,13 +124,13 @@ export default {
           name: 'text',
           title: 'Button Text',
           type: 'string',
-          initialValue: 'Donate Now'
+          validation: Rule => Rule.required()
         },
         {
           name: 'link',
           title: 'Button Link',
           type: 'string',
-          initialValue: '/donate'
+          validation: Rule => Rule.required()
         }
       ]
     }
@@ -72,8 +138,18 @@ export default {
   preview: {
     select: {
       title: 'mainHeadline',
-      subtitle: 'donationCount'
+      subtitle: 'donationCount',
+      targetName: 'currentTargetName',
+      donated: 'amountDonated',
+      target: 'targetAmount'
+    },
+    prepare(selection) {
+      const { title, subtitle, targetName, donated, target } = selection
+      const percentage = target > 0 ? Math.round((donated / target) * 100) : 0
+      return {
+        title: title,
+        subtitle: `${subtitle} | ${targetName}: ${percentage}% ($${(donated / 1000000).toFixed(1)}M / $${(target / 1000000).toFixed(1)}M)`
+      }
     }
   }
-}
- 
+})

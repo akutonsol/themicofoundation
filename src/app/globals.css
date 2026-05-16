@@ -2,6 +2,8 @@
 @import "tailwindcss";
 
 :root {
+  --font-inter: 'Inter', -apple-system, sans-serif;
+  --font-sora: 'Sora', -apple-system, sans-serif;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -27,3 +29,5 @@ body {
   padding: 0 40px;
   width: 100%;
 }
+
+ 

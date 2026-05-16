@@ -1,45 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { client, urlFor, queries } from '@/sanity/lib/sanity'
 import DonateButton from '@/components/ui/DonateButton'
 import Image from 'next/image'
 
-// ══════════════════════════════════════════════════════════════
-// IMAGE COLLECTIONS FOR AUTO-ROTATION
-// ══════════════════════════════════════════════════════════════
-
-const imageCollections = {
-  leftColumn: [
-    "/images/home/banner4.png",
-    "/images/home/banner2.png",
-     "/images/home/banner3.png",
-  ],
-  centerVideo: [
-    "/images/home-hero/campus-building.png",
-    "/images/home-hero/students-classroom.png",
-    "/images/home-hero/children-smiling.png",
-  ],
-  rightColumn: [
-    "/images/home/banner3.png",
-    "/images/home/banner1.png",
-     "/images/home/banner2.png",
-  ],
-  buxtonCard: [
-     "/images/home/banner4.png",
-    "/images/home/banner2.png",
-  ],
-  mobileTop: [
-    "/images/home/banner4.png",
-    "/images/home/banner2.png",
-     "/images/home/banner3.png",
-  ],
-  mobileBottom: [
-     "/images/home/banner4.png",
-    "/images/home/banner2.png",
-  ]
-}
-
-// STATIC DECORATIVE ELEMENTS
+// STATIC DECORATIVE ELEMENTS (/home-static/) - Not managed by CMS
 const staticAssets = {
   avatars: {
     one: "/images/home-static/avatar-1.svg",
@@ -47,68 +13,116 @@ const staticAssets = {
     three: "/images/home-static/avatar-3.svg",
   },
   icons: {
+    play: "/images/home-static/play-icon.svg",
     location: "/images/home-static/location-pin.svg",
-    arrow: "/images/home-static/button-icon.png",
+    arrow: "/images/home-static/play-icon.svg",
   },
   decorations: {
-    lineLeft: "/images/home-static/line-left.png",
-    lineRight: "/images/home-static/line-right.png",
+    lineLeft: "/images/home-static/Line-left.png",
+    lineRight: "/images/home-static/Line-right.png",
     corner1: "/images/home-static/corner-1.png",
     corner2: "/images/home-static/corner-2.svg",
+    sparkleSmall: "/images/home-static/sparkle-left.png",
+    sparkleLarge: "/images/home-static/sparkle-left.png"
   }
 }
 
-const FILLED = 26, TOTAL = 40
+const TOTAL = 40 // Total number of progress bars
 
 export default function Hero() {
-  const [isVideoOpen, setIsVideoOpen] = useState(false)
-  
-  // Image rotation states
-  const [leftIndex, setLeftIndex] = useState(0)
-  const [centerIndex, setCenterIndex] = useState(0)
-  const [rightIndex, setRightIndex] = useState(0)
-  const [buxtonIndex, setBuxtonIndex] = useState(0)
-  const [mobileTopIndex, setMobileTopIndex] = useState(0)
-  const [mobileBottomIndex, setMobileBottomIndex] = useState(0)
+  const [heroData, setHeroData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [showVideoModal, setShowVideoModal] = useState(false)
 
-  const openVideo = () => setIsVideoOpen(true)
-  const closeVideo = () => setIsVideoOpen(false)
-
-  // Auto-rotate images every 5 seconds with different offsets
   useEffect(() => {
-    const interval1 = setInterval(() => {
-      setLeftIndex(prev => (prev + 1) % imageCollections.leftColumn.length)
-    }, 5000)
-
-    const interval2 = setInterval(() => {
-      setCenterIndex(prev => (prev + 1) % imageCollections.centerVideo.length)
-    }, 6000) // Slightly different timing
-
-    const interval3 = setInterval(() => {
-      setRightIndex(prev => (prev + 1) % imageCollections.rightColumn.length)
-    }, 7000) // Different timing
-
-    const interval4 = setInterval(() => {
-      setBuxtonIndex(prev => (prev + 1) % imageCollections.buxtonCard.length)
-    }, 8000)
-
-    const interval5 = setInterval(() => {
-      setMobileTopIndex(prev => (prev + 1) % imageCollections.mobileTop.length)
-    }, 5500)
-
-    const interval6 = setInterval(() => {
-      setMobileBottomIndex(prev => (prev + 1) % imageCollections.mobileBottom.length)
-    }, 7500)
-
-    return () => {
-      clearInterval(interval1)
-      clearInterval(interval2)
-      clearInterval(interval3)
-      clearInterval(interval4)
-      clearInterval(interval5)
-      clearInterval(interval6)
+    async function fetchHeroData() {
+      try {
+        const data = await client.fetch(queries.hero)
+        setHeroData(data)
+      } catch (error) {
+        console.error('Error fetching hero data:', error)
+      } finally {
+        setLoading(false)
+      }
     }
+    fetchHeroData()
   }, [])
+
+  // Use CMS data or fallback to defaults
+  const headline = heroData?.mainHeadline || 'Together For Better Education'
+  const subheadline = heroData?.subHeadLine || 'Your support helps Mico empower students, uplift communities, and shape the future through learning.'
+  const donationCount = heroData?.donationCount || '12391+'
+  const donationText = heroData?.donationText || 'donation already sented'
+  const videoId = heroData?.videoId || 'dQw4w9WgXcQ'
+  const ctaText = heroData?.ctaButton?.text || 'Donate Now'
+  const ctaLink = heroData?.ctaButton?.link || '/donate'
+  
+  // NEW CMS FIELDS
+  const locationText = heroData?.locationText || 'Jamaica, Buxton'
+  const totalMoneyDonated = heroData?.totalMoneyDonated || '$34M'
+  const totalMoneyDonatedText = heroData?.totalMoneyDonatedText || 'Total money donated.'
+  const completedProjects = heroData?.completedProjects || '45+'
+  const completedProjectsText = heroData?.completedProjectsText || 'Completed Projects.'
+  const currentTargetName = heroData?.currentTargetName || 'Bruxton College'
+  const targetAmount = heroData?.targetAmount || 10000000
+  const amountDonated = heroData?.amountDonated || 6500000
+
+  // Calculate percentage and filled bars dynamically
+  const percentage = targetAmount > 0 ? Math.round((amountDonated / targetAmount) * 100) : 0
+  const FILLED = Math.round((percentage / 100) * TOTAL)
+
+  // Format currency for display
+  const formatCurrency = (amount) => {
+    if (amount >= 1000000) {
+      return `$${(amount / 1000000).toFixed(1)}M`
+    }
+    if (amount >= 1000) {
+      return `$${(amount / 1000).toFixed(1)}K`
+    }
+    return `$${amount}`
+  }
+
+  // Convert Sanity images to URLs - need exactly 6 for rotation
+  const heroImages = heroData?.heroImages?.map(img => urlFor(img).width(800).url()) || []
+  
+  // Fallback images if CMS doesn't have 6
+  const allImages = [
+    heroImages[0] || "/images/home-hero/banner1.png",
+    heroImages[1] || "/images/home-hero/banner2.png",
+    heroImages[2] || "/images/home-hero/banner3.png",
+    heroImages[3] || "/images/home-hero/banner4.png",
+    heroImages[4] || "/images/home-hero/banner1.png",
+    heroImages[5] || "/images/home-hero/banner2.png",
+  ]
+
+  // Mobile images (use last 2 from rotation)
+  const mobileImages = {
+    top: allImages[4],
+    bottom: allImages[5],
+  }
+
+  // Auto-rotate all images simultaneously every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
+    }, 5000) // Rotate every 5 seconds
+    
+    return () => clearInterval(interval)
+  }, [allImages.length])
+
+  // Calculate which image shows in each position (rotating through all 6)
+  const getImageForPosition = (offset) => {
+    return allImages[(currentImageIndex + offset) % allImages.length]
+  }
+
+  if (loading) {
+    return (
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFDF9' }}>
+        <p style={{ fontSize: '24px', color: '#040617' }}>Loading...</p>
+      </section>
+    )
+  }
 
   return (
     <section style={{ backgroundColor: '#FFFDF9', position: 'relative', overflow: 'hidden' }}>
@@ -131,94 +145,99 @@ export default function Hero() {
           .hero-desktop { display: none !important; }
           .hero-mobile  { display: flex !important; }
         }
+
+        .video-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          padding: 20px;
+        }
+
+        .video-modal-content {
+          position: relative;
+          width: 100%;
+          max-width: 1200px;
+          aspect-ratio: 16/9;
+        }
+
+        .video-modal-close {
+          position: absolute;
+          top: -40px;
+          right: 0;
+          background: none;
+          border: none;
+          color: white;
+          font-size: 32px;
+          cursor: pointer;
+          padding: 0;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: opacity 0.2s;
+        }
+
+        .video-modal-close:hover {
+          opacity: 0.7;
+        }
+
+        .video-background {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .video-background iframe {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100vw;
+          height: 100vh;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+        }
+
+        @media (min-aspect-ratio: 16/9) {
+          .video-background iframe {
+            height: 56.25vw;
+          }
+        }
+        @media (max-aspect-ratio: 16/9) {
+          .video-background iframe {
+            width: 177.78vh;
+          }
+        }
       `}</style>
 
-      {/* VIDEO MODAL */}
-      <AnimatePresence>
-        {isVideoOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={closeVideo}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.9)',
-              zIndex: 9999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '20px',
-              cursor: 'pointer'
-            }}
-          >
-            {/* Close button */}
-            <button
-              onClick={closeVideo}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                width: '48px',
-                height: '48px',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '50%',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s',
-                zIndex: 10001
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
-                e.currentTarget.style.transform = 'scale(1.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
-                e.currentTarget.style.transform = 'scale(1)'
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-
-            {/* Video container */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                width: '100%',
-                maxWidth: '1200px',
-                aspectRatio: '16/9',
-                backgroundColor: '#000',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                cursor: 'default'
-              }}
-            >
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                title="Mico Foundation Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                style={{ border: 'none' }}
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Video Modal */}
+      {showVideoModal && (
+        <div className="video-modal-overlay" onClick={() => setShowVideoModal(false)}>
+          <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="video-modal-close" onClick={() => setShowVideoModal(false)}>×</button>
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{ borderRadius: '12px' }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* DESKTOP LAYOUT */}
       <div className="hero-desktop" style={{ paddingBottom: '120px' }}>
@@ -238,169 +257,132 @@ export default function Hero() {
           <Image src={staticAssets.decorations.lineRight} alt="" width={1} height={1000} style={{ width:'1px', height:'100%' }} />
         </div>
 
-        {/* Corner decorations */}
-        <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', top:'90px',    left:'75px',  width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
-        <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', top:'90px',    right:'75px', width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
-        <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', bottom:'90px', left:'75px',  width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
+        {/* Corner decorations with dark spots */}
+        <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', top:'90px', left:'75px', width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
+        <Image src={staticAssets.decorations.corner2} alt="" width={12} height={12} style={{ position:'absolute', top:'84px', left:'75px', width:'30px', height:'30px', zIndex:2, pointerEvents:'none' }} />
+
+        <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', top:'90px', right:'75px', width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
+        <Image src={staticAssets.decorations.corner2} alt="" width={12} height={12} style={{ position:'absolute', top:'84px', right:'75px', width:'30px', height:'30px', zIndex:2, pointerEvents:'none' }} />
+
+        <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', bottom:'90px', left:'75px', width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
+        <Image src={staticAssets.decorations.corner2} alt="" width={12} height={12} style={{ position:'absolute', bottom:'84px', left:'75px', width:'30px', height:'30px', zIndex:2, pointerEvents:'none' }} />
+
         <Image src={staticAssets.decorations.corner2} alt="" width={30} height={30} style={{ position:'absolute', bottom:'90px', right:'75px', width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
 
         <div style={{ maxWidth:'1920px', margin:'0 auto', position:'relative', zIndex:2 }}>
 
-          {/* Headline */}
+          {/* Headline - CMS Content */}
           <motion.div initial={{opacity:0,y:40}} animate={{opacity:1,y:0}} transition={{duration:0.7}}
             style={{ textAlign:'center', padding:'148px 175px 0' }}>
             <h1 style={{ fontFamily:"'inter',sans-serif", fontSize:'clamp(2.5rem,5.5vw,6.25rem)', fontWeight:800, color:'#040617', letterSpacing:'-1px', lineHeight:'96.93%', margin:'0 0 16px', textTransform:'capitalize' }}>
-              Together For Better Education
+              {headline}
             </h1>
             <p style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#6F7181', letterSpacing:'0.16px', lineHeight:'24px', margin:'0 auto', maxWidth:'680px' }}>
-              Your support helps Mico empower students, uplift communities, and shape the future through learning.
+              {subheadline}
             </p>
           </motion.div>
 
-          {/* Donate + avatars */}
+          {/* Donate + avatars - CMS Content */}
           <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6,delay:0.2}}
             style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'16px', marginTop:'32px', paddingBottom:'48px' }}>
-            <DonateButton text="Donate Now" href="/donate" />
+            <DonateButton text={ctaText} href={ctaLink} />
             <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
               <div style={{ position:'relative', width:'84px', height:'36px', flexShrink:0 }}>
-                <Image src={staticAssets.avatars.one} alt="" width={36} height={36} style={{ position:'absolute', left:0,     top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
+                <Image src={staticAssets.avatars.one} alt="" width={36} height={36} style={{ position:'absolute', left:0, top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
                 <Image src={staticAssets.avatars.two} alt="" width={36} height={36} style={{ position:'absolute', left:'24px', top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
                 <Image src={staticAssets.avatars.three} alt="" width={36} height={36} style={{ position:'absolute', left:'48px', top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
               </div>
               <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#040617' }}>
-                12391+ donation already sented
+                {donationCount} {donationText}
               </span>
             </div>
           </motion.div>
 
-          {/* Photo grid */}
+          {/* Photo grid - ALL 6 Images Auto-Rotating Simultaneously */}
           <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.8,delay:0.3}}
             style={{ padding:'0 165px' }}>
             <div className="hero-grid">
 
-              {/* Left - Transitioning Images */}
+              {/* Left - Rotating Image Position 0 */}
               <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={leftIndex}
+                    key={`left-${currentImageIndex}`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 1 }}
-                    style={{ position:'absolute', inset:0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{ position: 'absolute', inset: 0 }}
                   >
-                    <Image src={imageCollections.leftColumn[leftIndex]} alt="Students" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
+                    <Image src={getImageForPosition(0)} alt="Hero" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
                   </motion.div>
                 </AnimatePresence>
-                <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(-0.95deg,rgba(0,0,0,0.6) 0.68%,rgba(0,0,0,0) 23.88%),linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 35.42%)' }} />
-                <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px' }}>
+                <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(-0.95deg,rgba(0,0,0,0.6) 0.68%,rgba(0,0,0,0) 23.88%),linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 35.42%)', zIndex:1 }} />
+                <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px', zIndex:2 }}>
                   <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
-                  <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#fff' }}>Jamaica, Buxton</span>
+                  <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#fff' }}>{locationText}</span>
                 </div>
-                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'16px', padding:'16px' }}>
-                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'42px', fontWeight:600, color:'#13531D', lineHeight:1, margin:0 }}>$34M</p>
-                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>Total money donated.</p>
+                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'16px', padding:'16px', zIndex:2 }}>
+                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'42px', fontWeight:600, color:'#13531D', lineHeight:1, margin:0 }}>{totalMoneyDonated}</p>
+                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>{totalMoneyDonatedText}</p>
                 </div>
               </div>
 
               {/* Center */}
               <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
-                {/* Video with YouTube Background */}
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px', cursor:'pointer' }} onClick={openVideo}>
-                  {/* YouTube iframe background */}
-                  <iframe
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ&controls=0&showinfo=0&rel=0&modestbranding=1"
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      width: '177.77%',
-                      height: '177.77%',
-                      transform: 'translate(-50%, -50%)',
-                      pointerEvents: 'none',
-                      border: 'none'
-                    }}
-                    allow="autoplay; encrypted-media"
-                    title="Background Video"
-                  />
-                  <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)' }} />
-                  <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px' }}>
-                    <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
-                    <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#fff' }}>Jamaica, Buxton</span>
+                {/* Video - Background Video Playing Muted + Lightbox */}
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
+                  {/* Background YouTube Video (Muted, Looping) */}
+                  <div className="video-background">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`}
+                      frameBorder="0"
+                      allow="autoplay; encrypted-media"
+                      style={{ borderRadius: '16px' }}
+                    />
                   </div>
-                  
-                  {/* GOLD TRANSPARENT PLAY BUTTON */}
-                  <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'220px', height:'220px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                    {/* Rotating text circle - larger text */}
-                    <svg viewBox="0 0 220 220" style={{ position:'absolute', width:'100%', height:'100%', animation:'rotateSlow 10s linear infinite' }}>
-                      <defs>
-                        <path 
-                          id="circlePath" 
-                          d="M 110, 110 m -90, 0 a 90,90 0 1,1 180,0 a 90,90 0 1,1 -180,0" 
-                          fill="none" 
-                        />
-                      </defs>
-                      <text 
-                        fill="white" 
-                        fontSize="15" 
-                        fontWeight="600" 
-                        letterSpacing="2"
-                        fontFamily="'Inter', sans-serif"
-                      >
-                        <textPath href="#circlePath" startOffset="23%">
-                       THE MICOFOUNDATION CELEBRATING 180YEARS
-                        </textPath>
-                      </text>
+                  <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
+                  <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px', zIndex:3 }}>
+                    <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
+                    <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#fff' }}>{locationText}</span>
+                  </div>
+                  <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'167px', height:'167px', display:'flex', alignItems:'center', justifyContent:'center', zIndex:3 }}>
+                    <svg viewBox="0 0 167 167" style={{ position:'absolute', width:'100%', height:'100%', animation:'rotateSlow 10s linear infinite' }}>
+                      <path id="cpth" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
+                      <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpth">Play a video • Play a video • Play a video •</textPath></text>
                     </svg>
-                    
-                    {/* Transparent button with gold play icon */}
                     <button 
-                      onClick={openVideo}
-                      style={{ 
-                        width:'110px', 
-                        height:'110px', 
-                        backgroundColor:'transparent',
-                        borderRadius:'50%', 
-                        border:'none', 
-                        cursor:'pointer', 
-                        display:'flex', 
-                        alignItems:'center', 
-                        justifyContent:'center', 
-                        position:'relative', 
-                        zIndex:1,
-                        transition:'transform 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      onClick={() => setShowVideoModal(true)}
+                      style={{ width:'56px', height:'56px', backgroundColor:'transparent', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', zIndex:1 }}
                     >
-                      <svg width="48" height="56" viewBox="0 0 48 56" fill="none" style={{ marginLeft:'4px', filter:'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}>
-                        <path d="M2 0.5V55.5L47 28L2 0.5Z" fill="#FFD900"/>
+                      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                        <circle cx="28" cy="28" r="28" fill="#ffa801"/>
+                        <path d="M23 19L37 28L23 37V19Z" fill="#040617" />
                       </svg>
                     </button>
                   </div>
                 </div>
-                
-                {/* Buxton card with Transitioning Background */}
+                {/* Buxton card - Rotating Image Position 3 + DYNAMIC PROGRESS BAR */}
                 <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'271px' }}>
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={buxtonIndex}
+                      key={`buxton-${currentImageIndex}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 1 }}
-                      style={{ position:'absolute', inset:0 }}
+                      transition={{ duration: 0.5 }}
+                      style={{ position: 'absolute', inset: 0 }}
                     >
-                      <Image src={imageCollections.buxtonCard[buxtonIndex]} alt="Buxton College" fill style={{ objectFit:'cover' }} sizes="33vw" />
+                      <Image src={getImageForPosition(3)} alt={currentTargetName} fill style={{ objectFit:'cover' }} sizes="33vw" />
                     </motion.div>
                   </AnimatePresence>
-                  <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)' }} />
-                  <div style={{ position:'absolute', top:'24px', left:'24px' }}>
+                  <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)', zIndex:1 }} />
+                  <div style={{ position:'absolute', top:'24px', left:'24px', zIndex:2 }}>
                     <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#d1d1d1', lineHeight:'38px', margin:0 }}>Current target</p>
-                    <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#fff', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>Bruxton College</p>
+                    <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#fff', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{currentTargetName}</p>
                   </div>
-                  <div style={{ position:'absolute', bottom:'20px', left:'24px', right:'24px' }}>
-                    <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#5EDA71', textAlign:'center', margin:'0 0 8px' }}>65%</p>
+                  <div style={{ position:'absolute', bottom:'20px', left:'24px', right:'24px', zIndex:2 }}>
+                    <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#5EDA71', textAlign:'center', margin:'0 0 8px' }}>{percentage}%</p>
                     <div style={{ display:'flex', gap:'4px' }}>
                       {Array.from({length:TOTAL}).map((_,i) => (
                         <div key={i} style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor:i<FILLED?'#5EDA71':'#d9d9d9', opacity:i<FILLED?1:0.4 }} />
@@ -408,35 +390,35 @@ export default function Hero() {
                     </div>
                     <div style={{ display:'flex', justifyContent:'space-between', marginTop:'6px' }}>
                       <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'rgba(255,255,255,0.6)' }}>$0</span>
-                      <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#5EDA71' }}>$6.5M</span>
-                      <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'rgba(255,255,255,0.6)' }}>$10M</span>
+                      <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#5EDA71' }}>{formatCurrency(amountDonated)}</span>
+                      <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'rgba(255,255,255,0.6)' }}>{formatCurrency(targetAmount)}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Right - Transitioning Images */}
+              {/* Right - Rotating Image Position 2 */}
               <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={rightIndex}
+                    key={`right-${currentImageIndex}`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 1 }}
-                    style={{ position:'absolute', inset:0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{ position: 'absolute', inset: 0 }}
                   >
-                    <Image src={imageCollections.rightColumn[rightIndex]} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
+                    <Image src={getImageForPosition(2)} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
                   </motion.div>
                 </AnimatePresence>
-                <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 29.7%)' }} />
-                <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px' }}>
+                <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 29.7%)', zIndex:1 }} />
+                <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px', zIndex:2 }}>
                   <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
-                  <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#fff' }}>Jamaica, Buxton</span>
+                  <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#fff' }}>{locationText}</span>
                 </div>
-                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#FFF7CC', borderRadius:'16px', padding:'16px' }}>
-                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'42px', fontWeight:600, color:'#665700', lineHeight:1, margin:0 }}>45+</p>
-                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#998200', margin:0, whiteSpace:'nowrap' }}>Completed Projects.</p>
+                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#FFF7CC', borderRadius:'16px', padding:'16px', zIndex:2 }}>
+                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'42px', fontWeight:600, color:'#665700', lineHeight:1, margin:0 }}>{completedProjects}</p>
+                  <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#998200', margin:0, whiteSpace:'nowrap' }}>{completedProjectsText}</p>
                 </div>
               </div>
 
@@ -453,27 +435,27 @@ export default function Hero() {
 
           <div style={{ display:'flex', flexDirection:'column', gap:'16px', textAlign:'center' }}>
             <h1 style={{ fontFamily:"'inter',sans-serif", fontSize:'60px', fontWeight:800, color:'#040617', letterSpacing:'-0.6px', lineHeight:1.12, margin:0, textTransform:'capitalize' }}>
-              Together for better education
+              {headline}
             </h1>
             <p style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'#6F7181', letterSpacing:'0.16px', lineHeight:'24px', margin:0 }}>
-              Help students around the globe get better opportunities.
+              {subheadline}
             </p>
           </div>
 
           <div style={{ display:'flex', flexDirection:'column', gap:'16px', alignItems:'center' }}>
-            <a href="/donate" style={{ fontFamily:"'inter',sans-serif", display:'inline-flex', alignItems:'center', gap:'8px', backgroundColor:'#FFD900', color:'#040617', fontSize:'14px', fontWeight:600, height:'46px', padding:'0 24px', borderRadius:'14px', textDecoration:'none' }}>
-              Donate Now
+            <a href={ctaLink} style={{ fontFamily:"'inter',sans-serif", display:'inline-flex', alignItems:'center', gap:'8px', backgroundColor:'#FFD900', color:'#040617', fontSize:'14px', fontWeight:600, height:'46px', padding:'0 24px', borderRadius:'14px', textDecoration:'none' }}>
+              {ctaText}
               <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'24px', height:'24px', flexShrink:0 }}>
                 <Image src={staticAssets.icons.arrow} alt="" width={14} height={14} style={{ objectFit:'contain' }} />
               </span>
             </a>
             <div style={{ display:'flex', alignItems:'center', gap:'8px', width:'100%' }}>
               <div style={{ position:'relative', width:'84px', height:'36px', flexShrink:0 }}>
-                <Image src={staticAssets.avatars.one} alt="" width={36} height={36} style={{ position:'absolute', left:0,     top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
+                <Image src={staticAssets.avatars.one} alt="" width={36} height={36} style={{ position:'absolute', left:0, top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
                 <Image src={staticAssets.avatars.two} alt="" width={36} height={36} style={{ position:'absolute', left:'24px', top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
                 <Image src={staticAssets.avatars.three} alt="" width={36} height={36} style={{ position:'absolute', left:'48px', top:0, width:'36px', height:'36px', borderRadius:'50%' }} />
               </div>
-              <span style={{ fontFamily:"'inter',sans-serif", fontSize:'14px', color:'#040617' }}>12391+ donation already sented</span>
+              <span style={{ fontFamily:"'inter',sans-serif", fontSize:'14px', color:'#040617' }}>{donationCount} {donationText}</span>
             </div>
           </div>
         </motion.div>
@@ -481,106 +463,58 @@ export default function Hero() {
         <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.7,delay:0.2}}
           style={{ display:'flex', flexDirection:'column', gap:'16px', width:'100%' }}>
 
-          {/* Top photo with video and YouTube Background */}
-          <div style={{ width:'100%', height:'312px', borderRadius:'12px', overflow:'hidden', position:'relative', cursor:'pointer' }} onClick={openVideo}>
-            {/* YouTube iframe background */}
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ&controls=0&showinfo=0&rel=0&modestbranding=1"
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: '177.77%',
-                height: '177.77%',
-                transform: 'translate(-50%, -50%)',
-                pointerEvents: 'none',
-                border: 'none'
-              }}
-              allow="autoplay; encrypted-media"
-              title="Background Video"
-            />
-            <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)' }} />
-            <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'4px', whiteSpace:'nowrap' }}>
-              <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
-              <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'white', letterSpacing:'-0.16px' }}>Jamaica, Buxton</span>
+          {/* Top photo - Background Video + Lightbox */}
+          <div style={{ width:'100%', height:'312px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
+            <div className="video-background">
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`}
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                style={{ borderRadius: '12px' }}
+              />
             </div>
-            
-            {/* GOLD TRANSPARENT PLAY BUTTON - MOBILE */}
-            <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'220px', height:'220px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-              <svg viewBox="0 0 220 220" style={{ position:'absolute', width:'100%', height:'100%', animation:'rotateSlowR 10s linear infinite' }}>
-                <defs>
-                  <path 
-                    id="circlePathMobile" 
-                    d="M 110, 110 m -90, 0 a 90,90 0 1,1 180,0 a 90,90 0 1,1 -180,0" 
-                    fill="none" 
-                  />
-                </defs>
-                <text 
-                  fill="white" 
-                  fontSize="15" 
-                  fontWeight="600" 
-                  letterSpacing="2"
-                  fontFamily="'Inter', sans-serif"
-                >
-                  <textPath href="#circlePathMobile" startOffset="23%">
-                    play a video • play a video
-                  </textPath>
-                </text>
+            <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
+            <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'4px', whiteSpace:'nowrap', zIndex:3 }}>
+              <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
+              <span style={{ fontFamily:"'inter',sans-serif", fontSize:'16px', color:'white', letterSpacing:'-0.16px' }}>{locationText}</span>
+            </div>
+            <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'167px', height:'167px', display:'flex', alignItems:'center', justifyContent:'center', zIndex:3 }}>
+              <svg viewBox="0 0 167 167" style={{ position:'absolute', width:'100%', height:'100%', animation:'rotateSlowR 10s linear infinite' }}>
+                <path id="cpthm" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
+                <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpthm">Play a video • Play a video • Play a video •</textPath></text>
               </svg>
-              
               <button 
-                onClick={openVideo}
-                style={{ 
-                  width:'110px', 
-                  height:'110px', 
-                  backgroundColor:'transparent',
-                  borderRadius:'50%', 
-                  border:'none', 
-                  cursor:'pointer', 
-                  display:'flex', 
-                  alignItems:'center', 
-                  justifyContent:'center', 
-                  zIndex:1, 
-                  position:'relative'
-                }}
+                onClick={() => setShowVideoModal(true)}
+                style={{ width:'56px', height:'56px', backgroundColor:'transparent', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, position:'relative' }}
               >
-                <svg width="48" height="56" viewBox="0 0 48 56" fill="none" style={{ marginLeft:'4px', filter:'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}>
-                  <path d="M2 0.5V55.5L47 28L2 0.5Z" fill="#FFD900"/>
+                <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                  <circle cx="28" cy="28" r="28" fill="#ffa801"/>
+                  <path d="M23 19L37 28L23 37V19Z" fill="#040617" />
                 </svg>
               </button>
             </div>
           </div>
 
-          {/* Bottom photo with Transitioning Background */}
+          {/* Bottom photo - CMS Image with Dynamic Progress */}
           <div style={{ width:'100%', height:'271px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={mobileBottomIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-                style={{ position:'absolute', inset:0 }}
-              >
-                <Image src={imageCollections.mobileBottom[mobileBottomIndex]} alt="Campus" fill style={{ objectFit:'cover' }} sizes="100vw" />
-              </motion.div>
-            </AnimatePresence>
+            <Image src={mobileImages.bottom} alt="Campus" fill style={{ objectFit:'cover' }} sizes="100vw" />
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)' }} />
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', textAlign:'center', width:'262px' }}>
               <p style={{ fontFamily:"'inter',sans-serif", fontSize:'24px', color:'#d1d1d1', lineHeight:'38px', margin:0 }}>Current target</p>
-              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'white', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>Bruxton College</p>
+              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'white', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{currentTargetName}</p>
             </div>
             <div style={{ position:'absolute', left:'12px', right:'12px', bottom:'12px' }}>
-              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'20px', color:'#5EDA71', letterSpacing:'-0.2px', margin:'0 0 4px', textAlign:'right', paddingRight:'30%' }}>65%</p>
+              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'20px', color:'#5EDA71', letterSpacing:'-0.2px', margin:'0 0 4px', textAlign:'right', paddingRight:'30%' }}>{percentage}%</p>
               <div style={{ display:'flex', gap:'3px', height:'16px' }}>
-                {Array.from({length:32}).map((_,i) => (
-                  <div key={i} style={{ flex:1, height:'100%', borderRadius:'20px', backgroundColor:i<19?'#5EDA71':'#d9d9d9', opacity:i<19?1:0.5 }} />
-                ))}
+                {Array.from({length:32}).map((_,i) => {
+                  const mobileFilled = Math.round((percentage / 100) * 32)
+                  return <div key={i} style={{ flex:1, height:'100%', borderRadius:'20px', backgroundColor:i<mobileFilled?'#5EDA71':'#d9d9d9', opacity:i<mobileFilled?1:0.5 }} />
+                })}
               </div>
               <div style={{ display:'flex', justifyContent:'space-between', marginTop:'4px' }}>
                 <span style={{ fontFamily:"'inter',sans-serif", fontSize:'14px', color:'rgba(255,255,255,0.6)', letterSpacing:'-0.14px' }}>$0</span>
-                <span style={{ fontFamily:"'inter',sans-serif", fontSize:'14px', color:'#5EDA71', letterSpacing:'-0.14px' }}>$6.5M</span>
-                <span style={{ fontFamily:"'inter',sans-serif", fontSize:'14px', color:'rgba(255,255,255,0.6)', letterSpacing:'-0.14px' }}>$10M</span>
+                <span style={{ fontFamily:"'inter',sans-serif", fontSize:'14px', color:'#5EDA71', letterSpacing:'-0.14px' }}>{formatCurrency(amountDonated)}</span>
+                <span style={{ fontFamily:"'inter',sans-serif", fontSize:'14px', color:'rgba(255,255,255,0.6)', letterSpacing:'-0.14px' }}>{formatCurrency(targetAmount)}</span>
               </div>
             </div>
           </div>
@@ -588,12 +522,12 @@ export default function Hero() {
           {/* Stats cards */}
           <div style={{ display:'flex', gap:'16px', width:'100%' }}>
             <div style={{ flex:1, backgroundColor:'#FFF7CC', borderRadius:'12px', padding:'8px', textAlign:'center' }}>
-              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#665700', lineHeight:'46px', letterSpacing:'-0.32px', margin:0 }}>45+</p>
-              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'18px', color:'#998200', letterSpacing:'-0.18px', margin:0 }}>Completed Projects.</p>
+              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#665700', lineHeight:'46px', letterSpacing:'-0.32px', margin:0 }}>{completedProjects}</p>
+              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'18px', color:'#998200', letterSpacing:'-0.18px', margin:0 }}>{completedProjectsText}</p>
             </div>
             <div style={{ flex:1, backgroundColor:'#D6F5DA', borderRadius:'12px', padding:'8px', textAlign:'center' }}>
-              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#13531D', lineHeight:'46px', letterSpacing:'-0.32px', margin:0 }}>$34M</p>
-              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'18px', color:'#1D7C2B', letterSpacing:'-0.18px', margin:0 }}>Total money donated.</p>
+              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#13531D', lineHeight:'46px', letterSpacing:'-0.32px', margin:0 }}>{totalMoneyDonated}</p>
+              <p style={{ fontFamily:"'inter',sans-serif", fontSize:'18px', color:'#1D7C2B', letterSpacing:'-0.18px', margin:0 }}>{totalMoneyDonatedText}</p>
             </div>
           </div>
 
