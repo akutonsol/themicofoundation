@@ -60,19 +60,49 @@ export const queries = {
     }
   }`,
   
-  projects: `*[_type == "project"] | order(order asc){
-    _id,
-    title,
-    label,
-    location,
-    description,
-    image,
-    status,
-    percentage,
-    goal,
-    raised,
+projects: `*[_type == "project"] | order(order asc){
+  _id,
+  title,
+  "slug": slug.current,
+  label,
+  status,
+  location,
+  description,
+  completedItems,
+  image,
+  targetAmount,
+  amountDonated,
+  buttonText,
+  order
+}`,
+  
+   communityImpact: `*[_type == "communityImpact"][0]{
+    headline,
+    counterTarget,
+    counterLabel,
     buttonText,
-    completedItems
+    buttonLink,
+    photoLeftTop,
+    photoLeftBottom,
+    photoRightTop,
+    photoRightBottom
+  }`,
+  
+messagesSection: `*[_type == "messagesSection"][0]{
+    heading,
+    description,
+    buttonText,
+    buttonLink
+  }`,
+  
+  messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
+    _id,
+    name,
+    role,
+    photo,
+    quote,
+    fullMessage,
+    order
   }`,
   
   siteSettings: `*[_type == "siteSettings"][0]`

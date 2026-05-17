@@ -2,19 +2,12 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
+import { client, urlFor, queries } from '@/sanity/lib/sanity'
 
-// Project photos
-const imgBuxton    ="/images/home/buxton.png"
-const imgClassroom = "/images/home/smart.png"
-const imgComplete1 = "/images/home/project1.png"
-const imgComplete2 = "/images/home/project1.png"
-
-// Icons - using local paths
+// Icons - static (not CMS managed)
 const imgLocation  = "/images/home-static/location-pin.svg"
 const imgArrowBtn  = "/images/home-static/button-icon.png"
 const imgCheck     = "/images/home-static/check.png"
-
-// Background patterns
 const imgGridBg = "/images/home-static/grid-background.png"
 const imgSparkleLarge = "/images/home-static/sparkle-large.png"
 const imgSparkleSmall = "/images/home-static/sparkle-small.png"
@@ -23,72 +16,111 @@ const inter = { fontFamily: "'Inter', sans-serif" };
 const TOTAL_BARS = 40
 const MOBILE_BARS = 24
 
-const projects = [
-  {
-    id: 0, type: 'active', bg: '#1A1600',
-    label: 'Active Project', title: 'Buxton College',
-    location: 'Jamaica, Buxton',
-    desc: "You'll be joining a community of dedicated supporters who value the preservation of historic landmarks and are helping restore the iconic Buxton Building.",
-    photo: imgBuxton, percent: 65, filled: 26, mobileFilled: 15,
-    barColor: '#FFF7CC', percentColor: '#FFF7CC',
-    goal: '$20M', raised: '$14M',
-    btnText: 'Rebuild College', btnBg: '#FFD900', learnColor: '#FFD900',
-  },
-  {
-    id: 1, type: 'active', bg: '#1A1600',
-    label: 'Active Project', title: 'Smart Classroom',
-    location: 'Jamaica, Kingston',
-    desc: "You'll be joining a community of committed donors who believe in advancing education through technology and are helping build a modern Smart Classroom at Mico.",
-    photo: imgClassroom, percent: 35, filled: 14, mobileFilled: 8,
-    barColor: '#FFF7CC', percentColor: '#FFF7CC',
-    goal: '$200K', raised: '$70K',
-    btnText: 'Install Equipment', btnBg: '#FFD900', learnColor: '#FFD900',
-  },
-  {
-    id: 2, type: 'complete', bg: '#051507',
-    label: 'Complete Project', title: 'Complete Project №1',
-    location: 'Jamaica, Kingston',
-    completedItems: ['Completed statement','Completed statement','Completed statement','Completed statement','Completed statement','Completed statement'],
-    photo: imgComplete1, percent: 100, filled: 40, mobileFilled: 24,
-    barColor: '#5EDA71', percentColor: '#5EDA71',
-    goal: '$200K', raised: '$200K',
-    btnText: 'Donate to other project', btnBg: '#FFF7CC', learnColor: '#5EDA71',
-  },
-  {
-    id: 3, type: 'complete', bg: '#051507',
-    label: 'Complete Project', title: 'Complete Project №2',
-    location: 'Jamaica, Buxton',
-    completedItems: ['Completed statement','Completed statement','Completed statement','Completed statement'],
-    photo: imgComplete2, percent: 100, filled: 40, mobileFilled: 24,
-    barColor: '#5EDA71', percentColor: '#5EDA71',
-    goal: '$500K', raised: '$500K',
-    btnText: 'Donate to other project', btnBg: '#FFF7CC', learnColor: '#5EDA71',
-  },
-]
-
 export default function Projects() {
+  const [projectsData, setProjectsData] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState(1)
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const data = await client.fetch(queries.projects)
+        console.log('Projects Data:', data)
+        setProjectsData(data)
+      } catch (error) {
+        console.error('Error fetching projects:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProjects()
+  }, [])
+
+  // Helper function to format currency (whole numbers only)
+  const formatCurrency = (amount) => {
+    if (amount >= 1000000) {
+      return `$${Math.round(amount / 1000000)}M`
+    }
+    if (amount >= 1000) {
+      return `$${Math.round(amount / 1000)}K`
+    }
+    return `$${amount}`
+  }
+
+  // Convert CMS data to component format with auto-calculated percentage
+  const projects = projectsData?.map(project => {
+    // Calculate percentage dynamically from targetAmount and amountDonated
+    const percentage = project.targetAmount > 0 
+      ? Math.round((project.amountDonated / project.targetAmount) * 100) 
+      : 0
+    
+    // Calculate filled bars based on percentage
+    const filled = Math.round((percentage / 100) * TOTAL_BARS)
+    const mobileFilled = Math.round((percentage / 100) * MOBILE_BARS)
+    
+    // Auto-set background color based on status
+    const backgroundColor = project.status === 'active' ? '#1A1600' : '#051507'
+    
+    return {
+      id: project.order,
+      slug: project.slug,
+      type: project.status,
+      bg: backgroundColor,
+      label: project.label,
+      title: project.title,
+      location: project.location,
+      desc: project.description,
+      completedItems: project.completedItems || [],
+      photo: urlFor(project.image).width(1200).url(),
+      percent: percentage,
+      filled: filled,
+      mobileFilled: mobileFilled,
+      barColor: project.status === 'complete' ? '#5EDA71' : '#FFF7CC',
+      percentColor: project.status === 'complete' ? '#5EDA71' : '#FFF7CC',
+      goal: formatCurrency(project.targetAmount),
+      raised: formatCurrency(project.amountDonated),
+      btnText: project.buttonText,
+      btnBg: project.status === 'complete' ? '#FFF7CC' : '#FFD900',
+      learnColor: project.status === 'complete' ? '#5EDA71' : '#FFD900',
+    }
+  }) || []
 
   const goTo = (idx) => { setDirection(idx > current ? 1 : -1); setCurrent(idx) }
   const prev = () => goTo((current - 1 + projects.length) % projects.length)
   const next = () => goTo((current + 1) % projects.length)
 
-  // Auto-transition every 5 seconds
+  // Auto-transition
   useEffect(() => {
+    if (projects.length === 0) return
     const timer = setInterval(() => {
       next()
-    }, 5000) // 5 seconds
-
+    }, 5000)
     return () => clearInterval(timer)
-  }, [current]) // Reset timer when slide changes
+  }, [current, projects.length])
+
+  if (loading) {
+    return (
+      <section style={{ backgroundColor: '#1A1600', padding: '80px 0', minHeight: '780px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: '#FFFDF9', fontSize: '24px' }}>Loading projects...</p>
+      </section>
+    )
+  }
+
+  if (projects.length === 0) {
+    return (
+      <section style={{ backgroundColor: '#1A1600', padding: '80px 0', minHeight: '780px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: '#FFFDF9', fontSize: '24px' }}>No projects available</p>
+      </section>
+    )
+  }
 
   const p = projects[current]
 
   return (
     <section style={{ backgroundColor: p.bg, position: 'relative', overflow: 'hidden', transition: 'background-color 0.5s ease' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=wrap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
         .proj-desktop { display: block; padding: 80px 85px; min-height: 780px; }
         .proj-mobile  { display: none; }
@@ -103,7 +135,7 @@ export default function Projects() {
       {/* DESKTOP LAYOUT */}
       <div className="proj-desktop">
 
-        {/* Background - Grid pattern layer */}
+        {/* Background layers */}
         <AnimatePresence mode="wait">
           <motion.div 
             key={`grid-${current}`}
@@ -111,20 +143,10 @@ export default function Projects() {
             animate={{ opacity:0.5 }} 
             exit={{ opacity:0 }}
             transition={{ duration:0.5 }}
-            style={{ 
-              position:'absolute', 
-              inset:0, 
-              zIndex:0, 
-              pointerEvents:'none', 
-              backgroundImage:`url('${imgGridBg}')`, 
-              backgroundSize:'100px 100px',
-              backgroundPosition:'0 0', 
-              backgroundRepeat:'repeat'
-            }} 
+            style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', backgroundImage:`url('${imgGridBg}')`, backgroundSize:'100px 100px', backgroundPosition:'0 0', backgroundRepeat:'repeat' }} 
           />
         </AnimatePresence>
         
-        {/* Background - Large sparkle pattern layer (tiled across entire background) */}
         <AnimatePresence mode="wait">
           <motion.div 
             key={`sparkle-large-${current}`}
@@ -132,21 +154,10 @@ export default function Projects() {
             animate={{ opacity:0.3 }} 
             exit={{ opacity:0 }}
             transition={{ duration:0.6, delay:0.1 }}
-            style={{ 
-              position:'absolute', 
-              inset:0, 
-              zIndex:0, 
-              pointerEvents:'none', 
-              backgroundImage:`url('${imgSparkleLarge}')`, 
-              backgroundSize:'1200px auto',
-              backgroundPosition:'0 0', 
-              backgroundRepeat:'repeat',
-              filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)'
-            }} 
+            style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', backgroundImage:`url('${imgSparkleLarge}')`, backgroundSize:'1200px auto', backgroundPosition:'0 0', backgroundRepeat:'repeat', filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)' }} 
           />
         </AnimatePresence>
         
-        {/* Background - Small sparkle pattern layer (tiled across entire background) */}
         <AnimatePresence mode="wait">
           <motion.div 
             key={`sparkle-small-${current}`}
@@ -154,17 +165,7 @@ export default function Projects() {
             animate={{ opacity:0.3 }} 
             exit={{ opacity:0 }}
             transition={{ duration:0.6, delay:0.2 }}
-            style={{ 
-              position:'absolute', 
-              inset:0, 
-              zIndex:0, 
-              pointerEvents:'none', 
-              backgroundImage:`url('${imgSparkleSmall}')`, 
-              backgroundSize:'600px auto',
-              backgroundPosition:'300px 100px', 
-              backgroundRepeat:'repeat',
-              filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)'
-            }} 
+            style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', backgroundImage:`url('${imgSparkleSmall}')`, backgroundSize:'600px auto', backgroundPosition:'300px 100px', backgroundRepeat:'repeat', filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)' }} 
           />
         </AnimatePresence>
 
@@ -177,7 +178,7 @@ export default function Projects() {
               transition={{ duration:0.45, ease:'easeInOut' }}
               className="proj-inner"
             >
-              {/* LEFT — text */}
+              {/* LEFT - text */}
               <div style={{ flex:'0 0 816px', display:'flex', flexDirection:'column', gap:'16px' }}>
                 <div style={{ paddingBottom:'8px' }}>
                   <p style={{ ...inter, fontSize:'32px', fontWeight:600, color:'#6F7181', letterSpacing:'-0.32px', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{p.label}</p>
@@ -214,7 +215,7 @@ export default function Projects() {
                     <span style={{ ...inter, fontSize:'24px', color:'#E5E6EB', opacity:0.8 }}>{p.goal}</span>
                   </div>
                 </div>
-                <a href="/donate" style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'fit-content', marginTop:'8px' }}>
+                <a href={p.type === 'active' ? `/projectdetail?slug=${p.slug}` : '/projects'} style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'fit-content', marginTop:'8px' }}>
                   {p.btnText}
                   <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'24px', height:'24px' }}>
                     <img src={imgArrowBtn} alt="" style={{ width:'14px', height:'14px' }} />
@@ -222,7 +223,7 @@ export default function Projects() {
                 </a>
               </div>
 
-              {/* RIGHT — photo */}
+              {/* RIGHT - photo */}
               <div style={{ flex:1, position:'relative', borderRadius:'35px', overflow:'hidden', height:'952px', flexShrink:0 }}>
                 <img src={p.photo} alt={p.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(0deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 50%),linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 55%)' }} />
@@ -230,27 +231,27 @@ export default function Projects() {
                   <Image src={imgLocation} alt="" width={20} height={20} style={{ width:'20px', height:'20px', objectFit:'contain' }} />
                   <span style={{ ...inter, fontSize:'16px', color:'#FFF', letterSpacing:'-0.16px' }}>{p.location}</span>
                 </div>
-                <div style={{ position:'absolute', bottom:'32px', left:'32px', right:'32px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                  <button onClick={prev} style={{ display:'flex', alignItems:'center', gap:'16px', background:'none', border:'none', cursor:'pointer', opacity:0.6 }}>
-                    <span style={{ ...inter, fontSize:'20px', color:'#FFF' }}>Last Project</span>
+                <div style={{ position:'absolute', bottom:'32px', left:'32px', right:'32px', display:'flex', alignItems:'center', justifyContent:'space-between', zIndex:10 }}>
+                  <button onClick={prev} style={{ display:'flex', alignItems:'center', gap:'16px', background:'none', border:'none', cursor:'pointer', opacity:0.6, padding:0, position:'relative', outline:'none' }}>
+                    <span style={{ ...inter, fontSize:'20px', color:'#FFF', whiteSpace:'nowrap' }}>Last Project</span>
                     <div style={{ width:'44px', height:'44px', border:'2px solid #E5E6EB', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </div>
                   </button>
                   <div style={{ display:'flex', gap:'8px' }}>
                     {projects.map((_,i) => (
-                      <button key={i} onClick={() => goTo(i)} style={{ width:'52px', height:'12px', borderRadius:'90px', backgroundColor:i===current?'#FFD900':'#d9d9d9', opacity:i===current?1:0.4, border:'none', cursor:'pointer', padding:0, transition:'all 0.3s' }} />
+                      <button key={i} onClick={() => goTo(i)} style={{ width:'52px', height:'12px', borderRadius:'90px', backgroundColor:i===current?'#FFD900':'#d9d9d9', opacity:i===current?1:0.4, border:'none', cursor:'pointer', padding:0, transition:'all 0.3s', outline:'none' }} />
                     ))}
                   </div>
-                  <button onClick={next} style={{ display:'flex', alignItems:'center', gap:'16px', background:'none', border:'none', cursor:'pointer' }}>
+                  <button onClick={next} style={{ display:'flex', alignItems:'center', gap:'16px', background:'none', border:'none', cursor:'pointer', padding:0, position:'relative', outline:'none' }}>
                     <div style={{ width:'44px', height:'44px', backgroundColor:'#E5E6EB', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M9 18L15 12L9 6" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </div>
-                    <span style={{ ...inter, fontSize:'20px', color:'#FFF' }}>Next Project</span>
+                    <span style={{ ...inter, fontSize:'20px', color:'#FFF', whiteSpace:'nowrap' }}>Next Project</span>
                   </button>
                 </div>
               </div>
@@ -259,82 +260,22 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* MOBILE LAYOUT */}
+      {/* MOBILE LAYOUT - Same logic */}
       <div className="proj-mobile" style={{ flexDirection:'column', gap:'32px', padding:'52px 24px 40px' }}>
-
-        {/* Background - Grid pattern layer */}
+        {/* Mobile background layers (same as desktop) */}
         <AnimatePresence mode="wait">
-          <motion.div 
-            key={`grid-mobile-${current}`}
-            initial={{ opacity:0 }} 
-            animate={{ opacity:0.5 }} 
-            exit={{ opacity:0 }}
-            transition={{ duration:0.5 }}
-            style={{ 
-              position:'absolute', 
-              inset:0, 
-              zIndex:0, 
-              pointerEvents:'none', 
-              backgroundImage:`url('${imgGridBg}')`, 
-              backgroundSize:'80px 80px',
-              backgroundPosition:'0 0', 
-              backgroundRepeat:'repeat'
-            }} 
-          />
+          <motion.div key={`grid-mobile-${current}`} initial={{ opacity:0 }} animate={{ opacity:0.5 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', backgroundImage:`url('${imgGridBg}')`, backgroundSize:'80px 80px', backgroundPosition:'0 0', backgroundRepeat:'repeat' }} />
         </AnimatePresence>
-        
-        {/* Background - Large sparkle pattern layer (tiled) */}
         <AnimatePresence mode="wait">
-          <motion.div 
-            key={`sparkle-large-mobile-${current}`}
-            initial={{ opacity:0 }} 
-            animate={{ opacity:0.3 }} 
-            exit={{ opacity:0 }}
-            transition={{ duration:0.6, delay:0.1 }}
-            style={{ 
-              position:'absolute', 
-              inset:0, 
-              zIndex:0, 
-              pointerEvents:'none', 
-              backgroundImage:`url('${imgSparkleLarge}')`, 
-              backgroundSize:'800px auto',
-              backgroundPosition:'0 0', 
-              backgroundRepeat:'repeat',
-              filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)'
-            }} 
-          />
+          <motion.div key={`sparkle-large-mobile-${current}`} initial={{ opacity:0 }} animate={{ opacity:0.3 }} exit={{ opacity:0 }} transition={{ duration:0.6, delay:0.1 }} style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', backgroundImage:`url('${imgSparkleLarge}')`, backgroundSize:'800px auto', backgroundPosition:'0 0', backgroundRepeat:'repeat', filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)' }} />
         </AnimatePresence>
-        
-        {/* Background - Small sparkle pattern layer (tiled) */}
         <AnimatePresence mode="wait">
-          <motion.div 
-            key={`sparkle-small-mobile-${current}`}
-            initial={{ opacity:0 }} 
-            animate={{ opacity:0.3 }} 
-            exit={{ opacity:0 }}
-            transition={{ duration:0.6, delay:0.2 }}
-            style={{ 
-              position:'absolute', 
-              inset:0, 
-              zIndex:0, 
-              pointerEvents:'none', 
-              backgroundImage:`url('${imgSparkleSmall}')`, 
-              backgroundSize:'400px auto',
-              backgroundPosition:'200px 50px', 
-              backgroundRepeat:'repeat',
-              filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)'
-            }} 
-          />
+          <motion.div key={`sparkle-small-mobile-${current}`} initial={{ opacity:0 }} animate={{ opacity:0.3 }} exit={{ opacity:0 }} transition={{ duration:0.6, delay:0.2 }} style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', backgroundImage:`url('${imgSparkleSmall}')`, backgroundSize:'400px auto', backgroundPosition:'200px 50px', backgroundRepeat:'repeat', filter: p.type === 'complete' ? 'hue-rotate(100deg) saturate(0.8) brightness(0.9)' : 'saturate(0.8) brightness(0.9)' }} />
         </AnimatePresence>
 
         <AnimatePresence mode="wait" custom={direction}>
-          <motion.div key={current} custom={direction}
-            initial={{ opacity:0, x: direction > 0 ? 60 : -60 }}
-            animate={{ opacity:1, x:0 }}
-            exit={{ opacity:0, x: direction > 0 ? -60 : 60 }}
-            transition={{ duration:0.4, ease:'easeInOut' }}
-            style={{ display:'flex', flexDirection:'column', gap:'32px', width:'100%', position:'relative', zIndex:1 }}
-          >
+          <motion.div key={current} custom={direction} initial={{ opacity:0, x: direction > 0 ? 60 : -60 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x: direction > 0 ? -60 : 60 }} transition={{ duration:0.4, ease:'easeInOut' }} style={{ display:'flex', flexDirection:'column', gap:'32px', width:'100%', position:'relative', zIndex:1 }}>
+            
             {/* Text block */}
             <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
               <div style={{ paddingBottom:'8px' }}>
@@ -369,18 +310,18 @@ export default function Projects() {
                 <span style={{ ...inter, fontSize:'16px', color:'#FFFFFF', letterSpacing:'-0.16px' }}>{p.location}</span>
               </div>
               <div style={{ position:'absolute', bottom:'0', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', justifyContent:'center', gap:'32px', padding:'16px', width:'318px' }}>
-                <button onClick={prev} style={{ width:'44px', height:'44px', border:'2px solid #E5E6EB', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', background:'none', cursor:'pointer', flexShrink:0, opacity:0.6 }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <button onClick={prev} style={{ width:'44px', height:'44px', border:'2px solid #E5E6EB', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', background:'none', cursor:'pointer', flexShrink:0, opacity:0.6, outline:'none' }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
                 <div style={{ display:'flex', flex:1, gap:'6px' }}>
                   {projects.map((_,i) => (
-                    <button key={i} onClick={() => goTo(i)} style={{ flex:1, height:'12px', borderRadius:'90px', backgroundColor:i===current?'#FFD900':'#d9d9d9', opacity:i===current?1:0.4, border:'none', cursor:'pointer', padding:0, transition:'all 0.3s' }} />
+                    <button key={i} onClick={() => goTo(i)} style={{ flex:1, height:'12px', borderRadius:'90px', backgroundColor:i===current?'#FFD900':'#d9d9d9', opacity:i===current?1:0.4, border:'none', cursor:'pointer', padding:0, transition:'all 0.3s', outline:'none' }} />
                   ))}
                 </div>
-                <button onClick={next} style={{ width:'44px', height:'44px', backgroundColor:'#E5E6EB', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', border:'none', cursor:'pointer', flexShrink:0 }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <button onClick={next} style={{ width:'44px', height:'44px', backgroundColor:'#E5E6EB', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', border:'none', cursor:'pointer', flexShrink:0, outline:'none' }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M9 18L15 12L9 6" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
@@ -390,21 +331,11 @@ export default function Projects() {
             {/* Progress bar */}
             <div style={{ position:'relative' }}>
               <div style={{ height:'46px', position:'relative', padding:'0 16px' }}>
-                <span style={{ 
-                  ...inter, 
-                  fontSize:'28px', 
-                  color:p.percentColor, 
-                  letterSpacing:'-0.28px', 
-                  lineHeight:'46px', 
-                  position:'absolute', 
-                  left: p.percent <= 5 ? '16px' : p.percent >= 95 ? 'calc(100% - 16px)' : `${p.percent}%`,
-                  transform: p.percent <= 5 ? 'none' : p.percent >= 95 ? 'translateX(-100%)' : 'translateX(-50%)'
-                }}>{p.percent}%</span>
+                <span style={{ ...inter, fontSize:'28px', color:p.percentColor, letterSpacing:'-0.28px', lineHeight:'46px', position:'absolute', left: p.percent <= 5 ? '16px' : p.percent >= 95 ? 'calc(100% - 16px)' : `${p.percent}%`, transform: p.percent <= 5 ? 'none' : p.percent >= 95 ? 'translateX(-100%)' : 'translateX(-50%)' }}>{p.percent}%</span>
               </div>
               <div style={{ display:'flex', gap:'3px' }}>
                 {Array.from({ length:MOBILE_BARS }).map((_,i) => (
-                  <motion.div key={i} initial={{ scaleY:0 }} animate={{ scaleY:1 }} transition={{ duration:0.3, delay:i*0.015 }}
-                    style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor:i<p.mobileFilled?p.barColor:'#d9d9d9', opacity:i<p.mobileFilled?1:0.4, transformOrigin:'bottom' }} />
+                  <motion.div key={i} initial={{ scaleY:0 }} animate={{ scaleY:1 }} transition={{ duration:0.3, delay:i*0.015 }} style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor:i<p.mobileFilled?p.barColor:'#d9d9d9', opacity:i<p.mobileFilled?1:0.4, transformOrigin:'bottom' }} />
                 ))}
               </div>
               <div style={{ display:'flex', justifyContent:'space-between', marginTop:'4px' }}>
@@ -415,7 +346,7 @@ export default function Projects() {
             </div>
 
             {/* CTA */}
-            <a href="/donate" style={{ ...inter, display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'100%' }}>
+            <a href={p.type === 'active' ? `/projectdetail?slug=${p.slug}` : '/projects'} style={{ ...inter, display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'100%' }}>
               {p.btnText}
               <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'24px', height:'24px' }}>
                 <img src={imgArrowBtn} alt="" style={{ width:'14px', height:'14px' }} />

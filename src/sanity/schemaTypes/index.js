@@ -1,35 +1,33 @@
 import hero from './hero'
-import project from './project'
-import faq from './faq'
-import community from './community'
-import donationSettings from './donationSettings'
-import newsletterSettings from './newsletterSettings'
-import testimonial from './testimonial'
-import newsEvent from './newsEvent'
-import publication from './publication'
-import mission from './mission'
-import legacyImpact from './legacyImpact'
-import marquee from './marquee'
-import peopleImpact from './peopleImpact'
 import trustedBy from './trustedBy'
-import siteSettings from './siteSettings'
+import legacyImpact from './legacyImpact'
+import project from './project'
+import communityImpact from './communityImpact'
+import teamMessage from './teamMessage'           // ← Changed from './message'
+import messagesSection from './messagesSection'
+import donation from './donation'
+import peopleImpact from './peopleImpact'
+import newsEvent from './newsEvent'
+import newsletterSettings from './newsletterSettings'
+import publication from './publication'
+import faq from './faq'
+import testimonial from './testimonial'
 
 export const schema = {
   types: [
     hero,
-    project,
-    community,
-    mission,
-    legacyImpact,
     trustedBy,
-    marquee,
-    testimonial,
+    legacyImpact,
+    project,
+    communityImpact,
+    teamMessage,              // ← Changed from 'message'
+    messagesSection,
+    donation,
     peopleImpact,
     newsEvent,
+    newsletterSettings,
     publication,
     faq,
-    donationSettings,
-    newsletterSettings,
-    siteSettings
-  ]
+    testimonial,
+  ],
 }

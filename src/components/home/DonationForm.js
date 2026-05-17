@@ -1,27 +1,242 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { client, urlFor, queries } from '@/sanity/lib/sanity'
 
-// ── Your existing assets ──
-const imgBuilding  = "/images/home/donate-buxton.png"
+// Static assets
 const imgLocation  = "/images/home-static/location-pin.svg"
-const imgChevron   = "/images/home-static/donate-right-icon.png"
 const imgArrowBtn  = "/images/home-static/button-icon.png"
 const imgSparkle   = "/images/home-static/sparkle-large.png"
-
-// ── Mobile assets ──
-const imgMobileBuilding  = "/images/home/donate-buxton.png"
-const imgMobileLocation  ="/images/home-static/location-pin.svg"
-const imgMobileChevron   = "/images/home-static/donate-right-icon.png"
-const imgMobileSparkle   =  "/images/home-static/sparkle-large.png"
 
 const inter = { fontFamily: "'Inter', sans-serif" }
 
 const AMOUNTS_MONTHLY = ['$5/Month', '$10/Month', '$30/Month', '$100/Month', '$50/Month', '$20/Month']
 const AMOUNTS_ONCE    = ['$10', '$25', '$30', '$100', '$50', '$250']
-const FILLED = 15
 const TOTAL_DESKTOP = 40
 const TOTAL_MOBILE = 24
+
+// Helper function to format currency (same as Projects section)
+const formatCurrency = (amount) => {
+  if (amount >= 1000000) {
+    return `$${Math.round(amount / 1000000)}M`
+  }
+  if (amount >= 1000) {
+    return `$${Math.round(amount / 1000)}K`
+  }
+  return `$${amount}`
+}
+
+
+// 1. Add email field to form state (around line 290)
+const [form, setForm] = useState({
+  firstName: '',
+  lastName: '',
+  email: '',        // ← ADD THIS
+  address1: '',
+  address2: '',
+  country: '',
+  city: '',
+  zip: '',
+  state: '',
+})
+
+// 2. Update PersonalInfoStep to include email field
+function PersonalInfoStep({ form, setForm, errors, mobile = false, onBack, onNext }) {
+  const update = (field) => (e) => setForm({ ...form, [field]: e.target.value })
+
+  const content = (
+    <>
+      <div style={{ display:'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap:'20px' }}>
+        <InputField label="First Name" value={form.firstName} onChange={update('firstName')} error={errors.firstName} />
+        <InputField label="Last Name" value={form.lastName} onChange={update('lastName')} error={errors.lastName} />
+      </div>
+
+      {/* ADD EMAIL FIELD */}
+      <InputField 
+        label="Email Address" 
+        value={form.email} 
+        onChange={update('email')} 
+        error={errors.email}
+        placeholder="your.email@example.com"
+      />
+
+      <InputField label="Address Line 1" value={form.address1} onChange={update('address1')} error={errors.address1} />
+      <InputField label="Address Line 2 (Optional)" value={form.address2} onChange={update('address2')} />
+
+      <div style={{ display:'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap:'20px' }}>
+        <InputField label="Country" value={form.country} onChange={update('country')} error={errors.country} />
+        <InputField label="City" value={form.city} onChange={update('city')} error={errors.city} />
+      </div>
+
+      <div style={{ display:'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap:'20px' }}>
+        <InputField label="ZIP/Postal Code" value={form.zip} onChange={update('zip')} error={errors.zip} />
+        <InputField label="State/Province" value={form.state} onChange={update('state')} error={errors.state} />
+      </div>
+
+      <div style={{ display:'flex', gap:'16px', flexDirection: mobile ? 'column' : 'row' }}>
+        <button onClick={onBack} style={{ ...inter, background:'none', border:'1px solid #E5E6EB', color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', cursor:'pointer', flex:1 }}>
+          Go Back
+        </button>
+        <button onClick={onNext} style={{ ...inter, background:'#FFD900', border:'none', color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', cursor:'pointer', flex:1 }}>
+          Continue to Donate Method
+        </button>
+      </div>
+    </>
+  )
+
+  return (
+    <div style={{ backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'20px', overflow:'hidden', display:'flex', flexDirection:'column' }}>
+      <div style={{ borderBottom:'1px solid #E5E6EB', padding:'20px 24px', textAlign:'center' }}>
+        <h3 style={{ ...inter, fontSize: mobile ? '28px' : '40px', fontWeight:500, color:'#040617', margin:0 }}>
+          Personal Info
+        </h3>
+      </div>
+      <div style={{ padding:'24px', display:'flex', flexDirection:'column', gap:'20px' }}>
+        {content}
+      </div>
+    </div>
+  )
+}
+
+// 3. Update validation to include email
+const validateStep2 = () => {
+  const newErrors = {}
+  
+  if (!form.firstName.trim()) newErrors.firstName = 'First name is required'
+  if (!form.lastName.trim()) newErrors.lastName = 'Last name is required'
+  
+  // ADD EMAIL VALIDATION
+  if (!form.email.trim()) {
+    newErrors.email = 'Email is required'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    newErrors.email = 'Please enter a valid email'
+  }
+  
+  if (!form.address1.trim()) newErrors.address1 = 'Address is required'
+  if (!form.country.trim()) newErrors.country = 'Country is required'
+  if (!form.city.trim()) newErrors.city = 'City is required'
+  if (!form.zip.trim()) newErrors.zip = 'ZIP/Postal code is required'
+  if (!form.state.trim()) newErrors.state = 'State/Province is required'
+
+  setErrors(newErrors)
+  return Object.keys(newErrors).length === 0
+}
+
+// 4. ADD SUBMISSION FUNCTION
+const submitDonation = async () => {
+  try {
+    setIsProcessing(true)
+    setErrors({})
+    
+    // Calculate donation amount
+    const amount = selected === 'custom' 
+      ? parseFloat(custom) 
+      : parseFloat(selected.replace(/[^0-9.]/g, ''))
+    
+    // Prepare donation payload
+    const donationPayload = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      address1: form.address1,
+      address2: form.address2,
+      city: form.city,
+      state: form.state,
+      zip: form.zip,
+      country: form.country,
+      amount: amount,
+      donationType: tab, // 'once' or 'monthly'
+      projectId: selectedProject.id,
+      projectTitle: selectedProject.title,
+      paymentMethod: paymentMethod
+    }
+    
+    // Submit to API
+    const response = await fetch('/api/donate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(donationPayload)
+    })
+    
+    const result = await response.json()
+    
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to process donation')
+    }
+    
+    console.log('Donation successful:', result)
+    
+    // Show success message
+    setTimeout(() => {
+      setIsProcessing(false)
+      setPaymentSuccess(true)
+    }, 1500)
+    
+  } catch (error) {
+    console.error('Donation error:', error)
+    setErrors({ submit: error.message || 'Failed to process donation. Please try again.' })
+    setIsProcessing(false)
+  }
+}
+
+// 5. UPDATE onDonate handler in DonateMethodStep (around line 550)
+onDonate={() => {
+  if (validateStep3()) {
+    submitDonation()  // ← Replace setTimeout with this
+  }
+}}
+
+const submitDonation = async () => {
+  try {
+    setIsProcessing(true)
+    
+    // Prepare donation data
+    const donationData = {
+      _type: 'donation',
+      donorFirstName: form.firstName,
+      donorLastName: form.lastName,
+      address1: form.address1,
+      address2: form.address2,
+      city: form.city,
+      state: form.state,
+      zip: form.zip,
+      country: form.country,
+      donationAmount: selected === 'custom' ? parseFloat(custom) : parseFloat(selected.replace(/[^0-9.]/g, '')),
+      donationType: tab, // 'once' or 'monthly'
+      project: {
+        _type: 'reference',
+        _ref: selectedProject.id
+      },
+      paymentMethod: paymentMethod,
+      paymentStatus: 'completed', // or 'pending' if you need approval
+      donationDate: new Date().toISOString()
+    }
+    
+    // Save to Sanity
+    const result = await client.create(donationData)
+    console.log('Donation saved:', result)
+    
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false)
+      setPaymentSuccess(true)
+    }, 2500)
+    
+  } catch (error) {
+    console.error('Error saving donation:', error)
+    setErrors({ submit: 'Failed to process donation. Please try again.' })
+    setIsProcessing(false)
+  }
+}
+
+// Update the onDonate handler in DonateMethodStep
+onDonate={() => {
+  if (validateStep3()) {
+    submitDonation() // ← Call this instead of setTimeout
+  }
+}}
 
 const steps = [
   { num: 1, title: 'Donate Amount', sub: 'Choose your donation target and amount.' },
@@ -115,61 +330,82 @@ function StepIndicator({ currentStep, mobile = false }) {
   )
 }
 
-function ProjectCard({ mobile = false }) {
+function ProjectCard({ projects, currentProject, onPrev, onNext, mobile = false }) {
+  if (!projects || projects.length === 0) {
+    return (
+      <div style={{ backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'20px', padding:'24px', textAlign:'center' }}>
+        <p style={{ ...inter, fontSize:'20px', color:'#6F7181' }}>No active projects available</p>
+      </div>
+    )
+  }
+
+  const project = projects[currentProject]
+  
+  // Calculate percentage (same as Projects section)
+  const percentage = project.targetAmount > 0 
+    ? Math.round((project.amountDonated / project.targetAmount) * 100) 
+    : 0
+  
+  const filled = Math.round((percentage / 100) * (mobile ? TOTAL_MOBILE : TOTAL_DESKTOP))
+
   if (mobile) {
     return (
       <div style={{ display:'flex', flexDirection:'column', gap:'20px', width:'100%', position:'relative', overflow:'hidden' }}>
-        <img src={imgMobileSparkle} alt="" style={{ position:'absolute', left:'-96px', top:'62px', width:'523px', pointerEvents:'none', opacity:0.25, zIndex:0 }} />
+        <img src={imgSparkle} alt="" style={{ position:'absolute', left:'-96px', top:'62px', width:'523px', pointerEvents:'none', opacity:0.25, zIndex:0 }} />
 
         <div style={{ width:'100%', aspectRatio:'16/9', borderRadius:'12px', overflow:'hidden', position:'relative', zIndex:1 }}>
-          <img src={imgMobileBuilding} alt="Buxton College" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+          <img src={project.photo} alt={project.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
           <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 42%, rgba(0,0,0,0) 100%)' }} />
           <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'8px', whiteSpace:'nowrap' }}>
-            <img src={imgMobileLocation} alt="" style={{ width:'24px', height:'24px' }} />
-            <span style={{ ...inter, fontSize:'16px', color:'white', letterSpacing:'-0.16px' }}>Jamaica, Buxton</span>
+            <img src={imgLocation} alt="" style={{ width:'24px', height:'24px' }} />
+            <span style={{ ...inter, fontSize:'16px', color:'white', letterSpacing:'-0.16px' }}>{project.location}</span>
           </div>
         </div>
 
         <div style={{ position:'relative', zIndex:1 }}>
           <p style={{ ...inter, fontSize:'32px', fontWeight:600, color:'#040617', letterSpacing:'-0.32px', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>
-            Buxton College
+            {project.title}
           </p>
-          <a href="/projects" style={{ ...inter, fontSize:'24px', color:'#6F7181', letterSpacing:'0.24px', lineHeight:'38px', textDecoration:'underline' }}>
+          <a href={`/projectdetail?slug=${project.slug}`} style={{ ...inter, fontSize:'24px', color:'#6F7181', letterSpacing:'0.24px', lineHeight:'38px', textDecoration:'underline' }}>
             Learn more
           </a>
         </div>
 
         <div style={{ position:'relative', zIndex:1 }}>
           <p style={{ ...inter, fontSize:'32px', color:'#5EDA71', textAlign:'center', letterSpacing:'-0.32px', lineHeight:'46px', margin:'0 0 4px' }}>
-            65%
+            {percentage}%
           </p>
           <div style={{ display:'flex', gap:'3px' }}>
             {Array.from({ length: TOTAL_MOBILE }).map((_,i) => (
-              <div key={i} style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor: i < FILLED ? '#5EDA71' : '#6F7181', opacity: i < FILLED ? 1 : 0.2 }} />
+              <div key={i} style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor: i < filled ? '#5EDA71' : '#6F7181', opacity: i < filled ? 1 : 0.2 }} />
             ))}
           </div>
           <div style={{ display:'flex', justifyContent:'space-between', marginTop:'4px' }}>
             <span style={{ ...inter, fontSize:'24px', color:'#6F7181', opacity:0.6 }}>$0</span>
-            <span style={{ ...inter, fontSize:'24px', color:'#5EDA71' }}>$14M</span>
-            <span style={{ ...inter, fontSize:'24px', color:'#6F7181', opacity:0.6 }}>$20M</span>
+            <span style={{ ...inter, fontSize:'24px', color:'#5EDA71' }}>{project.raised}</span>
+            <span style={{ ...inter, fontSize:'24px', color:'#6F7181', opacity:0.6 }}>{project.goal}</span>
           </div>
         </div>
 
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'32px', position:'relative', zIndex:1 }}>
-          <button style={{ width:'44px', height:'44px', border:'2px solid #040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', background:'none', cursor:'pointer', opacity:0.6 }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-          <div style={{ display:'flex', flex:1, gap:'8px' }}>
-            {[0,1,2,3].map(i => <div key={i} style={{ flex:1, height:'12px', borderRadius:'90px', backgroundColor: i === 0 ? '#FFD900' : '#6F7181', opacity: i === 0 ? 1 : 0.2 }} />)}
+        {projects.length > 1 && (
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'32px', position:'relative', zIndex:1 }}>
+            <button onClick={onPrev} style={{ width:'44px', height:'44px', border:'2px solid #040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', background:'none', cursor:'pointer', opacity:0.6, outline:'none' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <div style={{ display:'flex', flex:1, gap:'8px' }}>
+              {projects.map((_,i) => (
+                <div key={i} style={{ flex:1, height:'12px', borderRadius:'90px', backgroundColor: i === currentProject ? '#FFD900' : '#6F7181', opacity: i === currentProject ? 1 : 0.2 }} />
+              ))}
+            </div>
+            <button onClick={onNext} style={{ width:'44px', height:'44px', backgroundColor:'#040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', border:'none', cursor:'pointer', outline:'none' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
           </div>
-          <button style={{ width:'44px', height:'44px', backgroundColor:'#040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', border:'none', cursor:'pointer' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
+        )}
       </div>
     )
   }
@@ -177,59 +413,67 @@ function ProjectCard({ mobile = false }) {
   return (
     <div style={{ backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'20px', padding:'16px', display:'flex', flexDirection:'column', gap:'32px', position:'relative', overflow:'hidden' }}>
       <img src={imgSparkle} alt="" style={{ position:'absolute', top:'132px', left:'50%', transform:'translateX(-50%)', width:'523px', pointerEvents:'none', opacity:0.3 }} />
+      
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', position:'relative', zIndex:1 }}>
         <div>
           <p style={{ ...inter, fontSize:'32px', fontWeight:600, color:'#040617', letterSpacing:'-0.32px', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>
-            Buxton College
+            {project.title}
           </p>
-          <a href="/projects" style={{ ...inter, fontSize:'24px', color:'#6F7181', letterSpacing:'0.24px', lineHeight:'38px', textDecoration:'underline' }}>
+          <a href={`/projectdetail?slug=${project.slug}`} style={{ ...inter, fontSize:'24px', color:'#6F7181', letterSpacing:'0.24px', lineHeight:'38px', textDecoration:'underline' }}>
             Learn more
           </a>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
           <img src={imgLocation} alt="" style={{ width:'24px', height:'24px' }} />
-          <span style={{ ...inter, fontSize:'16px', color:'#6F7181' }}>Jamaica, Buxton</span>
+          <span style={{ ...inter, fontSize:'16px', color:'#6F7181' }}>{project.location}</span>
         </div>
       </div>
+
       <div style={{ borderRadius:'12px', overflow:'hidden', aspectRatio:'16/9', position:'relative', zIndex:1 }}>
-        <img src={imgBuilding} alt="Buxton College" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+        <img src={project.photo} alt={project.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
       </div>
+
       <div style={{ display:'flex', flexDirection:'column', gap:'8px', position:'relative', zIndex:1 }}>
         <p style={{ ...inter, fontSize:'32px', fontWeight:400, color:'#5EDA71', textAlign:'center', letterSpacing:'-0.32px', margin:0 }}>
-          65%
+          {percentage}%
         </p>
         <div style={{ display:'flex', gap:'4px' }}>
           {Array.from({ length: TOTAL_DESKTOP }).map((_,i) => (
-            <div key={i} style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor: i < FILLED ? '#5EDA71' : '#d9d9d9', opacity: i < FILLED ? 1 : 0.4 }} />
+            <div key={i} style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor: i < filled ? '#5EDA71' : '#d9d9d9', opacity: i < filled ? 1 : 0.4 }} />
           ))}
         </div>
         <div style={{ display:'flex', justifyContent:'space-between' }}>
           <span style={{ ...inter, fontSize:'24px', color:'#6F7181', opacity:0.8 }}>$0</span>
-          <span style={{ ...inter, fontSize:'24px', color:'#5EDA71' }}>$14M</span>
-          <span style={{ ...inter, fontSize:'24px', color:'#6F7181', opacity:0.8 }}>$20M</span>
+          <span style={{ ...inter, fontSize:'24px', color:'#5EDA71' }}>{project.raised}</span>
+          <span style={{ ...inter, fontSize:'24px', color:'#6F7181', opacity:0.8 }}>{project.goal}</span>
         </div>
       </div>
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', position:'relative', zIndex:1 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px', opacity:0.6 }}>
-          <span style={{ ...inter, fontSize:'20px', color:'#040617' }}>Last Project</span>
-          <div style={{ width:'44px', height:'44px', border:'2px solid #040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+
+      {projects.length > 1 && (
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', position:'relative', zIndex:1 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'16px', opacity:0.6 }}>
+            <span style={{ ...inter, fontSize:'20px', color:'#040617' }}>Last Project</span>
+            <button onClick={onPrev} style={{ width:'44px', height:'44px', border:'2px solid #040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', background:'none', cursor:'pointer', outline:'none' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div style={{ display:'flex', gap:'8px' }}>
+            {projects.map((_,i) => (
+              <div key={i} style={{ width:'52px', height:'12px', borderRadius:'90px', backgroundColor: i === currentProject ? '#FFD900' : '#d9d9d9', opacity: i === currentProject ? 1 : 0.4 }} />
+            ))}
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
+            <button onClick={onNext} style={{ width:'44px', height:'44px', backgroundColor:'#040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', border:'none', cursor:'pointer', outline:'none' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <span style={{ ...inter, fontSize:'20px', color:'#040617' }}>Next Project</span>
           </div>
         </div>
-        <div style={{ display:'flex', gap:'8px' }}>
-          {[0,1,2,3].map(i => <div key={i} style={{ width:'52px', height:'12px', borderRadius:'90px', backgroundColor: i === 0 ? '#FFD900' : '#d9d9d9', opacity: i === 0 ? 1 : 0.4 }} />)}
-        </div>
-        <div style={{ display:'flex', alignItems:'center', gap:'16px' }}>
-          <div style={{ width:'44px', height:'44px', backgroundColor:'#040617', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <span style={{ ...inter, fontSize:'20px', color:'#040617' }}>Next Project</span>
-        </div>
-      </div>
+      )}
     </div>
   )
 }
@@ -472,7 +716,7 @@ function PaymentField({ label, placeholder = 'Start Typing...', value, onChange,
   )
 }
 
-function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment, errors, donationLabel, mobile = false, onBack, onDonate, isProcessing, paymentSuccess }) {
+function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment, errors, donationLabel, projectTitle, mobile = false, onBack, onDonate, isProcessing, paymentSuccess }) {
   const update = (field) => (e) => setPayment({ ...payment, [field]: e.target.value })
 
   return (
@@ -586,7 +830,7 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
               In Person Donation
             </h4>
             <p style={{ ...inter, fontSize:'20px', lineHeight:'1.5', color:'#636473', margin:'0 0 20px' }}>
-              Please contact our team to arrange an in-person donation handoff for Buxton College. We will guide you through the next steps.
+              Please contact our team to arrange an in-person donation handoff for {projectTitle}. We will guide you through the next steps.
             </p>
             <button style={{ ...inter, background:'#FFD900', border:'none', color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', cursor:'pointer' }}>
               Contact Team
@@ -629,7 +873,7 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
                 Payment Successful!
               </h3>
               <p style={{ ...inter, fontSize:'20px', color:'#636473', margin:0 }}>
-                Thank you for your generous donation of <strong style={{ color:'#040617' }}>{donationLabel}</strong> to Buxton College.
+                Thank you for your generous donation of <strong style={{ color:'#040617' }}>{donationLabel}</strong> to {projectTitle}.
               </p>
             </div>
             <p style={{ ...inter, fontSize:'16px', color:'#6F7181', margin:0 }}>
@@ -643,7 +887,7 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
           <div style={{ display:'flex', flexDirection: mobile ? 'column' : 'row', justifyContent:'space-between', alignItems: mobile ? 'stretch' : 'flex-end', gap:'20px', marginTop:'10px' }}>
             <div>
               <p style={{ ...inter, fontSize:'18px', color:'#6F7181', margin:'0 0 8px' }}>
-                Your Donation to Buxton College:
+                Your Donation to {projectTitle}:
               </p>
               <p style={{ ...inter, fontSize: mobile ? '28px' : '32px', color:'#040617', margin:0 }}>
                 {donationLabel} <span style={{ color:'#2F8A45', fontSize:'18px' }}>+1% to total target</span>
@@ -692,6 +936,10 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
 }
 
 export default function DonationForm() {
+  const [projectsData, setProjectsData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [currentProject, setCurrentProject] = useState(0)
+  
   const [tab, setTab] = useState('monthly')
   const [selected, setSelected] = useState('$50/Month')
   const [custom, setCustom] = useState('')
@@ -718,6 +966,55 @@ export default function DonationForm() {
   const [errors, setErrors] = useState({})
   const [isProcessing, setIsProcessing] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
+
+  // Fetch projects from CMS and filter for active only
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const projects = await client.fetch(queries.projects)
+        
+        // Filter for active projects only
+        const activeProjects = projects
+          .filter(p => p.status === 'active')
+          .map(project => {
+            // Calculate percentage (same as Projects section)
+            const percentage = project.targetAmount > 0
+              ? Math.round((project.amountDonated / project.targetAmount) * 100)
+              : 0
+            
+            return {
+              id: project._id,
+              slug: project.slug,
+              title: project.title,
+              location: project.location,
+              photo: urlFor(project.image).width(1200).url(),
+              targetAmount: project.targetAmount,
+              amountDonated: project.amountDonated,
+              percentage,
+              goal: formatCurrency(project.targetAmount),
+              raised: formatCurrency(project.amountDonated)
+            }
+          })
+        
+        console.log('Active Projects:', activeProjects)
+        setProjectsData(activeProjects)
+      } catch (error) {
+        console.error('Error fetching projects:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProjects()
+  }, [])
+
+  // Navigation functions
+  const prevProject = () => {
+    setCurrentProject((prev) => (prev - 1 + (projectsData?.length || 1)) % (projectsData?.length || 1))
+  }
+
+  const nextProject = () => {
+    setCurrentProject((prev) => (prev + 1) % (projectsData?.length || 1))
+  }
 
   // Validation functions
   const validateStep1 = () => {
@@ -751,7 +1048,6 @@ export default function DonationForm() {
     
     const newErrors = {}
     
-    // Remove spaces for card number validation
     const cleanCardNumber = payment.cardNumber.replace(/\s/g, '')
     
     if (!payment.cardNumber.trim()) {
@@ -765,7 +1061,6 @@ export default function DonationForm() {
     } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(payment.expiry)) {
       newErrors.expiry = 'Format: MM/YY'
     } else {
-      // Check if card is expired
       const [month, year] = payment.expiry.split('/')
       const expiry = new Date(2000 + parseInt(year), parseInt(month) - 1)
       const now = new Date()
@@ -798,6 +1093,23 @@ export default function DonationForm() {
   }
 
   const donationLabel = selected === 'custom' ? (`$${custom}` || '$50') : selected
+  const selectedProject = projectsData && projectsData[currentProject]
+
+  if (loading) {
+    return (
+      <section style={{ backgroundColor:'#FFFDF9', padding:'80px 0', minHeight:'600px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <p style={{ ...inter, color:'#040617', fontSize:'24px' }}>Loading donation form...</p>
+      </section>
+    )
+  }
+
+  if (!projectsData || projectsData.length === 0) {
+    return (
+      <section style={{ backgroundColor:'#FFFDF9', padding:'80px 0', minHeight:'600px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <p style={{ ...inter, color:'#040617', fontSize:'24px' }}>No active projects available for donation at this time.</p>
+      </section>
+    )
+  }
 
   return (
     <section style={{ backgroundColor:'#FFFDF9', position:'relative', overflow:'hidden' }}>
@@ -890,7 +1202,12 @@ export default function DonationForm() {
         <StepIndicator currentStep={currentStep} />
 
         <div className="don-grid">
-          <ProjectCard />
+          <ProjectCard 
+            projects={projectsData} 
+            currentProject={currentProject} 
+            onPrev={prevProject} 
+            onNext={nextProject} 
+          />
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -931,13 +1248,13 @@ export default function DonationForm() {
                   setPayment={setPayment}
                   errors={errors}
                   donationLabel={donationLabel}
+                  projectTitle={selectedProject?.title || 'this project'}
                   onBack={() => { setCurrentStep(2); setErrors({}) }}
                   onDonate={() => {
                     if (validateStep3()) {
                       setIsProcessing(true)
                       setErrors({})
                       
-                      // Simulate payment processing (2.5 seconds)
                       setTimeout(() => {
                         setIsProcessing(false)
                         setPaymentSuccess(true)
@@ -961,7 +1278,13 @@ export default function DonationForm() {
 
         <StepIndicator currentStep={currentStep} mobile />
 
-        <ProjectCard mobile />
+        <ProjectCard 
+          projects={projectsData} 
+          currentProject={currentProject} 
+          onPrev={prevProject} 
+          onNext={nextProject} 
+          mobile 
+        />
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -1005,6 +1328,7 @@ export default function DonationForm() {
                 setPayment={setPayment}
                 errors={errors}
                 donationLabel={donationLabel}
+                projectTitle={selectedProject?.title || 'this project'}
                 mobile
                 onBack={() => { setCurrentStep(2); setErrors({}) }}
                 onDonate={() => {
@@ -1012,7 +1336,6 @@ export default function DonationForm() {
                     setIsProcessing(true)
                     setErrors({})
                     
-                    // Simulate payment processing (2.5 seconds)
                     setTimeout(() => {
                       setIsProcessing(false)
                       setPaymentSuccess(true)

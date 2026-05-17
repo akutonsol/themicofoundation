@@ -8,8 +8,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "import": "node scripts/importContent.js",
-    "import:trustedby": "node scripts/importTrustedBy.js"
+    "import:hero": "node scripts/importHero.js",
+    "import:trustedby": "node scripts/importTrustedBy.js",
+    "import:legacy": "node scripts/importLegacyImpact.js",
+    "import:projects": "node scripts/importProjects.js",
+    "import:community": "node scripts/importCommunityImpact.js",
+    "import:messages": "node scripts/importMessages.js"
   },
   "dependencies": {
     "@sanity/client": "^7.22.0",
@@ -20,6 +24,7 @@
     "lucide-react": "^1.8.0",
     "next": "^16.2.4",
     "next-sanity": "^12.1.1",
+    "nodemailer": "^8.0.7",
     "react": "^19.2.4",
     "react-dom": "19.2.4",
     "sanity": "^5.25.0",

@@ -12,24 +12,6 @@ export default defineType({
       validation: Rule => Rule.required()
     },
     {
-      name: 'slug',
-      title: 'URL Slug',
-      type: 'slug',
-      description: 'URL-friendly identifier (e.g., "buxton-college")',
-      options: {
-        source: 'title',
-        maxLength: 96,
-        slugify: input => input
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^\w\-]+/g, '')
-          .replace(/\-\-+/g, '-')
-          .replace(/^-+/, '')
-          .replace(/-+$/, '')
-      },
-      validation: Rule => Rule.required()
-    },
-    {
       name: 'label',
       title: 'Project Label',
       type: 'string',
@@ -77,18 +59,25 @@ export default defineType({
       validation: Rule => Rule.required()
     },
     {
-      name: 'targetAmount',
-      title: 'Target Amount ($)',
+      name: 'percentage',
+      title: 'Progress Percentage',
       type: 'number',
-      description: 'Total target amount in dollars (e.g., 20000000 for $20M)',
-      validation: Rule => Rule.required().min(0)
+      description: 'Progress percentage (0-100)',
+      validation: Rule => Rule.required().min(0).max(100)
     },
     {
-      name: 'amountDonated',
-      title: 'Amount Donated ($)',
-      type: 'number',
-      description: 'Current amount donated in dollars (e.g., 14000000 for $14M)',
-      validation: Rule => Rule.required().min(0)
+      name: 'goal',
+      title: 'Funding Goal',
+      type: 'string',
+      description: 'e.g., "$20M", "$200K"',
+      validation: Rule => Rule.required()
+    },
+    {
+      name: 'raised',
+      title: 'Amount Raised',
+      type: 'string',
+      description: 'e.g., "$14M", "$70K"',
+      validation: Rule => Rule.required()
     },
     {
       name: 'buttonText',
@@ -101,9 +90,8 @@ export default defineType({
       name: 'backgroundColor',
       title: 'Background Color',
       type: 'string',
-      description: 'Auto-set based on status: Active (#1A1600) or Complete (#051507)',
-      readOnly: true,
-      hidden: true,
+      description: 'Hex color for project background',
+      validation: Rule => Rule.required(),
       initialValue: '#1A1600'
     },
     {
@@ -120,24 +108,13 @@ export default defineType({
       subtitle: 'label',
       media: 'image',
       status: 'status',
-      donated: 'amountDonated',
-      target: 'targetAmount',
-      slug: 'slug'
+      percentage: 'percentage'
     },
     prepare(selection) {
-      const { title, subtitle, media, status, donated, target, slug } = selection
-      const percentage = target > 0 ? Math.round((donated / target) * 100) : 0
-      
-      // Format currency
-      const formatCurrency = (amount) => {
-        if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`
-        if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`
-        return `$${amount}`
-      }
-      
+      const { title, subtitle, media, status, percentage } = selection
       return {
         title: title,
-        subtitle: `${subtitle} • ${status} • ${percentage}% • /${slug?.current || 'no-slug'}`,
+        subtitle: `${subtitle} • ${status} • ${percentage}%`,
         media: media
       }
     }
