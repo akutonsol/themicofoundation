@@ -26,218 +26,6 @@ const formatCurrency = (amount) => {
   return `$${amount}`
 }
 
-
-// 1. Add email field to form state (around line 290)
-const [form, setForm] = useState({
-  firstName: '',
-  lastName: '',
-  email: '',        // ← ADD THIS
-  address1: '',
-  address2: '',
-  country: '',
-  city: '',
-  zip: '',
-  state: '',
-})
-
-// 2. Update PersonalInfoStep to include email field
-function PersonalInfoStep({ form, setForm, errors, mobile = false, onBack, onNext }) {
-  const update = (field) => (e) => setForm({ ...form, [field]: e.target.value })
-
-  const content = (
-    <>
-      <div style={{ display:'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap:'20px' }}>
-        <InputField label="First Name" value={form.firstName} onChange={update('firstName')} error={errors.firstName} />
-        <InputField label="Last Name" value={form.lastName} onChange={update('lastName')} error={errors.lastName} />
-      </div>
-
-      {/* ADD EMAIL FIELD */}
-      <InputField 
-        label="Email Address" 
-        value={form.email} 
-        onChange={update('email')} 
-        error={errors.email}
-        placeholder="your.email@example.com"
-      />
-
-      <InputField label="Address Line 1" value={form.address1} onChange={update('address1')} error={errors.address1} />
-      <InputField label="Address Line 2 (Optional)" value={form.address2} onChange={update('address2')} />
-
-      <div style={{ display:'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap:'20px' }}>
-        <InputField label="Country" value={form.country} onChange={update('country')} error={errors.country} />
-        <InputField label="City" value={form.city} onChange={update('city')} error={errors.city} />
-      </div>
-
-      <div style={{ display:'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap:'20px' }}>
-        <InputField label="ZIP/Postal Code" value={form.zip} onChange={update('zip')} error={errors.zip} />
-        <InputField label="State/Province" value={form.state} onChange={update('state')} error={errors.state} />
-      </div>
-
-      <div style={{ display:'flex', gap:'16px', flexDirection: mobile ? 'column' : 'row' }}>
-        <button onClick={onBack} style={{ ...inter, background:'none', border:'1px solid #E5E6EB', color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', cursor:'pointer', flex:1 }}>
-          Go Back
-        </button>
-        <button onClick={onNext} style={{ ...inter, background:'#FFD900', border:'none', color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', cursor:'pointer', flex:1 }}>
-          Continue to Donate Method
-        </button>
-      </div>
-    </>
-  )
-
-  return (
-    <div style={{ backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'20px', overflow:'hidden', display:'flex', flexDirection:'column' }}>
-      <div style={{ borderBottom:'1px solid #E5E6EB', padding:'20px 24px', textAlign:'center' }}>
-        <h3 style={{ ...inter, fontSize: mobile ? '28px' : '40px', fontWeight:500, color:'#040617', margin:0 }}>
-          Personal Info
-        </h3>
-      </div>
-      <div style={{ padding:'24px', display:'flex', flexDirection:'column', gap:'20px' }}>
-        {content}
-      </div>
-    </div>
-  )
-}
-
-// 3. Update validation to include email
-const validateStep2 = () => {
-  const newErrors = {}
-  
-  if (!form.firstName.trim()) newErrors.firstName = 'First name is required'
-  if (!form.lastName.trim()) newErrors.lastName = 'Last name is required'
-  
-  // ADD EMAIL VALIDATION
-  if (!form.email.trim()) {
-    newErrors.email = 'Email is required'
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    newErrors.email = 'Please enter a valid email'
-  }
-  
-  if (!form.address1.trim()) newErrors.address1 = 'Address is required'
-  if (!form.country.trim()) newErrors.country = 'Country is required'
-  if (!form.city.trim()) newErrors.city = 'City is required'
-  if (!form.zip.trim()) newErrors.zip = 'ZIP/Postal code is required'
-  if (!form.state.trim()) newErrors.state = 'State/Province is required'
-
-  setErrors(newErrors)
-  return Object.keys(newErrors).length === 0
-}
-
-// 4. ADD SUBMISSION FUNCTION
-const submitDonation = async () => {
-  try {
-    setIsProcessing(true)
-    setErrors({})
-    
-    // Calculate donation amount
-    const amount = selected === 'custom' 
-      ? parseFloat(custom) 
-      : parseFloat(selected.replace(/[^0-9.]/g, ''))
-    
-    // Prepare donation payload
-    const donationPayload = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      address1: form.address1,
-      address2: form.address2,
-      city: form.city,
-      state: form.state,
-      zip: form.zip,
-      country: form.country,
-      amount: amount,
-      donationType: tab, // 'once' or 'monthly'
-      projectId: selectedProject.id,
-      projectTitle: selectedProject.title,
-      paymentMethod: paymentMethod
-    }
-    
-    // Submit to API
-    const response = await fetch('/api/donate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(donationPayload)
-    })
-    
-    const result = await response.json()
-    
-    if (!response.ok) {
-      throw new Error(result.error || 'Failed to process donation')
-    }
-    
-    console.log('Donation successful:', result)
-    
-    // Show success message
-    setTimeout(() => {
-      setIsProcessing(false)
-      setPaymentSuccess(true)
-    }, 1500)
-    
-  } catch (error) {
-    console.error('Donation error:', error)
-    setErrors({ submit: error.message || 'Failed to process donation. Please try again.' })
-    setIsProcessing(false)
-  }
-}
-
-// 5. UPDATE onDonate handler in DonateMethodStep (around line 550)
-onDonate={() => {
-  if (validateStep3()) {
-    submitDonation()  // ← Replace setTimeout with this
-  }
-}}
-
-const submitDonation = async () => {
-  try {
-    setIsProcessing(true)
-    
-    // Prepare donation data
-    const donationData = {
-      _type: 'donation',
-      donorFirstName: form.firstName,
-      donorLastName: form.lastName,
-      address1: form.address1,
-      address2: form.address2,
-      city: form.city,
-      state: form.state,
-      zip: form.zip,
-      country: form.country,
-      donationAmount: selected === 'custom' ? parseFloat(custom) : parseFloat(selected.replace(/[^0-9.]/g, '')),
-      donationType: tab, // 'once' or 'monthly'
-      project: {
-        _type: 'reference',
-        _ref: selectedProject.id
-      },
-      paymentMethod: paymentMethod,
-      paymentStatus: 'completed', // or 'pending' if you need approval
-      donationDate: new Date().toISOString()
-    }
-    
-    // Save to Sanity
-    const result = await client.create(donationData)
-    console.log('Donation saved:', result)
-    
-    // Simulate payment processing
-    setTimeout(() => {
-      setIsProcessing(false)
-      setPaymentSuccess(true)
-    }, 2500)
-    
-  } catch (error) {
-    console.error('Error saving donation:', error)
-    setErrors({ submit: 'Failed to process donation. Please try again.' })
-    setIsProcessing(false)
-  }
-}
-
-// Update the onDonate handler in DonateMethodStep
-onDonate={() => {
-  if (validateStep3()) {
-    submitDonation() // ← Call this instead of setTimeout
-  }
-}}
-
 const steps = [
   { num: 1, title: 'Donate Amount', sub: 'Choose your donation target and amount.' },
   { num: 2, title: 'Personal Info', sub: 'Fill required fields about you to continue.' },
@@ -622,6 +410,14 @@ function PersonalInfoStep({ form, setForm, errors, mobile = false, onBack, onNex
         <InputField label="Last Name" value={form.lastName} onChange={update('lastName')} error={errors.lastName} />
       </div>
 
+      <InputField 
+        label="Email Address" 
+        value={form.email} 
+        onChange={update('email')} 
+        error={errors.email}
+        placeholder="your.email@example.com"
+      />
+
       <InputField label="Address Line 1" value={form.address1} onChange={update('address1')} error={errors.address1} />
       <InputField label="Address Line 2 (Optional)" value={form.address2} onChange={update('address2')} />
 
@@ -631,7 +427,7 @@ function PersonalInfoStep({ form, setForm, errors, mobile = false, onBack, onNex
       </div>
 
       <div style={{ display:'grid', gridTemplateColumns: mobile ? '1fr' : '1fr 1fr', gap:'20px' }}>
-        <InputField label="ZIP/Postal Code" value={form.zip} onChange={update('zip')} error={errors.zip} />
+       <InputField label="ZIP/Postal Code" value={form.zip} onChange={update('zip')} error={errors.zip} />
         <InputField label="State/Province" value={form.state} onChange={update('state')} error={errors.state} />
       </div>
 
@@ -838,7 +634,6 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
           </div>
         )}
 
-        {/* Success Message */}
         {paymentSuccess && (
           <motion.div
             initial={{ opacity:0, scale:0.9 }}
@@ -882,7 +677,6 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
           </motion.div>
         )}
 
-        {/* Donate Now Section */}
         {!paymentSuccess && (
           <div style={{ display:'flex', flexDirection: mobile ? 'column' : 'row', justifyContent:'space-between', alignItems: mobile ? 'stretch' : 'flex-end', gap:'20px', marginTop:'10px' }}>
             <div>
@@ -949,6 +743,7 @@ export default function DonationForm() {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
+    email: '',
     address1: '',
     address2: '',
     country: '',
@@ -967,17 +762,14 @@ export default function DonationForm() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
 
-  // Fetch projects from CMS and filter for active only
   useEffect(() => {
     async function fetchProjects() {
       try {
         const projects = await client.fetch(queries.projects)
         
-        // Filter for active projects only
         const activeProjects = projects
           .filter(p => p.status === 'active')
           .map(project => {
-            // Calculate percentage (same as Projects section)
             const percentage = project.targetAmount > 0
               ? Math.round((project.amountDonated / project.targetAmount) * 100)
               : 0
@@ -996,7 +788,6 @@ export default function DonationForm() {
             }
           })
         
-        console.log('Active Projects:', activeProjects)
         setProjectsData(activeProjects)
       } catch (error) {
         console.error('Error fetching projects:', error)
@@ -1007,7 +798,6 @@ export default function DonationForm() {
     fetchProjects()
   }, [])
 
-  // Navigation functions
   const prevProject = () => {
     setCurrentProject((prev) => (prev - 1 + (projectsData?.length || 1)) % (projectsData?.length || 1))
   }
@@ -1016,7 +806,6 @@ export default function DonationForm() {
     setCurrentProject((prev) => (prev + 1) % (projectsData?.length || 1))
   }
 
-  // Validation functions
   const validateStep1 = () => {
     if (selected === 'custom') {
       if (!custom || parseFloat(custom) <= 0) {
@@ -1033,6 +822,13 @@ export default function DonationForm() {
     
     if (!form.firstName.trim()) newErrors.firstName = 'First name is required'
     if (!form.lastName.trim()) newErrors.lastName = 'Last name is required'
+    
+    if (!form.email.trim()) {
+      newErrors.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = 'Please enter a valid email'
+    }
+    
     if (!form.address1.trim()) newErrors.address1 = 'Address is required'
     if (!form.country.trim()) newErrors.country = 'Country is required'
     if (!form.city.trim()) newErrors.city = 'City is required'
@@ -1077,6 +873,58 @@ export default function DonationForm() {
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
+  }
+
+  const submitDonation = async () => {
+    try {
+      setIsProcessing(true)
+      setErrors({})
+      
+      const amount = selected === 'custom' 
+        ? parseFloat(custom) 
+        : parseFloat(selected.replace(/[^0-9.]/g, ''))
+      
+      
+      const donationPayload = {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        address1: form.address1,
+        address2: form.address2,
+        city: form.city,
+        state: form.state,
+        zip: form.zip,
+        country: form.country,
+        amount: amount,
+        donationType: tab,
+        projectId: projectsData[currentProject].id,
+        projectTitle: projectsData[currentProject].title,
+        paymentMethod: paymentMethod
+      }
+      
+      const response = await fetch('/api/donate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(donationPayload)
+      })
+      
+      const result = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to process donation')
+      }
+      
+      setTimeout(() => {
+        setIsProcessing(false)
+        setPaymentSuccess(true)
+      }, 1500)
+      
+
+    } catch (error) {
+      console.error('Donation error:', error)
+      setErrors({ submit: error.message })
+      setIsProcessing(false)
+    }
   }
 
   const handleStep1Next = (e) => {
@@ -1187,7 +1035,6 @@ export default function DonationForm() {
         }
       `}</style>
 
-      {/* DESKTOP */}
       <div className="don-desktop">
         <motion.h2
           initial={{ opacity:0, y:20 }}
@@ -1252,13 +1099,7 @@ export default function DonationForm() {
                   onBack={() => { setCurrentStep(2); setErrors({}) }}
                   onDonate={() => {
                     if (validateStep3()) {
-                      setIsProcessing(true)
-                      setErrors({})
-                      
-                      setTimeout(() => {
-                        setIsProcessing(false)
-                        setPaymentSuccess(true)
-                      }, 2500)
+                      submitDonation()
                     }
                   }}
                   isProcessing={isProcessing}
@@ -1270,7 +1111,6 @@ export default function DonationForm() {
         </div>
       </div>
 
-      {/* MOBILE */}
       <div className="don-mobile" style={{ flexDirection:'column', gap:'24px', padding:'48px 24px', position:'relative', zIndex:1 }}>
         <h2 style={{ ...inter, fontSize:'71px', fontWeight:600, color:'#040617', letterSpacing:'-0.71px', lineHeight:'74px', textAlign:'center', margin:0, width:'100%' }}>
           Donation Form
@@ -1333,13 +1173,7 @@ export default function DonationForm() {
                 onBack={() => { setCurrentStep(2); setErrors({}) }}
                 onDonate={() => {
                   if (validateStep3()) {
-                    setIsProcessing(true)
-                    setErrors({})
-                    
-                    setTimeout(() => {
-                      setIsProcessing(false)
-                      setPaymentSuccess(true)
-                    }, 2500)
+                    submitDonation()
                   }
                 }}
                 isProcessing={isProcessing}

@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@sanity/client'
 import nodemailer from 'nodemailer'
 
+// ADD THIS DEBUG BLOCK AT THE TOP
+console.log('=== ROUTE LOADED - CHECKING ENV ===')
+console.log('EMAIL_USER:', process.env.EMAIL_USER)
+console.log('EMAIL_PASSWORD exists?', !!process.env.EMAIL_PASSWORD)
+console.log('EMAIL_PASSWORD length:', process.env.EMAIL_PASSWORD?.length)
+console.log('====================================')
+
+
 const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
