@@ -15,6 +15,17 @@ const AMOUNTS_ONCE    = ['$10', '$25', '$30', '$100', '$50', '$250']
 const TOTAL_DESKTOP = 40
 const TOTAL_MOBILE = 24
 
+// Helper function to convert base64 to blob for PDF download
+function base64ToBlob(base64, mimeType) {
+  const byteCharacters = atob(base64)
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+  return new Blob([byteArray], { type: mimeType })
+}
+
 // Helper function to format currency (same as Projects section)
 const formatCurrency = (amount) => {
   if (amount >= 1000000) {
@@ -129,7 +140,6 @@ function ProjectCard({ projects, currentProject, onPrev, onNext, mobile = false 
 
   const project = projects[currentProject]
   
-  // Calculate percentage (same as Projects section)
   const percentage = project.targetAmount > 0 
     ? Math.round((project.amountDonated / project.targetAmount) * 100) 
     : 0
@@ -672,7 +682,7 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
               </p>
             </div>
             <p style={{ ...inter, fontSize:'16px', color:'#6F7181', margin:0 }}>
-              A confirmation email has been sent to your address.
+              A confirmation email with your receipt has been sent to your address.
             </p>
           </motion.div>
         )}
@@ -884,7 +894,6 @@ export default function DonationForm() {
         ? parseFloat(custom) 
         : parseFloat(selected.replace(/[^0-9.]/g, ''))
       
-      
       const donationPayload = {
         firstName: form.firstName,
         lastName: form.lastName,
@@ -914,12 +923,30 @@ export default function DonationForm() {
         throw new Error(result.error || 'Failed to process donation')
       }
       
+      // Download PDF receipt if provided
+      if (result.receipt) {
+        try {
+          const pdfBlob = base64ToBlob(result.receipt, 'application/pdf')
+          const url = window.URL.createObjectURL(pdfBlob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = `Mico-Foundation-Receipt-${result.transactionId}.pdf`
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(url)
+          console.log('✅ PDF receipt downloaded')
+        } catch (pdfError) {
+          console.error('PDF download error:', pdfError)
+          // Don't fail the whole donation if PDF download fails
+        }
+      }
+      
       setTimeout(() => {
         setIsProcessing(false)
         setPaymentSuccess(true)
       }, 1500)
       
-
     } catch (error) {
       console.error('Donation error:', error)
       setErrors({ submit: error.message })
