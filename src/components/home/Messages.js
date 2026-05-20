@@ -15,7 +15,7 @@ export default function Messages() {
   const [messagesData, setMessagesData] = useState(null)
   const [sectionData, setSectionData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [current, setCurrent] = useState(0)  // Changed from 1 to 0
+  const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState(1)
 
   // Fetch data from Sanity
@@ -134,7 +134,7 @@ export default function Messages() {
                 Last Message
               </p>
               <div style={{ width: '44px', height: '44px', border: '2px solid #040617', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <img src={imgArrowPrev} alt="" style={{ width: '24px', height: '24px', transform: 'rotate(180deg)' }} />
+                <img src={imgArrowPrev} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
               </div>
             </button>
 
@@ -211,7 +211,7 @@ export default function Messages() {
             {/* Next button */}
             <button onClick={next} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0, outline: 'none' }}>
               <div style={{ width: '44px', height: '44px', backgroundColor: '#040617', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <img src={imgArrowNext} alt="" style={{ width: '24px', height: '24px', filter: 'invert(1)' }} />
+                <img src={imgArrowNext} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
               </div>
               <p style={{ ...inter, fontSize: '20px', color: '#040617', letterSpacing: '0.2px', lineHeight: '30px', margin: 0, whiteSpace: 'nowrap' }}>
                 Next Message
@@ -234,7 +234,7 @@ export default function Messages() {
               </p>
               <a href={sectionData.buttonLink} style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFD900', color: '#040617', fontSize: '16px', fontWeight: 600, padding: '16px 24px', borderRadius: '18px', textDecoration: 'none', width: '240px', justifyContent: 'center' }}>
                 {sectionData.buttonText}
-                <img src={imgArrowBtn} alt="" style={{ width: '24px', height: '24px' }} />
+                <img src={imgArrowBtn} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
               </a>
             </motion.div>
           </AnimatePresence>
@@ -282,7 +282,7 @@ export default function Messages() {
           {/* Nav */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <button onClick={prev} style={{ width: '44px', height: '44px', border: '2px solid #E5E6EB', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', cursor: 'pointer', opacity: 0.6, flexShrink: 0, outline: 'none' }}>
-              <img src={imgArrowPrev} alt="" style={{ width: '24px', height: '24px', transform: 'rotate(180deg)', filter: 'brightness(0)' }} />
+              <img src={imgArrowPrev} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
             </button>
             <div style={{ display: 'flex', gap: '8px' }}>
               {people.map((_, i) => (
@@ -290,7 +290,7 @@ export default function Messages() {
               ))}
             </div>
             <button onClick={next} style={{ width: '44px', height: '44px', backgroundColor: '#E5E6EB', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', flexShrink: 0, outline: 'none' }}>
-              <img src={imgArrowNext} alt="" style={{ width: '24px', height: '24px' }} />
+              <img src={imgArrowNext} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
             </button>
           </div>
         </div>

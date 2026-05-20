@@ -104,6 +104,16 @@ messagesSection: `*[_type == "messagesSection"][0]{
     fullMessage,
     order
   }`,
+
+  peopleImpact: `*[_type == "peopleImpact" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    role,
+    quote,
+    "photo": photo.asset->url,
+    "mobilePhoto": coalesce(mobilePhoto.asset->url, photo.asset->url),
+    order
+  }`,
   
   siteSettings: `*[_type == "siteSettings"][0]`
 }

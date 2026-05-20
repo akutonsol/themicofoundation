@@ -142,6 +142,24 @@ Add environment variables in Vercel dashboard:
 ### Images not loading
 **Solution:** Check that images are in `public/images/home/` for CMS content or `public/images/home-static/` for design elements.
 
+## Features
+
+### Donation System
+- ✅ Multi-step donation form
+- ✅ Project selection
+- ✅ Sanity CMS integration
+- ✅ PDF receipt generation
+- ✅ Email notifications (donor + admin)
+- ✅ Auto-download receipts
+
+### Content Management
+- ✅ Dynamic projects from Sanity
+- ✅ Hero section management
+- ✅ Community impact stats
+- ✅ Team messages
+
+
+
 ## 📄 License
 
 Copyright © 2024 The Mico Foundation. All rights reserved.
