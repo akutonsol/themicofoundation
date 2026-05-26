@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <Navbar />
-      <NewsEventsPage />
+      <NewsEventsPage  slug={slug} />
       <Footer />
     </>
   );

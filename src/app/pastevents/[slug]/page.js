@@ -1,14 +1,12 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import ProjectDetailPage from "@/components/projects/ProjectDetailPage";
-import DonationForm from '@/components/home/DonationForm'
+import PastEventDetails from "@/components/news/PastEventDetails";
 
 export default function Page() {
   return (
     <>
       <Navbar />
-      <ProjectDetailPage />
-       <DonationForm />
+      <PastEventDetails  slug={slug}/>
       <Footer />
     </>
   );

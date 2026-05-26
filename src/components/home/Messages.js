@@ -1,9 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { client, urlFor, queries } from '@/sanity/lib/sanity'
 
-// Static assets
 const imgArrowPrev = "/images/home-static/prev-icon.png"
 const imgArrowNext = "/images/home-static/next-icon.png"
 const imgArrowBtn = "/images/home-static/button-icon.png"
@@ -12,13 +12,13 @@ const imgBgPattern = "/images/home-static/com-sparkle.png"
 const inter = { fontFamily: "'Inter', sans-serif" };
 
 export default function Messages() {
+  const router = useRouter()
   const [messagesData, setMessagesData] = useState(null)
   const [sectionData, setSectionData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState(1)
 
-  // Fetch data from Sanity
   useEffect(() => {
     async function fetchMessages() {
       try {
@@ -55,17 +55,17 @@ export default function Messages() {
     )
   }
 
-  // Convert CMS data to component format
+  // FIX: added slug to people mapping
   const people = messagesData.map(msg => ({
     id: msg.order,
     photo: urlFor(msg.photo).width(800).url(),
     role: msg.role,
     name: msg.name,
     quote: msg.quote,
-    fullMessage: msg.fullMessage
+    fullMessage: msg.fullMessage,
+    slug: msg.slug,
   }))
 
-  // Safety check - ensure we have people
   if (!people || people.length === 0) {
     return (
       <section style={{ backgroundColor: '#FFFDF9', padding: '80px 0', minHeight: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -74,7 +74,6 @@ export default function Messages() {
     )
   }
 
-  // Ensure current index is within array bounds
   const safeCurrent = Math.min(Math.max(0, current), people.length - 1)
 
   const goTo = (index) => {
@@ -86,30 +85,28 @@ export default function Messages() {
   const next = () => goTo((safeCurrent + 1) % people.length)
   const getIndex = (offset) => (safeCurrent + offset + people.length) % people.length
 
+  // FIX: navigate to detail page using slug
+  const goToDetail = (person) => {
+    if (person?.slug) router.push(`/messagesdetail/${person.slug}`)
+  }
+
   return (
     <section style={{ backgroundColor: '#FFFDF9', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
         .msg-desktop { display: flex; padding: 80px 165px; }
         .msg-mobile  { display: none; }
-
         @media (max-width: 768px) {
           .msg-desktop { display: none !important; }
           .msg-mobile  { display: flex !important; }
         }
       `}</style>
 
-      {/* Shared bg pattern */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
-        backgroundImage: `url('${imgBgPattern}')`,
-        backgroundSize: '679px 96px', backgroundRepeat: 'repeat', opacity: 0.08
-      }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', backgroundImage: `url('${imgBgPattern}')`, backgroundSize: '679px 96px', backgroundRepeat: 'repeat', opacity: 0.08 }} />
 
       {/* DESKTOP */}
       <div className="msg-desktop" style={{ position: 'relative', zIndex: 1, flexDirection: 'column', gap: '48px' }}>
-        
+
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <h2 style={{ ...inter, fontSize: '75px', fontWeight: 600, color: '#040617', letterSpacing: '-0.75px', lineHeight: '90px', margin: 0, whiteSpace: 'nowrap' }}>
@@ -124,27 +121,25 @@ export default function Messages() {
 
         {/* Carousel */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '42px', alignItems: 'center' }}>
-          
+
           {/* 3-person row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', justifyContent: 'center' }}>
-            
+
             {/* Prev button */}
             <button onClick={prev} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0, outline: 'none' }}>
-              <p style={{ ...inter, fontSize: '20px', color: '#040617', letterSpacing: '0.2px', lineHeight: '30px', margin: 0, whiteSpace: 'nowrap' }}>
-                Last Message
-              </p>
+              <p style={{ ...inter, fontSize: '20px', color: '#040617', letterSpacing: '0.2px', lineHeight: '30px', margin: 0, whiteSpace: 'nowrap' }}>Last Message</p>
               <div style={{ width: '44px', height: '44px', border: '2px solid #040617', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <img src={imgArrowPrev} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
               </div>
             </button>
 
-            {/* Left — faded */}
+            {/* Left — faded, FIX: navigates to detail */}
             <motion.div
               key={`left-${getIndex(-1)}`}
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 0.4, x: 0 }}
               transition={{ duration: 0.4 }}
-              onClick={prev}
+              onClick={() => goToDetail(people[getIndex(-1)])}
               style={{ width: '360px', display: 'flex', flexDirection: 'column', gap: '16px', cursor: 'pointer', flexShrink: 0 }}
             >
               <div style={{ width: '360px', height: '422px', borderRadius: '20px', overflow: 'hidden', border: '1px solid #E5E6EB', position: 'relative' }}>
@@ -152,16 +147,12 @@ export default function Messages() {
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.6) 100%)' }} />
               </div>
               <div>
-                <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>
-                  {people[getIndex(-1)].role}
-                </p>
-                <p style={{ ...inter, fontSize: '32px', fontWeight: 600, color: '#040617', letterSpacing: '-0.32px', lineHeight: '46px', margin: 0, textTransform: 'capitalize' }}>
-                  {people[getIndex(-1)].name}
-                </p>
+                <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>{people[getIndex(-1)].role}</p>
+                <p style={{ ...inter, fontSize: '32px', fontWeight: 600, color: '#040617', letterSpacing: '-0.32px', lineHeight: '46px', margin: 0, textTransform: 'capitalize' }}>{people[getIndex(-1)].name}</p>
               </div>
             </motion.div>
 
-            {/* Center — active */}
+            {/* Center — active, FIX: navigates to detail */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={`center-${safeCurrent}`}
@@ -169,29 +160,26 @@ export default function Messages() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -20 }}
                 transition={{ duration: 0.4 }}
-                style={{ width: '510px', display: 'flex', flexDirection: 'column', gap: '16px', flexShrink: 0 }}
+                onClick={() => goToDetail(people[safeCurrent])}
+                style={{ width: '510px', display: 'flex', flexDirection: 'column', gap: '16px', flexShrink: 0, cursor: 'pointer' }}
               >
                 <div style={{ width: '510px', height: '501px', borderRadius: '20px', overflow: 'hidden', border: '1px solid #E5E6EB', position: 'relative' }}>
                   <img src={people[safeCurrent].photo} alt="" style={{ width: '100%', height: '108%', objectFit: 'cover', objectPosition: 'top' }} />
                 </div>
                 <div>
-                  <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>
-                    {people[safeCurrent].role}
-                  </p>
-                  <p style={{ ...inter, fontSize: '32px', fontWeight: 600, color: '#040617', letterSpacing: '-0.32px', lineHeight: '46px', margin: 0, textTransform: 'capitalize' }}>
-                    {people[safeCurrent].name}
-                  </p>
+                  <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>{people[safeCurrent].role}</p>
+                  <p style={{ ...inter, fontSize: '32px', fontWeight: 600, color: '#040617', letterSpacing: '-0.32px', lineHeight: '46px', margin: 0, textTransform: 'capitalize' }}>{people[safeCurrent].name}</p>
                 </div>
               </motion.div>
             </AnimatePresence>
 
-            {/* Right — faded */}
+            {/* Right — faded, FIX: navigates to detail */}
             <motion.div
               key={`right-${getIndex(1)}`}
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 0.4, x: 0 }}
               transition={{ duration: 0.4 }}
-              onClick={next}
+              onClick={() => goToDetail(people[getIndex(1)])}
               style={{ width: '360px', display: 'flex', flexDirection: 'column', gap: '16px', cursor: 'pointer', flexShrink: 0 }}
             >
               <div style={{ width: '360px', height: '422px', borderRadius: '20px', overflow: 'hidden', border: '1px solid #E5E6EB', position: 'relative' }}>
@@ -199,12 +187,8 @@ export default function Messages() {
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.6) 100%)' }} />
               </div>
               <div>
-                <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>
-                  {people[getIndex(1)].role}
-                </p>
-                <p style={{ ...inter, fontSize: '32px', fontWeight: 600, color: '#040617', letterSpacing: '-0.32px', lineHeight: '46px', margin: 0, textTransform: 'capitalize' }}>
-                  {people[getIndex(1)].name}
-                </p>
+                <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>{people[getIndex(1)].role}</p>
+                <p style={{ ...inter, fontSize: '32px', fontWeight: 600, color: '#040617', letterSpacing: '-0.32px', lineHeight: '46px', margin: 0, textTransform: 'capitalize' }}>{people[getIndex(1)].name}</p>
               </div>
             </motion.div>
 
@@ -213,9 +197,7 @@ export default function Messages() {
               <div style={{ width: '44px', height: '44px', backgroundColor: '#040617', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <img src={imgArrowNext} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
               </div>
-              <p style={{ ...inter, fontSize: '20px', color: '#040617', letterSpacing: '0.2px', lineHeight: '30px', margin: 0, whiteSpace: 'nowrap' }}>
-                Next Message
-              </p>
+              <p style={{ ...inter, fontSize: '20px', color: '#040617', letterSpacing: '0.2px', lineHeight: '30px', margin: 0, whiteSpace: 'nowrap' }}>Next Message</p>
             </button>
           </div>
 
@@ -232,7 +214,7 @@ export default function Messages() {
               <p style={{ ...inter, fontSize: '24px', fontWeight: 400, color: '#040617', letterSpacing: '0.24px', lineHeight: '38px', margin: 0 }}>
                 {people[safeCurrent].quote}
               </p>
-              <a href={sectionData.buttonLink} style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFD900', color: '#040617', fontSize: '16px', fontWeight: 600, padding: '16px 24px', borderRadius: '18px', textDecoration: 'none', width: '240px', justifyContent: 'center' }}>
+             <a href={people[safeCurrent]?.slug ? `/messagesdetail/${people[safeCurrent].slug}` : '#'}  style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFD900', color: '#040617', fontSize: '16px', fontWeight: 600, padding: '16px 24px', borderRadius: '18px', textDecoration: 'none', width: '240px', justifyContent: 'center' }}>
                 {sectionData.buttonText}
                 <img src={imgArrowBtn} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
               </a>
@@ -243,18 +225,12 @@ export default function Messages() {
 
       {/* MOBILE */}
       <div className="msg-mobile" style={{ flexDirection: 'column', gap: '32px', alignItems: 'center', padding: '60px 24px', position: 'relative', zIndex: 1 }}>
-        
-        {/* Header */}
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', textAlign: 'center', width: '100%' }}>
-          <h2 style={{ ...inter, fontSize: '64px', fontWeight: 600, color: '#040617', letterSpacing: '-0.64px', lineHeight: '69px', margin: 0 }}>
-            {sectionData.heading}
-          </h2>
-          <p style={{ ...inter, fontSize: '20px', fontWeight: 400, color: '#6F7181', letterSpacing: '0.2px', lineHeight: '30px', margin: 0 }}>
-            {sectionData.description}
-          </p>
+          <h2 style={{ ...inter, fontSize: '64px', fontWeight: 600, color: '#040617', letterSpacing: '-0.64px', lineHeight: '69px', margin: 0 }}>{sectionData.heading}</h2>
+          <p style={{ ...inter, fontSize: '20px', fontWeight: 400, color: '#6F7181', letterSpacing: '0.2px', lineHeight: '30px', margin: 0 }}>{sectionData.description}</p>
         </div>
 
-        {/* Photo card + nav */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
           <AnimatePresence mode="wait">
             <motion.div
@@ -263,23 +239,19 @@ export default function Messages() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: direction > 0 ? -40 : 40 }}
               transition={{ duration: 0.35 }}
-              style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}
+              onClick={() => goToDetail(people[safeCurrent])}
+              style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', cursor: 'pointer' }}
             >
               <div style={{ width: '100%', aspectRatio: '342/401', borderRadius: '20px', overflow: 'hidden', border: '1px solid #E5E6EB', position: 'relative' }}>
                 <img src={people[safeCurrent].photo} alt="" style={{ width: '100%', height: '108%', objectFit: 'cover', objectPosition: 'top' }} />
               </div>
               <div>
-                <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>
-                  {people[safeCurrent].role}
-                </p>
-                <p style={{ ...inter, fontSize: '26px', fontWeight: 600, color: '#040617', letterSpacing: '-0.26px', lineHeight: '36px', margin: 0, textTransform: 'capitalize' }}>
-                  {people[safeCurrent].name}
-                </p>
+                <p style={{ ...inter, fontSize: '16px', color: '#040617', letterSpacing: '0.16px', lineHeight: '24px', margin: 0 }}>{people[safeCurrent].role}</p>
+                <p style={{ ...inter, fontSize: '26px', fontWeight: 600, color: '#040617', letterSpacing: '-0.26px', lineHeight: '36px', margin: 0, textTransform: 'capitalize' }}>{people[safeCurrent].name}</p>
               </div>
             </motion.div>
           </AnimatePresence>
 
-          {/* Nav */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <button onClick={prev} style={{ width: '44px', height: '44px', border: '2px solid #E5E6EB', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', cursor: 'pointer', opacity: 0.6, flexShrink: 0, outline: 'none' }}>
               <img src={imgArrowPrev} alt="" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
@@ -295,7 +267,6 @@ export default function Messages() {
           </div>
         </div>
 
-        {/* Quote + CTA */}
         <AnimatePresence mode="wait">
           <motion.div
             key={`mob-quote-${safeCurrent}`}
@@ -305,10 +276,8 @@ export default function Messages() {
             transition={{ duration: 0.35 }}
             style={{ display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center', width: '100%', textAlign: 'center' }}
           >
-            <p style={{ ...inter, fontSize: '20px', fontWeight: 400, color: '#040617', letterSpacing: '0.2px', lineHeight: '30px', margin: 0 }}>
-              {people[safeCurrent].quote}
-            </p>
-            <a href={sectionData.buttonLink} style={{ ...inter, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', backgroundColor: '#FFD900', color: '#040617', fontSize: '16px', fontWeight: 600, padding: '16px 24px', borderRadius: '18px', textDecoration: 'none', width: '100%' }}>
+            <p style={{ ...inter, fontSize: '20px', fontWeight: 400, color: '#040617', letterSpacing: '0.2px', lineHeight: '30px', margin: 0 }}>{people[safeCurrent].quote}</p>
+           <a href={people[safeCurrent]?.slug ? `/messagesdetail/${people[safeCurrent].slug}` : '#'}  style={{ ...inter, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', backgroundColor: '#FFD900', color: '#040617', fontSize: '16px', fontWeight: 600, padding: '16px 24px', borderRadius: '18px', textDecoration: 'none', width: '100%' }}>
               {sectionData.buttonText}
               <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', flexShrink: 0 }}>
                 <img src={imgArrowBtn} alt="" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />

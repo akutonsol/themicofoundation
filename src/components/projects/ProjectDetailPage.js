@@ -1,254 +1,290 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, MapPin } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
+import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
-const inter = { fontFamily: "'Inter', sans-serif" };
-
-const projects = [
+const staticProjects = [
   {
-    slug: "buxton-college",
-    status: "Active Project",
-    title: "Buxton College",
-    location: "Jamaica, Buxton",
-    mediaType: "video",
-    mediaUrl: "/videos/buxton-college.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=2200&q=80",
-    progress: 65,
-    raised: "$14M",
-    goal: "$20M",
-    description: [
-      "The Buxton College Project is a cornerstone initiative by the Mico Foundation, dedicated to preserving and restoring one of Jamaica’s most iconic historical landmarks.",
-      "This project aims to fully restore the Buxton Building’s structure, renew its learning facilities, and repurpose the space into a vibrant, modern center for academic development, events, and heritage preservation.",
-      "With the support of donors, alumni, and community partners, we are working to ensure that Buxton College continues to inspire and serve students and educators for decades to come.",
-    ],
-    donationItems: [
-      "Deteriorating Roof & Ceiling",
-      "Decaying Columns",
-      "Rotten Doors & Windows",
-      "Aged & Peeling Paint",
-      "Modernize and Beautify the Building",
-    ],
-  },
-  {
-    slug: "library-renewal",
-    status: "Active Project",
-    title: "Library Renewal",
-    location: "Jamaica, Kingston",
-    mediaType: "image",
-    mediaUrl:
-      "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=2200&q=80",
-    progress: 40,
-    raised: "$8M",
-    goal: "$20M",
-    description: [
-      "The Library Renewal Project supports the modernization of student learning spaces and research access.",
-      "The project includes furniture upgrades, digital learning resources, improved study areas, and technology-enabled academic support.",
-    ],
-    donationItems: [
-      "Digital Resources",
-      "Study Furniture",
-      "Lighting Upgrades",
-      "Research Support",
-    ],
+    slug: "buxton-college", status: "active", label: "Active Project",
+    title: "Buxton College", location: "Jamaica, Buxton",
+    mediaUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=2200&q=80",
+    progress: 65, raised: "$14M", goal: "$20M", raisedRaw: 14000000, goalRaw: 20000000,
+    description: ["The Buxton College Project is a cornerstone initiative by the Mico Foundation, dedicated to preserving and restoring one of Jamaica's most iconic historical landmarks.", "This project aims to fully restore the Buxton Building's structure, renew its learning facilities, and repurpose the space into a vibrant, modern center for academic development.", "With the support of donors, alumni, and community partners, we are working to ensure that Buxton College continues to inspire and serve students and educators for decades to come."],
+    donationItems: ["Deteriorating Roof & Ceiling", "Decaying Columns", "Rotten Doors & Windows", "Aged & Peeling Paint", "Modernize and Beautify the Building"],
   },
 ];
 
-export default function ProjectDetailPage() {
-  const searchParams = useSearchParams();
-  const slug = searchParams.get("slug") || projects[0].slug;
+function formatCurrency(amount) {
+  if (!amount) return "$0";
+  if (amount >= 1000000) return `$${Math.round(amount / 1000000)}M`;
+  if (amount >= 1000) return `$${Math.round(amount / 1000)}K`;
+  return `$${amount}`;
+}
 
-  const currentIndex = projects.findIndex((item) => item.slug === slug);
-  const safeIndex = currentIndex === -1 ? 0 : currentIndex;
-  const project = projects[safeIndex];
+function useCountUp(target, duration = 1800) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true;
+        let start = null;
+        const step = (ts) => {
+          if (!start) start = ts;
+          const p = Math.min((ts - start) / duration, 1);
+          setCount(Math.floor((1 - Math.pow(1 - p, 3)) * target));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.4 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target, duration]);
+  return [count, ref];
+}
 
-  const nextProject = projects[(safeIndex + 1) % projects.length];
+function StatCounter({ value, label, prefix = "", suffix = "" }) {
+  const [count, ref] = useCountUp(typeof value === "number" ? value : 0);
+  return (
+    <div ref={ref} style={{ textAlign: "center" }}>
+      <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(48px,6vw,88px)", fontWeight: 700, color: "#FFD900", margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
+        {prefix}{typeof value === "number" ? count : value}{suffix}
+      </p>
+      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.14em", margin: "10px 0 0", fontWeight: 500 }}>{label}</p>
+    </div>
+  );
+}
+
+export default function ProjectDetailPage({ slug }) {
+  const [project, setProject] = useState(null);
+  const [nextProject, setNextProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { scrollYProgress } = useScroll();
+  const imgScale = useTransform(scrollYProgress, [0, 0.25], [1.08, 1]);
+  const imgOpacity = useTransform(scrollYProgress, [0, 0.3], [0.5, 0.25]);
+
+  useEffect(() => {
+    async function fetchProject() {
+      try {
+        const all = await client.fetch(queries.projects);
+        if (all?.length) {
+          const found = all.find(p => p.slug === slug);
+          if (found) {
+            const progress = found.targetAmount > 0 ? Math.round((found.amountDonated / found.targetAmount) * 100) : 0;
+            setProject({
+              slug: found.slug,
+              status: found.status,
+              label: found.label,
+              title: found.title,
+              location: found.location,
+              mediaUrl: found.image ? urlFor(found.image).width(2200).url() : staticProjects[0].mediaUrl,
+              progress,
+              raised: formatCurrency(found.amountDonated),
+              goal: formatCurrency(found.targetAmount),
+              raisedRaw: found.amountDonated,
+              goalRaw: found.targetAmount,
+              description: found.description ? found.description.split("\n\n").filter(Boolean) : [],
+              donationItems: found.completedItems || [],
+            });
+            const active = all.filter(p => p.status === "active");
+            const idx = active.findIndex(p => p.slug === slug);
+            const nxt = active[(idx + 1) % active.length];
+            if (nxt?.slug !== slug) setNextProject(nxt);
+          } else {
+            setProject(staticProjects[0]);
+          }
+        } else {
+          setProject(staticProjects[0]);
+        }
+      } catch {
+        setProject(staticProjects[0]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (slug) {
+      fetchProject();
+    } else {
+      setProject(staticProjects[0]);
+      setLoading(false);
+    }
+  }, [slug]);
+
+  if (loading) return (
+    <div style={{ minHeight: "100vh", background: "#05060F", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <style>{`@keyframes spin2{to{transform:rotate(360deg)}}`}</style>
+      <div style={{ width: "48px", height: "48px", border: "2px solid rgba(255,217,0,0.15)", borderTopColor: "#FFD900", borderRadius: "50%", animation: "spin2 0.7s linear infinite" }} />
+    </div>
+  );
+
+  if (!project) return null;
 
   return (
-    <main className="bg-[#FAF9F6]">
-      <section className="relative min-h-screen overflow-hidden bg-[#040617]">
-        {project.mediaType === "video" ? (
-          <video
-            key={project.slug}
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster={project.poster}
-            className="absolute inset-0 h-full w-full object-cover opacity-55"
-          >
-            <source src={project.mediaUrl} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            src={project.mediaUrl}
-            alt={project.title}
-            className="absolute inset-0 h-full w-full object-cover opacity-55"
-          />
-        )}
+    <main style={{ background: "#05060F" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap');
+        .pd-back { font-family:'Inter',sans-serif; display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.4); font-size:14px; text-decoration:none; transition:color 0.2s; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; }
+        .pd-back:hover { color:#FFD900; }
+        .pd-back svg { transition:transform 0.2s; }
+        .pd-back:hover svg { transform:translateX(-3px); }
+        .pd-item:hover { background:rgba(255,217,0,0.06) !important; border-color:rgba(255,217,0,0.2) !important; }
+        .pd-next:hover { background:rgba(255,217,0,0.05) !important; }
+        .pd-next:hover .pd-next-arrow { background:#FFD900 !important; }
+      `}</style>
 
-        <div className="absolute inset-0 bg-black/45" />
+      {/* ── HERO: SPLIT LAYOUT ── */}
+      <section style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr", position: "relative" }}>
 
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-[1650px] flex-col px-6 py-10 sm:px-10 lg:px-20">
-          <Link
-            href="/"
-            className="inline-flex w-fit items-center gap-2 text-[16px] text-white/80 transition hover:text-[#FFD900]"
-            style={inter}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Go Back
-          </Link>
+        {/* Left — text panel */}
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "clamp(32px,4vw,56px) clamp(32px,4vw,72px)", background: "#05060F", position: "relative", zIndex: 2 }}>
 
-          <div className="flex flex-1 items-end pb-12">
-            <div className="grid w-full gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-              <div>
-                <motion.p
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55 }}
-                  className="text-[24px] font-semibold text-[#FFD900]"
-                  style={inter}
-                >
-                  {project.status}
-                </motion.p>
-
-                <motion.h1
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.65 }}
-                  className="mt-4 max-w-[900px] text-[74px] font-semibold leading-[0.88] tracking-[-0.08em] text-white sm:text-[110px] lg:text-[155px]"
-                  style={inter}
-                >
-                  {project.title}
-                </motion.h1>
-
-                <div
-                  className="mt-8 flex items-center gap-3 text-[20px] text-white/75"
-                  style={inter}
-                >
-                  <MapPin className="h-5 w-5" />
-                  {project.location}
-                </div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 26 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.12 }}
-                className="rounded-[28px] border border-white/15 bg-white/10 p-8 backdrop-blur-md"
-              >
-                <div className="flex items-end justify-between">
-                  <div>
-                    <p className="text-[18px] text-white/60" style={inter}>
-                      Raised
-                    </p>
-                    <p
-                      className="text-[46px] font-semibold tracking-[-0.06em] text-white"
-                      style={inter}
-                    >
-                      {project.raised}
-                    </p>
-                  </div>
-
-                  <div className="text-right">
-                    <p className="text-[18px] text-white/60" style={inter}>
-                      Goal
-                    </p>
-                    <p
-                      className="text-[46px] font-semibold tracking-[-0.06em] text-white"
-                      style={inter}
-                    >
-                      {project.goal}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-7 h-4 overflow-hidden rounded-full bg-white/20">
-                  <div
-                    className="h-full rounded-full bg-[#FFD900]"
-                    style={{ width: `${project.progress}%` }}
-                  />
-                </div>
-
-                <p className="mt-4 text-[20px] text-white/75" style={inter}>
-                  {project.progress}% funded
-                </p>
-              </motion.div>
+          {/* Top nav */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Link href="/" className="pd-back">
+              <ArrowLeft size={14} />
+              Back
+            </Link>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,217,0,0.1)", border: "1px solid rgba(255,217,0,0.2)", borderRadius: "100px", padding: "5px 14px" }}>
+              <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#FFD900" }} />
+              <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "12px", fontWeight: 600, color: "#FFD900", letterSpacing: "0.1em", textTransform: "uppercase" }}>{project.label || "Active"}</span>
             </div>
           </div>
+
+          {/* Main title block */}
+          <div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}
+              style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "28px" }}>
+              <MapPin size={14} color="rgba(255,255,255,0.35)" />
+              <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em" }}>{project.location}</span>
+            </motion.div>
+
+            <motion.h1 initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(54px,7.5vw,124px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.88, letterSpacing: "-0.03em", margin: 0 }}>
+              {project.title}
+            </motion.h1>
+
+            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
+              style={{ height: "2px", background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "36px", transformOrigin: "left" }} />
+          </div>
+
+          {/* Progress + stats */}
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.4 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+              <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.35)", letterSpacing: "0.06em" }}>PROGRESS</span>
+              <span style={{ fontFamily: "'Playfair Display',serif", fontSize: "20px", color: "#FFD900", fontWeight: 700 }}>{project.progress}%</span>
+            </div>
+            <div style={{ height: "3px", background: "rgba(255,255,255,0.08)", borderRadius: "100px", overflow: "hidden", marginBottom: "28px" }}>
+              <motion.div initial={{ width: 0 }} animate={{ width: `${project.progress}%` }} transition={{ duration: 1.4, delay: 0.5, ease: "easeOut" }}
+                style={{ height: "100%", background: "linear-gradient(to right, #FFD900, #FFF3A0)", borderRadius: "100px" }} />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "rgba(255,255,255,0.06)", borderRadius: "16px", overflow: "hidden" }}>
+              {[{ label: "Raised", value: project.raised, gold: true }, { label: "Goal", value: project.goal }].map((s, i) => (
+                <div key={i} style={{ padding: "20px 24px", background: "#05060F" }}>
+                  <p style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 6px" }}>{s.label}</p>
+                  <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(28px,3vw,40px)", fontWeight: 700, color: s.gold ? "#FFD900" : "rgba(255,255,255,0.7)", margin: 0, lineHeight: 1 }}>{s.value}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Right — image panel */}
+        <div style={{ position: "relative", overflow: "hidden" }}>
+          <motion.img src={project.mediaUrl} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover", scale: imgScale, opacity: imgOpacity }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #05060F 0%, rgba(5,6,15,0.2) 40%, rgba(5,6,15,0) 100%)" }} />
+          <div style={{ position: "absolute", bottom: "48px", right: "48px", fontFamily: "'Playfair Display',serif", fontSize: "160px", fontWeight: 900, color: "rgba(255,255,255,0.04)", lineHeight: 1, userSelect: "none" }}>01</div>
         </div>
       </section>
 
-      <section className="px-6 py-24 sm:px-10 lg:px-20">
-        <div className="mx-auto grid max-w-[1500px] gap-14 lg:grid-cols-[0.75fr_1.25fr]">
-          <div>
-            <p
-              className="text-[18px] font-semibold uppercase tracking-[0.18em] text-[#7A7D8B]"
-              style={inter}
-            >
-              Project Story
-            </p>
-            <div className="mt-5 h-[3px] w-24 bg-[#FFD900]" />
-          </div>
+      {/* ── PROJECT STORY ── */}
+      <section style={{ background: "#FAFAF7", padding: "clamp(80px,10vw,140px) clamp(24px,5vw,80px)" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+            style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "56px" }}>
+            <div style={{ width: "48px", height: "2px", background: "#040617" }} />
+            <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "12px", fontWeight: 600, color: "#040617", textTransform: "uppercase", letterSpacing: "0.16em" }}>Project Story</span>
+          </motion.div>
 
-          <div className="space-y-8">
-            {project.description.map((paragraph, index) => (
-              <motion.p
-                key={index}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.55, delay: index * 0.06 }}
-                className="text-[30px] leading-[1.45] tracking-[-0.04em] text-[#040617] sm:text-[38px]"
-                style={inter}
-              >
-                {paragraph}
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(40px,5vw,64px)" }}>
+            {project.description.map((para, i) => (
+              <motion.p key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.08 }}
+                style={{ fontFamily: i === 0 ? "'Playfair Display',serif" : "'Inter',sans-serif", fontSize: i === 0 ? "clamp(28px,3.2vw,46px)" : "clamp(18px,1.8vw,24px)", lineHeight: i === 0 ? 1.25 : 1.75, color: i === 0 ? "#040617" : "#4A4D5A", margin: 0, marginLeft: i % 2 === 1 ? "clamp(40px,8vw,140px)" : 0, fontWeight: i === 0 ? 700 : 300, letterSpacing: i === 0 ? "-0.02em" : "0" }}>
+                {para}
               </motion.p>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-[#040617] px-6 py-14 sm:px-10 lg:px-20">
-        <div className="mx-auto max-w-[1500px]">
-          <h2
-            className="text-center text-[28px] font-semibold text-white"
-            style={inter}
-          >
-            Your Donation Will Go Towards
-          </h2>
+      {/* ── HOW YOUR DONATION IS USED ── */}
+      <section style={{ background: "#08090F", padding: "clamp(80px,10vw,120px) clamp(24px,5vw,80px)", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontFamily: "'Playfair Display',serif", fontSize: "clamp(100px,18vw,280px)", fontWeight: 900, color: "rgba(255,217,0,0.025)", whiteSpace: "nowrap", pointerEvents: "none", lineHeight: 1, userSelect: "none" }}>BUILD</div>
 
-          <div className="mt-10 flex flex-wrap justify-center gap-x-12 gap-y-6">
-            {project.donationItems.map((item) => (
-              <div
-                key={item}
-                className="flex items-center gap-3 text-[20px] text-white/90"
-                style={inter}
-              >
-                <Check className="h-5 w-5 text-[#5EDA71]" />
-                {item}
-              </div>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "end", marginBottom: "clamp(48px,6vw,80px)" }}>
+            <motion.h2 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
+              style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(36px,5vw,72px)", fontWeight: 700, color: "#FFFFFF", margin: 0, lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+              How Your<br /><em style={{ color: "#FFD900" }}>Donation</em><br />Is Used
+            </motion.h2>
+            <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}
+              style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(16px,1.6vw,20px)", color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0, fontWeight: 300 }}>
+              Every dollar donated goes directly toward restoring and transforming {project.title} into a world-class educational institution.
+            </motion.p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "12px" }}>
+            {project.donationItems.map((item, i) => (
+              <motion.div key={i} className="pd-item" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.07 }}
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "18px", padding: "28px 24px", display: "flex", gap: "18px", alignItems: "flex-start", transition: "background 0.2s, border-color 0.2s", cursor: "default" }}>
+                <span style={{ fontFamily: "'Playfair Display',serif", fontSize: "13px", fontWeight: 700, color: "rgba(255,217,0,0.5)", minWidth: "28px", marginTop: "2px" }}>0{i + 1}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ width: "28px", height: "2px", background: "#FFD900", borderRadius: "1px", marginBottom: "14px", opacity: 0.6 }} />
+                  <p style={{ fontFamily: "'Inter',sans-serif", fontSize: "17px", color: "rgba(255,255,255,0.8)", lineHeight: 1.5, margin: 0, fontWeight: 400 }}>{item}</p>
+                </div>
+              </motion.div>
             ))}
           </div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1px", background: "rgba(255,255,255,0.04)", borderRadius: "20px", overflow: "hidden", marginTop: "48px" }}>
+            {[
+              { label: "Fundraising Goal", value: project.goalRaw || 20000000, prefix: "$", suffix: "" },
+              { label: "Total Raised", value: project.raisedRaw || 14000000, prefix: "$", suffix: "" },
+              { label: "Percent Funded", value: project.progress, prefix: "", suffix: "%" },
+            ].map((s, i) => (
+              <div key={i} style={{ padding: "32px 24px", background: i === 1 ? "rgba(255,217,0,0.06)" : "#08090F", borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+                <StatCounter value={s.value} label={s.label} prefix={s.prefix} suffix={s.suffix} />
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
-      <section className="bg-[#FAF9F6] px-6 py-16 sm:px-10 lg:px-20">
-        <div className="mx-auto flex max-w-[1500px] justify-end">
-          <Link
-            href={`/projectdetail?slug=${nextProject.slug}`}
-            className="group inline-flex items-center gap-5 rounded-[22px] bg-[#FFD900] px-8 py-5 text-[20px] font-semibold text-[#040617]"
-            style={inter}
-          >
-            Next Project
-            <span className="text-[#040617]/70">{nextProject.title}</span>
-            <ArrowRight className="h-6 w-6 transition group-hover:translate-x-1" />
-          </Link>
-        </div>
-      </section>
+      {/* ── NEXT PROJECT ── */}
+      {nextProject && (
+        <section style={{ background: "#05060F", padding: "clamp(48px,6vw,80px) clamp(24px,5vw,80px)", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+          <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", justifyContent: "flex-end" }}>
+            <Link href={`/projectdetail/${nextProject.slug}`} className="pd-next" style={{ display: "flex", alignItems: "center", gap: "28px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "28px 36px", textDecoration: "none", transition: "background 0.25s" }}>
+              <div>
+                <p style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.14em", margin: "0 0 8px" }}>Next Project</p>
+                <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.8vw,36px)", color: "#FFFFFF", margin: 0, lineHeight: 1.05, fontWeight: 700 }}>{nextProject.title}</p>
+              </div>
+              <div className="pd-next-arrow" style={{ width: "56px", height: "56px", borderRadius: "50%", background: "rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.25s" }}>
+                <ArrowRight size={22} color="rgba(255,255,255,0.6)" />
+              </div>
+            </Link>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

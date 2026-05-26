@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <>
       <Navbar />
-      <HeroSection />
+      {/*}  <HeroSection /> >*/}
         <DownloadableForms />
       <Footer />
     </>

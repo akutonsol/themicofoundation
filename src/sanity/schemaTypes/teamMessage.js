@@ -1,7 +1,7 @@
 import { defineType } from 'sanity'
 
 export default defineType({
-  name: 'teamMessage',        // ← Changed from 'message'
+  name: 'teamMessage',
   title: 'Team Message',
   type: 'document',
   fields: [
@@ -10,6 +10,18 @@ export default defineType({
       title: 'Full Name',
       type: 'string',
       description: 'e.g., "Dr. R. Karl James CD."',
+      validation: Rule => Rule.required()
+    },
+    // FIX: added slug field
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      description: 'Auto-generated URL identifier. Click Generate.',
+      options: {
+        source: 'name',
+        maxLength: 96
+      },
       validation: Rule => Rule.required()
     },
     {

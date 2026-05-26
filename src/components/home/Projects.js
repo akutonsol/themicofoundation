@@ -215,7 +215,7 @@ export default function Projects() {
                     <span style={{ ...inter, fontSize:'24px', color:'#E5E6EB', opacity:0.8 }}>{p.goal}</span>
                   </div>
                 </div>
-                <a href={p.type === 'active' ? `/projectdetail?slug=${p.slug}` : '/projects'} style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'fit-content', marginTop:'8px' }}>
+                <a href={p.type === 'active' ? `/projectdetail/${p.slug}` : '/projects'} style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'fit-content', marginTop:'8px' }}>
                   {p.btnText}
                   <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'24px', height:'24px' }}>
                     <img src={imgArrowBtn} alt="" style={{ width:'14px', height:'14px' }} />
@@ -346,7 +346,7 @@ export default function Projects() {
             </div>
 
             {/* CTA */}
-            <a href={p.type === 'active' ? `/projectdetail?slug=${p.slug}` : '/projects'} style={{ ...inter, display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'100%' }}>
+            <a hhref={p.type === 'active' ? `/projectdetail/${p.slug}` : '/projects'} style={{ ...inter, display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', backgroundColor:p.btnBg, color:'#040617', fontSize:'16px', fontWeight:600, padding:'16px 24px', borderRadius:'18px', textDecoration:'none', width:'100%' }}>
               {p.btnText}
               <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:'24px', height:'24px' }}>
                 <img src={imgArrowBtn} alt="" style={{ width:'14px', height:'14px' }} />

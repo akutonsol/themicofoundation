@@ -2,16 +2,18 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 import { client, queries } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
 
+// Fallback static data
 const staticNewsItems = [
   {
     id: 1,
-    slug: "lady-mico-charity-breaks-historical-barrier",
+    slug: { current: "lady-mico-charity-breaks-historical-barrier" },
     title: "The Lady Mico Charity – Breaks Its Historical Barrier",
     excerpt: "The Lady Mico Charity made a significant historical change in 1984 when it invited a Jamaican citizen into the membership of its 300 year old Charity.",
     content: `The Lady Mico Charity, now the Lady Mico Trust, made a significant historical change in 1984 when it invited to the membership of its 300 year old Charity a Jamaican citizen and Principal of its only surviving Caribbean education institution, Professor, the Honourable Errol Lawrence Miller.\n\nThis appointment made by the then chairman Mr. Henry Buxton was unprecedented as no member other than the descendants of Sir Thomas Fowell Buxton, the first chair of the Charity or persons external to the United Kingdom, were made trustees of the Lady Mico Charity.`,
@@ -27,14 +29,23 @@ function BackgroundGrid() {
       <div className="absolute right-[-4%] top-[120px] h-[1200px] w-[680px] opacity-[0.16]">
         <div className="grid h-full w-full grid-cols-6 grid-rows-10">
           {Array.from({ length: 60 }).map((_, i) => (
-            <div key={i} className="border border-black/[0.05]" style={{ borderRadius: "18px" }} />
+            <div
+              key={i}
+              className="border border-black/[0.05]"
+              style={{ borderRadius: "18px" }}
+            />
           ))}
         </div>
       </div>
+
       <div className="absolute left-[-2%] bottom-[80px] h-[260px] w-[260px] opacity-[0.14]">
         <div className="grid h-full w-full grid-cols-4 grid-rows-4">
           {Array.from({ length: 16 }).map((_, i) => (
-            <div key={i} className="border border-black/[0.05]" style={{ borderRadius: "18px" }} />
+            <div
+              key={i}
+              className="border border-black/[0.05]"
+              style={{ borderRadius: "18px" }}
+            />
           ))}
         </div>
       </div>
@@ -42,8 +53,10 @@ function BackgroundGrid() {
   );
 }
 
-// FIX: accept slug as prop, removed useSearchParams
-export default function NewsDetailPage({ slug }) {
+export default function NewsDetailPage() {
+  const params = useSearchParams();
+  const slug = params.get("slug");
+
   const [article, setArticle] = useState(null);
   const [allArticles, setAllArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,14 +70,16 @@ export default function NewsDetailPage({ slug }) {
         ]);
 
         if (articleData) {
+          // Format article data
           setArticle({
             ...articleData,
-            date: new Date(articleData.date).toLocaleDateString('en-GB', {
-              day: '2-digit', month: 'long', year: 'numeric'
+            date: new Date(articleData.date).toLocaleDateString('en-GB', { 
+              day: '2-digit', month: 'long', year: 'numeric' 
             }),
           });
           console.log('✅ Loaded article from CMS:', articleData.title);
         } else {
+          // Fallback to static
           setArticle(staticNewsItems[0]);
           console.log('ℹ️ Using static article data');
         }
@@ -104,8 +119,8 @@ export default function NewsDetailPage({ slug }) {
     );
   }
 
-  const currentSlug = article.slug;
-  const currentIndex = allArticles.findIndex(a => a.slug === currentSlug);
+  // Find prev/next articles
+  const currentIndex = allArticles.findIndex(a => a.slug === article.slug?.current || a.slug === slug);
   const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : allArticles[allArticles.length - 1];
   const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : allArticles[0];
 
@@ -121,7 +136,10 @@ export default function NewsDetailPage({ slug }) {
           transition={{ duration: 0.45 }}
           className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
         >
-          <p className="text-[22px] text-[#8A8E9D]" style={inter}>{article.date}</p>
+          <p className="text-[22px] text-[#8A8E9D]" style={inter}>
+            {article.date}
+          </p>
+
           {article.location && (
             <div className="inline-flex items-center gap-2 text-[18px] text-[#040617]" style={inter}>
               <MapPin className="h-5 w-5" />
@@ -148,7 +166,11 @@ export default function NewsDetailPage({ slug }) {
           transition={{ duration: 0.55 }}
           className="mt-14 overflow-hidden rounded-[32px]"
         >
-          <img src={article.image} alt={article.title} className="h-[320px] w-full object-cover sm:h-[520px] lg:h-[720px]" />
+          <img
+            src={article.image}
+            alt={article.title}
+            className="h-[320px] w-full object-cover sm:h-[520px] lg:h-[720px]"
+          />
         </motion.div>
 
         {/* Body */}
@@ -158,8 +180,11 @@ export default function NewsDetailPage({ slug }) {
           transition={{ duration: 0.55, delay: 0.08 }}
           className="mx-auto mt-16 max-w-[1380px]"
         >
-          <div className="space-y-10 text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[28px] lg:text-[32px]" style={inter}>
-            {(article.content || article.excerpt || "Content coming soon.")
+          <div
+            className="space-y-10 text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[28px] lg:text-[32px]"
+            style={inter}
+          >
+            {article.content
               .trim()
               .split("\n\n")
               .map((paragraph, index) => (
@@ -168,37 +193,51 @@ export default function NewsDetailPage({ slug }) {
           </div>
         </motion.div>
 
-        {/* Navigation — FIX: dynamic routes */}
+        {/* Navigation */}
         {allArticles.length > 1 && (
           <div className="mt-24 grid gap-8 border-t border-black/10 pt-10 lg:grid-cols-2">
+            {/* Previous */}
             <Link
-              href={`/newsdetail/${prevArticle.slug}`}
+              href={`/newsdetail?slug=${prevArticle.slug}`}
               className="group rounded-[28px] border border-black/10 bg-white p-8 transition hover:border-black/20"
             >
               <div className="flex items-start gap-5">
                 <div className="flex h-[68px] w-[68px] items-center justify-center rounded-[18px] bg-[#ECECF1] transition group-hover:bg-[#FFD900]">
                   <ArrowLeft className="h-7 w-7 text-[#040617]" />
                 </div>
+
                 <div>
-                  <p className="text-[18px] text-[#8A8E9D]" style={inter}>Previous News</p>
-                  <h3 className="mt-2 max-w-[520px] text-[30px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#040617]" style={inter}>
+                  <p className="text-[18px] text-[#8A8E9D]" style={inter}>
+                    Previous News
+                  </p>
+                  <h3
+                    className="mt-2 max-w-[520px] text-[30px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#040617]"
+                    style={inter}
+                  >
                     {prevArticle.title}
                   </h3>
                 </div>
               </div>
             </Link>
 
+            {/* Next */}
             <Link
-              href={`/newsdetail/${nextArticle.slug}`}
+              href={`/newsdetail?slug=${nextArticle.slug}`}
               className="group rounded-[28px] border border-black/10 bg-white p-8 transition hover:border-black/20"
             >
               <div className="flex items-start justify-between gap-5">
                 <div>
-                  <p className="text-[18px] text-[#8A8E9D]" style={inter}>Next News</p>
-                  <h3 className="mt-2 max-w-[520px] text-[30px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#040617]" style={inter}>
+                  <p className="text-[18px] text-[#8A8E9D]" style={inter}>
+                    Next News
+                  </p>
+                  <h3
+                    className="mt-2 max-w-[520px] text-[30px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#040617]"
+                    style={inter}
+                  >
                     {nextArticle.title}
                   </h3>
                 </div>
+
                 <div className="flex h-[68px] w-[68px] items-center justify-center rounded-[18px] bg-[#ECECF1] transition group-hover:bg-[#FFD900]">
                   <ArrowRight className="h-7 w-7 text-[#040617]" />
                 </div>
