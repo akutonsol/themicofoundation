@@ -237,6 +237,106 @@ faqs: `*[_type == "faq" && isActive == true] | order(order asc) {
   order
 }`,
 
+// about page
+ boardMembers: `*[_type == "teamMember" && type == "board" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    role,
+    department,
+    email,
+    tenure,
+    bio,
+    photo,
+    order
+  }`,
+ 
+  staffMembers: `*[_type == "teamMember" && type == "staff" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    role,
+    department,
+    email,
+    tenure,
+    bio,
+    photo,
+    order
+  }`,
+ 
+  formerTrustees: `*[_type == "formerTrustee" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    years,
+    description,
+    photo,
+    order
+  }`,
+ 
+trusteeLegacy: `*[_type == "trusteeLegacy"][0]{
+  heroEyebrow, heroTitleLine1, heroTitleHighlight,
+  heroTitleLine3, heroSubtitle, timelineBlocks,
+  ctaTitle, ctaButtonText, ctaButtonLink
+}`,
+
+chairmen: `*[_type == "historicalPerson" && type == "chairman" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    years,
+    photo,
+    order
+  }`,
+
+  secretaryManagers: `*[_type == "historicalPerson" && type == "secretary" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    years,
+    photo,
+    order
+  }`,
+
+aboutContent: `*[_type == "aboutContent"][0]{
+  heading, paragraphs, buttonText, buttonLink
+}`,
+
+foundationVideo: `*[_type == "foundationVideo"][0]{
+  heading, subheading, videoId, decks
+}`,
+
+ourMission: `*[_type == "ourMission"][0]{
+  eyebrow, title, subtitle, values, ctaText, ctaLink
+}`,
+
+resourceCategories: `*[_type == "resourceCategory" && isActive == true] | order(order asc) {
+  _id, title, description,
+  date,
+  theme, topLabel, bottomLabel, order,
+  files[]{ title, date, file{ asset->{ url } } }
+}`,
+
+workWithUs: `*[_type == "workWithUs"][0]{
+  heading, cardsHeading,
+  heroImages, helpCards
+}`,
+
+magazines: `*[_type == "magazine" && isActive == true] | order(order desc) {
+  _id, title, issue, coverImage,
+  pages[]{ image, caption }
+}`,
+
+historyPage: `*[_type == "historyPage"][0]{
+  heroLabel, heroHeading, heroSubtext, heroImage,
+  conversation, storyHeading, storyParagraphs,
+  timeline, ctaHeading, ctaButtonText, ctaButtonLink
+}`,
+
+contactSettings: `*[_type == "contactSettings"][0]{
+  heading, address, email, phones, mapEmbedUrl
+}`,
+
+endowment: `*[_type == "endowment"][0]{
+  heroHeading, heroCtaText, heroCtaLink, stats,
+  photoTopLeft, photoTopRight, photoBottomLeft, photoBottomRight,
+  typesHeading, typesIntro, endowmentTypes
+}`,
 
   siteSettings: `*[_type == "siteSettings"][0]`
 }

@@ -12,6 +12,24 @@ import publication from './publication'
 import faq from './faq'
 import testimonial from './testimonial'
 import newsletterSubscriber from './newsletterSubscriber'
+import teamMember from './teamMember'
+import formerTrustee from './formerTrustee'
+import trusteeLegacy from './trusteeLegacy'
+import about from './about'
+import aboutContent from './aboutContent'
+import siteStats from './siteStats'
+import foundationVideo from './foundationVideo'
+import ourMission from './ourMission'
+import resourceCategory from './resourceCategory'
+import workWithUs from './workWithUs'
+import sponsorshipSubmission from './sponsorshipSubmission'
+import magazine from './magazine'
+import historyPage from './historyPage'
+import contactSubmission from './contactSubmission'
+import contactSettings from './contactSettings'
+import endowment from './endowment'
+import endowmentSubmission from './endowmentSubmission'
+import pledgeSubmission from './pledgeSubmission'
 
 export const schema = {
   types: [
@@ -29,5 +47,23 @@ export const schema = {
     faq,
     testimonial,
     newsletterSubscriber,
+     teamMember,
+     formerTrustee,
+     trusteeLegacy,
+     about,
+     aboutContent,
+     siteStats,
+     foundationVideo,
+     ourMission,
+     resourceCategory,
+     workWithUs,
+     sponsorshipSubmission,
+     magazine,
+     historyPage,
+     contactSubmission,
+     contactSettings,
+     endowment,
+     endowmentSubmission,
+     pledgeSubmission
   ],
 }

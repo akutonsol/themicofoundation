@@ -1,0 +1,62 @@
+import { defineType } from 'sanity'
+
+export default defineType({
+  name: 'historicalPerson',
+  title: 'About',
+  type: 'document',
+  fields: [
+    {
+      name: 'name',
+      title: 'Full Name',
+      type: 'string',
+      validation: Rule => Rule.required()
+    },
+    {
+      name: 'type',
+      title: 'Role Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Chairman', value: 'chairman' },
+          { title: 'Secretary Manager', value: 'secretary' },
+        ]
+      },
+      validation: Rule => Rule.required()
+    },
+    {
+      name: 'years',
+      title: 'Years of Service',
+      type: 'string',
+      description: 'e.g. "1981 - 1986"',
+      validation: Rule => Rule.required()
+    },
+    {
+      name: 'photo',
+      title: 'Photo',
+      type: 'image',
+      options: { hotspot: true },
+    },
+    {
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      validation: Rule => Rule.required().min(0)
+    },
+    {
+      name: 'isActive',
+      title: 'Active',
+      type: 'boolean',
+      initialValue: true,
+    },
+  ],
+  preview: {
+    select: { title: 'name', subtitle: 'years', media: 'photo' },
+  },
+  orderings: [
+    {
+      title: 'Display Order',
+      name: 'orderAsc',
+      by: [{ field: 'order', direction: 'asc' }]
+    }
+  ]
+})

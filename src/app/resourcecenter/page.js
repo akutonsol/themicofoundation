@@ -1,14 +1,14 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import HeroSection from "@/components/ResourceCenter/HeroSection";
+import ResourceCenter from "@/components/ResourceCenter/ResourceCenter";
 import DownloadableForms from "@/components/ResourceCenter/DownloadableForms";
 
 export default function Page() {
   return (
     <>
       <Navbar />
-      {/*}  <HeroSection /> >*/}
-        <DownloadableForms />
+           <ResourceCenter /> 
+     
       <Footer />
     </>
   );

@@ -1,21 +1,26 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import AboutUs from "@/components/about/AboutUs";
+import FoundationVideo from "@/components/about/FoundationVideo";
+import OurMission from "@/components/about/OurMission";
 import Chairmen from "@/components/about/Chairmen";
 import SecretaryManager from "@/components/about/SecretaryManager";
-import AboutVideo from "@/components/about/AboutVideo";
-import Mission from '@/components/home/Mission'
+import MagazineSection from "@/components/about/MagazineSection"
 
-export default function Page() {
+export default function AboutPage() {
   return (
     <>
       <Navbar />
-      <AboutUs />
-        <AboutVideo />
-         <Mission />
-      <Chairmen />
-      <SecretaryManager />
+      <main>
+        <AboutUs />
+        <FoundationVideo />
+          <OurMission />
+        <Chairmen />
+        <SecretaryManager />
+        <MagazineSection />
+      </main>
       <Footer />
     </>
   );
 }
+ 
