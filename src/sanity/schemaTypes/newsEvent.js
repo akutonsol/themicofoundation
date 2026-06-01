@@ -26,9 +26,10 @@ export default {
       type: 'string',
       options: {
         list: [
+          { title: 'News Article', value: 'news' },
           { title: 'Upcoming Event', value: 'upcoming' },
           { title: 'Newsroom Article', value: 'newsroom' },
-          { title: 'Event', value: 'event' },
+          { title: 'Event (Past)', value: 'event' },
           { title: 'Announcement', value: 'announcement' }
         ]
       },
@@ -54,23 +55,36 @@ export default {
       description: 'Event/article location (e.g., "Jamaica, Kingston")'
     },
     {
+      name: 'category',
+      title: 'Category Label',
+      type: 'string',
+      description: 'e.g. "Newsroom", "Education"',
+      initialValue: 'Newsroom'
+    },
+    {
+      name: 'author',
+      title: 'Author / Posted By',
+      type: 'string',
+      initialValue: 'The Mico Foundation'
+    },
+    {
       name: 'excerpt',
       title: 'Excerpt/Short Description',
       type: 'text',
-      validation: Rule => Rule.required().min(50).max(500),
-      description: 'Brief description shown in listings (50-500 characters)'
+      validation: Rule => Rule.required().min(10).max(500),
+      description: 'Brief description shown in listings'
     },
     {
       name: 'content',
       title: 'Full Article Content',
       type: 'text',
-      description: 'Full article content for news articles (plain text, use \\n\\n for paragraph breaks)'
+      description: 'Full article content for news articles'
     },
     {
       name: 'description',
       title: 'Event Description',
       type: 'text',
-      description: 'Detailed event description for upcoming events'
+      description: 'Detailed event description'
     },
     {
       name: 'eventDetails',
@@ -83,38 +97,49 @@ export default {
       name: 'contactName',
       title: 'Contact Name',
       type: 'string',
-      description: 'Contact person/team name (for upcoming events)'
+      description: 'Contact person/team name'
     },
     {
       name: 'contactEmail',
       title: 'Contact Email',
       type: 'string',
-      description: 'Contact email (for upcoming events)'
+      description: 'Contact email'
     },
     {
       name: 'contactPhone',
       title: 'Contact Phone',
       type: 'string',
-      description: 'Contact phone number (for upcoming events)'
+      description: 'Contact phone number'
     },
     {
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
-      validation: Rule => Rule.required(),
-      options: {
-        hotspot: true
-      },
+      options: { hotspot: true },
       description: 'Main image for the article/event'
     },
     {
       name: 'thumbnailImage',
       title: 'Thumbnail Image',
       type: 'image',
-      options: {
-        hotspot: true
-      },
+      options: { hotspot: true },
       description: 'Smaller image for listings (uses featured image if not provided)'
+    },
+    {
+      name: 'gallery',
+      title: 'Event Gallery',
+      description: 'Photo gallery for past events — hold Cmd/Ctrl to select multiple images at once',
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            { name: 'alt', title: 'Alt Text', type: 'string' }
+          ]
+        }
+      ],
+      options: { layout: 'grid' }
     },
     {
       name: 'isFeatured',
@@ -127,7 +152,7 @@ export default {
       name: 'order',
       title: 'Display Order',
       type: 'number',
-      validation: Rule => Rule.required().min(0),
+      initialValue: 0,
       description: 'Order in which articles appear (0 = first)'
     },
     {
@@ -148,12 +173,17 @@ export default {
       isActive: 'isActive'
     },
     prepare({ title, type, date, media, isFeatured, isActive }) {
+      const labels = { news: '📰', newsroom: '📰', upcoming: '📅', event: '✅', announcement: '📢' }
       const formattedDate = date ? new Date(date).toLocaleDateString() : 'No date'
       return {
-        title: title,
-        subtitle: `${type} - ${formattedDate}${isFeatured ? ' ⭐ Featured' : ''}${!isActive ? ' (Inactive)' : ''}`,
-        media: media
+        title: `${labels[type] || ''} ${title}`,
+        subtitle: `${type} - ${formattedDate}${isFeatured ? ' ⭐' : ''}${!isActive ? ' (Inactive)' : ''}`,
+        media
       }
     }
-  }
+  },
+  orderings: [
+    { title: 'Newest First', name: 'dateDesc', by: [{ field: 'date', direction: 'desc' }] },
+    { title: 'Display Order', name: 'orderAsc', by: [{ field: 'order', direction: 'asc' }] }
+  ]
 }

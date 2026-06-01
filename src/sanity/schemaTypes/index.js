@@ -30,6 +30,8 @@ import contactSettings from './contactSettings'
 import endowment from './endowment'
 import endowmentSubmission from './endowmentSubmission'
 import pledgeSubmission from './pledgeSubmission'
+import endowmentproject from './endowmentproject'
+import projectInitiative from './projectInitiative'
 
 export const schema = {
   types: [
@@ -64,6 +66,8 @@ export const schema = {
      contactSettings,
      endowment,
      endowmentSubmission,
-     pledgeSubmission
+     pledgeSubmission,
+     endowmentproject,
+     projectInitiative
   ],
 }

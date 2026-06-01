@@ -106,6 +106,34 @@ export default defineType({
       hidden: true,
       initialValue: '#1A1600'
     },
+{
+  name: 'gallery',
+  title: 'Photo Gallery',
+  description: 'Select multiple images at once: click Add item → hold Cmd/Ctrl and select all photos → Upload',
+  type: 'array',
+  of: [
+    {
+      type: 'image',
+      options: { 
+        hotspot: true,
+        accept: 'image/*',
+        storeOriginalFilename: true,
+      },
+      fields: [
+        { 
+          name: 'alt', 
+          title: 'Alt Text', 
+          type: 'string',
+          description: 'Optional caption for this photo'
+        }
+      ]
+    }
+  ],
+  options: {
+    layout: 'grid',
+  },
+},
+
     {
       name: 'order',
       title: 'Display Order',

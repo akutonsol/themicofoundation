@@ -1,12 +1,12 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import PastEventDetails from "@/components/news/PastEventDetails";
+import NewsEventsPage from "@/components/news/NewsEventsPage";
 
 export default function Page() {
   return (
     <>
       <Navbar />
-      <PastEventDetails  slug={slug}/>
+      <NewsEventsPage  />
       <Footer />
     </>
   );

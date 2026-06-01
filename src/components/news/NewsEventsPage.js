@@ -4,60 +4,33 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import { client, queries } from "@/sanity/lib/sanity";
+import { createClient } from "@sanity/client";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
-
 const tabs = ["News", "Events"];
 
-// Fallback static data
-const staticNewsItems = [
-  {
-    id: 1,
-    slug: "lady-mico-charity-breaks-historical-barrier",
-    title: "The Lady Mico Charity – Breaks Its Historical Barrier",
-    excerpt: "The Lady Mico Charity made a significant historical change in 1984 when it invited a Jamaican citizen into the membership of its 300 year old Charity.",
-    date: "04 July 2025",
-    author: "The Mico Foundation",
-    location: "Jamaica, Kingston",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1600&q=80",
-    category: "Newsroom",
-    type: "news",
-  },
-];
+const sanityClient = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  useCdn: false,
+  apiVersion: "2024-01-01",
+  perspective: "published",
+});
 
-const staticUpcomingEvents = [
-  {
-    id: 1,
-    slug: "mico-future-forward-forum-upcoming",
-    title: "Mico Future Forward Forum",
-    description: "Join us for an inspiring day of talks, workshops, and networking focused on the future of education in the Caribbean.",
-    date: "04 July 2025",
-    time: "11 AM UTC",
-    location: "Jamaica, Kingston",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80",
-    type: "upcoming",
-  },
-];
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  try {
+    return new Date(dateStr).toLocaleDateString("en-GB", {
+      day: "2-digit", month: "long", year: "numeric",
+    });
+  } catch { return dateStr; }
+}
 
-const staticEndedEvents = [
-  {
-    id: 3,
-    slug: "mico-future-forward-forum",
-    title: "Mico Future Forward Forum",
-    description: "The Future Forward Forum brought together alumni, educators, students, and partners for an inspiring day of dialogue.",
-    date: "04 July 2025",
-    location: "Jamaica, Kingston",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80",
-    type: "event",
-  },
-];
-
-// ── Routing helper ──────────────────────────────────────────────
 function getItemHref(item) {
-  if (item.type === "upcoming") return `/upcomingevents?slug=${item.slug}`;
+  if (item.type === "upcoming") return `/upcomingevents/${item.slug}`;
   if (item.type === "announcement") return `/announcement/${item.slug}`;
-  return `/newsdetail?slug=${item.slug}`;
+  if (item.type === "event") return `/pasteventdetails?slug=${item.slug}`;
+  return `/newsdetail/${item.slug}`;
 }
 
 function BackgroundGrid() {
@@ -70,13 +43,6 @@ function BackgroundGrid() {
           ))}
         </div>
       </div>
-      <div className="absolute left-[2%] bottom-[80px] h-[180px] w-[180px] opacity-[0.18]">
-        <div className="grid h-full w-full grid-cols-3 grid-rows-3">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="border border-black/[0.05]" style={{ borderRadius: "18px" }} />
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -85,21 +51,18 @@ function ToggleTabs({ activeTab, setActiveTab }) {
   return (
     <div className="mb-12 flex justify-center">
       <div className="inline-flex rounded-[22px] border border-[#E5E6EB] bg-[#FFFDF9] p-1">
-        {tabs.map((tab) => {
-          const active = activeTab === tab;
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`min-w-[180px] rounded-[18px] px-8 py-4 text-[20px] font-semibold tracking-[-0.03em] transition ${
-                active ? "bg-[#FFD900] text-[#040617]" : "text-[#7A7D8B]"
-              }`}
-              style={inter}
-            >
-              {tab}
-            </button>
-          );
-        })}
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`min-w-[180px] rounded-[18px] px-8 py-4 text-[20px] font-semibold tracking-[-0.03em] transition ${
+              activeTab === tab ? "bg-[#FFD900] text-[#040617]" : "text-[#7A7D8B]"
+            }`}
+            style={inter}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -117,18 +80,17 @@ function NewsCard({ item }) {
       <div className="grid gap-4 lg:grid-cols-[420px_1fr]">
         <div className="overflow-hidden rounded-[18px]">
           <div className="relative h-[260px] sm:h-[320px] lg:h-full">
-            <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
-            <div
-              className="absolute left-0 top-0 flex items-center gap-2 px-5 py-3"
-              style={{ backgroundColor: "#2EE66B" }}
-            >
+            {item.image
+              ? <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+              : <div className="h-full w-full bg-[#E5E6EB]" />
+            }
+            <div className="absolute left-0 top-0 flex items-center gap-2 px-5 py-3" style={{ backgroundColor: "#2EE66B" }}>
               <span className="text-[16px] font-semibold text-[#040617]" style={inter}>
                 ✦ {item.category || "Newsroom"}
               </span>
             </div>
           </div>
         </div>
-
         <div className="flex flex-col justify-between px-2 py-1">
           <div>
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
@@ -147,9 +109,7 @@ function NewsCard({ item }) {
               {item.excerpt}
             </p>
           </div>
-
           <div className="mt-8 flex items-center justify-end">
-            {/* FIX: use getItemHref for correct routing */}
             <Link
               href={getItemHref(item)}
               className="inline-flex items-center gap-2 rounded-[14px] bg-[#FFD900] px-7 py-3 text-[16px] font-semibold text-[#040617]"
@@ -164,10 +124,63 @@ function NewsCard({ item }) {
   );
 }
 
+function EventLayout({ item, badge, badgeColor, badgeTextColor, children }) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.4 }}
+      className="mb-10 rounded-[28px] border border-[#E5E6EB] bg-[#FFFDF9] p-4"
+    >
+      <div className="grid gap-4 lg:grid-cols-[58%_42%]">
+        <div className="overflow-hidden rounded-[18px]">
+          <div className="relative h-[260px] sm:h-[320px] lg:h-[420px]">
+            {item.image
+              ? <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+              : <div className="h-full w-full bg-[#E5E6EB]" />
+            }
+            <div
+              className="absolute left-0 top-0 flex items-center gap-2 px-5 py-3"
+              style={{ backgroundColor: badgeColor, color: badgeTextColor }}
+            >
+              <span className="text-[16px] font-semibold" style={inter}>✦ {badge}</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col justify-between px-2 py-1">
+          <div>
+            <h3
+              className="text-[28px] font-semibold leading-[1.05] tracking-[-0.05em] text-[#040617] sm:text-[34px]"
+              style={inter}
+            >
+              {item.title}
+            </h3>
+            <p className="mt-4 text-[20px] leading-[1.5] text-[#7A7D8B]" style={inter}>
+              {item.description || item.excerpt}
+            </p>
+          </div>
+          <div className="mt-8 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+            <div className="flex flex-wrap items-center gap-6 text-[18px] text-[#565B6B]" style={inter}>
+              <span>{item.date}{item.time ? ` (${item.time})` : ""}</span>
+              {item.location && (
+                <span className="inline-flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  {item.location}
+                </span>
+              )}
+            </div>
+            {children}
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
 function UpcomingEventCard({ item }) {
   return (
     <EventLayout item={item} badge="Upcoming" badgeColor="#FFD900" badgeTextColor="#040617">
-      {/* FIX: use getItemHref for correct routing */}
       <Link
         href={getItemHref(item)}
         className="inline-flex w-fit items-center gap-2 rounded-[14px] bg-[#FFD900] px-7 py-3 text-[16px] font-semibold text-[#040617]"
@@ -193,120 +206,43 @@ function EndedEventCard({ item }) {
   );
 }
 
-function EventLayout({ item, badge, badgeColor, badgeTextColor, children }) {
-  return (
-    <motion.article
-      initial={{ opacity: 0, y: 26 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.4 }}
-      className="mb-10 rounded-[28px] border border-[#E5E6EB] bg-[#FFFDF9] p-4"
-    >
-      <div className="grid gap-4 lg:grid-cols-[58%_42%]">
-        <div className="overflow-hidden rounded-[18px]">
-          <div className="relative h-[260px] sm:h-[320px] lg:h-[420px]">
-            <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
-            <div
-              className="absolute left-0 top-0 flex items-center gap-2 px-5 py-3"
-              style={{ backgroundColor: badgeColor, color: badgeTextColor }}
-            >
-              <span className="text-[16px] font-semibold" style={inter}>✦ {badge}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col justify-between px-2 py-1">
-          <div>
-            <h3
-              className="text-[28px] font-semibold leading-[1.05] tracking-[-0.05em] text-[#040617] sm:text-[34px]"
-              style={inter}
-            >
-              {item.title}
-            </h3>
-            <p className="mt-4 text-[20px] leading-[1.5] text-[#7A7D8B]" style={inter}>
-              {item.description || item.excerpt}
-            </p>
-          </div>
-
-          <div className="mt-8 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-            <div className="flex flex-wrap items-center gap-6 text-[18px] text-[#565B6B]" style={inter}>
-              <span>{item.date}{item.time ? ` (${item.time})` : ""}</span>
-              {item.location && (
-                <span className="inline-flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  {item.location}
-                </span>
-              )}
-            </div>
-            {children}
-          </div>
-        </div>
-      </div>
-    </motion.article>
-  );
-}
-
 export default function NewsEventsPage() {
   const [activeTab, setActiveTab] = useState("News");
-  const [newsItems, setNewsItems] = useState(staticNewsItems);
-  const [upcomingEvents, setUpcomingEvents] = useState(staticUpcomingEvents);
-  const [endedEvents, setEndedEvents] = useState(staticEndedEvents);
+  const [newsItems, setNewsItems] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [endedEvents, setEndedEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        // Fetch all newsEvents from Sanity
-        const allItems = await client.fetch(
-          `*[_type == "newsEvent" && isActive == true] | order(date desc) {
-            _id,
-            title,
-            "slug": slug.current,
-            type,
-            date,
-            location,
-            excerpt,
-            description,
-            time,
-            category,
-            "image": coalesce(featuredImage.asset->url, thumbnailImage.asset->url),
-          }`
-        );
-
-        if (allItems && allItems.length > 0) {
-          // Format dates
-          const formatted = allItems.map((item) => ({
+    sanityClient
+      .fetch(
+        `*[_type == "newsEvent"] | order(date desc) {
+          _id, title, "slug": slug.current, type, date, location,
+          excerpt, description, time, category, author, isFeatured,
+          "image": coalesce(featuredImage.asset->url, thumbnailImage.asset->url)
+        }`
+      )
+      .then((data) => {
+        if (data && data.length > 0) {
+          const fmt = data.map((item) => ({
             ...item,
-            date: new Date(item.date).toLocaleDateString("en-GB", {
-              day: "2-digit", month: "long", year: "numeric",
-            }),
+            date: formatDate(item.date),
           }));
-
-          // Split by type
-          const news = formatted.filter((i) => i.type === "news" || (!i.type));
-          const upcoming = formatted.filter((i) => i.type === "upcoming");
-          const ended = formatted.filter((i) => i.type === "event" || i.type === "ended");
-
-          if (news.length > 0) setNewsItems(news);
-          if (upcoming.length > 0) setUpcomingEvents(upcoming);
-          if (ended.length > 0) setEndedEvents(ended);
-
-          console.log("✅ Loaded news & events from CMS");
+          setNewsItems(fmt.filter((i) => i.type === "news" || i.type === "newsroom" || !i.type));
+          setUpcomingEvents(fmt.filter((i) => i.type === "upcoming"));
+          setEndedEvents(fmt.filter((i) => i.type === "event" || i.type === "ended"));
         }
-      } catch (error) {
-        console.error("Error fetching news/events:", error);
-      } finally {
         setLoading(false);
-      }
-    }
-
-    fetchData();
+      })
+      .catch((err) => {
+        console.error("NewsEventsPage fetch error:", err);
+        setLoading(false);
+      });
   }, []);
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#FAF9F6] px-5 py-14 sm:px-8 lg:px-12">
       <BackgroundGrid />
-
       <div className="relative mx-auto max-w-[1560px]">
         <ToggleTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -321,8 +257,10 @@ export default function NewsEventsPage() {
             >
               {loading ? (
                 <p className="text-center text-[20px] text-[#8A8E9D]" style={inter}>Loading...</p>
+              ) : newsItems.length === 0 ? (
+                <p className="text-center text-[20px] text-[#8A8E9D]" style={inter}>No news articles yet.</p>
               ) : (
-                newsItems.map((item) => <NewsCard key={item.slug} item={item} />)
+                newsItems.map((item) => <NewsCard key={item.slug || item._id} item={item} />)
               )}
             </motion.div>
           ) : (
@@ -333,30 +271,32 @@ export default function NewsEventsPage() {
               exit={{ opacity: 0, y: -18 }}
               transition={{ duration: 0.3 }}
             >
-              <h1
+              <h2
                 className="mb-8 text-[44px] font-semibold leading-[1] tracking-[-0.05em] text-[#040617] sm:text-[56px] lg:text-[72px]"
                 style={inter}
               >
                 Upcoming Events
-              </h1>
-
+              </h2>
               {loading ? (
                 <p className="text-[20px] text-[#8A8E9D]" style={inter}>Loading...</p>
+              ) : upcomingEvents.length === 0 ? (
+                <p className="text-[20px] text-[#8A8E9D]" style={inter}>No upcoming events.</p>
               ) : (
-                upcomingEvents.map((item) => <UpcomingEventCard key={item.slug} item={item} />)
+                upcomingEvents.map((item) => <UpcomingEventCard key={item.slug || item._id} item={item} />)
               )}
 
-              <h1
+              <h2
                 className="mb-8 mt-20 text-[44px] font-semibold leading-[1] tracking-[-0.05em] text-[#040617] sm:text-[56px] lg:text-[72px]"
                 style={inter}
               >
                 Ended Events
-              </h1>
-
+              </h2>
               {loading ? (
                 <p className="text-[20px] text-[#8A8E9D]" style={inter}>Loading...</p>
+              ) : endedEvents.length === 0 ? (
+                <p className="text-[20px] text-[#8A8E9D]" style={inter}>No ended events yet.</p>
               ) : (
-                endedEvents.map((item) => <EndedEventCard key={item.slug} item={item} />)
+                endedEvents.map((item) => <EndedEventCard key={item.slug || item._id} item={item} />)
               )}
             </motion.div>
           )}

@@ -10,12 +10,10 @@
 /**
  * Server component — exports metadata only
  */
-export const dynamic = 'force-static'
+export const dynamic = 'force-dynamic'
 export { metadata, viewport } from 'next-sanity/studio'
- 
 import StudioClient from './StudioClient'
- 
+
 export default function StudioPage() {
   return <StudioClient />
 }
- 

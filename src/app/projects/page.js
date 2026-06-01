@@ -1,22 +1,18 @@
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-  
-import MarqueeLines    from '@/components/home/MarqueeLines'  // ← reused directly
-import ActiveProjectsSection from "@/components/projects/ActiveProjectsSection";
-import CompletedProjectsSection from "@/components/projects/CompletedProjectsSection";
-import ProjectSponsors from "@/components/projects/ProjectSponsors";
+import Navbar from "@/components/layout/Navbar"
+import Footer from "@/components/layout/Footer"
+import FoundationProjectsDeck from "@/components/projects/FoundationProjectsDeck"
+import CompletedProjectsSection from "@/components/projects/CompletedProjectsSection"
+import ProjectSponsorsSection from "@/components/projects/ProjectSponsorsSection"
 
 
 export default function ProjectsPage() {
   return (
     <main className="min-h-screen bg-[#FFFDF9]">
       <Navbar />
-         <ActiveProjectsSection />
-            {/* ← same component, same design */}
-              
-              <CompletedProjectsSection />
- <ProjectSponsors />
-   <MarqueeLines />  
+         <FoundationProjectsDeck />
+           <CompletedProjectsSection />
+        <ProjectSponsorsSection />
+      
             <Footer />
     </main>
   );

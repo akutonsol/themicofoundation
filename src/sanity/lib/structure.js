@@ -20,7 +20,11 @@ export const structure = (S) =>
               S.listItem().title('Messages Section Settings').child(S.documentTypeList('messagesSection').title('Messages Section Settings')),
               S.listItem().title('Team Messages').child(S.documentTypeList('teamMessage').title('Team Messages')),
               S.listItem().title('People Impact').child(S.documentTypeList('peopleImpact').title('People Impact')),
-              S.listItem().title('News & Events (Featured)').child(S.documentList().title('Featured News & Events').filter('_type == "newsEvent" && isFeatured == true')),
+              S.listItem().title('News & Events (Featured)').child(
+                S.documentList().title('Featured News & Events')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "newsEvent" && isFeatured == true')
+              ),
               S.listItem().title('Publications').child(S.documentTypeList('publication').title('Publications')),
               S.listItem().title('FAQ').child(S.documentTypeList('faq').title('FAQ')),
               S.listItem().title('Newsletter Subscribers').child(S.documentTypeList('newsletterSubscriber').title('Newsletter Subscribers')),
@@ -40,8 +44,16 @@ export const structure = (S) =>
               S.listItem().title('Foundation Video & Decks').child(S.documentTypeList('foundationVideo').title('Foundation Video & Decks')),
               S.listItem().title('Our Mission & Values').child(S.documentTypeList('ourMission').title('Our Mission & Values')),
               S.listItem().title('📖 Magazine').child(S.documentTypeList('magazine').title('Magazine')),
-              S.listItem().title('Chairmans').child(S.documentList().title('Chairmans').filter('_type == "historicalPerson" && type == "chairman"')),
-              S.listItem().title('Secretary Managers').child(S.documentList().title('Secretary Managers').filter('_type == "historicalPerson" && type == "secretary"')),
+              S.listItem().title('Chairmans').child(
+                S.documentList().title('Chairmans')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "historicalPerson" && type == "chairman"')
+              ),
+              S.listItem().title('Secretary Managers').child(
+                S.documentList().title('Secretary Managers')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "historicalPerson" && type == "secretary"')
+              ),
             ])
         ),
 
@@ -67,8 +79,16 @@ export const structure = (S) =>
           S.list()
             .title('Team')
             .items([
-              S.listItem().title('Board of Directors').child(S.documentList().title('Board of Directors').filter('_type == "teamMember" && type == "board"')),
-              S.listItem().title('Staff').child(S.documentList().title('Staff').filter('_type == "teamMember" && type == "staff"')),
+              S.listItem().title('Board of Directors').child(
+                S.documentList().title('Board of Directors')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "teamMember" && type == "board"')
+              ),
+              S.listItem().title('Staff').child(
+                S.documentList().title('Staff')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "teamMember" && type == "staff"')
+              ),
             ])
         ),
 
@@ -82,8 +102,36 @@ export const structure = (S) =>
             .title('Trustees')
             .items([
               S.listItem().title('Legacy Section Content').child(S.documentTypeList('trusteeLegacy').title('Legacy Section Content')),
-              S.listItem().title('Current Trustees (Board)').child(S.documentList().title('Current Trustees').filter('_type == "teamMember" && type == "board"')),
+              S.listItem().title('Current Trustees (Board)').child(
+                S.documentList().title('Current Trustees')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "teamMember" && type == "board"')
+              ),
               S.listItem().title('Former Trustees').child(S.documentTypeList('formerTrustee').title('Former Trustees')),
+            ])
+        ),
+
+      S.divider(),
+
+      // ── PROJECTS ──────────────────────────────────
+      S.listItem()
+        .title('🚧 Projects')
+        .child(
+          S.list()
+            .title('Projects')
+            .items([
+              S.listItem().title('Active Projects').child(
+                S.documentList().title('Active Projects')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "project" && status == "active"')
+              ),
+              S.listItem().title('Completed Projects').child(
+                S.documentList().title('Completed Projects')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "project" && (status == "completed" || status == "complete")')
+              ),
+              S.listItem().title('All Projects').child(S.documentTypeList('project').title('All Projects')),
+              S.listItem().title('Project Initiatives (Accordion)').child(S.documentTypeList('projectInitiative').title('Project Initiatives')),
             ])
         ),
 
@@ -96,9 +144,21 @@ export const structure = (S) =>
           S.list()
             .title('News & Events')
             .items([
-              S.listItem().title('News Articles').child(S.documentList().title('News Articles').filter('_type == "newsEvent" && type == "news"')),
-              S.listItem().title('Upcoming Events').child(S.documentList().title('Upcoming Events').filter('_type == "newsEvent" && type == "upcoming"')),
-              S.listItem().title('Announcements').child(S.documentList().title('Announcements').filter('_type == "newsEvent" && type == "announcement"')),
+              S.listItem().title('News Articles').child(
+                S.documentList().title('News Articles')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "newsEvent" && type == "news"')
+              ),
+              S.listItem().title('Upcoming Events').child(
+                S.documentList().title('Upcoming Events')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "newsEvent" && type == "upcoming"')
+              ),
+              S.listItem().title('Announcements').child(
+                S.documentList().title('Announcements')
+                  .apiVersion('2024-01-01')
+                  .filter('_type == "newsEvent" && type == "announcement"')
+              ),
               S.listItem().title('All News & Events').child(S.documentTypeList('newsEvent').title('All News & Events')),
             ])
         ),
@@ -147,6 +207,7 @@ export const structure = (S) =>
           S.list()
             .title('Pledge')
             .items([
+              S.listItem().title('Pledge Project').child(S.documentTypeList('endowmentproject').title('Pledge Project')),
               S.listItem().title('Pledge Submissions').child(S.documentTypeList('pledgeSubmission').title('Pledge Submissions')),
             ])
         ),

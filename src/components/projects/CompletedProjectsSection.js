@@ -1,351 +1,270 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { client } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
+const ACCENTS = ["#FFD900", "#5EDA71", "#60A5FA", "#F97316"];
 
-const projects = [
-  {
-    id: 1,
-    category: "Scholarships",
-    title: "Student Scholarship Fund",
-    description:
-      "Opening access to education through tuition assistance, books, meals, transportation, and academic support initiatives.",
-    fullDescription:
-      "The Student Scholarship Fund provides comprehensive financial support to deserving students pursuing higher education. We cover tuition fees, textbooks, meals, transportation costs, and provide academic mentorship programs. Our initiative ensures that financial barriers never stand between talented students and their educational dreams. Through partnerships with educational institutions and community organizations, we've helped hundreds of students achieve their academic goals and build successful careers.",
-    image:
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1800&q=80",
-    href: "/projects",
-  },
-  {
-    id: 2,
-    category: "Historic Restoration",
-    title: "Buxton College Restoration",
-    description:
-      "Preserving heritage architecture connected to The Mico legacy while creating renewed educational spaces for future generations.",
-    fullDescription:
-      "The Buxton College Restoration project honors our rich educational heritage by preserving and modernizing historic campus buildings. This initiative combines architectural preservation with modern educational infrastructure, creating spaces that respect our past while serving future generations. We're restoring original facades, updating learning facilities, and ensuring these historic structures remain functional educational spaces for decades to come.",
-    image:
-      "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1800&q=80",
-    href: "/projectdetail?slug=buxton-college",
-  },
-  {
-    id: 3,
-    category: "Campus Development",
-    title: "Campus Modernization",
-    description:
-      "Creating modern classrooms, upgraded facilities, smart learning spaces, and improved educational infrastructure.",
-    fullDescription:
-      "Our Campus Modernization initiative transforms traditional learning environments into state-of-the-art educational facilities. We're implementing smart classroom technology, creating collaborative learning spaces, upgrading laboratories, and building sustainable infrastructure. This project ensures our students have access to world-class facilities that prepare them for the demands of modern education and future careers in an increasingly digital world.",
-    image:
-      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=80",
-    href: "/projects",
-  },
-  {
-    id: 4,
-    category: "Community Impact",
-    title: "Community Learning Programs",
-    description:
-      "Supporting outreach, inclusive learning initiatives, rural education programs, and community-centered development.",
-    fullDescription:
-      "Community Learning Programs extend educational opportunities beyond traditional campus boundaries. We operate mobile learning centers, provide adult education classes, support rural schools, and create inclusive programs for underserved communities. Through partnerships with local organizations, we're building a network of learning opportunities that strengthens entire communities and creates pathways to education for all, regardless of location or background.",
-    image:
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1800&q=80",
-    href: "/projects",
-  },
+const galleryVariants = {
+  initial: { opacity: 0, x: 24 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], when: "beforeChildren", staggerChildren: 0.05 } },
+  exit: { opacity: 0, x: -24, transition: { duration: 0.3 } },
+};
+
+const imageVariants = {
+  initial: { opacity: 0, y: 14, scale: 0.985 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
+};
+
+const desktopTileClasses = [
+  "col-span-2 row-span-1 aspect-[0.9/1]",
+  "col-span-2 row-span-1 aspect-[0.9/1]",
+  "col-span-2 row-span-1 aspect-[0.9/1]",
+  "col-span-2 row-span-2 aspect-[0.9/1.8]",
+  "col-span-5 row-span-2 aspect-[1.65/1]",
+  "col-span-1 row-span-1 aspect-[0.7/1]",
+  "col-span-1 row-span-1 aspect-[0.7/1]",
+  "col-span-2 row-span-1 aspect-[1.15/1]",
+  "col-span-3 row-span-1 aspect-[1.6/1]",
 ];
 
-export default function FoundationProjectsDeck() {
-  const [active, setActive] = useState(0);
-  const [expandedCard, setExpandedCard] = useState(null);
-
-  const handleViewProject = (e, projectId) => {
-    e.stopPropagation();
-    setExpandedCard(projectId);
-  };
-
-  const handleCloseCard = () => {
-    setExpandedCard(null);
-    // Move the expanded card to the back of the deck
-    setActive((projects.length - 1 + active) % projects.length);
-  };
+function Lightbox({ project, activeImageIndex, onClose, onNext, onPrev }) {
+  const image = project.images[activeImageIndex];
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onNext();
+      if (e.key === "ArrowLeft") onPrev();
+    };
+    document.addEventListener("keydown", handler);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", handler); document.body.style.overflow = ""; };
+  }, [onClose, onNext, onPrev]);
 
   return (
-    <section className="relative overflow-hidden bg-[#004C43] px-6 py-24 sm:px-10 lg:px-16">
-      {/* BACKGROUND GRID */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.07]">
-        <div className="grid h-full w-full grid-cols-12">
-          {Array.from({ length: 96 }).map((_, i) => (
-            <div key={i} className="border border-[#FFFDF7]" />
-          ))}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(12px)', padding: '24px' }}
+      onClick={onClose}>
+      <motion.div initial={{ scale: 0.96, y: 18, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.96, opacity: 0 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        style={{ width: '100%', maxWidth: '1400px', background: '#0A1628', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}
+        onClick={e => e.stopPropagation()}>
+        <div style={{ position: 'relative', aspectRatio: '16/9', width: '100%', background: '#0d1b2e' }}>
+          {image?.url && <img src={image.url} alt={image.alt || project.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />}
+          <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10, width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>✕</button>
         </div>
-      </div>
-
-      {/* FLOATING ACCENTS */}
-      <motion.div
-        animate={{
-          y: [0, -14, 0],
-          rotate: [0, 8, 0],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute left-[6%] top-[10%] text-[44px] text-[#FFD900]"
-      >
-        ✦
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <div>
+            <p style={{ ...inter, fontSize: '12px', letterSpacing: '0.14em', textTransform: 'uppercase', color: project.accent || '#FFD900', margin: '0 0 4px' }}>{project.status}</p>
+            <p style={{ ...inter, fontSize: '18px', fontWeight: 600, color: 'white', margin: '0 0 2px' }}>{project.title}</p>
+            <p style={{ ...inter, fontSize: '13px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>Image {activeImageIndex + 1} of {project.images.length}</p>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {[{ fn: onPrev, label: '←' }, { fn: onNext, label: '→' }].map(({ fn, label }, i) => (
+              <button key={i} onClick={fn} style={{ width: '44px', height: '44px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>{label}</button>
+            ))}
+          </div>
+        </div>
       </motion.div>
+    </motion.div>
+  );
+}
 
-      <motion.div
-        animate={{
-          y: [0, 12, 0],
-          rotate: [0, -8, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute right-[8%] top-[20%] text-[44px] text-[#FFD900]"
-      >
-        ✦
-      </motion.div>
-
-      <div className="relative mx-auto max-w-[1700px]">
-        {/* HEADER */}
-        <div className="mb-20 max-w-[980px]">
-          <p
-            className="mb-5 text-[16px] uppercase tracking-[0.24em] text-[#FFD900]"
-            style={inter}
-          >
-            Foundation Initiatives
-          </p>
-
-          <h2
-            className="text-[68px] font-semibold leading-[0.9] tracking-[-0.08em] text-[#FFFDF7] sm:text-[92px] lg:text-[120px]"
-            style={inter}
-          >
-            Building The Future Through Projects.
-          </h2>
-
-          <p
-            className="mt-8 max-w-[780px] text-[22px] leading-[1.6] text-white/70 sm:text-[26px]"
-            style={inter}
-          >
-            Explore transformational initiatives supporting education,
-            restoration, community development, and the future of The Mico
-            Foundation.
-          </p>
-        </div>
-
-        {/* STACKED CARD EXPERIENCE */}
-        <div className="relative h-[820px]">
-          {projects.map((project, index) => {
-            const isActive = index === active;
-            const offset = index - active;
-            const isExpanded = expandedCard === project.id;
-
-            return (
-              <motion.div
-                key={project.id}
-                animate={{
-                  scale: isExpanded ? 1 : 1 - Math.abs(offset) * 0.04,
-                  y: isExpanded ? 0 : offset * 36,
-                  x: isExpanded ? 0 : offset * 24,
-                  rotateZ: isExpanded ? 0 : offset * -1.5,
-                  opacity: isExpanded ? 1 : Math.abs(offset) > 3 ? 0 : 1,
-                  zIndex: isExpanded ? 100 : 20 - Math.abs(offset),
-                }}
-                transition={{
-                  duration: 0.7,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="absolute left-0 top-0 h-full w-full"
-              >
-                <motion.div
-                  whileHover={{
-                    scale: isActive && !isExpanded ? 1.01 : 1,
-                  }}
-                  className={`relative flex h-full overflow-hidden rounded-[38px] border border-white/10 bg-[#0A2E29] shadow-2xl ${
-                    isActive && !isExpanded ? "cursor-default" : isExpanded ? "cursor-default" : "cursor-pointer"
-                  }`}
-                  onClick={() => !isExpanded && setActive(index)}
-                >
-                  {/* IMAGE SIDE */}
-                  <div className="relative w-[58%] overflow-hidden">
-                    <motion.div
-                      animate={{
-                        scale: isActive || isExpanded ? 1.04 : 1,
-                      }}
-                      transition={{
-                        duration: 1.2,
-                        ease: "easeOut",
-                      }}
-                      className="h-full w-full"
-                    >
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover"
-                        sizes="60vw"
-                        priority={index === 0}
-                      />
-                    </motion.div>
-
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#0A2E29]" />
-
-                    <div className="absolute left-8 top-8">
-                      <div className="rounded-full border border-[#FFD900]/40 bg-[#FFD900]/10 px-5 py-2 backdrop-blur-sm">
-                        <p
-                          className="text-[13px] uppercase tracking-[0.18em] text-[#FFD900]"
-                          style={inter}
-                        >
-                          {project.category}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Close button when expanded */}
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.button
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          transition={{ duration: 0.3 }}
-                          onClick={handleCloseCard}
-                          className="absolute right-8 top-8 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-md transition-colors hover:bg-white/20"
-                        >
-                          <X className="h-6 w-6 text-white" />
-                        </motion.button>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* CONTENT SIDE */}
-                  <div className="relative flex w-[42%] flex-col justify-between p-10 lg:p-14">
-                    <div>
-                      <div className="mb-10 flex items-center justify-between">
-                        <div
-                          className="text-[18px] tracking-[0.12em] text-white/40"
-                          style={inter}
-                        >
-                          {String(index + 1).padStart(2, "0")}
-                        </div>
-
-                        <div className="h-[1px] w-[120px] bg-white/10" />
-                      </div>
-
-                      <AnimatePresence mode="wait">
-                        {(isActive || isExpanded) && (
-                          <motion.div
-                            key={`${project.id}-${isExpanded ? 'expanded' : 'normal'}`}
-                            initial={{ opacity: 0, y: 40 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -30 }}
-                            transition={{
-                              duration: 0.65,
-                              ease: [0.22, 1, 0.36, 1],
-                            }}
-                          >
-                            <h3
-                              className="text-[58px] font-semibold leading-[0.92] tracking-[-0.06em] text-[#FFFDF7] lg:text-[72px]"
-                              style={inter}
-                            >
-                              {project.title}
-                            </h3>
-
-                            <p
-                              className="mt-8 max-w-[520px] text-[22px] leading-[1.65] text-white/70"
-                              style={inter}
-                            >
-                              {isExpanded ? project.fullDescription : project.description}
-                            </p>
-
-                            {/* Additional buttons when expanded */}
-                            {isExpanded && (
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3, duration: 0.5 }}
-                                className="mt-8 flex gap-4"
-                              >
-                                <motion.a
-                                  whileHover={{ scale: 1.04 }}
-                                  whileTap={{ scale: 0.98 }}
-                                  href="/endowments"
-                                  className="inline-flex items-center gap-3 rounded-full border-2 border-[#FFD900] bg-transparent px-7 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-[#FFD900] no-underline transition-colors hover:bg-[#FFD900] hover:text-[#040617]"
-                                  style={inter}
-                                >
-                                  Endowments
-                                  <ArrowUpRight className="h-5 w-5" />
-                                </motion.a>
-
-                                <motion.a
-                                  whileHover={{ scale: 1.04 }}
-                                  whileTap={{ scale: 0.98 }}
-                                  href="/donate"
-                                  className="inline-flex items-center gap-3 rounded-full bg-[#FFD900] px-7 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-[#040617] no-underline"
-                                  style={inter}
-                                >
-                                  Donate Now
-                                  <ArrowUpRight className="h-5 w-5" />
-                                </motion.a>
-                              </motion.div>
-                            )}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* FOOTER */}
-                    {!isExpanded && (
-                      <div className="flex items-end justify-between">
-                        <div className="flex gap-2">
-                          {projects.map((_, dotIndex) => (
-                            <button
-                              key={dotIndex}
-                              onClick={() => setActive(dotIndex)}
-                              className={`h-3 rounded-full transition-all duration-300 ${
-                                dotIndex === active
-                                  ? "w-12 bg-[#FFD900]"
-                                  : "w-3 bg-white/20"
-                              }`}
-                            />
-                          ))}
-                        </div>
-
-                        <motion.button
-                          whileHover={{
-                            scale: 1.04,
-                          }}
-                          whileTap={{
-                            scale: 0.98,
-                          }}
-                          onClick={(e) => handleViewProject(e, project.id)}
-                          className="inline-flex items-center gap-3 rounded-full bg-[#FFD900] px-7 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-[#040617] no-underline"
-                          style={inter}
-                        >
-                          View Project
-                          <ArrowUpRight className="h-5 w-5" />
-                        </motion.button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* GLOW */}
-                  <div className="pointer-events-none absolute inset-0 rounded-[38px] ring-1 ring-white/5" />
-                </motion.div>
-              </motion.div>
-            );
-          })}
-        </div>
+function ProjectImage({ image, index, className = "", onOpen, accent }) {
+  return (
+    <motion.button type="button" variants={imageVariants} onClick={() => onOpen(index)}
+      className={`group relative overflow-hidden rounded-[10px] bg-[#0d1b2e] text-left ${className}`}
+      whileHover={{ y: -3 }} transition={{ duration: 0.22 }}>
+      <div className="relative h-full w-full">
+        {image?.url && <img src={image.url} alt={image.alt || ''} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.5s ease' }} />}
+        <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
+        <div className="pointer-events-none absolute bottom-3 right-3 rounded-full px-3 py-1 text-xs font-semibold text-[#040617] opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: accent }}>View</div>
       </div>
-    </section>
+    </motion.button>
+  );
+}
+
+function GalleryDesktop({ project, onOpen }) {
+  const images = useMemo(() => Array.from({ length: 9 }, (_, i) => project.images[i % project.images.length]), [project.images]);
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div key={project.id} variants={galleryVariants} initial="initial" animate="animate" exit="exit"
+        className="hidden lg:grid lg:grid-cols-10 lg:auto-rows-auto lg:gap-3">
+        {images.map((img, i) => (
+          <ProjectImage key={`${project.id}-${i}`} image={img} index={i} onOpen={onOpen} className={desktopTileClasses[i]} accent={project.accent} />
+        ))}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function GalleryTablet({ project, onOpen }) {
+  const images = useMemo(() => Array.from({ length: 6 }, (_, i) => project.images[i % project.images.length]), [project.images]);
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div key={project.id} variants={galleryVariants} initial="initial" animate="animate" exit="exit"
+        className="hidden grid-cols-2 gap-3 sm:grid md:grid lg:hidden">
+        {images.map((img, i) => (
+          <ProjectImage key={`${project.id}-${i}`} image={img} index={i} onOpen={onOpen}
+            className={i === 0 ? "aspect-[1.3/1] sm:col-span-2" : "aspect-[1/1]"} accent={project.accent} />
+        ))}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function GalleryMobile({ project, onOpen }) {
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div key={project.id} variants={galleryVariants} initial="initial" animate="animate" exit="exit"
+        className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 sm:hidden">
+        {project.images.map((img, i) => (
+          <motion.button key={`${project.id}-${i}`} type="button" variants={imageVariants} onClick={() => onOpen(i)}
+            className="group relative min-w-[84%] snap-center overflow-hidden rounded-[12px] bg-[#0d1b2e] aspect-[1/1.15]">
+            {img?.url && <img src={img.url} alt={img.alt || ''} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />}
+          </motion.button>
+        ))}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export default function CompletedProjectsSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        // Match both "complete" and "completed" status values
+        const data = await client.fetch(`
+          *[_type == "project" && (status == "completed" || status == "complete")] | order(order asc) {
+            _id, title, "slug": slug.current, label, status,
+            "images": gallery[]{
+              "url": asset->url,
+              "alt": alt
+            }
+          }
+        `);
+        if (data?.length > 0) {
+          setProjects(data.map((p, i) => ({
+            id: p._id,
+            num: String(i + 1).padStart(2, '0'),
+            status: 'Completed',
+            title: p.title,
+            href: `/projectdetail/${p.slug}`,
+            accent: ACCENTS[i % ACCENTS.length],
+            images: (p.images || []).filter(img => img?.url),
+          })));
+        }
+      } catch (err) {
+        console.error('Error fetching completed projects:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProjects();
+  }, []);
+
+  const lightboxOpen = lightboxIndex !== null;
+
+  useEffect(() => {
+    if (lightboxOpen || projects.length === 0) return;
+    const timer = setInterval(() => setActiveIndex(p => (p + 1) % projects.length), 5000);
+    return () => clearInterval(timer);
+  }, [lightboxOpen, projects.length]);
+
+  useEffect(() => { setLightboxIndex(null); }, [activeIndex]);
+
+  if (loading || projects.length === 0) return null;
+
+  const activeProject = projects[activeIndex];
+  const prev = () => setActiveIndex(p => (p - 1 + projects.length) % projects.length);
+  const next = () => setActiveIndex(p => (p + 1) % projects.length);
+
+  return (
+    <>
+      <section style={{ background: 'linear-gradient(160deg, #020C1B 0%, #001A2E 50%, #020C1B 100%)', padding: 'clamp(80px,10vw,120px) clamp(20px,5vw,72px)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '20%', left: '40%', width: '600px', height: '500px', background: `radial-gradient(circle, ${activeProject.accent}10 0%, transparent 70%)`, pointerEvents: 'none', borderRadius: '50%', transition: 'background 0.6s ease' }} />
+
+        <div style={{ maxWidth: '1800px', margin: '0 auto', position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 'clamp(40px,6vw,64px)', flexWrap: 'wrap', gap: '24px' }}>
+            <div>
+              <p style={{ ...inter, fontSize: '12px', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#FFD900', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ display: 'block', width: '24px', height: '1px', background: '#FFD900' }} />
+                Project Gallery
+              </p>
+              <p style={{ ...inter, fontSize: 'clamp(14px,1.4vw,17px)', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.04em', margin: '0 0 10px' }}>
+                {activeProject.status} · {activeProject.num}
+              </p>
+              <AnimatePresence mode="wait">
+                <motion.h2 key={activeProject.id}
+                  initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ ...inter, fontSize: 'clamp(48px,7vw,106px)', fontWeight: 700, lineHeight: 0.92, letterSpacing: '-0.05em', color: '#FFFFFF', margin: 0 }}>
+                  {activeProject.title}<span style={{ color: activeProject.accent }}>.</span>
+                </motion.h2>
+              </AnimatePresence>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '16px' }}>
+              <Link href={activeProject.href} style={{ ...inter, fontSize: '16px', color: 'rgba(255,255,255,0.45)', textDecoration: 'underline', textUnderlineOffset: '4px' }}>
+                Learn More
+              </Link>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                {[{ fn: prev, icon: <ArrowLeft size={17} /> }, { fn: next, icon: <ArrowRight size={17} /> }].map(({ fn, icon }, i) => (
+                  <button key={i} onClick={fn} style={{ width: '44px', height: '44px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = activeProject.accent; e.currentTarget.style.background = `${activeProject.accent}18` }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}>
+                    {icon}
+                  </button>
+                ))}
+                <div style={{ display: 'flex', gap: '6px', marginLeft: '8px' }}>
+                  {projects.map((_, i) => (
+                    <button key={i} onClick={() => setActiveIndex(i)} style={{ height: '4px', width: i === activeIndex ? '28px' : '8px', borderRadius: '100px', background: i === activeIndex ? activeProject.accent : 'rgba(255,255,255,0.2)', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease' }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {activeProject.images.length > 0 ? (
+            <>
+              <GalleryMobile project={activeProject} onOpen={setLightboxIndex} />
+              <GalleryTablet project={activeProject} onOpen={setLightboxIndex} />
+              <GalleryDesktop project={activeProject} onOpen={setLightboxIndex} />
+            </>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '80px 0', color: 'rgba(255,255,255,0.3)', ...inter, fontSize: '18px' }}>
+              No gallery images uploaded yet — add photos in the Gallery field in Sanity Studio.
+            </div>
+          )}
+
+          <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '180px', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '100px', overflow: 'hidden' }}>
+              <motion.div style={{ height: '100%', background: activeProject.accent, borderRadius: '100px' }}
+                animate={{ width: `${((activeIndex + 1) / projects.length) * 100}%` }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <AnimatePresence>
+        {lightboxOpen && (
+          <Lightbox project={activeProject} activeImageIndex={lightboxIndex}
+            onClose={() => setLightboxIndex(null)}
+            onNext={() => setLightboxIndex(p => (p + 1) % activeProject.images.length)}
+            onPrev={() => setLightboxIndex(p => (p - 1 + activeProject.images.length) % activeProject.images.length)} />
+        )}
+      </AnimatePresence>
+    </>
   );
 }

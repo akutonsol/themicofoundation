@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Banknote, Check, CreditCard, Landmark, Mail, MapPin, Phone, Wallet } from "lucide-react";
-import { client, urlFor, queries } from "@/sanity/lib/sanity";
+import { client } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
 
@@ -17,6 +17,14 @@ const paymentMethods = [
   { id: "zelle", label: "Zelle", icon: CreditCard },
   { id: "paypal", label: "PayPal", icon: CreditCard },
 ];
+
+const staticProject = {
+  title: "Buxton College Restoration",
+  status: "Active Project",
+  location: "Jamaica, Buxton",
+  mediaUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=2200&q=80",
+  description: "Support the restoration of Buxton College, a historic landmark dedicated to education, heritage, and community impact. Your pledge helps preserve this important space for future generations.",
+};
 
 function Field({ label, required, placeholder, type = "text", value, onChange, error }) {
   return (
@@ -50,24 +58,18 @@ function InfoBox({ title, items }) {
 
 function BankingDetails({ country, method }) {
   const isJamaica = country === "Jamaica";
-  if (method === "paypal") return <InfoBox title="PayPal Details" items={["PayPal Email: my.foundation@mucfa.org", "Please include your full name and project name in the note.", "Project: Buxton College Restoration"]} />;
+  if (method === "paypal") return <InfoBox title="PayPal Details" items={["PayPal Email: my.foundation@mucfa.org", "Please include your full name and project name in the note."]} />;
   if (method === "zelle") return <InfoBox title="Zelle Details" items={["Zelle Email: my.foundation@mucfa.org", "For US residents only.", "Please include your full name and project name in the memo."]} />;
   if (method === "cash") return isJamaica
     ? <InfoBox title="Cash Deposit Details" items={["Deposit to: Mico Heritage Enterprise, BNS New Kingston", "Account #: 10006017", "Transit #: 50575", "Please keep your deposit receipt for confirmation."]} />
     : <InfoBox title="Cash Deposit Details" items={["For international donors, please contact MUCFA before making a cash deposit.", "Email: my.foundation@mucfa.org", "Phone: 678-294-9934"]} />;
-  if (isJamaica) return <InfoBox title="Make your donation using the following Banking Details" items={["Mico Heritage Enterprise, BNS New Kingston", "ACCOUNT # 10006017", "Swift Code: NOSCJMNK", "TRANSIT # 50575", "You may also send Checks to The Mico Foundation, 1A Marescaux Road, Kingston 5."]} />;
+  if (isJamaica) return <InfoBox title="Banking Details" items={["Mico Heritage Enterprise, BNS New Kingston", "ACCOUNT # 10006017", "Swift Code: NOSCJMNK", "TRANSIT # 50575", "You may also send Checks to The Mico Foundation, 1A Marescaux Road, Kingston 5."]} />;
   return <InfoBox title="MUCFA Banking Details" items={["Registered Office: 2717 Nettle Lane, Buford GA 30519", "Email Address: my.foundation@mucfa.org", "Phone Number: 678-294-9934", "Bank Name: Chase", "Account Number: 933309911", "Zelle, US residents: my.foundation@mucfa.org"]} />;
 }
 
 export default function PledgePage() {
-  const [project, setProject] = useState({
-    title: "Buxton College Restoration",
-    status: "Active Project",
-    location: "Jamaica, Buxton",
-    mediaUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=2200&q=80",
-    description: "Support the restoration of Buxton College, a historic landmark dedicated to education, heritage, and community impact. Your pledge helps preserve this important space for future generations.",
-  });
-
+  const [project, setProject] = useState(staticProject);
+  const [projectLoading, setProjectLoading] = useState(false);
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100.00");
   const [country, setCountry] = useState("Jamaica");
@@ -79,25 +81,53 @@ export default function PledgePage() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    async function fetchProject() {
+    async function fetchPledgeProject() {
       try {
-        const projects = await client.fetch(queries.projects);
-        const active = projects?.filter(p => p.status === 'active');
-        if (active?.length > 0) {
-          const p = active[0];
+        // First try: endowmentproject with showOnPledgePage = true
+        const pledgeProject = await client.fetch(
+          `*[_type == "endowmentproject" && showOnPledgePage == true][0]{
+            title, "slug": slug.current, label, status,
+            location, description,
+            "image": image.asset->url
+          }`
+        );
+
+        if (pledgeProject) {
           setProject({
-            title: p.title,
-            status: p.label || 'Active Project',
-            location: p.location,
-            mediaUrl: p.image ? urlFor(p.image).width(1200).url() : project.mediaUrl,
-            description: p.description || project.description,
+            title: pledgeProject.title,
+            status: pledgeProject.label || 'Active Project',
+            location: pledgeProject.location || '',
+            mediaUrl: pledgeProject.image || staticProject.mediaUrl,
+            description: pledgeProject.description || staticProject.description,
+          });
+          return;
+        }
+
+        // Fallback: first active endowmentproject
+        const activeProject = await client.fetch(
+          `*[_type == "endowmentproject" && status == "active"] | order(order asc) [0]{
+            title, "slug": slug.current, label, status,
+            location, description,
+            "image": image.asset->url
+          }`
+        );
+
+        if (activeProject) {
+          setProject({
+            title: activeProject.title,
+            status: activeProject.label || 'Active Project',
+            location: activeProject.location || '',
+            mediaUrl: activeProject.image || staticProject.mediaUrl,
+            description: activeProject.description || staticProject.description,
           });
         }
       } catch (error) {
-        console.error('Error fetching project:', error);
+        console.error('Error fetching pledge project:', error);
+      } finally {
+        setProjectLoading(false);
       }
     }
-    fetchProject();
+    fetchPledgeProject();
   }, []);
 
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
@@ -141,22 +171,26 @@ export default function PledgePage() {
   return (
     <main style={{ background: "#FAF9F6" }}>
       <section style={{ width: "100%", padding: "64px 72px 96px" }}>
-        <div style={{ width: "70%", maxWidth: "100%", margin: "0 auto", display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: 48, alignItems: "start" }} className="pledge-grid">
+        <div style={{ width: "100%", maxWidth: "100%", margin: "0 auto", display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: 48, alignItems: "start" }} className="pledge-grid">
 
           {/* LEFT — Project Overview */}
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} style={{ position: "sticky", top: 30 }}>
-            <p style={{ ...inter, fontSize: 20, fontWeight: 600, color: "#FFD900", margin: "0 0 12px" }}>{project.status}</p>
-            <h1 style={{ ...inter, fontSize: 82, fontWeight: 700, lineHeight: 0.92, letterSpacing: "-0.08em", color: "#040617", margin: 0 }}>
-              Pledge To<br />{project.title}
-            </h1>
-            <p style={{ ...inter, marginTop: 28, fontSize: 22, lineHeight: 1.5, color: "#6F7181", maxWidth: 620 }}>{project.description}</p>
-            <div style={{ marginTop: 30, display: "flex", gap: 10, alignItems: "center", color: "#6F7181", fontSize: 18, ...inter }}>
-              <MapPin size={20} color="#040617" />
-              {project.location}
-            </div>
-            <div style={{ marginTop: 34, height: 420, borderRadius: 28, overflow: "hidden", background: "#040617" }}>
-              <img src={project.mediaUrl} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            </div>
+            <>
+              <p style={{ ...inter, fontSize: 20, fontWeight: 600, color: "#FFD900", margin: "0 0 12px" }}>{project.status}</p>
+              <h1 style={{ ...inter, fontSize: 82, fontWeight: 700, lineHeight: 0.92, letterSpacing: "-0.08em", color: "#040617", margin: 0 }}>
+                {project.title}
+              </h1>
+              <p style={{ ...inter, marginTop: 28, fontSize: 22, lineHeight: 1.5, color: "#6F7181", maxWidth: 620 }}>{project.description}</p>
+              {project.location && (
+                <div style={{ marginTop: 30, display: "flex", gap: 10, alignItems: "center", color: "#6F7181", fontSize: 18, ...inter }}>
+                  <MapPin size={20} color="#040617" />
+                  {project.location}
+                </div>
+              )}
+              <div style={{ marginTop: 34, height: 420, borderRadius: 28, overflow: "hidden", background: "#040617" }}>
+                <img src={project.mediaUrl} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </div>
+            </>
           </motion.div>
 
           {/* RIGHT — Form */}
@@ -179,7 +213,6 @@ export default function PledgePage() {
               </motion.div>
             ) : (
               <>
-                {/* Currency */}
                 <div>
                   <p style={{ ...inter, color: "#E11D48", fontSize: 15, fontWeight: 600, margin: "0 0 12px" }}>Choose currency type</p>
                   <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
@@ -192,11 +225,8 @@ export default function PledgePage() {
                   </div>
                 </div>
 
-                {/* Amount */}
                 <div style={{ marginTop: 28 }}>
-                  <label style={{ ...inter, display: "block", marginBottom: 10, fontSize: 15, fontWeight: 700, color: "#040617" }}>
-                    Make your pledge or donation by entering an Amount
-                  </label>
+                  <label style={{ ...inter, display: "block", marginBottom: 10, fontSize: 15, fontWeight: 700, color: "#040617" }}>Make your pledge or donation by entering an Amount</label>
                   <div style={{ display: "flex", alignItems: "center", border: `2px solid ${errors.amount ? '#EF4444' : '#FFD900'}`, borderRadius: 14, overflow: "hidden", background: "#FFFDF9" }}>
                     <span style={{ ...inter, padding: "0 18px", fontSize: 22, fontWeight: 800, color: "#040617", borderRight: "1px solid #E5E6EB" }}>{currency}</span>
                     <input type="number" value={amount} onChange={e => { setAmount(e.target.value); setErrors(prev => ({ ...prev, amount: '' })) }}
@@ -208,7 +238,6 @@ export default function PledgePage() {
                   </p>
                 </div>
 
-                {/* Personal Info */}
                 <div style={{ marginTop: 42 }}>
                   <h3 style={{ ...inter, fontSize: 24, fontWeight: 800, color: "#040617", margin: "0 0 8px", textTransform: "uppercase" }}>Personal Info</h3>
                   <p style={{ ...inter, fontSize: 16, color: "#6F7181", margin: "0 0 26px" }}>Complete and submit the form below to reflect your donation or pledge.</p>
@@ -220,7 +249,6 @@ export default function PledgePage() {
                   </div>
                 </div>
 
-                {/* Country + Commitment */}
                 <div style={{ marginTop: 26, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                   <div>
                     <label style={{ ...inter, display: "block", marginBottom: 8, fontSize: 15, fontWeight: 700, color: "#040617" }}>Select Your Country And Follow Banking Instruction: *</label>
@@ -242,7 +270,6 @@ export default function PledgePage() {
                   </div>
                 </div>
 
-                {/* Payment Method */}
                 <div style={{ marginTop: 34 }}>
                   <h3 style={{ ...inter, fontSize: 20, fontWeight: 800, color: "#040617", margin: "0 0 16px" }}>Choose Payment Method</h3>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
@@ -260,7 +287,6 @@ export default function PledgePage() {
                   </div>
                 </div>
 
-                {/* Summary + Banking */}
                 <div style={{ marginTop: 34, display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: 24, alignItems: "start" }}>
                   <div>
                     <p style={{ ...inter, fontSize: 15, fontWeight: 800, color: "#040617", margin: "0 0 10px" }}>Amount Pledged</p>

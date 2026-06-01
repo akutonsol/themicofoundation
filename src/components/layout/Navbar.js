@@ -2,12 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react'
 
-const imgLogo = '/images/home/mico-logo.svg'
-
-const imgChevron =  '/images/home-static/nav-corner-right-up.png'
-
+const imgLogo = '/images/home/themicofoundation-logo.png'
+const imgChevron = '/images/home-static/nav-corner-right-up.png'
 const imgStar = '/images/home-static/corner-2.svg'
-
 const imgSparkle = '/images/home-static/nav-sparkle.png'
 
 const inter = { fontFamily: "'Inter', sans-serif" }
@@ -53,16 +50,7 @@ function DropdownItem({ label, href }) {
         cursor: 'pointer',
       }}
     >
-      <img
-        src={imgStar}
-        alt=""
-        style={{
-          width: '26px',
-          height: '26px',
-          flexShrink: 0,
-        }}
-      />
-
+      <img src={imgStar} alt="" style={{ width: '26px', height: '26px', flexShrink: 0 }} />
       <p
         style={{
           ...inter,
@@ -96,9 +84,7 @@ export default function Navbar() {
         setDropdownOpen(false)
       }
     }
-
     document.addEventListener('mousedown', handler)
-
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
@@ -131,15 +117,8 @@ export default function Navbar() {
           padding: 0;
           line-height: normal;
         }
-
-        .nav-link:hover {
-          color: #040617;
-        }
-
-        .nav-link.active {
-          font-weight: 600;
-          color: #040617;
-        }
+        .nav-link:hover { color: #040617; }
+        .nav-link.active { font-weight: 600; color: #040617; }
 
         .donate-btn {
           font-family: 'Inter', sans-serif;
@@ -161,10 +140,7 @@ export default function Navbar() {
           transition: background-color 0.2s;
           flex-shrink: 0;
         }
-
-        .donate-btn:hover {
-          background-color: #FFD900;
-        }
+        .donate-btn:hover { background-color: #FFD900; }
 
         .dropdown-panel {
           position: absolute;
@@ -179,22 +155,17 @@ export default function Navbar() {
           transition: opacity 0.2s, transform 0.2s;
           transform-origin: top;
         }
-
         .dropdown-panel.open {
           opacity: 1;
           transform: scaleY(1);
           pointer-events: all;
         }
-
         .dropdown-panel.closed {
           opacity: 0;
           transform: scaleY(0.97);
           pointer-events: none;
         }
-
-        .dropdown-item:hover p {
-          color: #FFD900 !important;
-        }
+        .dropdown-item:hover p { color: #FFD900 !important; }
 
         .hamburger {
           background: none;
@@ -205,7 +176,6 @@ export default function Navbar() {
           flex-direction: column;
           gap: 5px;
         }
-
         .hamburger span {
           display: block;
           width: 24px;
@@ -214,48 +184,47 @@ export default function Navbar() {
           border-radius: 2px;
           transition: all 0.3s;
         }
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-        .hamburger.open span:nth-child(1) {
-          transform: rotate(45deg) translate(5px, 5px);
-        }
+        /* Logo floats above the navbar */
+        .logo-float-wrapper {
+  position: relative;
+  width: 180px;        /* was 120px — wider */
+  flex-shrink: 0;
+  height: 105px;
+  display: flex;
+  align-items: center;
+}
 
-        .hamburger.open span:nth-child(2) {
-          opacity: 0;
-        }
-
-        .hamburger.open span:nth-child(3) {
-          transform: rotate(-45deg) translate(5px, -5px);
-        }
-
-        .mobile-about-links {
-          overflow: hidden;
-          transition: max-height 0.3s ease;
+.logo-float {
+  position: absolute;
+  bottom: -8px;        /* was -14px — less overhang */
+  left: 0;
+  width: 180px;        /* was 120px — wider */
+  height: 120px;       /* was 154px — shorter */
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12));
+  z-index: 60;
+  transition: transform 0.25s ease;
+}
+        .logo-float:hover {
+          transform: translateY(-4px);
         }
 
         @media (max-width: 1200px) {
-          .desktop-nav,
-          .desktop-donate {
-            display: none !important;
-          }
-
-          .mobile-btn {
-            display: flex !important;
-          }
-
-          .navbar-inner {
-            padding: 0 24px !important;
-            height: 72px !important;
-          }
+          .desktop-nav, .desktop-donate { display: none !important; }
+          .mobile-btn { display: flex !important; }
+          .navbar-inner { padding: 0 24px !important; height: 72px !important; }
+          .logo-float-wrapper { width: 130px; height: 72px; }
+          .logo-float { width: 130px; height: 88px; bottom: -8px; }
         }
 
         @media (min-width: 1201px) {
-          .mobile-btn {
-            display: none !important;
-          }
-
-          .mobile-menu-panel {
-            display: none !important;
-          }
+          .mobile-btn { display: none !important; }
+          .mobile-menu-panel { display: none !important; }
         }
       `}</style>
 
@@ -270,6 +239,8 @@ export default function Navbar() {
           top: 0,
           zIndex: 50,
           width: '100%',
+          /* Allow the logo to visually overflow upward */
+          overflow: 'visible',
         }}
       >
         <div
@@ -284,27 +255,20 @@ export default function Navbar() {
             justifyContent: 'space-between',
             position: 'relative',
             gap: '40px',
+            overflow: 'visible',
           }}
         >
+          {/* Floating logo — extends above navbar bar */}
           <a
             href="/"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              textDecoration: 'none',
-              height: '70px',
-              width: '150px',
-              flexShrink: 0,
-            }}
+            className="logo-float-wrapper"
+            style={{ textDecoration: 'none' }}
+            aria-label="The Mico Foundation"
           >
             <img
               src={imgLogo}
               alt="The Mico Foundation"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-              }}
+              className="logo-float"
             />
           </a>
 
@@ -330,7 +294,6 @@ export default function Navbar() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   {link.label}
-
                   <img
                     src={imgChevron}
                     alt=""
@@ -372,10 +335,9 @@ export default function Navbar() {
           </button>
         </div>
 
+        {/* Dropdown panel */}
         <div
-          className={`dropdown-panel ${
-            dropdownOpen ? 'open' : 'closed'
-          } desktop-nav`}
+          className={`dropdown-panel ${dropdownOpen ? 'open' : 'closed'} desktop-nav`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           style={{ display: 'block' }}
@@ -394,7 +356,6 @@ export default function Navbar() {
               opacity: 0.25,
             }}
           />
-
           <div
             style={{
               maxWidth: '1920px',
@@ -408,26 +369,16 @@ export default function Navbar() {
             }}
           >
             {dropdownCols.map((col, ci) => (
-              <div
-                key={ci}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '18px',
-                }}
-              >
+              <div key={ci} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                 {col.map((item) => (
-                  <DropdownItem
-                    key={item.label}
-                    label={item.label}
-                    href={item.href}
-                  />
+                  <DropdownItem key={item.label} label={item.label} href={item.href} />
                 ))}
               </div>
             ))}
           </div>
         </div>
 
+        {/* Mobile menu */}
         {menuOpen && (
           <div
             className="mobile-menu-panel"
@@ -462,7 +413,6 @@ export default function Navbar() {
                       }}
                     >
                       {link.label}
-
                       <img
                         src={imgChevron}
                         alt=""
@@ -474,7 +424,6 @@ export default function Navbar() {
                         }}
                       />
                     </button>
-
                     <div
                       className="mobile-about-links"
                       style={{
@@ -501,16 +450,7 @@ export default function Navbar() {
                             borderBottom: '1px solid rgba(225,225,225,0.15)',
                           }}
                         >
-                          <img
-                            src={imgStar}
-                            alt=""
-                            style={{
-                              width: '18px',
-                              height: '18px',
-                              flexShrink: 0,
-                            }}
-                          />
-
+                          <img src={imgStar} alt="" style={{ width: '18px', height: '18px', flexShrink: 0 }} />
                           {item.label}
                         </a>
                       ))}
@@ -529,10 +469,7 @@ export default function Navbar() {
                       fontWeight: link.active ? 600 : 400,
                       color: link.active ? '#040617' : '#6F7181',
                       textDecoration: 'none',
-                      borderBottom:
-                        i < navLinks.length - 1
-                          ? '1px solid rgba(225,225,225,0.2)'
-                          : 'none',
+                      borderBottom: i < navLinks.length - 1 ? '1px solid rgba(225,225,225,0.2)' : 'none',
                     }}
                   >
                     {link.label}
@@ -540,16 +477,8 @@ export default function Navbar() {
                 )}
               </div>
             ))}
-
             <div style={{ padding: '20px 24px' }}>
-              <a
-                href="/donate"
-                className="donate-btn"
-                style={{
-                  width: '100%',
-                  justifyContent: 'center',
-                }}
-              >
+              <a href="/donate" className="donate-btn" style={{ width: '100%', justifyContent: 'center' }}>
                 Donate Now
               </a>
             </div>
