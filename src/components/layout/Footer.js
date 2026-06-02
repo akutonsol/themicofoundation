@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const imgLogo = "/images/home/mico-logo.svg";
+const imgLogo = "/images/home/mico-logo-footer.png";
 
 const badges = [
   { img: "/images/home-static/comodo_secure.png", alt: "Comodo Secure" },

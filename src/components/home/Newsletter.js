@@ -101,7 +101,7 @@ export default function Newsletter() {
             </p>
           </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className="nl-form" style={{ position: 'relative', zIndex: 1 }}>
+          <form onSubmit={handleSubmit} noValidate className="nl-form" style={{ position: 'relative', zIndex: 1 }}>
 
             {/* Fields row */}
             <div className="nl-fields">
@@ -133,7 +133,7 @@ export default function Newsletter() {
                 <label style={{ ...inter, fontSize: '16px', color: '#040617' }}>Email Address</label>
                 <input
                   className={`nl-input${errors.email ? ' error' : ''}`}
-                  type="email" placeholder="your@email.com"
+                  ttype="text" inputMode="email" autoComplete="email" placeholder="your@email.com"
                   value={email}
                   onChange={e => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: '' }) }}
                 />
