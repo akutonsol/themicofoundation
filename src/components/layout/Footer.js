@@ -10,6 +10,7 @@ const badges = [
   { img: "/images/home-static/mastercard.png", alt: "Mastercard" },
   { img: "/images/home-static/keycard.png", alt: "KeyCard" },
   { img: "/images/home-static/3dsecure.png", alt: "3D Secure" },
+  { img: "/images/home-static/powertranz-logo-gray.png", alt: "Powered by PowerTranz" },
 ];
 
 const socials = [
@@ -47,14 +48,13 @@ function VisitorCounter() {
   const [count, setCount] = useState(null);
 
   useEffect(() => {
-    // Increment on visit, then show count
     async function trackAndFetch() {
       try {
         const res = await fetch('/api/visit-counter', { method: 'POST' })
         const data = await res.json()
         setCount(data.count)
       } catch {
-        // Silently fail — don't break the footer
+        // Silently fail
       }
     }
     trackAndFetch()
@@ -72,7 +72,6 @@ function VisitorCounter() {
       borderRadius: '100px',
       padding: '8px 18px',
     }}>
-      {/* Pulse dot */}
       <span style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
         <style>{`
           @keyframes pulse-ring {
@@ -98,7 +97,6 @@ function VisitorCounter() {
           position: 'relative',
         }} />
       </span>
-
       <span style={{
         ...inter,
         fontSize: '13px',
