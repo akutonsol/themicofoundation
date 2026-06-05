@@ -53,7 +53,16 @@ export async function POST(request) {
     const isoCode = body.IsoResponseCode
     const authStatus = body.RiskManagement?.ThreeDSecure?.AuthenticationStatus
 
-    if (spiToken && (isoCode === '3D0' || authStatus === 'Y' || authStatus === 'A')) {
+console.log('Callback received:', JSON.stringify({ isoCode, authStatus, spiToken: !!spiToken, body }))
+
+if (spiToken && (
+  isoCode === '3D0' ||
+  isoCode === 'SP4' ||
+  isoCode === 'SP1' ||
+  authStatus === 'Y' ||
+  authStatus === 'A' ||
+  authStatus === 'C'
+)) {
       const url = `${SITE_URL}/donate-result?spiToken=${encodeURIComponent(spiToken)}&status=3ds_complete`
       return new Response(html(url), { headers: { 'Content-Type': 'text/html' } })
     }
