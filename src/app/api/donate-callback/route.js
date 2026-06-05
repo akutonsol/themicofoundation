@@ -2,16 +2,28 @@ import { NextResponse } from 'next/server'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mico.themicofoundationja.org'
 
-const html = (url) => `<!DOCTYPE html>
+// Returns HTML that posts a message to the parent frame (DonationForm iframe listener)
+// Falls back to window.location redirect if postMessage fails
+const makeHtml = (payload) => `<!DOCTYPE html>
 <html>
 <head></head>
 <body>
 <script>
-try {
-  window.parent.location = '${url}';
-} catch(e) {
-  try { window.top.location = '${url}'; } catch(e2) { window.location = '${url}'; }
-}
+(function(){
+  var msg = ${JSON.stringify(payload)};
+  var sent = false;
+  try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); sent = true; } } catch(e) {}
+  if (!sent) { try { window.top.postMessage(msg, '*'); sent = true; } catch(e) {} }
+  if (!sent) { window.location = '${SITE_URL}/donate-result?status=' + msg.status + (msg.message ? '&message=' + encodeURIComponent(msg.message) : '') + (msg.spiToken ? '&spiToken=' + encodeURIComponent(msg.spiToken) : ''); }
+  // Fallback redirect after short delay in case postMessage was received but nothing happened
+  setTimeout(function(){
+    if (msg.spiToken) {
+      window.location = '${SITE_URL}/donate-result?spiToken=' + encodeURIComponent(msg.spiToken) + '&status=3ds_complete';
+    } else {
+      window.location = '${SITE_URL}/donate-result?status=' + (msg.status || 'error') + (msg.message ? '&message=' + encodeURIComponent(msg.message) : '');
+    }
+  }, 3000);
+})();
 </script>
 </body>
 </html>`
@@ -30,7 +42,6 @@ export async function POST(request) {
         try { body = JSON.parse(value); break } catch { body[key] = value }
       }
     } else {
-      // Try formData
       try {
         const formData = await request.formData()
         for (const [key, value] of formData.entries()) {
@@ -49,34 +60,34 @@ export async function POST(request) {
 
     console.log('Callback body:', JSON.stringify(body).slice(0, 500))
 
-    const spiToken = body.SpiToken || body.spiToken
-    const isoCode = body.IsoResponseCode
+    const spiToken   = body.SpiToken || body.spiToken
+    const isoCode    = body.IsoResponseCode
     const authStatus = body.RiskManagement?.ThreeDSecure?.AuthenticationStatus
 
-console.log('Callback received:', JSON.stringify({ isoCode, authStatus, spiToken: !!spiToken, body }))
+    console.log('Callback received:', JSON.stringify({ isoCode, authStatus, spiToken: !!spiToken }))
 
-if (spiToken && (
-  isoCode === '3D0' ||
-  isoCode === 'SP4' ||
-  isoCode === 'SP1' ||
-  authStatus === 'Y' ||
-  authStatus === 'A' ||
-  authStatus === 'C'
-)) {
-      const url = `${SITE_URL}/donate-result?spiToken=${encodeURIComponent(spiToken)}&status=3ds_complete`
-      return new Response(html(url), { headers: { 'Content-Type': 'text/html' } })
-    }
-
-    if (isoCode === '3D0' && !spiToken) {
-      return new Response(html(`${SITE_URL}/donate-result?status=declined&message=No+token+received`), { headers: { 'Content-Type': 'text/html' } })
+    if (spiToken && (
+      isoCode === '3D0' || isoCode === 'SP4' || isoCode === 'SP1' ||
+      authStatus === 'Y' || authStatus === 'A' || authStatus === 'C'
+    )) {
+      return new Response(
+        makeHtml({ status: '3ds_complete', spiToken }),
+        { headers: { 'Content-Type': 'text/html' } }
+      )
     }
 
     const errMsg = body.ResponseMessage || 'Authentication failed'
-    return new Response(html(`${SITE_URL}/donate-result?status=declined&message=${encodeURIComponent(errMsg)}`), { headers: { 'Content-Type': 'text/html' } })
+    return new Response(
+      makeHtml({ status: 'declined', message: errMsg }),
+      { headers: { 'Content-Type': 'text/html' } }
+    )
 
   } catch (error) {
     console.error('Callback error:', error)
-    return new Response(html(`${SITE_URL}/donate-result?status=error`), { headers: { 'Content-Type': 'text/html' } })
+    return new Response(
+      makeHtml({ status: 'error', message: 'An error occurred' }),
+      { headers: { 'Content-Type': 'text/html' } }
+    )
   }
 }
 
@@ -84,14 +95,20 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
     const spiToken = searchParams.get('SpiToken') || searchParams.get('spiToken')
-
     if (spiToken) {
-      const url = `${SITE_URL}/donate-result?spiToken=${encodeURIComponent(spiToken)}&status=3ds_complete`
-      return new Response(html(url), { headers: { 'Content-Type': 'text/html' } })
+      return new Response(
+        makeHtml({ status: '3ds_complete', spiToken }),
+        { headers: { 'Content-Type': 'text/html' } }
+      )
     }
-
-    return new Response(html(`${SITE_URL}/donate-result?status=error`), { headers: { 'Content-Type': 'text/html' } })
+    return new Response(
+      makeHtml({ status: 'error', message: 'No token received' }),
+      { headers: { 'Content-Type': 'text/html' } }
+    )
   } catch (error) {
-    return new Response(html(`${SITE_URL}/donate-result?status=error`), { headers: { 'Content-Type': 'text/html' } })
+    return new Response(
+      makeHtml({ status: 'error', message: 'An error occurred' }),
+      { headers: { 'Content-Type': 'text/html' } }
+    )
   }
 }
