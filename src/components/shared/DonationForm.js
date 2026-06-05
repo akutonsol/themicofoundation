@@ -650,6 +650,7 @@ function AuthStep({ redirectData }) {
                 if (d) { d.open(); d.write(redirectData); d.close(); }
               }
             }}
+            sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation allow-popups allow-modals"
             frameBorder="0" width="100%" height="500" style={{display:"block"}} title="3D Secure Authentication"
           />
         </div>

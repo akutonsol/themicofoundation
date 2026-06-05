@@ -24,7 +24,7 @@ const transporter = nodemailer.createTransport({
 // ── Build receipt download URL ────────────────────────────────────────────────
 function buildReceiptUrl(receiptData) {
   try {
-    const encoded = Buffer.from(JSON.stringify(receiptData)).toString('base64url')
+    const encoded = Buffer.from(JSON.stringify(receiptData)).toString('base64').replace(/\+/g,'_').replace(/\//g,'-').replace(/=/g,'')
     return SITE_URL + '/api/receipt?data=' + encoded
   } catch (_) {
     return null
