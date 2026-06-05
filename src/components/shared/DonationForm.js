@@ -697,19 +697,23 @@ export default function DonationForm() {
     const handler = async e => {
       if (!e.data || typeof e.data !== "object") return;
       if (e.data.status === "3ds_complete" && e.data.spiToken) {
-        setIsProcessing(true);
+        // Clear any previous errors and hide iframe before processing
+        setPayError("");
+        setRedirectData(null);
         setStep(3);
+        setIsProcessing(true);
         const meta = donationMeta || {};
         try {
           const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:e.data.spiToken, donationMeta:meta }) });
           const cd = await cr.json();
           setIsProcessing(false);
           if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl); }
-          else { setPayError(cd.error || "Payment was declined"); setRedirectData(null); }
-        } catch { setIsProcessing(false); setPayError("Failed to complete payment"); setRedirectData(null); }
+          else { setPayError(cd.error || "Payment was declined"); }
+        } catch { setIsProcessing(false); setPayError("Failed to complete payment"); }
       } else if (e.data.status === "declined" || e.data.status === "error") {
         setPayError(e.data.message || "Authentication failed");
-        setStep(3); setRedirectData(null);
+        setRedirectData(null);
+        setStep(3);
       }
     };
     window.addEventListener("message", handler);
