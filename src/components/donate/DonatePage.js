@@ -381,16 +381,24 @@ function DonateMethodStep({ paymentMethod, setPaymentMethod, payment, setPayment
               </div>
             </div>
 
-            {/* 3DS iFrame */}
+            {/* 3DS iFrame — uses doc.write for reliable rendering */}
             {redirectData && (
               <div style={{ marginTop: '8px' }}>
                 <p style={{ ...inter, fontSize:'16px', fontWeight:600, color:'#040617', textAlign:'center', marginBottom:'12px' }}>
                   🔒 Please complete bank authentication below
                 </p>
                 <div style={{ border:'2px solid #E5E6EB', borderRadius:'16px', overflow:'hidden' }}>
-                 <iframe
-                    srcDoc={redirectData}
-                    sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation allow-popups allow-modals"
+                  <iframe
+                    ref={(el) => {
+                      if (el) {
+                        const doc = el.contentDocument || el.contentWindow?.document
+                        if (doc) {
+                          doc.open()
+                          doc.write(redirectData)
+                          doc.close()
+                        }
+                      }
+                    }}
                     frameBorder="0"
                     width="100%"
                     height="500"
@@ -595,8 +603,13 @@ export default function DonationForm() {
         setIsProcessing(false)
         return
       }
+      // SP1 — no 3DS required, complete directly
       if (result.spiToken) {
-        const completeRes = await fetch('/api/donate/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ spiToken: result.spiToken, donationMeta: meta }) })
+        const completeRes = await fetch('/api/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ spiToken: result.spiToken, donationMeta: meta })
+        })
         const completeData = await completeRes.json()
         if (completeData.success && completeData.approved) { setIsProcessing(false); setPaymentSuccess(true) }
         else throw new Error(completeData.error || 'Payment was declined')
