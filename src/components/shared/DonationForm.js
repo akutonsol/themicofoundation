@@ -273,28 +273,38 @@ export default function DonationForm() {
         )}
 
         {/* Step 3 — 3DS iFrame */}
-        {step === 3 && redirectData && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div style={{ textAlign: "center", marginBottom: "24px" }}>
-              <p style={{ ...inter, fontSize: "18px", color: "#040617", fontWeight: 600, marginBottom: "8px" }}>
-                🔒 Authenticating with your bank...
-              </p>
-              <p style={{ ...inter, fontSize: "15px", color: "#6F7181" }}>
-                Please complete the verification in the window below.
-              </p>
-            </div>
-            <div style={{ border: "2px solid #E5E6EB", borderRadius: "16px", overflow: "hidden" }}>
-              <iframe
-                srcDoc={redirectData}
-                frameBorder="0"
-                width="100%"
-                height="500"
-                style={{ display: "block" }}
-                title="3D Secure Authentication"
-              />
-            </div>
-          </motion.div>
-        )}
+       {/* Step 3 — 3DS iFrame */}
+          {step === 3 && redirectData && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <div style={{ textAlign: "center", marginBottom: "24px" }}>
+                <p style={{ ...inter, fontSize: "18px", color: "#040617", fontWeight: 600, marginBottom: "8px" }}>
+                  🔒 Please complete bank authentication below
+                </p>
+                <p style={{ ...inter, fontSize: "15px", color: "#6F7181" }}>
+                  Complete the verification in the window below.
+                </p>
+              </div>
+              <div style={{ border: "2px solid #E5E6EB", borderRadius: "16px", overflow: "hidden" }}>
+                <iframe
+                  ref={(el) => {
+                    if (el) {
+                      const doc = el.contentDocument || el.contentWindow?.document;
+                      if (doc) {
+                        doc.open();
+                        doc.write(redirectData);
+                        doc.close();
+                      }
+                    }
+                  }}
+                  frameBorder="0"
+                  width="100%"
+                  height="500"
+                  style={{ display: "block" }}
+                  title="3D Secure Authentication"
+                />
+              </div>
+            </motion.div>
+          )}
       </div>
     </section>
   );
