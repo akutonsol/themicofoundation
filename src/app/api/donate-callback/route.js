@@ -1,18 +1,28 @@
 import { NextResponse } from 'next/server'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mico.themicofoundationja.org'
-
-// Returns HTML that posts a message to the parent frame (DonationForm iframe listener)
-// Falls back to window.location redirect if postMessage fails
+// Posts message to opener (popup) or parent (iframe) — no fallback redirect
 const makeHtml = (payload) => `<!DOCTYPE html>
-<html><head></head><body><script>
+<html>
+<head></head>
+<body>
+<script>
 (function(){
   var msg = ${JSON.stringify(payload)};
-  try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); } } catch(e) {}
-  try { window.top.postMessage(msg, '*'); } catch(e) {}
+  var sent = false;
+  // Try opener first (popup window approach)
+  try { if (window.opener && !window.opener.closed) { window.opener.postMessage(msg, '*'); sent = true; } } catch(e) {}
+  // Try parent frame (iframe approach)
+  if (!sent) { try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); sent = true; } } catch(e) {} }
+  // Try top window
+  if (!sent) { try { window.top.postMessage(msg, '*'); sent = true; } catch(e) {} }
+  // Close popup if we sent successfully and this is a popup
+  if (sent) {
+    try { if (window.opener && !window.opener.closed) { setTimeout(function(){ window.close(); }, 300); } } catch(e) {}
+  }
 })();
-</script></body></html>`
-
+</script>
+</body>
+</html>`
 
 export async function POST(request) {
   try {

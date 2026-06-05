@@ -634,22 +634,48 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
   );
 }
 
-function AuthStep({ redirectData }) {
+function AuthStep({ redirectData, onPopupBlocked }) {
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    if (!redirectData) return;
+    // Open popup for 3DS challenge - avoids X-Frame-Options blocking
+    const popup = window.open("", "3ds_challenge", "width=500,height=650,scrollbars=yes,resizable=yes,top=100,left=" + Math.round((window.screen.width - 500) / 2));
+    if (!popup) {
+      if (onPopupBlocked) onPopupBlocked();
+      return;
+    }
+    popupRef.current = popup;
+    popup.document.open();
+    popup.document.write(redirectData);
+    popup.document.close();
+    // Poll to detect if popup was closed manually
+    const timer = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(timer);
+        popupRef.current = null;
+      }
+    }, 500);
+    return () => {
+      clearInterval(timer);
+      if (popupRef.current && !popupRef.current.closed) popupRef.current.close();
+    };
+  }, [redirectData]);
+
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden"}}>
-      <div style={{borderBottom:"1px solid #E5E6EB",padding:"20px 24px",textAlign:"center"}}>
-        <h3 style={{...inter,fontSize:"32px",fontWeight:500,color:"#040617",margin:0}}>Please complete bank authentication below</h3>
+    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",padding:"48px 32px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:"20px"}}>
+      <div style={{width:"72px",height:"72px",borderRadius:"50%",backgroundColor:"#FFF8E1",display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#FFD900" strokeWidth="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#FFD900" strokeWidth="2" strokeLinecap="round"/></svg>
       </div>
-      <div style={{padding:"24px"}}>
-        <p style={{...inter,fontSize:"16px",color:"#6F7181",textAlign:"center",marginBottom:"20px"}}>Complete the verification in the window below.</p>
-        <div style={{border:"2px solid #E5E6EB",borderRadius:"16px",overflow:"hidden"}}>
-          <iframe
-            srcDoc={redirectData}
-            sandbox="allow-scripts allow-forms allow-top-navigation allow-popups allow-modals allow-same-origin"
-            frameBorder="0" width="100%" height="500" style={{display:"block"}} title="3D Secure Authentication"
-          />
-        </div>
+      <div>
+        <h3 style={{...inter,fontSize:"28px",fontWeight:600,color:"#040617",margin:"0 0 8px"}}>Bank Authentication</h3>
+        <p style={{...inter,fontSize:"16px",color:"#6F7181",margin:0,lineHeight:"1.6"}}>A popup window has opened for your bank verification.<br/>Please complete the authentication there.</p>
       </div>
+      <div style={{display:"flex",alignItems:"center",gap:"12px",backgroundColor:"#F5F3EE",borderRadius:"12px",padding:"14px 20px"}}>
+        <div style={{width:"10px",height:"10px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
+        <span style={{...inter,fontSize:"15px",color:"#040617"}}>Waiting for authentication...</span>
+      </div>
+      <p style={{...inter,fontSize:"13px",color:"#9CA3AF",margin:0}}>Do not close this page. The popup may appear behind your browser window.</p>
     </div>
   );
 }
@@ -832,7 +858,7 @@ export default function DonationForm() {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
     if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
-    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData}/>;
+    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} onPopupBlocked={() => { setPayError('Popup was blocked. Please allow popups and try again.'); setRedirectData(null); setStep(3); }}/>;
     return null;
   };
 
