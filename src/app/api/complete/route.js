@@ -14,14 +14,14 @@ const sanityClient = createClient({
 export async function POST(request) {
   try {
     const { spiToken, donationMeta } = await request.json()
-console.log('SpiToken received:', JSON.stringify(spiToken))
-console.log('SpiToken length:', spiToken?.length)ß
+
+    console.log('SpiToken received:', JSON.stringify(spiToken))
+    console.log('SpiToken length:', spiToken?.length)
+
     if (!spiToken) {
       return NextResponse.json({ error: 'SpiToken is required' }, { status: 400 })
     }
-console.log('PowerTranz payment response:', JSON.stringify(data))
 
-    // Complete the payment - body is just the SpiToken string, no auth headers needed
     const response = await fetch(`${PT_BASE_URL}/Api/spi/payment`, {
       method: 'POST',
       headers: {
@@ -31,6 +31,7 @@ console.log('PowerTranz payment response:', JSON.stringify(data))
     })
 
     const data = await response.json()
+    console.log('PowerTranz payment response:', JSON.stringify(data))
 
     if (!response.ok) {
       console.error('PowerTranz payment error:', data)
