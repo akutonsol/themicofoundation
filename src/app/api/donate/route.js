@@ -53,7 +53,7 @@ export async function POST(request) {
         LastName: lastName || cardholderName.split(' ').slice(1).join(' ') || '',
         Line1: address || '',
         City: city || '',
-        State: state || '',
+        State: (state && state.trim().length <= 3) ? state.trim() : '',
         PostalCode: postalCode || '',
         CountryCode: countryCode,
         EmailAddress: email || '',
