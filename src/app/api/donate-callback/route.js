@@ -5,28 +5,14 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mico.themicofounda
 // Returns HTML that posts a message to the parent frame (DonationForm iframe listener)
 // Falls back to window.location redirect if postMessage fails
 const makeHtml = (payload) => `<!DOCTYPE html>
-<html>
-<head></head>
-<body>
-<script>
+<html><head></head><body><script>
 (function(){
   var msg = ${JSON.stringify(payload)};
-  var sent = false;
-  try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); sent = true; } } catch(e) {}
-  if (!sent) { try { window.top.postMessage(msg, '*'); sent = true; } catch(e) {} }
-  if (!sent) { window.location = '${SITE_URL}/donate-result?status=' + msg.status + (msg.message ? '&message=' + encodeURIComponent(msg.message) : '') + (msg.spiToken ? '&spiToken=' + encodeURIComponent(msg.spiToken) : ''); }
-  // Fallback redirect after short delay in case postMessage was received but nothing happened
-  setTimeout(function(){
-    if (msg.spiToken) {
-      window.location = '${SITE_URL}/donate-result?spiToken=' + encodeURIComponent(msg.spiToken) + '&status=3ds_complete';
-    } else {
-      window.location = '${SITE_URL}/donate-result?status=' + (msg.status || 'error') + (msg.message ? '&message=' + encodeURIComponent(msg.message) : '');
-    }
-  }, 3000);
+  try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); } } catch(e) {}
+  try { window.top.postMessage(msg, '*'); } catch(e) {}
 })();
-</script>
-</body>
-</html>`
+</script></body></html>`
+
 
 export async function POST(request) {
   try {
