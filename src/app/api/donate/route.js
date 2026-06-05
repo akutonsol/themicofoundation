@@ -112,9 +112,11 @@ const callbackUrl = `${SITE_URL}/donate-callback`
       })
     }
 
+    console.error('PowerTranz unexpected response:', JSON.stringify(data))
     return NextResponse.json({
-      error: data.ResponseMessage || 'Payment initiation failed',
-      isoResponseCode: data.IsoResponseCode,
+     error: data.ResponseMessage || 'Payment initiation failed',
+    isoResponseCode: data.IsoResponseCode,
+    details: data,
     }, { status: 400 })
 
   } catch (error) {
