@@ -639,23 +639,62 @@ function AuthStep({ redirectData, onPopupBlocked }) {
 
   useEffect(() => {
     if (!redirectData) return;
-    // Open popup for 3DS challenge - avoids X-Frame-Options blocking
-    const popup = window.open("", "3ds_challenge", "width=500,height=650,scrollbars=yes,resizable=yes,top=100,left=" + Math.round((window.screen.width - 500) / 2));
+
+    // Center popup over the current browser window
+    const pw = 480, ph = 620;
+    const left = Math.round(window.screenLeft + (window.outerWidth  - pw) / 2);
+    const top  = Math.round(window.screenTop  + (window.outerHeight - ph) / 2);
+    const features = [
+      "width="  + pw,
+      "height=" + ph,
+      "left="   + left,
+      "top="    + top,
+      "scrollbars=yes",
+      "resizable=no",
+      "toolbar=no",
+      "menubar=no",
+      "location=no",
+      "status=no",
+    ].join(",");
+
+    const popup = window.open("", "3ds_challenge", features);
     if (!popup) {
       if (onPopupBlocked) onPopupBlocked();
       return;
     }
     popupRef.current = popup;
+
+    // Style the popup to look clean
     popup.document.open();
-    popup.document.write(redirectData);
+    popup.document.write(
+      '<!DOCTYPE html><html><head>' +
+      '<meta charset="utf-8"/>' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1"/>' +
+      '<title>Bank Authentication</title>' +
+      '<style>' +
+        'html,body{margin:0;padding:0;background:#040617;font-family:Arial,sans-serif;height:100%;}' +
+        '.header{background:#040617;padding:12px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1f35;}' +
+        '.logo{color:#FFD900;font-weight:700;font-size:15px;}' +
+        '.badge{background:#1a1f35;color:#9CA3AF;font-size:11px;padding:3px 8px;border-radius:20px;}' +
+        '.body{background:#F5F3EE;min-height:calc(100% - 45px);}' +
+        'iframe{width:100%;height:calc(100vh - 45px);border:none;display:block;}' +
+      '</style>' +
+      '</head><body>' +
+      '<div class="header">' +
+        '<span class="logo">The Mico Foundation</span>' +
+        '<span class="badge">Secure 3DS Authentication</span>' +
+        '<svg style="margin-left:auto" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#FFD900" stroke-width="2" stroke-linejoin="round"/></svg>' +
+      '</div>' +
+      '<div class="body">' + redirectData + '</div>' +
+      '</body></html>'
+    );
     popup.document.close();
-    // Poll to detect if popup was closed manually
+
+    // Poll for popup close
     const timer = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(timer);
-        popupRef.current = null;
-      }
+      if (popup.closed) { clearInterval(timer); popupRef.current = null; }
     }, 500);
+
     return () => {
       clearInterval(timer);
       if (popupRef.current && !popupRef.current.closed) popupRef.current.close();
@@ -663,19 +702,58 @@ function AuthStep({ redirectData, onPopupBlocked }) {
   }, [redirectData]);
 
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",padding:"48px 32px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:"20px"}}>
-      <div style={{width:"72px",height:"72px",borderRadius:"50%",backgroundColor:"#FFF8E1",display:"flex",alignItems:"center",justifyContent:"center"}}>
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#FFD900" strokeWidth="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#FFD900" strokeWidth="2" strokeLinecap="round"/></svg>
+    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden"}}>
+      {/* Header */}
+      <div style={{background:"#040617",padding:"24px",textAlign:"center"}}>
+        <div style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:"56px",height:"56px",borderRadius:"50%",background:"rgba(255,217,0,0.15)",marginBottom:"12px"}}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#FFD900" strokeWidth="2" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <h3 style={{...inter,fontSize:"22px",fontWeight:700,color:"white",margin:"0 0 4px"}}>Bank Authentication</h3>
+        <p style={{...inter,fontSize:"14px",color:"#9CA3AF",margin:0}}>Complete your 3D Secure verification</p>
       </div>
-      <div>
-        <h3 style={{...inter,fontSize:"28px",fontWeight:600,color:"#040617",margin:"0 0 8px"}}>Bank Authentication</h3>
-        <p style={{...inter,fontSize:"16px",color:"#6F7181",margin:0,lineHeight:"1.6"}}>A popup window has opened for your bank verification.<br/>Please complete the authentication there.</p>
+
+      {/* Body */}
+      <div style={{padding:"32px",display:"flex",flexDirection:"column",alignItems:"center",gap:"20px",textAlign:"center"}}>
+        {/* Animated lock */}
+        <div style={{position:"relative"}}>
+          <div style={{width:"80px",height:"80px",borderRadius:"50%",border:"3px solid #FFD900",borderTopColor:"transparent",animation:"spin 1.2s linear infinite"}}/>
+          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="11" width="18" height="11" rx="2" fill="#FFD900"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#040617" strokeWidth="2.5" strokeLinecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div>
+          <p style={{...inter,fontSize:"18px",fontWeight:600,color:"#040617",margin:"0 0 6px"}}>A popup window has opened</p>
+          <p style={{...inter,fontSize:"15px",color:"#6F7181",margin:0,lineHeight:"1.6"}}>
+            Please complete your bank verification<br/>in the popup to finish your donation.
+          </p>
+        </div>
+
+        {/* Steps */}
+        <div style={{width:"100%",backgroundColor:"#F5F3EE",borderRadius:"14px",padding:"18px 20px",textAlign:"left"}}>
+          {[
+            ["1", "Enter the OTP sent by your bank"],
+            ["2", "Click Submit or Continue"],
+            ["3", "This page will update automatically"],
+          ].map(([n, t]) => (
+            <div key={n} style={{display:"flex",alignItems:"center",gap:"12px",marginBottom:n==="3"?0:"10px"}}>
+              <div style={{width:"26px",height:"26px",borderRadius:"50%",backgroundColor:"#FFD900",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                <span style={{...inter,fontSize:"12px",fontWeight:700,color:"#040617"}}>{n}</span>
+              </div>
+              <span style={{...inter,fontSize:"14px",color:"#040617"}}>{t}</span>
+            </div>
+          ))}
+        </div>
+
+        <p style={{...inter,fontSize:"12px",color:"#9CA3AF",margin:0}}>
+          Popup hidden? Check behind this window or your taskbar.
+        </p>
       </div>
-      <div style={{display:"flex",alignItems:"center",gap:"12px",backgroundColor:"#F5F3EE",borderRadius:"12px",padding:"14px 20px"}}>
-        <div style={{width:"10px",height:"10px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
-        <span style={{...inter,fontSize:"15px",color:"#040617"}}>Waiting for authentication...</span>
-      </div>
-      <p style={{...inter,fontSize:"13px",color:"#9CA3AF",margin:0}}>Do not close this page. The popup may appear behind your browser window.</p>
     </div>
   );
 }
