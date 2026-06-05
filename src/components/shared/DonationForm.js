@@ -644,13 +644,8 @@ function AuthStep({ redirectData }) {
         <p style={{...inter,fontSize:"16px",color:"#6F7181",textAlign:"center",marginBottom:"20px"}}>Complete the verification in the window below.</p>
         <div style={{border:"2px solid #E5E6EB",borderRadius:"16px",overflow:"hidden"}}>
           <iframe
-            ref={el => {
-              if (el) {
-                const d = el.contentDocument || el.contentWindow?.document;
-                if (d) { d.open(); d.write(redirectData); d.close(); }
-              }
-            }}
-            sandbox="allow-scripts allow-forms allow-same-origin allow-top-navigation allow-popups allow-modals"
+            srcDoc={redirectData}
+            sandbox="allow-scripts allow-forms allow-top-navigation allow-popups allow-modals allow-same-origin"
             frameBorder="0" width="100%" height="500" style={{display:"block"}} title="3D Secure Authentication"
           />
         </div>
