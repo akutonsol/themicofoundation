@@ -414,7 +414,7 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
   );
 }
 
-function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry, cardCvv, setCardCvv, error, loading, isProcessing, paymentSuccess, paymentResult, donationLabel, projectTitle, contributionPct, receiptPdf, onBack, onSubmit, mobile }) {
+function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry, cardCvv, setCardCvv, error, loading, isProcessing, paymentSuccess, paymentResult, donationLabel, projectTitle, contributionPct, receiptUrl, onBack, onSubmit, mobile }) {
   const [tab, setTab] = useState("card");
   const expiryRef = useRef(null);
   const cvvRef = useRef(null);
@@ -480,26 +480,15 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
       </div>
       <p style={{...inter,fontSize:"14px",color:"#6F7181",margin:0}}>A confirmation has been sent to your email address.</p>
       <a href="/" style={{...inter,display:"inline-flex",alignItems:"center",padding:"14px 32px",borderRadius:"14px",background:"#FFD900",color:"#040617",fontSize:"16px",fontWeight:600,textDecoration:"none"}}>Return to Home</a>
-      {receiptPdf && (
-        <button onClick={() => {
-          const bytes = Uint8Array.from(atob(receiptPdf), c => c.charCodeAt(0));
-          const blob = new Blob([bytes], { type:"application/pdf" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "Mico-Foundation-Receipt-" + (paymentResult?.orderId || "donation") + ".pdf";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }}
-          style={{...inter,display:"inline-flex",alignItems:"center",gap:"8px",padding:"14px 32px",borderRadius:"14px",background:"#F5F3EE",color:"#040617",fontSize:"16px",fontWeight:600,border:"2px solid #E5E6EB",cursor:"pointer"}}>
+      {receiptUrl && (
+        <a href={receiptUrl} target="_blank" rel="noopener noreferrer"
+          style={{...inter,display:"inline-flex",alignItems:"center",gap:"8px",padding:"14px 32px",borderRadius:"14px",background:"#F5F3EE",color:"#040617",fontSize:"16px",fontWeight:600,border:"2px solid #E5E6EB",textDecoration:"none"}}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M12 15L12 3M12 15L8 11M12 15L16 11" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 15V3M12 15L8 11M12 15L16 11" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M3 17V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V17" stroke="#040617" strokeWidth="2" strokeLinecap="round"/>
           </svg>
           Download Receipt
-        </button>
+        </a>
       )}
     </motion.div>
   );
@@ -689,7 +678,7 @@ export default function DonationForm() {
   const [payError,       setPayError]        = useState("");
   const [redirectData,   setRedirectData]    = useState(null);
   const [donationMeta,   setDonationMeta]    = useState(null);
-  const [receiptPdf,     setReceiptPdf]      = useState(null);
+  const [receiptUrl,     setReceiptUrl]      = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -719,7 +708,7 @@ export default function DonationForm() {
           const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:e.data.spiToken, donationMeta:meta }) });
           const cd = await cr.json();
           setIsProcessing(false);
-          if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptPdf) setReceiptPdf(cd.receiptPdf); }
+          if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl); }
           else { setPayError(cd.error || "Payment was declined"); setRedirectData(null); }
         } catch { setIsProcessing(false); setPayError("Failed to complete payment"); setRedirectData(null); }
       } else if (e.data.status === "declined" || e.data.status === "error") {
@@ -808,7 +797,7 @@ export default function DonationForm() {
         const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:data.spiToken, donationMeta:meta }) });
         const cd = await cr.json();
         setIsProcessing(false);
-        if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptPdf) setReceiptPdf(cd.receiptPdf); }
+        if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl); }
         else setPayError(cd.error || "Payment was declined");
         return;
       }
@@ -828,7 +817,7 @@ export default function DonationForm() {
   const renderStep = (mobile) => {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
-    if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptPdf={receiptPdf} onBack={() => { setStep(2); setPayError(""); }} onSubmit={handlePayment} mobile={mobile}/>;
+    if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); }} onSubmit={handlePayment} mobile={mobile}/>;
     if (step === 4 && redirectData) return <AuthStep redirectData={redirectData}/>;
     return null;
   };
