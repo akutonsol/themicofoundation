@@ -34,7 +34,7 @@ export async function POST(request) {
 
     const transactionId = uuidv4()
     const orderId = `MICO-${uuidv4().split('-')[0].toUpperCase()}`
-const callbackUrl = `${SITE_URL}/donate-callback`
+    const callbackUrl = `${SITE_URL}/api/donate-callback`
 
     const payload = {
       TransactionIdentifier: transactionId,
