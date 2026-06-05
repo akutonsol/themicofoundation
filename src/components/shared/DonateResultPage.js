@@ -32,7 +32,7 @@ function DonateResultContent() {
       } catch {}
 
       // Complete the payment
-      fetch("/api/donate/complete", {
+        fetch("/api/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ spiToken, donationMeta }),
