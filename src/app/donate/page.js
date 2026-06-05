@@ -1,6 +1,6 @@
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import DonatePage from "@/components/donate/DonatePage";
+import DonationForm from "@/components/shared/DonationForm";
 
 export const metadata = {
   title: "Donate",
@@ -11,7 +11,7 @@ export default function Page() {
   return (
     <main>
       <Navbar />
-      <DonatePage /> 
+        <DonationForm showTitle={false} compact={true} />
       <Footer />
     </main>
   );
