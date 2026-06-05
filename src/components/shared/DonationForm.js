@@ -675,6 +675,7 @@ export default function DonationForm() {
   const [redirectData,   setRedirectData]    = useState(null);
   const [donationMeta,   setDonationMeta]    = useState(null);
   const [receiptUrl,     setReceiptUrl]      = useState(null);
+  const processingRef = useRef(false); // Guard against duplicate 3DS postMessages
 
   useEffect(() => {
     async function load() {
@@ -697,7 +698,9 @@ export default function DonationForm() {
     const handler = async e => {
       if (!e.data || typeof e.data !== "object") return;
       if (e.data.status === "3ds_complete" && e.data.spiToken) {
-        // Clear any previous errors and hide iframe before processing
+        // Guard: ignore if already processing or payment already succeeded
+        if (processingRef.current) return;
+        processingRef.current = true;
         setPayError("");
         setRedirectData(null);
         setStep(3);
@@ -707,10 +710,21 @@ export default function DonationForm() {
           const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:e.data.spiToken, donationMeta:meta }) });
           const cd = await cr.json();
           setIsProcessing(false);
-          if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl); }
-          else { setPayError(cd.error || "Payment was declined"); }
-        } catch { setIsProcessing(false); setPayError("Failed to complete payment"); }
+          if (cd.success && cd.approved) {
+            setPaymentResult(cd);
+            setPaymentSuccess(true);
+            if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl);
+          } else {
+            processingRef.current = false; // Allow retry on failure
+            setPayError(cd.error || "Payment was declined");
+          }
+        } catch {
+          processingRef.current = false;
+          setIsProcessing(false);
+          setPayError("Failed to complete payment");
+        }
       } else if (e.data.status === "declined" || e.data.status === "error") {
+        if (processingRef.current) return; // Ignore if already processing success
         setPayError(e.data.message || "Authentication failed");
         setRedirectData(null);
         setStep(3);
@@ -817,7 +831,7 @@ export default function DonationForm() {
   const renderStep = (mobile) => {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
-    if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); }} onSubmit={handlePayment} mobile={mobile}/>;
+    if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
     if (step === 4 && redirectData) return <AuthStep redirectData={redirectData}/>;
     return null;
   };
