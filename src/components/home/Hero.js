@@ -162,7 +162,7 @@ export default function Hero() {
         </div>
       )}
 
-      {/* ── DESKTOP ─────────────────────────────────────────────────────────── */}
+      {/* -- DESKTOP ----------------------------------------------------------- */}
       <div className="hero-desktop" style={{ paddingBottom:'120px' }}>
 
         {/* Sparkle backgrounds */}
@@ -284,8 +284,8 @@ export default function Hero() {
                       <path id="cpth" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
                       <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpth">Play a video - Play a video - Play a video -</textPath></text>
                     </svg>
-                    <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'transparent', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', zIndex:1 }}>
-                      <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#ffa801"/><path d="M23 19L37 28L23 37V19Z" fill="#040617" /></svg>
+                    <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', zIndex:1, boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4L20 12L6 20V4Z" fill="#040617"/></svg>
                     </button>
                   </div>
                 </div>
@@ -341,7 +341,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ── MOBILE ──────────────────────────────────────────────────────────── */}
+      {/* -- MOBILE ------------------------------------------------------------ */}
       <div className="hero-mobile" style={{ flexDirection:'column', gap:'26px', padding:'32px 24px 48px', alignItems:'center' }}>
 
         <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
@@ -378,8 +378,8 @@ export default function Hero() {
                 <path id="cpthm" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
                 <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpthm">Play a video - Play a video - Play a video -</textPath></text>
               </svg>
-              <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'transparent', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, position:'relative' }}>
-                <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#ffa801"/><path d="M23 19L37 28L23 37V19Z" fill="#040617" /></svg>
+              <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, position:'relative', boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4L20 12L6 20V4Z" fill="#040617"/></svg>
               </button>
             </div>
           </div>
