@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { client, urlFor, queries } from '@/sanity/lib/sanity'
 import Image from 'next/image'
@@ -33,6 +33,21 @@ export default function Hero() {
   const [loading,            setLoading]            = useState(true)
   const [currentImageIndex,  setCurrentImageIndex]  = useState(0)
   const [showVideoModal,     setShowVideoModal]     = useState(false)
+  const modalIframeRef = useRef(null)
+
+  // Trigger YouTube play via postMessage after modal opens
+  useEffect(() => {
+    if (!showVideoModal) return
+    const timer = setTimeout(() => {
+      if (modalIframeRef.current) {
+        modalIframeRef.current.contentWindow?.postMessage(
+          JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
+          '*'
+        )
+      }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [showVideoModal])
 
   useEffect(() => {
     async function fetchHeroData() {
@@ -152,11 +167,14 @@ export default function Hero() {
         <div className="video-modal-overlay" onClick={() => setShowVideoModal(false)}>
           <div className="video-modal-content" onClick={e => e.stopPropagation()}>
             <button className="video-modal-close" onClick={() => setShowVideoModal(false)}>x</button>
-            <iframe width="100%" height="100%"
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+            <iframe
+              ref={modalIframeRef}
+              width="100%" height="100%"
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1`}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen style={{ borderRadius:'12px' }}
+              allowFullScreen
+              style={{ borderRadius:'12px' }}
             />
           </div>
         </div>
