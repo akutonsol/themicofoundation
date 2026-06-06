@@ -4,9 +4,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
 const imgLocation = "/images/home-static/location-pin.svg";
-const imgArrowBtn = "/images/home-static/button-icon.png";
 const imgSparkle  = "/images/home-static/sparkle-large.png";
 const inter = { fontFamily: "'Inter', sans-serif" };
+
+
+function ArrowIcon({ size = 24, color = "#040617" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ flexShrink:0 }}>
+      <path d="M5 12H19M19 12L13 6M19 12L13 18"
+        stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 const AMOUNTS_MONTHLY = ["$5/Month","$10/Month","$30/Month","$100/Month","$50/Month","$20/Month"];
 const AMOUNTS_ONCE    = ["$10","$25","$30","$100","$50","$250"];
@@ -285,15 +294,18 @@ function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, err
         </button>
         {selected === "custom" && (
           <div>
-            <input type="text" placeholder="Enter amount" value={custom} onChange={e => setCustom(e.target.value.replace(/[^0-9.]/g,""))}
-              style={{...inter,width:"100%",border:"1px solid " + (error?"#EF4444":"#FFD900"),borderRadius:"12px",padding:"12px 16px",fontSize:"18px",color:"#040617",outline:"none",boxSizing:"border-box"}}/>
+            <div style={{position:"relative"}}>
+              <span style={{position:"absolute",left:"14px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"18px",color:"#040617",pointerEvents:"none",zIndex:1}}>$</span>
+              <input type="text" placeholder="0.00" value={custom} onChange={e => setCustom(e.target.value.replace(/[^0-9.]/g,""))}
+                style={{...inter,width:"100%",border:"1px solid " + (error?"#EF4444":"#FFD900"),borderRadius:"12px",padding:"12px 16px 12px 28px",fontSize:"18px",color:"#040617",outline:"none",boxSizing:"border-box"}}/>
+            </div>
             {error && <p style={{...inter,fontSize:"14px",color:"#EF4444",margin:"4px 0 0"}}>{error}</p>}
           </div>
         )}
         <p style={{...inter,fontSize:"16px",color:"#6F7181",textAlign:"center",margin:0}}>*All donations over $2 are tax deductible</p>
         <button onClick={onNext} style={{...inter,display:"flex",alignItems:"center",justifyContent:"center",gap:"12px",backgroundColor:"#FFD900",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",border:"none",cursor:"pointer",width:"100%"}}>
           Continue to Personal Info
-          <img src={imgArrowBtn} alt="" style={{width:"24px",height:"24px"}}/>
+          <ArrowIcon size={20} color="#040617" />
         </button>
       </div>
       <div style={{backgroundColor:"#E8E9EB",padding:"24px"}}>
@@ -318,16 +330,19 @@ function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, err
             ))}
           </div>
           <div>
-            <input type="text" placeholder="Custom" value={custom}
-              onChange={e => { setCustom(e.target.value.replace(/[^0-9.]/g,"")); setSelected("custom"); }}
-              style={{...inter,width:"100%",border:"1px solid " + (error?"#EF4444":selected==="custom"?"#FFD900":"#E5E6EB"),borderRadius:"20px",padding:"10px 32px",fontSize:"24px",lineHeight:"38px",color:"#040617",backgroundColor:"#FFFDF9",outline:"none",textAlign:"center",boxSizing:"border-box"}}/>
+            <div style={{position:"relative"}}>
+              <span style={{position:"absolute",left:"18px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"24px",color:custom?"#040617":"#9CA3AF",pointerEvents:"none",zIndex:1,lineHeight:"38px"}}>$</span>
+              <input type="text" placeholder="0.00" value={custom}
+                onChange={e => { setCustom(e.target.value.replace(/[^0-9.]/g,"")); setSelected("custom"); }}
+                style={{...inter,width:"100%",border:"1px solid " + (error?"#EF4444":selected==="custom"?"#FFD900":"#E5E6EB"),borderRadius:"20px",padding:"10px 32px 10px 44px",fontSize:"24px",lineHeight:"38px",color:"#040617",backgroundColor:"#FFFDF9",outline:"none",textAlign:"left",boxSizing:"border-box"}}/>
+            </div>
             {error && <p style={{...inter,fontSize:"14px",color:"#EF4444",textAlign:"center",margin:"4px 0 0"}}>{error}</p>}
           </div>
           <p style={{...inter,fontSize:"16px",color:"#6F7181",textAlign:"center",margin:0}}>*All donations over $2 are tax deductible</p>
         </div>
         <button onClick={onNext} style={{...inter,display:"flex",alignItems:"center",justifyContent:"center",gap:"12px",backgroundColor:"#FFD900",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",border:"none",cursor:"pointer",width:"100%"}}>
           Continue to Personal Info
-          <img src={imgArrowBtn} alt="" style={{width:"24px",height:"24px"}}/>
+          <ArrowIcon size={20} color="#040617" />
         </button>
       </div>
       <div style={{backgroundColor:"#E8E9EB",padding:"24px",position:"relative",zIndex:1}}>

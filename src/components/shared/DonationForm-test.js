@@ -414,7 +414,7 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
   );
 }
 
-function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry, cardCvv, setCardCvv, error, loading, isProcessing, paymentSuccess, paymentResult, donationLabel, projectTitle, contributionPct, onBack, onSubmit, mobile }) {
+function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry, cardCvv, setCardCvv, error, loading, isProcessing, paymentSuccess, paymentResult, donationLabel, projectTitle, contributionPct, receiptUrl, onBack, onSubmit, mobile }) {
   const [tab, setTab] = useState("card");
   const expiryRef = useRef(null);
   const cvvRef = useRef(null);
@@ -480,6 +480,16 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
       </div>
       <p style={{...inter,fontSize:"14px",color:"#6F7181",margin:0}}>A confirmation has been sent to your email address.</p>
       <a href="/" style={{...inter,display:"inline-flex",alignItems:"center",padding:"14px 32px",borderRadius:"14px",background:"#FFD900",color:"#040617",fontSize:"16px",fontWeight:600,textDecoration:"none"}}>Return to Home</a>
+      {receiptUrl && (
+        <a href={receiptUrl} target="_blank" rel="noopener noreferrer"
+          style={{...inter,display:"inline-flex",alignItems:"center",gap:"8px",padding:"14px 32px",borderRadius:"14px",background:"#F5F3EE",color:"#040617",fontSize:"16px",fontWeight:600,border:"2px solid #E5E6EB",textDecoration:"none"}}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15V3M12 15L8 11M12 15L16 11" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M3 17V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V17" stroke="#040617" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          Download Receipt
+        </a>
+      )}
     </motion.div>
   );
 
@@ -625,24 +635,47 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
 }
 
 function AuthStep({ redirectData }) {
+  const iframeRef = useRef(null);
+
+  useEffect(() => {
+    if (!redirectData || !iframeRef.current) return;
+    // Write 3DS HTML directly into the iframe
+    const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+    if (doc) {
+      doc.open();
+      doc.write(redirectData);
+      doc.close();
+    }
+  }, [redirectData]);
+
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden"}}>
-      <div style={{borderBottom:"1px solid #E5E6EB",padding:"20px 24px",textAlign:"center"}}>
-        <h3 style={{...inter,fontSize:"32px",fontWeight:500,color:"#040617",margin:0}}>Please complete bank authentication below</h3>
-      </div>
-      <div style={{padding:"24px"}}>
-        <p style={{...inter,fontSize:"16px",color:"#6F7181",textAlign:"center",marginBottom:"20px"}}>Complete the verification in the window below.</p>
-        <div style={{border:"2px solid #E5E6EB",borderRadius:"16px",overflow:"hidden"}}>
-          <iframe
-            ref={el => {
-              if (el) {
-                const d = el.contentDocument || el.contentWindow?.document;
-                if (d) { d.open(); d.write(redirectData); d.close(); }
-              }
-            }}
-            frameBorder="0" width="100%" height="500" style={{display:"block"}} title="3D Secure Authentication"
-          />
+    <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(4,6,23,0.75)",backdropFilter:"blur(4px)"}}>
+      <div style={{width:"min(520px, 95vw)",backgroundColor:"white",borderRadius:"20px",overflow:"hidden",boxShadow:"0 24px 80px rgba(0,0,0,0.35)"}}>
+        {/* Header */}
+        <div style={{background:"#040617",padding:"16px 20px",display:"flex",alignItems:"center",gap:"12px"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:"36px",height:"36px",borderRadius:"50%",background:"rgba(255,217,0,0.15)",flexShrink:0}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#FFD900" strokeWidth="2" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <p style={{...inter,fontSize:"15px",fontWeight:700,color:"white",margin:0}}>The Mico Foundation</p>
+            <p style={{...inter,fontSize:"12px",color:"#9CA3AF",margin:0}}>Secure 3DS Authentication</p>
+          </div>
+          <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:"6px",background:"rgba(255,217,0,0.1)",borderRadius:"20px",padding:"4px 10px"}}>
+            <div style={{width:"7px",height:"7px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
+            <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>Waiting...</span>
+          </div>
         </div>
+        {/* iframe - no sandbox so doc.write works */}
+        <iframe
+          ref={iframeRef}
+          frameBorder="0"
+          width="100%"
+          height="480"
+          style={{display:"block"}}
+          title="3D Secure Authentication"
+        />
       </div>
     </div>
   );
@@ -668,6 +701,8 @@ export default function DonationForm() {
   const [payError,       setPayError]        = useState("");
   const [redirectData,   setRedirectData]    = useState(null);
   const [donationMeta,   setDonationMeta]    = useState(null);
+  const [receiptUrl,     setReceiptUrl]      = useState(null);
+  const processingRef = useRef(false); // Guard against duplicate 3DS postMessages
 
   useEffect(() => {
     async function load() {
@@ -690,19 +725,36 @@ export default function DonationForm() {
     const handler = async e => {
       if (!e.data || typeof e.data !== "object") return;
       if (e.data.status === "3ds_complete" && e.data.spiToken) {
-        setIsProcessing(true);
+        // Guard: ignore if already processing or payment already succeeded
+        if (processingRef.current) return;
+        processingRef.current = true;
+        setPayError("");
+        setRedirectData(null);
         setStep(3);
+        setIsProcessing(true);
         const meta = donationMeta || {};
         try {
           const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:e.data.spiToken, donationMeta:meta }) });
           const cd = await cr.json();
           setIsProcessing(false);
-          if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); }
-          else { setPayError(cd.error || "Payment was declined"); setRedirectData(null); }
-        } catch { setIsProcessing(false); setPayError("Failed to complete payment"); setRedirectData(null); }
+          if (cd.success && cd.approved) {
+            setPaymentResult(cd);
+            setPaymentSuccess(true);
+            if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl);
+          } else {
+            processingRef.current = false; // Allow retry on failure
+            setPayError(cd.error || "Payment was declined");
+          }
+        } catch {
+          processingRef.current = false;
+          setIsProcessing(false);
+          setPayError("Failed to complete payment");
+        }
       } else if (e.data.status === "declined" || e.data.status === "error") {
+        if (processingRef.current) return; // Ignore if already processing success
         setPayError(e.data.message || "Authentication failed");
-        setStep(3); setRedirectData(null);
+        setRedirectData(null);
+        setStep(3);
       }
     };
     window.addEventListener("message", handler);
@@ -786,7 +838,7 @@ export default function DonationForm() {
         const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:data.spiToken, donationMeta:meta }) });
         const cd = await cr.json();
         setIsProcessing(false);
-        if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); }
+        if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl); }
         else setPayError(cd.error || "Payment was declined");
         return;
       }
@@ -806,7 +858,7 @@ export default function DonationForm() {
   const renderStep = (mobile) => {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
-    if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} onBack={() => { setStep(2); setPayError(""); }} onSubmit={handlePayment} mobile={mobile}/>;
+    if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
     if (step === 4 && redirectData) return <AuthStep redirectData={redirectData}/>;
     return null;
   };
