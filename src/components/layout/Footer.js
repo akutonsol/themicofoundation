@@ -14,33 +14,33 @@ const badges = [
 ];
 
 const socials = [
-  { img: "/images/home-static/twitter.svg", href: "https://twitter.com" },
+  { img: "/images/home-static/twitter.svg",  href: "https://twitter.com" },
   { img: "/images/home-static/facebook.svg", href: "https://facebook.com" },
-  { img: "/images/home-static/youtube.svg", href: "https://youtube.com" },
-  { img: "/images/home-static/ins.svg", href: "https://instagram.com" },
-  { img: "/images/home-static/in.svg", href: "https://linkedin.com" },
+  { img: "/images/home-static/youtube.svg",  href: "https://youtube.com" },
+  { img: "/images/home-static/ins.svg",      href: "https://instagram.com" },
+  { img: "/images/home-static/in.svg",       href: "https://linkedin.com" },
 ];
 
 const inter = { fontFamily: "'Inter', sans-serif" };
 
 const exploreLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'About Us', href: '/about' },
-  { label: 'Endowments', href: '/endowments' },
-  { label: 'Projects', href: '/projects' },
-  { label: 'Donate', href: '/donate' },
-  { label: 'History', href: '/history' },
-  { label: 'Messages', href: '/messages' },
-  { label: 'Team', href: '/team' },
-  { label: 'Trustees', href: '/trustees' },
-  { label: 'Work With Us', href: '/workwithus' },
-  { label: 'Resource Center', href: '/resourcecenter' },
+  { label: "Home",            href: "/" },
+  { label: "About Us",        href: "/about" },
+  { label: "Endowments",      href: "/endowments" },
+  { label: "Projects",        href: "/projects" },
+  { label: "Donate",          href: "/donate" },
+  { label: "History",         href: "/history" },
+  { label: "Messages",        href: "/messages" },
+  { label: "Team",            href: "/team" },
+  { label: "Trustees",        href: "/trustees" },
+  { label: "Work With Us",    href: "/workwithus" },
+  { label: "Resource Center", href: "/resourcecenter" },
 ];
 
 const legalLinks = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Refund Policy", href: "/refund" },
-  { label: "Terms & Conditions", href: "/terms" },
+  { label: "Privacy Policy",    href: "/privacy" },
+  { label: "Refund Policy",     href: "/refund" },
+  { label: "Terms & Conditions",href: "/terms" },
 ];
 
 function VisitorCounter() {
@@ -49,64 +49,73 @@ function VisitorCounter() {
   useEffect(() => {
     async function trackAndFetch() {
       try {
-        const res = await fetch('/api/visit-counter', { method: 'POST' })
-        const data = await res.json()
-        setCount(data.count)
+        if (!sessionStorage.getItem('visited')) {
+          // First page in this session — increment and record
+          sessionStorage.setItem('visited', 'true');
+          const res  = await fetch('/api/visit-counter', { method: 'POST' });
+          const data = await res.json();
+          setCount(data.count);
+        } else {
+          // Already counted this session — just read current count
+          const res  = await fetch('/api/visit-counter', { method: 'GET' });
+          const data = await res.json();
+          setCount(data.count);
+        }
       } catch {
         // Silently fail
       }
     }
-    trackAndFetch()
-  }, [])
+    trackAndFetch();
+  }, []);
 
-  if (count === null) return null
+  if (count === null) return null;
 
   return (
     <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '10px',
-      background: 'rgba(255,217,0,0.07)',
-      border: '1px solid rgba(255,217,0,0.15)',
+      display:      'flex',
+      alignItems:   'center',
+      gap:          '10px',
+      background:   'rgba(255,217,0,0.07)',
+      border:       '1px solid rgba(255,217,0,0.15)',
       borderRadius: '100px',
-      padding: '8px 18px',
+      padding:      '8px 18px',
     }}>
-      <span style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+      <span style={{ position:'relative', display:'flex', alignItems:'center' }}>
         <style>{`
           @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2.2); opacity: 0; }
+            0%   { transform: scale(1);   opacity: 0.8; }
+            100% { transform: scale(2.2); opacity: 0;   }
           }
         `}</style>
         <span style={{
-          position: 'absolute',
-          width: '8px',
-          height: '8px',
+          position:     'absolute',
+          width:        '8px',
+          height:       '8px',
           borderRadius: '50%',
-          background: '#FFD900',
-          opacity: 0.4,
-          animation: 'pulse-ring 1.5s ease-out infinite',
+          background:   '#FFD900',
+          opacity:      0.4,
+          animation:    'pulse-ring 1.5s ease-out infinite',
         }} />
         <span style={{
-          width: '8px',
-          height: '8px',
+          width:        '8px',
+          height:       '8px',
           borderRadius: '50%',
-          background: '#FFD900',
-          flexShrink: 0,
-          position: 'relative',
+          background:   '#FFD900',
+          flexShrink:   0,
+          position:     'relative',
         }} />
       </span>
       <span style={{
         ...inter,
-        fontSize: '13px',
-        fontWeight: 500,
-        color: 'rgba(255,255,255,0.6)',
+        fontSize:      '13px',
+        fontWeight:    500,
+        color:         'rgba(255,255,255,0.6)',
         letterSpacing: '0.04em',
       }}>
         {count.toLocaleString()} {count === 1 ? 'visitor' : 'visitors'}
       </span>
     </div>
-  )
+  );
 }
 
 export default function Footer() {
@@ -114,7 +123,8 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden bg-[#1A1600]">
-      {/* TOP BADGES WITH DONATE BUTTON */}
+
+      {/* TOP BADGES */}
       <div className="border-b border-black/5 bg-[#EEF2F2] py-10">
         <div className="mx-auto flex max-w-[2000px] flex-wrap items-center justify-center gap-10 px-6 lg:px-10">
           <a
@@ -124,14 +134,13 @@ export default function Footer() {
           >
             Donate Now
           </a>
-
           {badges.map((badge, i) => (
             <img
               key={i}
               src={badge.img}
               alt={badge.alt}
               className="w-auto object-contain transition-all duration-300 hover:grayscale-0 hover:opacity-100"
-              style={{ filter: "grayscale(100%)", opacity: 0.7 }}
+              style={{ filter:"grayscale(100%)", opacity:0.7 }}
             />
           ))}
         </div>
@@ -145,11 +154,14 @@ export default function Footer() {
 
         <div className="relative mx-auto max-w-[1450px] px-6 py-20 lg:px-10">
           <div className="grid gap-16 lg:grid-cols-[1.1fr_0.9fr_1fr]">
+
             {/* ABOUT */}
             <div>
               <h3 className="mb-8 text-[44px] font-semibold leading-[0.95] tracking-[-0.05em] text-white" style={inter}>About</h3>
               <p className="max-w-[520px] text-[18px] leading-[1.8] text-white/75" style={inter}>
-                The Mico Foundation supports educational advancement, restoration initiatives, scholarships, and community-centered development projects across Jamaica and the wider Caribbean.
+                The Mico Foundation supports educational advancement, restoration initiatives,
+                scholarships, and community-centered development projects across Jamaica and
+                the wider Caribbean.
               </p>
               <div className="mt-10">
                 <img src="/images/home-static/legacy.png" alt="The Mico Foundation Legacy" className="w-[180px]" />
@@ -161,8 +173,10 @@ export default function Footer() {
               <div>
                 <h3 className="mb-8 text-[44px] font-semibold leading-[0.95] tracking-[-0.05em] text-white" style={inter}>Explore</h3>
                 <div className="space-y-4">
-                  {exploreLinks.map((item) => (
-                    <a key={item.label} href={item.href} className="block text-[18px] text-white/75 no-underline transition hover:text-[#FFD900]" style={inter}>
+                  {exploreLinks.map(item => (
+                    <a key={item.label} href={item.href}
+                      className="block text-[18px] text-white/75 no-underline transition hover:text-[#FFD900]"
+                      style={inter}>
                       {item.label}
                     </a>
                   ))}
@@ -170,8 +184,10 @@ export default function Footer() {
               </div>
               <div className="pt-[74px]">
                 <div className="space-y-4">
-                  {legalLinks.map((item) => (
-                    <a key={item.label} href={item.href} className="block text-[18px] text-white/75 no-underline transition hover:text-[#FFD900]" style={inter}>
+                  {legalLinks.map(item => (
+                    <a key={item.label} href={item.href}
+                      className="block text-[18px] text-white/75 no-underline transition hover:text-[#FFD900]"
+                      style={inter}>
                       {item.label}
                     </a>
                   ))}
@@ -185,7 +201,7 @@ export default function Footer() {
               <div className="space-y-10">
                 <div className="flex gap-5 border-b border-white/10 pb-8">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#FFD900]/25 bg-[#FFD900]/10">
-                    <span className="text-[22px] text-[#FFD900]">✆</span>
+                    <span className="text-[22px] text-[#FFD900]">+</span>
                   </div>
                   <div>
                     <p className="mb-2 text-[14px] uppercase tracking-[0.12em] text-white/45" style={inter}>Call Anytime</p>
@@ -196,7 +212,7 @@ export default function Footer() {
                 </div>
                 <div className="flex gap-5 border-b border-white/10 pb-8">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#FFD900]/25 bg-[#FFD900]/10">
-                    <span className="text-[22px] text-[#FFD900]">✉</span>
+                    <span className="text-[22px] text-[#FFD900]">@</span>
                   </div>
                   <div>
                     <p className="mb-2 text-[14px] uppercase tracking-[0.12em] text-white/45" style={inter}>Send Email</p>
@@ -206,7 +222,7 @@ export default function Footer() {
                 </div>
                 <div className="flex gap-5">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#FFD900]/25 bg-[#FFD900]/10">
-                    <span className="text-[22px] text-[#FFD900]">⌖</span>
+                    <span className="text-[22px] text-[#FFD900]">*</span>
                   </div>
                   <div>
                     <p className="mb-2 text-[14px] uppercase tracking-[0.12em] text-white/45" style={inter}>Main Office</p>
@@ -221,6 +237,7 @@ export default function Footer() {
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* LOWER SECTION */}
@@ -229,7 +246,8 @@ export default function Footer() {
               <img src={imgLogo} alt="Mico Foundation" className="h-[72px] w-auto" />
               <div className="flex items-center gap-4">
                 {socials.map((social, i) => (
-                  <a key={i} href={social.href} target="_blank" rel="noopener noreferrer" className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1A1600] text-black transition hover:scale-[1.08]">
+                  <a key={i} href={social.href} target="_blank" rel="noopener noreferrer"
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1A1600] text-black transition hover:scale-[1.08]">
                     <img src={social.img} alt="" className="h-5 w-5" />
                   </a>
                 ))}
@@ -240,11 +258,12 @@ export default function Footer() {
             <div className="flex flex-col items-start gap-4 lg:items-end">
               <VisitorCounter />
               <p className="text-[16px] text-white/70" style={inter}>
-                © Copyright {new Date().getFullYear()} by The Mico Foundation
+                &copy; Copyright {new Date().getFullYear()} by The Mico Foundation
               </p>
               <p className="text-[15px] text-white/45" style={inter}>
-                Website Designed & Developed by{" "}
-                <a href="https://akutonsolutions.com/" target="_blank" rel="noopener noreferrer" className="text-[#FFD900] hover:underline">
+                Website Designed &amp; Developed by{" "}
+                <a href="https://akutonsolutions.com/" target="_blank" rel="noopener noreferrer"
+                  className="text-[#FFD900] hover:underline">
                   Akuton Solutions
                 </a>
               </p>
@@ -254,8 +273,11 @@ export default function Footer() {
       </div>
 
       {/* SCROLL TO TOP */}
-      <button onClick={scrollToTop} className="fixed bottom-8 right-8 z-[1000] flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD900] text-[#040617] shadow-xl transition hover:-translate-y-1">
-        <span className="text-[26px]">↑</span>
+      <button
+        onClick={scrollToTop}
+        className="fixed bottom-8 right-8 z-[1000] flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD900] text-[#040617] shadow-xl transition hover:-translate-y-1"
+      >
+        <span className="text-[26px]">^</span>
       </button>
     </footer>
   );
