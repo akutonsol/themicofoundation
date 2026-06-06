@@ -12,6 +12,7 @@ import MarqueeLines from '@/components/home/MarqueeLines'
     import Messages from "@/components/messages/Messages";
 import PeopleImpact from '@/components/home/PeopleImpact'
 import NewsEvents from '@/components/home/NewsEvents'
+import WaysToDonate from '@/components/home/WaysToDonate'
 import Publications from '@/components/home/Publications'
 import Newsletter from '@/components/home/Newsletter'
 import FAQ from '@/components/home/FAQ'
@@ -26,10 +27,12 @@ export default function Home() {
     {/*}  <Mission />*/}
 <LegacyImpactSection />
       <Projects />
+       <Messages />
       <Community />
       <MarqueeLines />
-      <Messages />
-       <DonationForm showTitle={false} compact={true} />
+     
+       <WaysToDonate />
+       {/*}    <DonationForm showTitle={false} compact={true} /> */}
      {/*}   <DonationForm /> >*/}
       <PeopleImpact />
       <NewsEvents />
@@ -40,3 +43,4 @@ export default function Home() {
     </main>
   )
 }
+
