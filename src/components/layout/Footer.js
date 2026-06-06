@@ -34,7 +34,6 @@ const exploreLinks = [
   { label: 'Team', href: '/team' },
   { label: 'Trustees', href: '/trustees' },
   { label: 'Work With Us', href: '/workwithus' },
-  { label: 'Sponsorship', href: '/sponsorship' },
   { label: 'Resource Center', href: '/resourcecenter' },
 ];
 
