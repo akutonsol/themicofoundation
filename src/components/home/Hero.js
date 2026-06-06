@@ -242,8 +242,8 @@ export default function Hero() {
               <Image
                 src={staticAssets.logo}
                 alt="The Mico Foundation"
-                width={200} height={140}
-                style={{ objectFit:'contain', height:'140px', width:'auto' }}
+                width={260} height={200}
+                style={{ objectFit:'contain', height:'200px', width:'auto' }}
               />
             </motion.div>
           </motion.div>
@@ -288,7 +288,7 @@ export default function Hero() {
                   <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'167px', height:'167px', display:'flex', alignItems:'center', justifyContent:'center', zIndex:3 }}>
                     <svg viewBox="0 0 167 167" style={{ position:'absolute', width:'100%', height:'100%', animation:'rotateSlow 10s linear infinite' }}>
                       <path id="cpth" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
-                      <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpth">Learn about The Mico Foundation Legacy - </textPath></text>
+                      <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpth">Play a video - Play a video - Play a video -</textPath></text>
                     </svg>
                     <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', zIndex:1, boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4L20 12L6 20V4Z" fill="#040617"/></svg>
@@ -359,7 +359,7 @@ export default function Hero() {
               {subheadline}
             </p>
           </div>
-          <Image src={staticAssets.logo} alt="The Mico Foundation" width={130} height={88} style={{ objectFit:'contain', height:'88px', width:'auto' }} />
+          <Image src={staticAssets.logo} alt="The Mico Foundation" width={160} height={120} style={{ objectFit:'contain', height:'120px', width:'auto' }} />
         </motion.div>
 
         <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.2 }}
