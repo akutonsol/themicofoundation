@@ -11,6 +11,8 @@ const client = createClient({
 
 export async function POST() {
   try {
+    console.log('Token exists:', !!process.env.SANITY_API_TOKEN)
+    console.log('Token prefix:', process.env.SANITY_API_TOKEN?.slice(0, 10))
     // Get or create the stats document
     let stats = await client.fetch(`*[_type == "siteStats"][0]`)
 
