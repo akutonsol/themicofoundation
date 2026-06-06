@@ -634,125 +634,48 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
   );
 }
 
-function AuthStep({ redirectData, onPopupBlocked }) {
-  const popupRef = useRef(null);
+function AuthStep({ redirectData }) {
+  const iframeRef = useRef(null);
 
   useEffect(() => {
-    if (!redirectData) return;
-
-    // Center popup over the current browser window
-    const pw = 480, ph = 620;
-    const left = Math.round(window.screenLeft + (window.outerWidth  - pw) / 2);
-    const top  = Math.round(window.screenTop  + (window.outerHeight - ph) / 2);
-    const features = [
-      "width="  + pw,
-      "height=" + ph,
-      "left="   + left,
-      "top="    + top,
-      "scrollbars=yes",
-      "resizable=no",
-      "toolbar=no",
-      "menubar=no",
-      "location=no",
-      "status=no",
-    ].join(",");
-
-    const popup = window.open("", "3ds_challenge", features);
-    if (!popup) {
-      if (onPopupBlocked) onPopupBlocked();
-      return;
+    if (!redirectData || !iframeRef.current) return;
+    // Write 3DS HTML directly into the iframe
+    const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+    if (doc) {
+      doc.open();
+      doc.write(redirectData);
+      doc.close();
     }
-    popupRef.current = popup;
-
-    // Style the popup to look clean
-    popup.document.open();
-    popup.document.write(
-      '<!DOCTYPE html><html><head>' +
-      '<meta charset="utf-8"/>' +
-      '<meta name="viewport" content="width=device-width,initial-scale=1"/>' +
-      '<title>Bank Authentication</title>' +
-      '<style>' +
-        'html,body{margin:0;padding:0;background:#040617;font-family:Arial,sans-serif;height:100%;}' +
-        '.header{background:#040617;padding:12px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1f35;}' +
-        '.logo{color:#FFD900;font-weight:700;font-size:15px;}' +
-        '.badge{background:#1a1f35;color:#9CA3AF;font-size:11px;padding:3px 8px;border-radius:20px;}' +
-        '.body{background:#F5F3EE;min-height:calc(100% - 45px);}' +
-        'iframe{width:100%;height:calc(100vh - 45px);border:none;display:block;}' +
-      '</style>' +
-      '</head><body>' +
-      '<div class="header">' +
-        '<span class="logo">The Mico Foundation</span>' +
-        '<span class="badge">Secure 3DS Authentication</span>' +
-        '<svg style="margin-left:auto" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#FFD900" stroke-width="2" stroke-linejoin="round"/></svg>' +
-      '</div>' +
-      '<div class="body">' + redirectData + '</div>' +
-      '</body></html>'
-    );
-    popup.document.close();
-
-    // Poll for popup close
-    const timer = setInterval(() => {
-      if (popup.closed) { clearInterval(timer); popupRef.current = null; }
-    }, 500);
-
-    return () => {
-      clearInterval(timer);
-      if (popupRef.current && !popupRef.current.closed) popupRef.current.close();
-    };
   }, [redirectData]);
 
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden"}}>
-      {/* Header */}
-      <div style={{background:"#040617",padding:"24px",textAlign:"center"}}>
-        <div style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:"56px",height:"56px",borderRadius:"50%",background:"rgba(255,217,0,0.15)",marginBottom:"12px"}}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#FFD900" strokeWidth="2" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <h3 style={{...inter,fontSize:"22px",fontWeight:700,color:"white",margin:"0 0 4px"}}>Bank Authentication</h3>
-        <p style={{...inter,fontSize:"14px",color:"#9CA3AF",margin:0}}>Complete your 3D Secure verification</p>
-      </div>
-
-      {/* Body */}
-      <div style={{padding:"32px",display:"flex",flexDirection:"column",alignItems:"center",gap:"20px",textAlign:"center"}}>
-        {/* Animated lock */}
-        <div style={{position:"relative"}}>
-          <div style={{width:"80px",height:"80px",borderRadius:"50%",border:"3px solid #FFD900",borderTopColor:"transparent",animation:"spin 1.2s linear infinite"}}/>
-          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="11" width="18" height="11" rx="2" fill="#FFD900"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#040617" strokeWidth="2.5" strokeLinecap="round"/>
+    <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(4,6,23,0.75)",backdropFilter:"blur(4px)"}}>
+      <div style={{width:"min(520px, 95vw)",backgroundColor:"white",borderRadius:"20px",overflow:"hidden",boxShadow:"0 24px 80px rgba(0,0,0,0.35)"}}>
+        {/* Header */}
+        <div style={{background:"#040617",padding:"16px 20px",display:"flex",alignItems:"center",gap:"12px"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:"36px",height:"36px",borderRadius:"50%",background:"rgba(255,217,0,0.15)",flexShrink:0}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#FFD900" strokeWidth="2" strokeLinejoin="round"/>
             </svg>
           </div>
+          <div>
+            <p style={{...inter,fontSize:"15px",fontWeight:700,color:"white",margin:0}}>The Mico Foundation</p>
+            <p style={{...inter,fontSize:"12px",color:"#9CA3AF",margin:0}}>Secure 3DS Authentication</p>
+          </div>
+          <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:"6px",background:"rgba(255,217,0,0.1)",borderRadius:"20px",padding:"4px 10px"}}>
+            <div style={{width:"7px",height:"7px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
+            <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>Waiting...</span>
+          </div>
         </div>
-
-        <div>
-          <p style={{...inter,fontSize:"18px",fontWeight:600,color:"#040617",margin:"0 0 6px"}}>A popup window has opened</p>
-          <p style={{...inter,fontSize:"15px",color:"#6F7181",margin:0,lineHeight:"1.6"}}>
-            Please complete your bank verification<br/>in the popup to finish your donation.
-          </p>
-        </div>
-
-        {/* Steps */}
-        <div style={{width:"100%",backgroundColor:"#F5F3EE",borderRadius:"14px",padding:"18px 20px",textAlign:"left"}}>
-          {[
-            ["1", "Enter the OTP sent by your bank"],
-            ["2", "Click Submit or Continue"],
-            ["3", "This page will update automatically"],
-          ].map(([n, t]) => (
-            <div key={n} style={{display:"flex",alignItems:"center",gap:"12px",marginBottom:n==="3"?0:"10px"}}>
-              <div style={{width:"26px",height:"26px",borderRadius:"50%",backgroundColor:"#FFD900",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                <span style={{...inter,fontSize:"12px",fontWeight:700,color:"#040617"}}>{n}</span>
-              </div>
-              <span style={{...inter,fontSize:"14px",color:"#040617"}}>{t}</span>
-            </div>
-          ))}
-        </div>
-
-        <p style={{...inter,fontSize:"12px",color:"#9CA3AF",margin:0}}>
-          Popup hidden? Check behind this window or your taskbar.
-        </p>
+        {/* iframe - no sandbox so doc.write works */}
+        <iframe
+          ref={iframeRef}
+          frameBorder="0"
+          width="100%"
+          height="480"
+          style={{display:"block"}}
+          title="3D Secure Authentication"
+        />
       </div>
     </div>
   );
@@ -936,7 +859,7 @@ export default function DonationForm() {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
     if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
-    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} onPopupBlocked={() => { setPayError('Popup was blocked. Please allow popups and try again.'); setRedirectData(null); setStep(3); }}/>;
+    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData}/>;
     return null;
   };
 

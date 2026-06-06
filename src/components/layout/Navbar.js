@@ -191,7 +191,7 @@ export default function Navbar() {
         /* Logo floats above the navbar */
         .logo-float-wrapper {
   position: relative;
-  width: 180px;        /* was 120px — wider */
+  width: 120px;        /* was 120px — wider */
   flex-shrink: 0;
   height: 105px;
   display: flex;
@@ -202,8 +202,8 @@ export default function Navbar() {
   position: absolute;
   bottom: -8px;        /* was -14px — less overhang */
   left: 0;
-  width: 180px;        /* was 120px — wider */
-  height: 120px;       /* was 154px — shorter */
+  width: 120px;        /* was 120px — wider */
+  height: 72px;       /* was 154px — shorter */
   object-fit: contain;
   object-position: bottom center;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12));
