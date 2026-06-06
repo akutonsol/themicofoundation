@@ -32,10 +32,10 @@ export default function Hero() {
   const [heroData,           setHeroData]           = useState(null)
   const [loading,            setLoading]            = useState(true)
   const [currentImageIndex,  setCurrentImageIndex]  = useState(0)
-  const [showVideoModal,     setShowVideoModal]     = useState(false)
+  const [showVideoModal,     setShowVideoModal]      = useState(false)
   const modalIframeRef = useRef(null)
 
-  // Trigger YouTube play via postMessage after modal opens
+  // Trigger YouTube play via postMessage once iframe is loaded
   useEffect(() => {
     if (!showVideoModal) return
     const timer = setTimeout(() => {
@@ -45,7 +45,7 @@ export default function Hero() {
           '*'
         )
       }
-    }, 300)
+    }, 800)
     return () => clearTimeout(timer)
   }, [showVideoModal])
 
@@ -180,17 +180,15 @@ export default function Hero() {
         </div>
       )}
 
-      {/* -- DESKTOP ----------------------------------------------------------- */}
+      {/* DESKTOP */}
       <div className="hero-desktop" style={{ paddingBottom:'120px' }}>
 
-        {/* Sparkle backgrounds */}
         {[{ l:'118px', t:'270px' }, { l:'698px', t:'410px' }, { l:'1289px', t:'140px' }].map((pos, i) => (
           <div key={i} style={{ position:'absolute', left:pos.l, top:pos.t, width:'523px', height:'523px', overflow:'hidden', pointerEvents:'none', zIndex:0, opacity:0.3 }}>
             <Image src={staticAssets.decorations.corner1} alt="" width={523} height={523} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
           </div>
         ))}
 
-        {/* Vertical lines */}
         <div style={{ position:'absolute', top:0, bottom:0, left:'90px', width:'1px', pointerEvents:'none', zIndex:0 }}>
           <Image src={staticAssets.decorations.lineLeft} alt="" width={1} height={1000} style={{ width:'1px', height:'100%' }} />
         </div>
@@ -198,7 +196,6 @@ export default function Hero() {
           <Image src={staticAssets.decorations.lineRight} alt="" width={1} height={1000} style={{ width:'1px', height:'100%' }} />
         </div>
 
-        {/* Corner decorations */}
         <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', top:'90px',    left:'75px',  width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
         <Image src={staticAssets.decorations.corner2} alt="" width={12} height={12} style={{ position:'absolute', top:'84px',    left:'75px',  width:'30px', height:'30px', zIndex:2, pointerEvents:'none' }} />
         <Image src={staticAssets.decorations.corner1} alt="" width={30} height={30} style={{ position:'absolute', top:'90px',    right:'75px', width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
@@ -208,13 +205,10 @@ export default function Hero() {
         <Image src={staticAssets.decorations.corner2} alt="" width={30} height={30} style={{ position:'absolute', bottom:'90px', right:'75px', width:'30px', height:'30px', zIndex:1, pointerEvents:'none' }} />
 
         <div style={{ maxWidth:'1920px', margin:'0 auto', position:'relative', zIndex:2 }}>
-
-          {/* Hero text block */}
           <motion.div
             initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}
             style={{ textAlign:'center', padding:'100px 165px 0' }}
           >
-            {/* Headline */}
             <h1 style={{
               fontFamily:    "'Inter', sans-serif",
               fontSize:      'clamp(2.5rem, 7.5vw, 9rem)',
@@ -229,8 +223,6 @@ export default function Hero() {
             }}>
               {headline}
             </h1>
-
-            {/* Subheadline */}
             <p style={{
               fontFamily:    "'Inter', sans-serif",
               fontSize:      'clamp(1.75rem, 3vw, 3.25rem)',
@@ -243,8 +235,6 @@ export default function Hero() {
             }}>
               {subheadline}
             </p>
-
-            {/* Logo */}
             <motion.div
               initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
               style={{ display:'flex', justifyContent:'center', marginBottom:'8px' }}
@@ -260,7 +250,6 @@ export default function Hero() {
 
           <div style={{ height:'48px' }} />
 
-          {/* Photo grid */}
           <motion.div
             initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.3 }}
             style={{ padding:'0 165px' }}
@@ -287,10 +276,9 @@ export default function Hero() {
 
               {/* Center */}
               <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
-                {/* Video */}
                 <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
                   <div className="video-background">
-                    <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`} frameBorder="0" allow="autoplay; encrypted-media" style={{ borderRadius:'16px' }} />
+                    <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius:'16px' }} />
                   </div>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
                   <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px', zIndex:3 }}>
@@ -300,7 +288,7 @@ export default function Hero() {
                   <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'167px', height:'167px', display:'flex', alignItems:'center', justifyContent:'center', zIndex:3 }}>
                     <svg viewBox="0 0 167 167" style={{ position:'absolute', width:'100%', height:'100%', animation:'rotateSlow 10s linear infinite' }}>
                       <path id="cpth" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
-                      <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpth">Play a video - Play a video - Play a video -</textPath></text>
+                      <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpth">Learn about The Mico Foundation Legacy - </textPath></text>
                     </svg>
                     <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', zIndex:1, boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4L20 12L6 20V4Z" fill="#040617"/></svg>
@@ -359,12 +347,10 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* -- MOBILE ------------------------------------------------------------ */}
+      {/* MOBILE */}
       <div className="hero-mobile" style={{ flexDirection:'column', gap:'26px', padding:'32px 24px 48px', alignItems:'center' }}>
-
         <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
           style={{ display:'flex', flexDirection:'column', gap:'24px', alignItems:'center', width:'100%' }}>
-
           <div style={{ display:'flex', flexDirection:'column', gap:'12px', textAlign:'center', width:'100%' }}>
             <h1 style={{ fontFamily:"'Inter',sans-serif", fontSize:'52px', fontWeight:800, color:'#040617', letterSpacing:'-1px', lineHeight:1.05, margin:0, textTransform:'capitalize', textAlign:'center', width:'100%' }}>
               {headline}
@@ -373,8 +359,6 @@ export default function Hero() {
               {subheadline}
             </p>
           </div>
-
-          {/* Logo mobile */}
           <Image src={staticAssets.logo} alt="The Mico Foundation" width={130} height={88} style={{ objectFit:'contain', height:'88px', width:'auto' }} />
         </motion.div>
 
@@ -384,7 +368,7 @@ export default function Hero() {
           {/* Video */}
           <div style={{ width:'100%', height:'312px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
             <div className="video-background">
-              <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`} frameBorder="0" allow="autoplay; encrypted-media" style={{ borderRadius:'12px' }} />
+              <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius:'12px' }} />
             </div>
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'4px', whiteSpace:'nowrap', zIndex:3 }}>
@@ -426,7 +410,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Stats cards */}
+          {/* Stats */}
           <div style={{ display:'flex', gap:'16px', width:'100%' }}>
             <div style={{ flex:1, backgroundColor:'#FFF7CC', borderRadius:'12px', padding:'8px', textAlign:'center' }}>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#665700', lineHeight:'46px', margin:0 }}>{completedProjects}</p>
@@ -437,7 +421,6 @@ export default function Hero() {
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', color:'#1D7C2B', margin:0 }}>{totalMoneyDonatedText}</p>
             </div>
           </div>
-
         </motion.div>
       </div>
     </section>
