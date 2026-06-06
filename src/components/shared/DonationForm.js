@@ -897,10 +897,18 @@ export default function DonationForm() {
       `}</style>
 
       <div className="don-desktop">
-        <motion.h2 initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}
-          style={{...inter,fontSize:"75px",fontWeight:600,color:"#040617",letterSpacing:"-0.75px",lineHeight:"85px",textAlign:"center",margin:"0 0 42px"}}>
-          Donation Form
-        </motion.h2>
+        <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}
+          style={{textAlign:"center",margin:"0 0 42px"}}>
+          <p style={{...inter,fontSize:"15px",fontWeight:600,color:"#FFD900",backgroundColor:"#040617",display:"inline-block",padding:"4px 18px",borderRadius:"100px",margin:"0 0 18px",letterSpacing:"0.05em"}}>
+            Make an Impact
+          </p>
+          <h2 style={{...inter,fontSize:"75px",fontWeight:800,color:"#040617",letterSpacing:"-1.5px",lineHeight:"90%",margin:"0 0 20px"}}>
+            Your Gift Changes Lives
+          </h2>
+          <p style={{...inter,fontSize:"20px",color:"#6F7181",lineHeight:"1.7",maxWidth:"640px",margin:"0 auto"}}>
+            Every donation directly supports scholarships, heritage restoration, and community programs across Jamaica and the Caribbean. Choose your amount, tell us about yourself, and complete your gift in minutes.
+          </p>
+        </motion.div>
         <StepIndicator currentStep={step}/>
         <div className="don-grid">
           <ProjectCard projects={projectsData} currentProject={currentProject} onPrev={prevProject} onNext={nextProject}/>
@@ -913,7 +921,15 @@ export default function DonationForm() {
       </div>
 
       <div className="don-mobile" style={{flexDirection:"column",gap:"24px",padding:"48px 24px",position:"relative",zIndex:1}}>
-        <h2 style={{...inter,fontSize:"71px",fontWeight:600,color:"#040617",letterSpacing:"-0.71px",lineHeight:"74px",textAlign:"center",margin:0,width:"100%"}}>Donation Form</h2>
+        <div style={{textAlign:"center",width:"100%"}}>
+          <p style={{...inter,fontSize:"13px",fontWeight:600,color:"#FFD900",backgroundColor:"#040617",display:"inline-block",padding:"4px 16px",borderRadius:"100px",margin:"0 0 14px",letterSpacing:"0.05em"}}>
+            Make an Impact
+          </p>
+          <h2 style={{...inter,fontSize:"56px",fontWeight:800,color:"#040617",letterSpacing:"-1px",lineHeight:"90%",margin:"0 0 14px"}}>Your Gift Changes Lives</h2>
+          <p style={{...inter,fontSize:"17px",color:"#6F7181",lineHeight:"1.65",margin:0}}>
+            Support scholarships, heritage restoration, and community programs across Jamaica and the Caribbean.
+          </p>
+        </div>
         <StepIndicator currentStep={step} mobile={true}/>
         <ProjectCard projects={projectsData} currentProject={currentProject} onPrev={prevProject} onNext={nextProject} mobile={true}/>
         <AnimatePresence mode="wait">
