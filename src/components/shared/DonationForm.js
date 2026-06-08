@@ -687,7 +687,7 @@ function AuthStep({ redirectData }) {
           ref={iframeRef}
           frameBorder="0"
           width="100%"
-          height="480"
+          height="640"
           style={{display:"block"}}
           title="3D Secure Authentication"
         />
