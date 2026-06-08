@@ -10,7 +10,7 @@ const imgStarGreen  =  "/images/home-static/marquee-spot.png"
 const imgMobileStarGreen  =  "/images/home-static/marquee-spot.png"
 const imgMobileStarYellow =  "/images/home-static/marquee-spot.png"
 
-const TEXT   = 'Together For Better Future'
+const TEXT   = 'Together For a Better Future'
 const REPEAT = 8
 
 const inter = { fontFamily: "'inter', sans-serif" }

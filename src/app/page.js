@@ -17,17 +17,20 @@ import Publications from '@/components/home/Publications'
 import Newsletter from '@/components/home/Newsletter'
 import FAQ from '@/components/home/FAQ'
 import DonationForm from "@/components/shared/DonationForm";
+import FeaturedMessage from "@/components/home/FeaturedMessage";
 
 export default function Home() {
   return (
     <main>
       <Navbar />
       <Hero />
-      <TrustedBy />
+   
+        <FeaturedMessage />
     {/*}  <Mission />*/}
 <LegacyImpactSection />
       <Projects />
-       <Messages />
+    
+      {/*}   <Messages />  */}
       <Community />
       <MarqueeLines />
      
@@ -35,12 +38,16 @@ export default function Home() {
        {/*}    <DonationForm showTitle={false} compact={true} /> */}
      {/*}   <DonationForm /> >*/}
       <PeopleImpact />
+       
       <NewsEvents />
      {/*}    <Publications />  >*/}
       <Newsletter />
+      
       <FAQ />
+        <TrustedBy />
       <Footer />
     </main>
   )
 }
+
 
