@@ -1,5 +1,4 @@
 import { defineType } from 'sanity'
-
 export default defineType({
   name: 'donation',
   title: 'Donation',
@@ -22,6 +21,12 @@ export default defineType({
       title: 'Email',
       type: 'string',
       validation: Rule => Rule.required().email()
+    },
+    {
+      name: 'phone',
+      title: 'Phone Number',
+      type: 'string',
+      validation: Rule => Rule.required()
     },
     {
       name: 'address1',
@@ -145,10 +150,10 @@ export default defineType({
     prepare(selection) {
       const { firstName, lastName, amount, project, date, status } = selection
       const formattedDate = date ? new Date(date).toLocaleDateString() : ''
-      const statusEmoji = status === 'completed' ? '✅' : status === 'pending' ? '⏳' : '❌'
+      const statusEmoji = status === 'completed' ? '[OK]' : status === 'pending' ? '[...]' : '[X]'
       return {
         title: `${firstName} ${lastName} - $${amount}`,
-        subtitle: `${statusEmoji} ${project || 'General'} • ${formattedDate}`
+        subtitle: `${statusEmoji} ${project || 'General'} - ${formattedDate}`
       }
     }
   },

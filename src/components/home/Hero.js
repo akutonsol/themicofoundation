@@ -23,7 +23,7 @@ const staticAssets = {
     sparkleSmall: "/images/home-static/sparkle-left.png",
     sparkleLarge: "/images/home-static/sparkle-left.png",
   },
-  logo: "/images/home/themicofoundation-logo.png",
+  logo: "/images/home/mico-logo.png",
 }
 
 const TOTAL = 40
@@ -181,7 +181,7 @@ export default function Hero() {
       )}
 
       {/* DESKTOP */}
-      <div className="hero-desktop" style={{ paddingBottom:'120px' }}>
+      <div className="hero-desktop" style={{ paddingBottom:'80px' }}>
 
         {[{ l:'118px', t:'270px' }, { l:'698px', t:'410px' }, { l:'1289px', t:'140px' }].map((pos, i) => (
           <div key={i} style={{ position:'absolute', left:pos.l, top:pos.t, width:'523px', height:'523px', overflow:'hidden', pointerEvents:'none', zIndex:0, opacity:0.3 }}>
@@ -207,7 +207,7 @@ export default function Hero() {
         <div style={{ maxWidth:'1920px', margin:'0 auto', position:'relative', zIndex:2 }}>
           <motion.div
             initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}
-            style={{ textAlign:'center', padding:'100px 165px 0' }}
+            style={{ textAlign:'center', padding:'80px 165px 0', position:'relative', zIndex:3 }}
           >
             <h1 style={{
               fontFamily:    "'Inter', sans-serif",
@@ -237,7 +237,7 @@ export default function Hero() {
             </p>
             <motion.div
               initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
-              style={{ display:'flex', justifyContent:'center', marginBottom:'8px' }}
+              style={{ display:'flex', justifyContent:'center', marginBottom:'0' }}
             >
               <Image
                 src={staticAssets.logo}
@@ -248,11 +248,9 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          <div style={{ height:'48px' }} />
-
           <motion.div
             initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.3 }}
-            style={{ padding:'0 165px' }}
+            style={{ padding:'0 165px', marginTop:'-140px', position:'relative', zIndex:1 }}
           >
             <div className="hero-grid">
 

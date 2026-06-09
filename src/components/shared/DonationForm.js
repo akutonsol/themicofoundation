@@ -294,7 +294,7 @@ function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, err
         </button>
         {selected === "custom" && (
           <div>
-            <div style={{position:"relative"}}>
+            <div className="field-wrapper-select" style={{position:"relative"}}>
               <span style={{position:"absolute",left:"14px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"18px",color:"#040617",pointerEvents:"none",zIndex:1}}>$</span>
               <input type="text" placeholder="0.00" value={custom} onChange={e => setCustom(e.target.value.replace(/[^0-9.]/g,""))}
                 style={{...inter,width:"100%",border:"1px solid " + (error?"#EF4444":"#FFD900"),borderRadius:"12px",padding:"12px 16px 12px 28px",fontSize:"18px",color:"#040617",outline:"none",boxSizing:"border-box"}}/>
@@ -330,7 +330,7 @@ function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, err
             ))}
           </div>
           <div>
-            <div style={{position:"relative"}}>
+            <div className="field-wrapper-select" style={{position:"relative"}}>
               <span style={{position:"absolute",left:"18px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"24px",color:custom?"#040617":"#9CA3AF",pointerEvents:"none",zIndex:1,lineHeight:"38px"}}>$</span>
               <input type="text" placeholder="0.00" value={custom}
                 onChange={e => { setCustom(e.target.value.replace(/[^0-9.]/g,"")); setSelected("custom"); }}
@@ -358,7 +358,7 @@ function InputField({ label, placeholder, value, onChange, error }) {
   return (
     <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
       <label style={{...inter,fontSize:"16px",color:"#414651",letterSpacing:"0.16px",lineHeight:"24px"}}>{label}</label>
-      <div style={{backgroundColor:"#FFFDF9",border:"1px solid " + (error?"#EF4444":"#E5E6EB"),borderRadius:"8px",padding:"10px 14px",boxShadow:"0px 1px 2px rgba(10,13,18,0.05)"}}>
+      <div className="field-wrapper" style={{backgroundColor:"#FFFDF9",border:"1px solid " + (error?"#EF4444":"#E5E6EB"),borderRadius:"8px",padding:"10px 14px",boxShadow:"0px 1px 2px rgba(10,13,18,0.05)",transition:"background-color 0.2s,border-color 0.2s"}}>
         <input type="text" value={value} onChange={onChange} placeholder={placeholder || "Start Typing..."}
           style={{...inter,width:"100%",border:"none",outline:"none",backgroundColor:"transparent",fontSize:"16px",color:"#040617"}}/>
       </div>
@@ -371,8 +371,8 @@ function SelectField({ label, value, onChange, options, placeholder, error }) {
   return (
     <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
       {label && <label style={{...inter,fontSize:"16px",color:"#414651",letterSpacing:"0.16px",lineHeight:"24px"}}>{label}</label>}
-      <div style={{position:"relative"}}>
-        <select value={value} onChange={onChange} style={{...SELECT_STYLE, borderColor:error?"#EF4444":"#E5E6EB", color:value?"#040617":"#9CA3AF"}}>
+      <div className="field-wrapper-select" style={{position:"relative"}}>
+        <select value={value} onChange={onChange} style={{...SELECT_STYLE, borderColor:error?"#EF4444":"#E5E6EB", color:value?"#040617":"#9CA3AF", transition:"background-color 0.2s,border-color 0.2s"}}>
           {placeholder && <option value="" disabled>{placeholder}</option>}
           {options.map(o => <option key={o.value||o} value={o.value||o}>{o.label||o}</option>)}
         </select>
@@ -399,15 +399,21 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
           <InputField label="First Name" value={form.firstName} onChange={upd("firstName")} error={errors.firstName}/>
           <InputField label="Last Name" value={form.lastName} onChange={upd("lastName")} error={errors.lastName}/>
         </div>
-        <InputField label="Email Address" placeholder="your.email@example.com" value={form.email} onChange={upd("email")} error={errors.email}/>
+        <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:"20px"}}>
+          <InputField label="Email Address" placeholder="your.email@example.com" value={form.email} onChange={upd("email")} error={errors.email}/>
+          <InputField label="Phone Number" placeholder="+1 876 000 0000" value={form.phone} onChange={upd("phone")} error={errors.phone}/>
+        </div>
         <InputField label="Address Line 1" value={form.address1} onChange={upd("address1")} error={errors.address1}/>
         <InputField label="Address Line 2 (Optional)" value={form.address2} onChange={upd("address2")}/>
-        <SelectField label="Country" value={form.country}
-          onChange={e => setForm({...form, country:e.target.value, state:""})}
-          options={COUNTRIES.map(c => ({value:c.name, label:c.name}))}
-          placeholder="Select country..." error={errors.country}/>
         <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:"20px"}}>
+          <SelectField label="Country" value={form.country}
+            onChange={e => setForm({...form, country:e.target.value, state:""})}
+            options={COUNTRIES.map(c => ({value:c.name, label:c.name}))}
+            placeholder="Select country..." error={errors.country}/>
           <InputField label="City" value={form.city} onChange={upd("city")} error={errors.city}/>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:"20px"}}>
+          <InputField label="ZIP / Postal Code" value={form.zip} onChange={upd("zip")} error={errors.zip}/>
           {hasStates ? (
             <SelectField
               label={selectedCountry.code === "JM" ? "Parish" : "State / Province"}
@@ -419,7 +425,6 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
             <InputField label="State / Province" value={form.state} onChange={upd("state")} error={errors.state}/>
           )}
         </div>
-        <InputField label="ZIP / Postal Code" value={form.zip} onChange={upd("zip")} error={errors.zip}/>
         <div style={{display:"flex",gap:"16px",flexDirection:mobile?"column":"row"}}>
           <button onClick={onBack} style={{...inter,background:"none",border:"1px solid #E5E6EB",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Go Back</button>
           <button onClick={onNext} style={{...inter,background:"#FFD900",border:"none",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Continue to Donate Method</button>
@@ -703,7 +708,7 @@ export default function DonationForm() {
   const [tab,            setTab]             = useState("monthly");
   const [selected,       setSelected]        = useState("$50/Month");
   const [custom,         setCustom]          = useState("");
-  const [form,           setForm]            = useState({ firstName:"", lastName:"", email:"", address1:"", address2:"", country:"Jamaica", city:"", zip:"", state:"" });
+  const [form,           setForm]            = useState({ firstName:"", lastName:"", email:"", phone:"", address1:"", address2:"", country:"Jamaica", city:"", zip:"", state:"" });
   const [errors,         setErrors]          = useState({});
   const [cardNumber,     setCardNumber]      = useState("");
   const [cardExpiry,     setCardExpiry]      = useState("");
@@ -804,6 +809,7 @@ export default function DonationForm() {
     if (!form.lastName.trim())  e.lastName  = "Last name is required";
     if (!form.email.trim())     e.email     = "Email is required";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Please enter a valid email";
+    if (!form.phone.trim())    e.phone    = "Phone number is required";
     if (!form.address1.trim()) e.address1 = "Address is required";
     if (!form.country.trim())  e.country  = "Country is required";
     if (!form.city.trim())     e.city     = "City is required";
@@ -830,7 +836,7 @@ export default function DonationForm() {
           firstName:     form.firstName,
           lastName:      form.lastName,
           email:         form.email,
-          phone:         "",
+          phone:         form.phone,
           address:       form.address1,
           city:          form.city,
           state:         form.state,
@@ -894,6 +900,8 @@ export default function DonationForm() {
         @keyframes spin  { to { transform: rotate(360deg); } }
         @media (max-width: 768px)  { .don-desktop { display: none !important; } .don-mobile { display: flex !important; } }
         @media (max-width: 1024px) { .don-grid { grid-template-columns: 1fr !important; } }
+        .field-wrapper:focus-within { background-color: #FFFBE6 !important; border-color: #FFD900 !important; }
+        .field-wrapper-select:focus-within select { background-color: #FFFBE6 !important; border-color: #FFD900 !important; }
       `}</style>
 
       <div className="don-desktop">
