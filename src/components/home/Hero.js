@@ -183,7 +183,7 @@ export default function Hero() {
       {/* DESKTOP */}
       <div className="hero-desktop" style={{ paddingBottom:'80px' }}>
 
-        {[{ l:'118px', t:'270px' }, { l:'698px', t:'410px' }, { l:'1289px', t:'140px' }].map((pos, i) => (
+        {[{ l:'118px', t:'270px' }, { l:'698px', t:'410px' }, { l:'1289px', t:'15ß0px' }].map((pos, i) => (
           <div key={i} style={{ position:'absolute', left:pos.l, top:pos.t, width:'523px', height:'523px', overflow:'hidden', pointerEvents:'none', zIndex:0, opacity:0.3 }}>
             <Image src={staticAssets.decorations.corner1} alt="" width={523} height={523} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
           </div>
