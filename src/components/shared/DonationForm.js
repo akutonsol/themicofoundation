@@ -654,18 +654,25 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
   );
 }
 
-function AuthStep({ redirectData }) {
+function AuthStep({ redirectData, onCancel }) {
   const iframeRef = useRef(null);
 
-  useEffect(() => {
+  // Write content to iframe - called on mount, on load, and after a delay as fallback
+  const writeContent = () => {
     if (!redirectData || !iframeRef.current) return;
-    // Write 3DS HTML directly into the iframe
     const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
     if (doc) {
       doc.open();
       doc.write(redirectData);
       doc.close();
     }
+  };
+
+  useEffect(() => {
+    // Try immediately and again after 150ms in case iframe not yet painted
+    writeContent();
+    const t = setTimeout(writeContent, 150);
+    return () => clearTimeout(t);
   }, [redirectData]);
 
   return (
@@ -682,9 +689,16 @@ function AuthStep({ redirectData }) {
             <p style={{...inter,fontSize:"15px",fontWeight:700,color:"white",margin:0}}>The Mico Foundation</p>
             <p style={{...inter,fontSize:"12px",color:"#9CA3AF",margin:0}}>Secure 3DS Authentication</p>
           </div>
-          <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:"6px",background:"rgba(255,217,0,0.1)",borderRadius:"20px",padding:"4px 10px"}}>
-            <div style={{width:"7px",height:"7px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
-            <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>Waiting...</span>
+          <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:"10px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:"6px",background:"rgba(255,217,0,0.1)",borderRadius:"20px",padding:"4px 10px"}}>
+              <div style={{width:"7px",height:"7px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
+              <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>Waiting...</span>
+            </div>
+            {onCancel && (
+              <button onClick={onCancel} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#9CA3AF",cursor:"pointer",borderRadius:"6px",padding:"4px 10px",...inter,fontSize:"12px",flexShrink:0}}>
+                Cancel
+              </button>
+            )}
           </div>
         </div>
         {/* iframe - no sandbox so doc.write works */}
@@ -695,6 +709,7 @@ function AuthStep({ redirectData }) {
           height="640"
           style={{display:"block"}}
           title="3D Secure Authentication"
+          onLoad={writeContent}
         />
       </div>
     </div>
@@ -820,6 +835,7 @@ export default function DonationForm() {
 
   const handlePayment = async () => {
     if (!cardNumber || !cardExpiry || !cardCvv) { setPayError("Please fill in all card fields"); return; }
+    processingRef.current = false; // Reset guard for fresh attempt
     setLoading(true); setPayError("");
     try {
       const parts = cardExpiry.split("/");
@@ -880,7 +896,7 @@ export default function DonationForm() {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
     if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
-    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData}/>;
+    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} onCancel={() => { setRedirectData(null); setStep(3); setPayError(""); processingRef.current = false; }}/>;
     return null;
   };
 
