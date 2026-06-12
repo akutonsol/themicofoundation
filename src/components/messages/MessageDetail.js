@@ -96,7 +96,11 @@ export default function MessageDetail({ slug }) {
       }
     }
     if (slug) fetchMessage();
-    else { setMessage(staticMessages[0]); setAllMessages(staticMessages.map(m => ({ slug: m.slug, name: m.name }))); setLoading(false); }
+    else {
+      setMessage(staticMessages[0]);
+      setAllMessages(staticMessages.map(m => ({ slug: m.slug, name: m.name })));
+      setLoading(false);
+    }
   }, [slug]);
 
   if (loading) return (
@@ -117,6 +121,10 @@ export default function MessageDetail({ slug }) {
   const signature    = getSignature(message.name);
   const previewBody  = message.body.slice(0, 2);
 
+  // Panel split: first 2 beside image, rest below in large text
+  const panelSide  = message.body.slice(0, 2);
+  const panelBelow = message.body.slice(2);
+
   return (
     <main style={{ backgroundColor:"#FAF9F6", position:"relative", overflow:"hidden" }}>
       <style>{`
@@ -125,7 +133,7 @@ export default function MessageDetail({ slug }) {
         .md-section { padding: 48px 165px 80px; max-width: 1760px; margin: 0 auto; }
 
         @media (max-width: 1200px) { .md-section { padding: 48px 64px 80px; } }
-        @media (max-width: 900px)  {
+        @media (max-width: 900px) {
           .md-section { padding: 40px 28px 60px; }
           .md-grid { grid-template-columns: 1fr !important; }
           .md-left { width: 100% !important; }
@@ -153,6 +161,17 @@ export default function MessageDetail({ slug }) {
           flex-shrink: 0;
         }
         .md-nav-arrow:hover { background: #FFD900; }
+
+        /* Panel large editorial text below image */
+        .panel-editorial {
+          font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+          font-weight: 600;
+          color: white;
+          line-height: 1.5;
+          letter-spacing: -0.03em;
+          font-family: 'Inter', sans-serif;
+          margin: 0 0 32px;
+        }
       `}</style>
 
       <div className="md-section">
@@ -184,12 +203,9 @@ export default function MessageDetail({ slug }) {
               className="md-left"
               style={{ width:"400px" }}
             >
-              {/* Gold left accent line */}
               <div style={{ display:"flex", gap:"0" }}>
-                <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", marginRight:"0", flexShrink:0, alignSelf:"stretch" }} />
-
+                <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", flexShrink:0, alignSelf:"stretch" }} />
                 <div style={{ flex:1 }}>
-                  {/* Photo */}
                   <div style={{ borderRadius:"0 20px 0 0", overflow:"hidden" }}>
                     <img
                       src={message.image || "/images/home/holness.jpg"}
@@ -197,8 +213,6 @@ export default function MessageDetail({ slug }) {
                       style={{ width:"100%", height:"580px", objectFit:"cover", objectPosition:"top", display:"block" }}
                     />
                   </div>
-
-                  {/* Name card */}
                   <div style={{ backgroundColor:"#040617", padding:"24px 28px", borderRadius:"0 0 20px 0" }}>
                     <h3 style={{ ...inter, fontSize:"26px", fontWeight:700, color:"white", letterSpacing:"-0.3px", lineHeight:1.2, margin:"0 0 6px" }}>
                       {message.name}
@@ -215,32 +229,24 @@ export default function MessageDetail({ slug }) {
             <motion.div
               initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, delay:0.1 }}
             >
-              {/* Large heading */}
-              <h1
-                className="md-heading"
-                style={{ ...inter, fontSize:"clamp(2.4rem,4vw,3.8rem)", fontWeight:800, color:"#040617", lineHeight:"1.05", letterSpacing:"-2px", margin:"0 0 36px" }}
-              >
+              <h1 className="md-heading"
+                style={{ ...inter, fontSize:"clamp(2.4rem,4vw,3.8rem)", fontWeight:800, color:"#040617", lineHeight:"1.05", letterSpacing:"-2px", margin:"0 0 36px" }}>
                 Message from<br />
                 <span style={{ color:"#040617" }}>the Foundation</span>
               </h1>
 
-              {/* Large italic quote */}
               <div style={{ position:"relative", marginBottom:"36px" }}>
                 <span style={{ position:"absolute", top:"-12px", left:"-8px", fontSize:"80px", color:"#E5E6EB", fontFamily:"Georgia, serif", lineHeight:1, pointerEvents:"none", userSelect:"none" }}>
                   "
                 </span>
-                <blockquote
-                  className="md-quote"
-                  style={{ ...inter, fontSize:"clamp(1.2rem,2vw,1.5rem)", fontWeight:500, color:"#040617", lineHeight:"1.7", fontStyle:"italic", margin:0, paddingLeft:"16px" }}
-                >
+                <blockquote className="md-quote"
+                  style={{ ...inter, fontSize:"clamp(1.2rem,2vw,1.5rem)", fontWeight:500, color:"#040617", lineHeight:"1.7", fontStyle:"italic", margin:0, paddingLeft:"16px" }}>
                   {message.intro}"
                 </blockquote>
               </div>
 
-              {/* Divider */}
               <div style={{ height:"1px", backgroundColor:"#E5E6EB", margin:"32px 0" }} />
 
-              {/* Body preview paragraphs */}
               <div style={{ display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px" }}>
                 {previewBody.map((para, i) => (
                   <p key={i} style={{ ...inter, fontSize:"17px", color:"#6F7181", lineHeight:"1.8", margin:0 }}>
@@ -254,10 +260,8 @@ export default function MessageDetail({ slug }) {
                 )}
               </div>
 
-              {/* Divider */}
               <div style={{ height:"1px", backgroundColor:"#E5E6EB", marginBottom:"32px" }} />
 
-              {/* Signature row */}
               <div style={{ display:"flex", alignItems:"center", gap:"32px", flexWrap:"wrap" }}>
                 <div>
                   <p style={{ ...inter, fontSize:"11px", fontWeight:600, color:"#9CA3AF", letterSpacing:"0.18em", textTransform:"uppercase", margin:"0 0 8px" }}>
@@ -276,7 +280,7 @@ export default function MessageDetail({ slug }) {
           </div>
         </div>
 
-        {/* Prev / Next navigation */}
+        {/* Prev / Next */}
         <div style={{ marginTop:"60px", paddingTop:"32px", borderTop:"1px solid #E5E6EB", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"16px" }}>
           <div>
             {prevMessage ? (
@@ -311,40 +315,50 @@ export default function MessageDetail({ slug }) {
       <AnimatePresence>
         {panelOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               key="backdrop"
               initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
               onClick={() => setPanelOpen(false)}
-              style={{ position:"fixed", inset:0, backgroundColor:"rgba(4,6,23,0.55)", zIndex:9998, backdropFilter:"blur(4px)", cursor:"pointer" }}
+              style={{ position:"fixed", inset:0, backgroundColor:"rgba(4,6,23,0.6)", zIndex:9998, backdropFilter:"blur(4px)", cursor:"pointer" }}
             />
 
-            {/* Panel */}
             <motion.div
               key="panel"
               initial={{ y:"100%" }} animate={{ y:0 }} exit={{ y:"100%" }}
               transition={{ type:"spring", damping:28, stiffness:260 }}
               style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#040617", borderRadius:"28px 28px 0 0", height:"90vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.5)" }}
             >
-              {/* Close */}
+              {/* Close button */}
               <button
                 onClick={() => setPanelOpen(false)}
-                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"44px", height:"44px", borderRadius:"50%", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.8)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
+                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.8)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
               >
-                <CloseIcon size={18} />
+                <CloseIcon size={17} />
               </button>
 
-              {/* Scrollable body */}
-              <div style={{ flex:1, overflowY:"auto", padding:"48px 6% 60px" }}>
-                <div style={{ width:"100%", maxWidth:"1200px", margin:"0 auto" }}>
+              {/* Scrollable content */}
+              <div style={{ flex:1, overflowY:"auto", padding:"44px 6% 60px" }}>
+                <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
 
-                  {/* Float image - text wraps around it */}
-                  <div style={{ float:"left", width:"360px", marginRight:"48px", marginBottom:"24px", position:"relative" }}>
-                    <div style={{ borderRadius:"20px", overflow:"hidden", position:"relative" }}>
+                  {/* Full-width header */}
+                  <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"16px" }}>
+                    <div style={{ width:"28px", height:"2px", backgroundColor:"#FFD900" }} />
+                    <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.2em", textTransform:"uppercase" }}>
+                      Full Message
+                    </span>
+                  </div>
+                  <h2 style={{ ...inter, fontSize:"clamp(2rem,4vw,3.5rem)", fontWeight:800, color:"white", letterSpacing:"-2px", lineHeight:"1.0", margin:"0 0 20px" }}>
+                    {message.name}
+                  </h2>
+                  <div style={{ height:"1px", backgroundColor:"rgba(255,255,255,0.1)", marginBottom:"32px" }} />
+
+                  {/* Image floated left - quote + 2 paragraphs beside it */}
+                  <div style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"16px" }}>
+                    <div style={{ borderRadius:"16px", overflow:"hidden", position:"relative" }}>
                       <img
                         src={message.image || "/images/home/holness.jpg"}
                         alt={message.name}
-                        style={{ width:"100%", height:"480px", objectFit:"cover", objectPosition:"top", display:"block" }}
+                        style={{ width:"100%", height:"500px", objectFit:"cover", objectPosition:"top", display:"block" }}
                       />
                       <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(4,6,23,0.85) 0%, rgba(4,6,23,0) 55%)" }} />
                       <div style={{ position:"absolute", bottom:"20px", left:"20px", right:"20px" }}>
@@ -361,55 +375,46 @@ export default function MessageDetail({ slug }) {
                     </div>
                   </div>
 
-                  {/* Content wraps around float */}
-                  <div>
-                    {/* Eyebrow */}
-                    <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"16px" }}>
-                      <div style={{ width:"20px", height:"2px", backgroundColor:"#FFD900" }} />
-                      <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.18em", textTransform:"uppercase" }}>
-                        Full Message
-                      </span>
-                    </div>
+                  {/* Quote + first 2 paragraphs beside the image */}
+                  <blockquote style={{ ...inter, fontSize:"20px", fontWeight:500, color:"rgba(255,255,255,0.85)", lineHeight:"1.75", fontStyle:"italic", margin:"0 0 24px", paddingLeft:"20px", borderLeft:"3px solid #FFD900" }}>
+                    "{message.intro}"
+                  </blockquote>
 
-                    <h3 style={{ ...inter, fontSize:"clamp(1.8rem,2.8vw,2.6rem)", fontWeight:800, color:"white", letterSpacing:"-1.5px", lineHeight:"1.0", margin:"0 0 20px" }}>
-                      {message.name}
-                    </h3>
+                  {panelSide.map((para, i) => (
+                    <p key={i} style={{ ...inter, fontSize:"17px", color:"rgba(255,255,255,0.65)", lineHeight:"1.85", margin:"0 0 18px" }}>
+                      {para}
+                    </p>
+                  ))}
 
-                    <div style={{ height:"1px", backgroundColor:"rgba(255,255,255,0.1)", marginBottom:"24px" }} />
+                  {/* Clear float - editorial large text below */}
+                  <div style={{ clear:"both" }} />
 
-                    {/* Quote */}
-                    <blockquote style={{ ...inter, fontSize:"19px", fontWeight:500, color:"rgba(255,255,255,0.8)", lineHeight:"1.75", fontStyle:"italic", margin:"0 0 32px", paddingLeft:"20px", borderLeft:"3px solid #FFD900" }}>
-                      "{message.intro}"
-                    </blockquote>
-
-                    {/* All body paragraphs */}
-                    <div style={{ display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px" }}>
-                      {message.body.map((para, i) => (
-                        <p key={i} style={{ ...inter, fontSize:"17px", color:"rgba(255,255,255,0.7)", lineHeight:"1.85", margin:0, width:"100%", display:"block" }}>
+                  {panelBelow.length > 0 && (
+                    <div style={{ marginTop:"12px" }}>
+                      {panelBelow.map((para, i) => (
+                        <p key={i} className="panel-editorial">
                           {para}
                         </p>
                       ))}
                     </div>
+                  )}
 
-                    {/* Signature */}
-                    <div style={{ borderTop:"1px solid rgba(255,255,255,0.1)", paddingTop:"28px", display:"flex", alignItems:"center", gap:"20px", flexWrap:"wrap" }}>
-                      <div>
-                        <p style={{ ...inter, fontSize:"11px", color:"rgba(255,255,255,0.3)", letterSpacing:"0.14em", textTransform:"uppercase", margin:"0 0 6px" }}>
-                          Official Signature
-                        </p>
-                        <p style={{ fontSize:"32px", color:"#FFD900", margin:0, fontFamily:"'Playfair Display', Georgia, serif", fontStyle:"italic" }}>
-                          {signature}
-                        </p>
-                      </div>
-                      <button onClick={() => setPanelOpen(false)}
-                        style={{ ...inter, display:"inline-flex", alignItems:"center", gap:"8px", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.7)", fontSize:"14px", fontWeight:600, padding:"12px 24px", borderRadius:"12px", cursor:"pointer" }}>
-                        Close
-                      </button>
+                  {/* Signature */}
+                  <div style={{ borderTop:"1px solid rgba(255,255,255,0.1)", paddingTop:"28px", marginTop:"16px", display:"flex", alignItems:"center", gap:"24px", flexWrap:"wrap" }}>
+                    <div>
+                      <p style={{ ...inter, fontSize:"11px", color:"rgba(255,255,255,0.3)", letterSpacing:"0.14em", textTransform:"uppercase", margin:"0 0 6px" }}>
+                        Official Signature
+                      </p>
+                      <p style={{ fontSize:"32px", color:"#FFD900", margin:0, fontFamily:"'Playfair Display', Georgia, serif", fontStyle:"italic" }}>
+                        {signature}
+                      </p>
                     </div>
+                    <button onClick={() => setPanelOpen(false)}
+                      style={{ ...inter, display:"inline-flex", alignItems:"center", gap:"8px", backgroundColor:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.15)", color:"rgba(255,255,255,0.6)", fontSize:"14px", fontWeight:600, padding:"12px 24px", borderRadius:"12px", cursor:"pointer" }}>
+                      Close
+                    </button>
                   </div>
 
-                  {/* Clear float */}
-                  <div style={{ clear:"both" }} />
                 </div>
               </div>
             </motion.div>
