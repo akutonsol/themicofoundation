@@ -77,13 +77,13 @@ export default function LegacyImpactSection() {
   )
 
   return (
-    <section style={{ position:'relative', overflow:'hidden', backgroundColor:'#FAF9F6', paddingTop:'80px', paddingBottom:'80px' }}>
+    <section style={{ position:'relative', overflow:'hidden', backgroundColor:'#FAF9F6', paddingTop:'100px', paddingBottom:'100px', borderTop:'1px solid #E5E6EB', borderBottom:'1px solid #E5E6EB' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
         .legacy-wrap  { display: flex; min-height: 640px; }
         .legacy-left  { flex: 0 0 50%; position: relative; overflow: hidden; min-height: 600px; }
-        .legacy-right { flex: 1; display: flex; align-items: center; padding: 80px 80px 80px 72px; position: relative; }
+        .legacy-right { flex: 1; display: flex; align-items: center; padding: 80px 90px 80px 80px; position: relative; }
 
         @media (max-width: 1100px) { .legacy-right { padding: 64px 48px; } }
         @media (max-width: 768px) {
@@ -116,10 +116,34 @@ export default function LegacyImpactSection() {
         }
         .legacy-secondary-btn:hover { border-color: #040617; background: rgba(4,6,23,0.04); }
 
-        .legacy-stat-link { text-decoration: none; display: block; }
-        .legacy-stat-link:hover .legacy-stat-val { color: #040617; }
-        .legacy-stat-link:hover .legacy-stat-box { background: #040617; }
+        .legacy-stat-link { text-decoration: none; display: block; transition: transform 0.2s; }
+        .legacy-stat-link:hover { transform: translateY(-3px); }
+        .legacy-stat-link:hover .legacy-stat-val { color: #FFD900 !important; }
+        .legacy-stat-link:hover p { color: #040617 !important; }
 
+        .legacy-jamaica-green-a {
+          position: absolute; pointer-events: none;
+          top: -10%; left: -5%; width: 55%; height: 75%;
+          background: rgba(0, 110, 40, 0.055);
+          transform: rotate(-14deg) skewX(-4deg);
+          border-radius: 0 40% 60% 0;
+          z-index: 0;
+        }
+        .legacy-jamaica-gold {
+          position: absolute; pointer-events: none;
+          top: 20%; left: -3%; width: 42%; height: 28%;
+          background: rgba(220, 170, 0, 0.07);
+          transform: rotate(-14deg);
+          z-index: 0;
+        }
+        .legacy-jamaica-green-b {
+          position: absolute; pointer-events: none;
+          bottom: -15%; left: 8%; width: 44%; height: 60%;
+          background: rgba(0, 100, 35, 0.05);
+          transform: rotate(-14deg);
+          border-radius: 40% 0 0 20%;
+          z-index: 0;
+        }
         .legacy-payment-badge {
           display: inline-flex; align-items: center; justify-content: center;
           background: white; border: 1px solid #E5E6EB;
@@ -193,7 +217,7 @@ export default function LegacyImpactSection() {
             {/* Headline */}
             <h2
               className="legacy-headline"
-              style={{ ...inter, fontSize:'clamp(2.5rem, 5vw, 7rem)', fontWeight:700, color:'#040617', lineHeight:'0.92', letterSpacing:'-0.06em', margin:'0 0 28px' }}
+              style={{ ...inter, fontSize:'clamp(2.8rem,4.5vw,5rem)', fontWeight:900, color:'#040617', lineHeight:'0.95', letterSpacing:'-3px', margin:'0 0 28px', backgroundColor:'transparent', background:'none' }}
             >
               {headline}
             </h2>
@@ -216,15 +240,15 @@ export default function LegacyImpactSection() {
             <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
 
             {/* Stats row - unchanged */}
-            <div style={{ display:'flex', gap:'0', marginBottom:'32px' }}>
+            <div style={{ display:'flex', gap:'0', marginBottom:'44px', paddingTop:'16px', paddingBottom:'16px', borderTop:'1px solid #E5E6EB', borderBottom:'1px solid #E5E6EB' }}>
               {stats.map((stat, i) => {
                 const link = STAT_LINKS[i] || { href:'/', external:false }
                 const inner = (
-                  <div style={{ paddingRight:'32px', borderRight: i < stats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '32px' : '0' }}>
-                    <p className="legacy-stat-val" style={{ ...inter, fontSize:'36px', fontWeight:900, color:'#040617', margin:'0 0 4px', letterSpacing:'-2px', transition:'color 0.2s' }}>
+                  <div style={{ paddingRight:'48px', borderRight: i < stats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '48px' : '0' }}>
+                    <p className="legacy-stat-val" style={{ ...inter, fontSize:'clamp(2rem,2.8vw,3rem)', fontWeight:900, color:'#040617', margin:'0 0 6px', letterSpacing:'-2px', transition:'color 0.2s', transition:'color 0.2s' }}>
                       {stat.value}
                     </p>
-                    <p style={{ ...inter, fontSize:'12px', color:'#6F7181', margin:0, lineHeight:1.4, maxWidth:'110px' }}>
+                    <p style={{ ...inter, fontSize:'14px', color:'#6F7181', margin:0, lineHeight:1.4, transition:'color 0.2s' }}>
                       {stat.label}
                     </p>
                   </div>
