@@ -2,225 +2,378 @@
 
 import { useState, useEffect } from 'react'
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { client, urlFor, queries } from '@/sanity/lib/sanity'
 
-const inter = { fontFamily: "'Inter', sans-serif" };
+const inter = { fontFamily: "'Inter', sans-serif" }
 
-function BackgroundGrid() {
+function ArrowIcon({ size = 18, color = "#040617" }) {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute right-[-4%] top-[-12%] h-[720px] w-[720px] opacity-[0.16]">
-        <div className="grid h-full w-full grid-cols-8 grid-rows-8">
-          {Array.from({ length: 64 }).map((_, i) => (
-            <div
-              key={i}
-              className="border border-black/[0.05]"
-              style={{ borderRadius: "18px" }}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="absolute left-[-5%] bottom-[-18%] h-[620px] w-[620px] opacity-[0.14]">
-        <div className="grid h-full w-full grid-cols-7 grid-rows-7">
-          {Array.from({ length: 49 }).map((_, i) => (
-            <div
-              key={i}
-              className="border border-black/[0.05]"
-              style={{ borderRadius: "18px" }}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="absolute left-[5%] top-[18%] text-[42px] text-[#FFD900]">
-        ✦
-      </div>
-
-      <div className="absolute right-[8%] bottom-[16%] text-[42px] text-[#FFD900]">
-        ✦
-      </div>
-    </div>
-  );
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ flexShrink:0 }}>
+      <path d="M5 12H19M19 12L13 6M19 12L13 18"
+        stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
 }
+
+function CloseIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+const STAT_LINKS = [
+  { href: "https://themico.edu.jm", external: true  },
+  { href: "/contact",               external: false },
+  { href: "https://www.mucfa.org",  external: true  },
+]
 
 export default function LegacyImpactSection() {
   const [legacyData, setLegacyData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading,    setLoading]    = useState(true)
+  const [panelOpen,  setPanelOpen]  = useState(false)
 
   useEffect(() => {
-    async function fetchLegacyData() {
+    async function fetch_data() {
       try {
         const data = await client.fetch(queries.legacyImpact)
         setLegacyData(data)
-      } catch (error) {
-        console.error('Error fetching legacy impact data:', error)
+      } catch (err) {
+        console.error('Error fetching legacy impact data:', err)
       } finally {
         setLoading(false)
       }
     }
-    fetchLegacyData()
+    fetch_data()
   }, [])
 
-  // Use CMS data or fallback to defaults
-  const badge = legacyData?.badge || 'Why The Foundation Exists'
-  const headline = legacyData?.headline || 'Preserving Legacy. Empowering Futures.'
-  const paragraph1 = legacyData?.paragraph1 || 'The Mico Foundation exists to preserve the educational heritage of The Mico University College while advancing opportunities for future generations.'
-  const paragraph2 = legacyData?.paragraph2 || 'Through restoration projects, scholarships, institutional development, and community partnerships, every contribution helps strengthen a legacy that has transformed lives for nearly two centuries.'
-  const button1Text = legacyData?.button1?.text || 'Explore Projects'
-  const button1Link = legacyData?.button1?.link || '/projects'
-  const button2Text = legacyData?.button2?.text || 'Become a Donor'
-  const button2Link = legacyData?.button2?.link || '/donate'
-  const locationBadge = legacyData?.locationBadge || 'Jamaica • Education • Legacy'
-  const bottomQuote = legacyData?.bottomQuote || 'Every generation deserves access to educational opportunity.'
-  
-  // Convert Sanity image to URL
-  const heroImageUrl = legacyData?.heroImage 
-    ? urlFor(legacyData.heroImage).width(1200).url() 
-    : '/images/home/holness.jpg'
+  const badge         = legacyData?.badge         || 'Our Foundation'
+  const headline      = legacyData?.headline      || 'Preserving Legacy. Empowering Futures.'
+  const paragraph1    = legacyData?.paragraph1    || 'The Mico Foundation is registered under the Companies Act of Jamaica in 1981 as a Limited Liability Company, Not for Profit.'
+  const paragraph2    = legacyData?.paragraph2    || 'Through restoration projects, scholarships, institutional development, and community partnerships, every contribution helps strengthen a legacy that has transformed lives for nearly two centuries.'
+  const button1Text   = legacyData?.button1?.text || 'Explore Projects'
+  const button1Link   = legacyData?.button1?.link || '/projects'
+  const button2Text   = legacyData?.button2?.text || 'Become a Donor'
+  const button2Link   = legacyData?.button2?.link || '/donate'
+  const locationBadge = legacyData?.locationBadge || 'Est. 1836'
+  const bottomQuote   = legacyData?.bottomQuote   || 'Every generation deserves access to educational opportunity.'
 
-  // Stats from CMS or fallback
   const stats = legacyData?.stats || [
-    { value: "1836", label: "Educational legacy established" },
-    { value: "45+", label: "Completed and active projects" },
-    { value: "Global", label: "Donor and alumni support network" }
+    { value: "1836",   label: "Educational legacy established"   },
+    { value: "45+",    label: "Completed and active projects"    },
+    { value: "Global", label: "Donor and alumni support network" },
   ]
 
-  if (loading) {
-    return (
-      <section className="relative overflow-hidden bg-[#FAF9F6] px-6 py-24">
-        <p style={{ textAlign: 'center', color: '#6F7181' }}>Loading...</p>
-      </section>
-    )
-  }
+  const heroImageUrl = legacyData?.heroImage
+    ? urlFor(legacyData.heroImage).width(1400).url()
+    : '/images/home/holness.jpg'
+
+  if (loading) return (
+    <section style={{ backgroundColor:'#FAF9F6', padding:'80px 0', minHeight:'500px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <p style={{ ...inter, color:'#6F7181', fontSize:'20px' }}>Loading...</p>
+    </section>
+  )
 
   return (
-    <section className="relative overflow-hidden bg-[#FAF9F6] px-6 py-24 sm:px-10 lg:px-20 lg:py-32">
-      <BackgroundGrid />
+    <section style={{ position:'relative', overflow:'hidden', backgroundColor:'#FAF9F6', paddingTop:'80px', paddingBottom:'80px' }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-      <div className="relative mx-auto max-w-[1650px]">
-        <div className="grid gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          {/* LEFT CONTENT */}
+        .legacy-wrap  { display: flex; min-height: 640px; }
+        .legacy-left  { flex: 0 0 50%; position: relative; overflow: hidden; min-height: 600px; }
+        .legacy-right { flex: 1; display: flex; align-items: center; padding: 80px 80px 80px 72px; position: relative; }
+
+        @media (max-width: 1100px) { .legacy-right { padding: 64px 48px; } }
+        @media (max-width: 768px) {
+          .legacy-wrap  { flex-direction: column; }
+          .legacy-left  { flex: none; height: 360px; }
+          .legacy-right { padding: 52px 28px; }
+          .legacy-headline { font-size: 44px !important; }
+        }
+
+        .legacy-read-btn {
+          display: inline-flex; align-items: center; gap: 10px;
+          background: #FFD900; color: #040617;
+          font-size: 15px; font-weight: 700;
+          padding: 15px 32px; border-radius: 14px;
+          border: none; cursor: pointer;
+          letter-spacing: -0.1px;
+          transition: background 0.2s, transform 0.15s;
+          font-family: 'Inter', sans-serif;
+        }
+        .legacy-read-btn:hover { background: #e6c200; transform: scale(1.02); }
+
+        .legacy-secondary-btn {
+          display: inline-flex; align-items: center; gap: 10px;
+          color: #040617; font-size: 15px; font-weight: 600;
+          text-decoration: none;
+          border: 1px solid #E5E6EB;
+          padding: 15px 28px; border-radius: 14px;
+          transition: border-color 0.2s, background 0.2s;
+          font-family: 'Inter', sans-serif;
+        }
+        .legacy-secondary-btn:hover { border-color: #040617; background: rgba(4,6,23,0.04); }
+
+        .legacy-stat-link { text-decoration: none; display: block; }
+        .legacy-stat-link:hover .legacy-stat-val { color: #040617; }
+        .legacy-stat-link:hover .legacy-stat-box { background: #040617; }
+
+        .legacy-payment-badge {
+          display: inline-flex; align-items: center; justify-content: center;
+          background: white; border: 1px solid #E5E6EB;
+          border-radius: 8px; padding: 6px 14px; height: 36px;
+        }
+      `}</style>
+
+      <div className="legacy-wrap">
+
+        {/* LEFT - photo */}
+        <div className="legacy-left">
+          <img
+            src={heroImageUrl}
+            alt="Mico Foundation legacy"
+            style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }}
+          />
+          {/* Gradient overlay */}
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(4,6,23,0.75) 0%, rgba(4,6,23,0) 55%)' }} />
+
+          {/* EST. badge */}
+          <div style={{ position:'absolute', bottom:'32px', left:'24px', zIndex:10, backgroundColor:'rgba(255,255,255,0.15)', border:'1px solid rgba(255,255,255,0.3)', backdropFilter:'blur(8px)', borderRadius:'6px', padding:'8px 18px' }}>
+            <span style={{ ...inter, fontSize:'12px', fontWeight:700, color:'white', letterSpacing:'0.18em', textTransform:'uppercase' }}>
+              {locationBadge}
+            </span>
+          </div>
+
+          {/* Quote overlay */}
+          <div style={{ position:'absolute', bottom:'80px', left:'28px', right:'28px', zIndex:10 }}>
+            <p style={{ ...inter, fontSize:'20px', fontWeight:600, color:'white', lineHeight:1.3, letterSpacing:'-0.3px', margin:0, maxWidth:'340px' }}>
+              {bottomQuote}
+            </p>
+          </div>
+
+          {/* Floating mini card */}
           <motion.div
-            initial={{ opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.65 }}
+            initial={{ opacity:0, y:16, rotate:-2 }}
+            whileInView={{ opacity:1, y:0, rotate:-2 }}
+            viewport={{ once:true }}
+            transition={{ duration:0.7, delay:0.3 }}
+            style={{ position:'absolute', top:'38%', left:'50%', transform:'translate(-50%,-50%) rotate(-2deg)', zIndex:10, width:'210px', backgroundColor:'rgba(4,6,23,0.88)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:'16px', padding:'18px', backdropFilter:'blur(10px)' }}
           >
-            <div
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E5E6EB] bg-white px-5 py-3 text-[15px] font-semibold text-[#040617]"
-              style={inter}
-            >
-              <Sparkles className="h-4 w-4 text-[#FFD900]" />
-              {badge}
+            <p style={{ ...inter, fontSize:'16px', fontWeight:700, color:'white', margin:'0 0 6px', lineHeight:1.2 }}>Be Part of the Legacy</p>
+            <p style={{ ...inter, fontSize:'11px', color:'rgba(255,255,255,0.5)', margin:'0 0 12px', lineHeight:1.5 }}>Support education in Jamaica</p>
+            <div style={{ display:'flex', gap:'6px', alignItems:'center' }}>
+              <div style={{ height:'26px', background:'#FFD900', borderRadius:'6px', padding:'0 10px', display:'flex', alignItems:'center' }}>
+                <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#040617' }}>Donate</span>
+              </div>
+              <img src="/images/home-static/visa.png" alt="Visa" style={{ height:'14px', opacity:0.5 }} />
+              <img src="/images/home-static/mastercard.png" alt="MC" style={{ height:'14px', opacity:0.5 }} />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* RIGHT - content */}
+        <div className="legacy-right">
+          <motion.div
+            initial={{ opacity:0, x:30 }}
+            whileInView={{ opacity:1, x:0 }}
+            viewport={{ once:true }}
+            transition={{ duration:0.7 }}
+            style={{ width:'100%', maxWidth:'560px', position:'relative' }}
+          >
+            {/* Eyebrow */}
+            <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'20px' }}>
+              <div style={{ width:'28px', height:'2px', backgroundColor:'#FFD900' }} />
+              <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#6F7181', letterSpacing:'0.2em', textTransform:'uppercase' }}>
+                {badge}
+              </span>
             </div>
 
+            {/* Headline */}
             <h2
-              className="max-w-[820px] text-[64px] font-semibold leading-[0.92] tracking-[-0.08em] text-[#040617] sm:text-[88px] lg:text-[118px]"
-              style={inter}
+              className="legacy-headline"
+              style={{ ...inter, fontSize:'clamp(2.5rem, 5vw, 7rem)', fontWeight:700, color:'#040617', lineHeight:'0.92', letterSpacing:'-0.06em', margin:'0 0 28px' }}
             >
               {headline}
             </h2>
 
-            <div className="mt-10 border-l border-[#E5E6EB] pl-6 sm:pl-8">
-              <p
-                className="max-w-[760px] text-[22px] leading-[1.65] tracking-[-0.03em] text-[#6F7181] sm:text-[26px]"
-                style={inter}
-              >
-                {paragraph1}
-              </p>
+            {/* Divider */}
+            <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
 
-              <p
-                className="mt-6 max-w-[760px] text-[22px] leading-[1.65] tracking-[-0.03em] text-[#6F7181] sm:text-[26px]"
-                style={inter}
-              >
-                {paragraph2}
-              </p>
-            </div>
-
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href={button1Link}
-                className="inline-flex items-center justify-center gap-3 rounded-[18px] bg-[#FFD900] px-8 py-5 text-[17px] font-semibold text-[#040617] transition hover:scale-[1.02]"
-                style={inter}
-              >
-                {button1Text}
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-
-              <Link
-                href={button2Link}
-                className="inline-flex items-center justify-center gap-3 rounded-[18px] border border-[#040617] px-8 py-5 text-[17px] font-semibold text-[#040617] transition hover:bg-[#040617] hover:text-white"
-                style={inter}
-              >
+            {/* CTA buttons */}
+            <div style={{ display:'flex', alignItems:'center', gap:'14px', marginBottom:'36px', flexWrap:'wrap' }}>
+              <button onClick={() => setPanelOpen(true)} className="legacy-read-btn">
+                Read Full Content
+                <ArrowIcon size={16} color="#040617" />
+              </button>
+              <Link href={button2Link} className="legacy-secondary-btn">
                 {button2Text}
-                <ArrowRight className="h-5 w-5" />
               </Link>
             </div>
-          </motion.div>
 
-          {/* RIGHT VISUAL */}
-          <motion.div
-            initial={{ opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.65, delay: 0.1 }}
-            className="relative"
-          >
-            <div className="relative overflow-hidden rounded-[34px] border border-[#E5E6EB] bg-[#040617] shadow-sm">
-              <img
-                src={heroImageUrl}
-                alt="Students and education impact"
-                className="h-[720px] w-full object-cover opacity-90"
-              />
+            {/* Divider */}
+            <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+            {/* Stats row - unchanged */}
+            <div style={{ display:'flex', gap:'0', marginBottom:'32px' }}>
+              {stats.map((stat, i) => {
+                const link = STAT_LINKS[i] || { href:'/', external:false }
+                const inner = (
+                  <div style={{ paddingRight:'32px', borderRight: i < stats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '32px' : '0' }}>
+                    <p className="legacy-stat-val" style={{ ...inter, fontSize:'36px', fontWeight:900, color:'#040617', margin:'0 0 4px', letterSpacing:'-2px', transition:'color 0.2s' }}>
+                      {stat.value}
+                    </p>
+                    <p style={{ ...inter, fontSize:'12px', color:'#6F7181', margin:0, lineHeight:1.4, maxWidth:'110px' }}>
+                      {stat.label}
+                    </p>
+                  </div>
+                )
+                return link.external
+                  ? <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" className="legacy-stat-link">{inner}</a>
+                  : <Link key={i} href={link.href} className="legacy-stat-link">{inner}</Link>
+              })}
+            </div>
 
-              <div className="absolute left-8 top-8 rounded-full bg-white/15 px-5 py-3 text-[15px] font-semibold text-white backdrop-blur-md">
-                {locationBadge}
-              </div>
-
-              <div className="absolute bottom-8 left-8 right-8">
-                <p
-                  className="max-w-[760px] text-[38px] font-semibold leading-[1.05] tracking-[-0.06em] text-white sm:text-[52px]"
-                  style={inter}
-                >
-                  {bottomQuote}
-                </p>
+            {/* Payment badges */}
+            <div>
+              <p style={{ ...inter, fontSize:'11px', color:'#9CA3AF', letterSpacing:'0.1em', textTransform:'uppercase', margin:'0 0 12px' }}>
+                Secure Global Giving
+              </p>
+              <div style={{ display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap' }}>
+                {[
+                  { src:'/images/home-static/visa.png',       alt:'Visa'       },
+                  { src:'/images/home-static/mastercard.png', alt:'Mastercard' },
+                  { src:'/images/home-static/keycard.png',    alt:'KeyCard'    },
+                  { src:'/images/home-static/3dsecure.png',   alt:'3D Secure'  },
+                ].map(p => (
+                  <div key={p.alt} className="legacy-payment-badge">
+                    <img src={p.src} alt={p.alt} style={{ height:'18px', objectFit:'contain' }} />
+                  </div>
+                ))}
+                <div className="legacy-payment-badge">
+                  <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#6F7181' }}>AMEX</span>
+                </div>
               </div>
             </div>
 
-            <div className="mt-5 grid gap-4 sm:grid-cols-3">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: 0.15 + index * 0.08 }}
-                  className="rounded-[24px] border border-[#E5E6EB] bg-white/85 p-6 backdrop-blur-sm"
-                >
-                  <p
-                    className="text-[34px] font-semibold leading-none tracking-[-0.05em] text-[#040617]"
-                    style={inter}
-                  >
-                    {stat.value}
-                  </p>
 
-                  <p
-                    className="mt-3 text-[16px] leading-[1.35] text-[#7A7D8B]"
-                    style={inter}
+            {/* Slide-up panel */}
+            <AnimatePresence>
+              {panelOpen && (
+                <>
+                  {/* Backdrop */}
+                  <motion.div
+                    key="backdrop"
+                    initial={{ opacity:0 }}
+                    animate={{ opacity:1 }}
+                    exit={{ opacity:0 }}
+                    onClick={() => setPanelOpen(false)}
+                    style={{ position:'fixed', inset:0, backgroundColor:'rgba(4,6,23,0.55)', zIndex:9998, backdropFilter:'blur(4px)', cursor:'pointer' }}
+                  />
+
+                  {/* Panel */}
+                  <motion.div
+                    key="panel"
+                    initial={{ y: '100%' }}
+                    animate={{ y: 0 }}
+                    exit={{ y: '100%' }}
+                    transition={{ type:'spring', damping:28, stiffness:260 }}
+                    style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:9999, backgroundColor:'#040617', borderRadius:'28px 28px 0 0', height:'90vh', display:'flex', flexDirection:'column', boxShadow:'0 -32px 80px rgba(0,0,0,0.5)' }}
                   >
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+                    {/* Close button */}
+                    <button
+                      onClick={() => setPanelOpen(false)}
+                      style={{ position:'absolute', top:'20px', right:'24px', zIndex:10, width:'44px', height:'44px', borderRadius:'50%', backgroundColor:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)', color:'rgba(255,255,255,0.8)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}
+                    >
+                      <CloseIcon size={18} />
+                    </button>
+
+                    {/* Scrollable content */}
+                    <div style={{ flex:1, overflowY:'auto', display:'flex', justifyContent:'center', padding:'48px 5% 60px' }}>
+                      <div style={{ width:'100%', maxWidth:'100%', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'48px', alignItems:'start' }}>
+
+                        {/* LEFT: image sticky */}
+                        <div style={{ position:'sticky', top:0 }}>
+                          <div style={{ borderRadius:'20px', overflow:'hidden', position:'relative', aspectRatio:'4/5' }}>
+                            <img
+                              src={heroImageUrl}
+                              alt="Mico Foundation legacy"
+                              style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }}
+                            />
+                            <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(4,6,23,0.75) 0%, rgba(4,6,23,0) 55%)' }} />
+                            <div style={{ position:'absolute', bottom:'24px', left:'24px', right:'24px' }}>
+                              <div style={{ display:'flex', alignItems:'center', gap:'8px', marginBottom:'8px' }}>
+                                <div style={{ width:'16px', height:'2px', backgroundColor:'#FFD900' }} />
+                                <span style={{ ...inter, fontSize:'10px', fontWeight:700, color:'#FFD900', letterSpacing:'0.16em', textTransform:'uppercase' }}>
+                                  {locationBadge}
+                                </span>
+                              </div>
+                              <p style={{ ...inter, fontSize:'17px', fontWeight:600, color:'white', lineHeight:1.3, margin:0 }}>
+                                {bottomQuote}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* RIGHT: full article text - all lines end at same right edge */}
+                        <div>
+                          {/* Eyebrow */}
+                          <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'16px' }}>
+                            <div style={{ width:'20px', height:'2px', backgroundColor:'#FFD900' }} />
+                            <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#FFD900', letterSpacing:'0.18em', textTransform:'uppercase' }}>
+                              {badge}
+                            </span>
+                          </div>
+
+                          {/* Headline */}
+                          <h3 style={{ ...inter, fontSize:'clamp(1.8rem,2.8vw,2.6rem)', fontWeight:800, color:'white', letterSpacing:'-1.5px', lineHeight:'1.0', margin:'0 0 20px' }}>
+                            {headline}
+                          </h3>
+
+                          {/* Divider */}
+                          <div style={{ height:'1px', backgroundColor:'rgba(255,255,255,0.1)', marginBottom:'24px' }} />
+
+                          {/* Article paragraphs - width:100% ensures consistent right edge */}
+                          <p style={{ ...inter, fontSize:'17px', color:'rgba(255,255,255,0.82)', lineHeight:'1.85', margin:'0 0 20px', width:'100%', display:'block' }}>
+                            {paragraph1}
+                          </p>
+                          <p style={{ ...inter, fontSize:'17px', color:'rgba(255,255,255,0.65)', lineHeight:'1.85', margin:'0 0 32px', width:'100%', display:'block' }}>
+                            {paragraph2}
+                          </p>
+
+                          {/* Quote */}
+                          <div style={{ borderLeft:'3px solid #FFD900', paddingLeft:'20px', marginBottom:'36px' }}>
+                            <p style={{ ...inter, fontSize:'18px', fontWeight:500, color:'rgba(255,255,255,0.75)', fontStyle:'italic', lineHeight:'1.65', margin:0 }}>
+                              "{bottomQuote}"
+                            </p>
+                          </div>
+
+                          {/* CTAs */}
+                          <div style={{ display:'flex', gap:'12px', flexWrap:'wrap' }}>
+                            <Link href={button1Link} onClick={() => setPanelOpen(false)}
+                              style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'10px', backgroundColor:'#FFD900', color:'#040617', fontSize:'14px', fontWeight:700, padding:'14px 28px', borderRadius:'12px', textDecoration:'none' }}>
+                              {button1Text}
+                              <ArrowIcon size={15} color="#040617" />
+                            </Link>
+                            <Link href={button2Link} onClick={() => setPanelOpen(false)}
+                              style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'10px', border:'1px solid rgba(255,255,255,0.2)', color:'rgba(255,255,255,0.7)', fontSize:'14px', fontWeight:600, padding:'14px 24px', borderRadius:'12px', textDecoration:'none' }}>
+                              {button2Text}
+                            </Link>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+
+
           </motion.div>
         </div>
       </div>
     </section>
-  );
+  )
 }
