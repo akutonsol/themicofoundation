@@ -335,33 +335,33 @@ export default function MessageDetail({ slug }) {
               </button>
 
               {/* Scrollable body */}
-              <div style={{ flex:1, overflowY:"auto", display:"flex", justifyContent:"center", padding:"48px 5% 60px" }}>
-                <div style={{ width:"100%", maxWidth:"100%", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"64px", alignItems:"start" }}>
+              <div style={{ flex:1, overflowY:"auto", padding:"48px 6% 60px" }}>
+                <div style={{ width:"100%", maxWidth:"1200px", margin:"0 auto" }}>
 
-                  {/* LEFT: sticky image */}
-                  <div style={{ position:"sticky", top:0 }}>
+                  {/* Float image - text wraps around it */}
+                  <div style={{ float:"left", width:"360px", marginRight:"48px", marginBottom:"24px", position:"relative" }}>
                     <div style={{ borderRadius:"20px", overflow:"hidden", position:"relative" }}>
                       <img
                         src={message.image || "/images/home/holness.jpg"}
                         alt={message.name}
-                        style={{ width:"100%", height:"580px", objectFit:"cover", objectPosition:"top", display:"block" }}
+                        style={{ width:"100%", height:"480px", objectFit:"cover", objectPosition:"top", display:"block" }}
                       />
-                      <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(4,6,23,0.8) 0%, rgba(4,6,23,0) 55%)" }} />
-                      <div style={{ position:"absolute", bottom:"24px", left:"24px", right:"24px" }}>
-                        <div style={{ display:"flex", alignItems:"center", gap:"8px", marginBottom:"8px" }}>
-                          <div style={{ width:"16px", height:"2px", backgroundColor:"#FFD900" }} />
+                      <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(4,6,23,0.85) 0%, rgba(4,6,23,0) 55%)" }} />
+                      <div style={{ position:"absolute", bottom:"20px", left:"20px", right:"20px" }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:"8px", marginBottom:"6px" }}>
+                          <div style={{ width:"14px", height:"2px", backgroundColor:"#FFD900" }} />
                           <span style={{ ...inter, fontSize:"10px", fontWeight:700, color:"#FFD900", letterSpacing:"0.16em", textTransform:"uppercase" }}>
                             {message.role}
                           </span>
                         </div>
-                        <p style={{ ...inter, fontSize:"24px", fontWeight:700, color:"white", lineHeight:1.2, margin:0, textTransform:"capitalize" }}>
+                        <p style={{ ...inter, fontSize:"20px", fontWeight:700, color:"white", lineHeight:1.2, margin:0 }}>
                           {message.name}
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* RIGHT: full article */}
+                  {/* Content wraps around float */}
                   <div>
                     {/* Eyebrow */}
                     <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"16px" }}>
@@ -408,6 +408,8 @@ export default function MessageDetail({ slug }) {
                     </div>
                   </div>
 
+                  {/* Clear float */}
+                  <div style={{ clear:"both" }} />
                 </div>
               </div>
             </motion.div>
