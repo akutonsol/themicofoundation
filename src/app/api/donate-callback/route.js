@@ -60,11 +60,16 @@ export async function POST(request) {
       }
     }
 
-    console.log('3DS callback received — IsoResponseCode:', body.IsoResponseCode, '| SpiToken present:', !!body.SpiToken, '| AuthStatus:', body.RiskManagement?.ThreeDSecure?.AuthenticationStatus)
+    console.log('3DS callback raw body keys:', Object.keys(body))
+    console.log('3DS callback — IsoResponseCode:', body.IsoResponseCode, '| ResponseMessage:', body.ResponseMessage, '| SpiToken:', !!body.SpiToken, '| AuthStatus:', body.RiskManagement?.ThreeDSecure?.AuthenticationStatus)
+    console.log('3DS callback full body:', JSON.stringify(body).slice(0, 1000))
 
     const spiToken   = body.SpiToken   || body.spiToken
     const isoCode    = body.IsoResponseCode
+    // Handle both nested JSON object and dot-notation URL-encoded keys
     const authStatus = body.RiskManagement?.ThreeDSecure?.AuthenticationStatus
+      || body['RiskManagement.ThreeDSecure.AuthenticationStatus']
+      || body['AuthenticationStatus']
 
     const is3dsComplete = spiToken && (
       isoCode === '3D0' || isoCode === 'SP4' || isoCode === 'SP1' ||
