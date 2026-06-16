@@ -1,7 +1,9 @@
-import { completePayment } from '@/lib/completePayment'
+import { after } from 'next/server'
+import { processAndSave, sendEmails } from '@/lib/completePayment'
 
-// HTML sent back to the browser for challenge 3DS flow.
-// For frictionless (server-to-server), this HTML is consumed by PowerTranz and ignored.
+// Minimal HTML that fires postMessage to the parent frame.
+// For frictionless 3DS, PowerTranz calls this server-to-server — the HTML is ignored.
+// For challenge 3DS, the browser loads this and postMessage fires.
 function makeHtml(payload) {
   const msg = JSON.stringify(payload)
   return `<!DOCTYPE html>
@@ -11,7 +13,6 @@ function makeHtml(payload) {
 <script>
 (function(){
   var msg = ${msg};
-  var msgStr = JSON.stringify(msg);
   var sent = false;
   try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); sent = true; } } catch(e) {}
   if (!sent) { try { window.top.postMessage(msg, '*'); sent = true; } catch(e) {} }
@@ -31,14 +32,12 @@ function decodeMeta(b64url) {
 
 export async function POST(request) {
   try {
-    // Decode donationMeta from URL (encoded by the donate route)
     const { searchParams } = new URL(request.url)
     const donationMeta = searchParams.get('meta') ? decodeMeta(searchParams.get('meta')) : {}
 
     // Parse body — PowerTranz may send form-encoded or JSON
     let body = {}
     const contentType = request.headers.get('content-type') || ''
-
     if (contentType.includes('application/json')) {
       body = await request.json()
     } else if (contentType.includes('application/x-www-form-urlencoded')) {
@@ -75,32 +74,30 @@ export async function POST(request) {
     )
 
     if (is3dsComplete) {
-      // Complete the payment using the post-3DS SpiToken.
-      // For frictionless 3DS: this call arrives from PowerTranz's server.
-      // For challenge 3DS: this call arrives from the browser (via iframe redirect).
-      const result = await completePayment(spiToken, donationMeta)
+      // ── Return HTML immediately so the browser isn't blocked ──────────────
+      // Payment completion (PowerTranz + Sanity + emails) runs in the background.
+      // The client polls /api/payment-status every 2 seconds to detect completion.
+      const capturedToken = spiToken
+      const capturedMeta  = donationMeta
 
-      if (result.success && result.approved) {
-        return new Response(
-          makeHtml({
-            status:            'payment_complete',
-            orderId:           result.orderId,
-            authorizationCode: result.authorizationCode,
-            transactionId:     result.transactionId,
-            cardBrand:         result.cardBrand,
-            amount:            result.amount,
-            message:           result.message,
-          }),
-          { headers: { 'Content-Type': 'text/html' } },
-        )
-      }
+      after(async () => {
+        try {
+          const result = await processAndSave(capturedToken, capturedMeta)
+          if (result.success && result.approved) {
+            await sendEmails(result._emailData, result.receiptUrl)
+            console.log('[callback] Payment completed + emails sent:', capturedMeta?.orderId)
+          } else {
+            console.error('[callback] Payment declined:', result.error, result.isoResponseCode)
+          }
+        } catch (e) {
+          console.error('[callback] Background error:', e.message)
+        }
+      })
 
+      // Signal the browser (challenge flow) that 3DS auth is done and polling should find the result shortly.
+      // For frictionless (server-to-server), this HTML is consumed by PowerTranz and ignored.
       return new Response(
-        makeHtml({
-          status:  'declined',
-          message: result.error || 'Payment was declined',
-          errors:  result.errors,
-        }),
+        makeHtml({ status: 'payment_processing', orderId: donationMeta?.orderId }),
         { headers: { 'Content-Type': 'text/html' } },
       )
     }
@@ -128,22 +125,20 @@ export async function GET(request) {
     const donationMeta = searchParams.get('meta') ? decodeMeta(searchParams.get('meta')) : {}
 
     if (spiToken) {
-      const result = await completePayment(spiToken, donationMeta)
-      if (result.success && result.approved) {
-        return new Response(
-          makeHtml({
-            status:            'payment_complete',
-            orderId:           result.orderId,
-            authorizationCode: result.authorizationCode,
-            transactionId:     result.transactionId,
-            cardBrand:         result.cardBrand,
-            amount:            result.amount,
-          }),
-          { headers: { 'Content-Type': 'text/html' } },
-        )
-      }
+      const capturedToken = spiToken
+      const capturedMeta  = donationMeta
+      after(async () => {
+        try {
+          const result = await processAndSave(capturedToken, capturedMeta)
+          if (result.success && result.approved) {
+            await sendEmails(result._emailData, result.receiptUrl)
+          }
+        } catch (e) {
+          console.error('[callback GET] Background error:', e.message)
+        }
+      })
       return new Response(
-        makeHtml({ status: 'declined', message: result.error || 'Payment was declined' }),
+        makeHtml({ status: 'payment_processing', orderId: donationMeta?.orderId }),
         { headers: { 'Content-Type': 'text/html' } },
       )
     }

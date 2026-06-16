@@ -824,7 +824,7 @@ function AuthStep({ redirectData, onCancel }) {
     const t = setInterval(() => setElapsed(s => s + 1), 1000);
     return () => clearInterval(t);
   }, []);
-  const isSlowLoad = elapsed >= 8;  // blank for 8+ seconds = likely frictionless
+  const isSlowLoad = elapsed >= 3;  // blank for 3+ seconds = 3DS submitted, waiting for poll
   const isTimedOut = elapsed >= 120; // 2 min hard timeout
 
   return (
@@ -932,15 +932,23 @@ export default function DonationForm() {
     load();
   }, []);
 
-  // postMessage from 3DS callback iframe — callback now completes the payment
-  // server-side and sends payment_complete (not 3ds_complete with raw spiToken)
+  // postMessage from 3DS callback iframe.
+  // Callback now returns immediately (payment runs in background via after()).
+  // "payment_processing" = 3DS done, poll will find the result shortly.
+  // "declined" / "error" = authentication failed.
   const handle3dsResult = useRef(null);
   handle3dsResult.current = (payload) => {
     let data = payload;
     if (typeof data === "string") { try { data = JSON.parse(data); } catch { return; } }
     if (!data || typeof data !== "object") return;
 
+    if (data.status === "payment_processing") {
+      // 3DS auth is done — the polling loop will catch the completed Sanity record.
+      // Nothing to do here; just let the poll resolve it.
+      return;
+    }
     if (data.status === "payment_complete") {
+      // Legacy path (in case callback ever returns full result synchronously)
       if (processingRef.current) return;
       processingRef.current = true;
       const meta = donationMeta || {};

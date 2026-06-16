@@ -26,13 +26,13 @@ function buildReceiptUrl(data) {
   } catch { return null }
 }
 
-async function sendDonorConfirmation(data, receiptUrl) {
+// ── Email senders ─────────────────────────────────────────────────────────────
+
+async function sendDonorEmail(data, receiptUrl) {
   const { email, name, amount, orderId, transactionId, authCode, cardBrand, projectTitle, donationType } = data
   if (!email) return
-
   const displayAmount = typeof amount === 'number' ? '$' + amount.toFixed(2) : String(amount || '0')
   const firstName     = (name || 'Donor').split(' ')[0]
-
   await mailer.sendMail({
     from:    '"The Mico Foundation" <' + process.env.EMAIL_USER + '>',
     to:      email,
@@ -101,12 +101,10 @@ async function sendDonorConfirmation(data, receiptUrl) {
   })
 }
 
-async function sendAdminNotification(data) {
+async function sendAdminEmail(data) {
   const { donorEmail, donorName, amount, orderId, transactionId, authCode, cardBrand, projectTitle, donationType } = data
   if (!process.env.ADMIN_EMAIL) return
-
   const displayAmount = typeof amount === 'number' ? '$' + amount.toFixed(2) + ' USD' : String(amount || '0')
-
   await mailer.sendMail({
     from:    '"Mico Foundation Donations" <' + process.env.EMAIL_USER + '>',
     to:      process.env.ADMIN_EMAIL,
@@ -136,7 +134,9 @@ async function sendAdminNotification(data) {
   })
 }
 
-export async function completePayment(spiToken, donationMeta = {}) {
+// ── Core: PowerTranz auth + Sanity save (no email scheduling) ────────────────
+// Use this when you are ALREADY inside an after() callback to avoid nesting.
+export async function processAndSave(spiToken, donationMeta = {}) {
   const ptRes = await fetch(`${PT_BASE_URL}/Api/spi/payment`, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -145,17 +145,9 @@ export async function completePayment(spiToken, donationMeta = {}) {
   })
 
   const pt = await ptRes.json()
-  console.log('[completePayment] PowerTranz response:', JSON.stringify(pt))
+  console.log('[processAndSave] PT response:', JSON.stringify(pt))
 
-  if (!ptRes.ok) {
-    return {
-      success: false, approved: false,
-      error:   pt.ResponseMessage || `Gateway HTTP ${ptRes.status}`,
-      errors:  pt.Errors,
-    }
-  }
-
-  if (!pt.Approved || pt.IsoResponseCode !== '00') {
+  if (!ptRes.ok || !pt.Approved || pt.IsoResponseCode !== '00') {
     return {
       success:         false,
       approved:        false,
@@ -204,9 +196,9 @@ export async function completePayment(spiToken, donationMeta = {}) {
       doc.project = { _type: 'reference', _ref: donationMeta.projectId }
     }
     await sanity.create(doc)
-    console.log('[completePayment] Saved to Sanity:', orderId)
+    console.log('[processAndSave] Saved to Sanity:', orderId)
   } catch (err) {
-    console.error('[completePayment] Sanity error:', err.message)
+    console.error('[processAndSave] Sanity error:', err.message)
   }
 
   const receiptUrl = buildReceiptUrl({
@@ -229,18 +221,6 @@ export async function completePayment(spiToken, donationMeta = {}) {
     donationType: donationMeta?.donationType || '',
   }
 
-  after(async () => {
-    try {
-      await Promise.all([
-        sendDonorConfirmation(emailData, receiptUrl).catch(e => console.error('[completePayment] Donor email:', e.message)),
-        sendAdminNotification(emailData).catch(e => console.error('[completePayment] Admin email:', e.message)),
-      ])
-      console.log('[completePayment] Emails sent for:', orderId)
-    } catch (e) {
-      console.error('[completePayment] Email batch error:', e.message)
-    }
-  })
-
   return {
     success:           true,
     approved:          true,
@@ -251,5 +231,36 @@ export async function completePayment(spiToken, donationMeta = {}) {
     amount:            pt.TotalAmount,
     message:           pt.ResponseMessage,
     receiptUrl,
+    _emailData:        emailData,
   }
+}
+
+// Send emails directly (no after() scheduling).
+// Call this when already inside an after() context.
+export async function sendEmails(emailData, receiptUrl) {
+  await Promise.all([
+    sendDonorEmail(emailData, receiptUrl).catch(e => console.error('[sendEmails] donor:', e.message)),
+    sendAdminEmail(emailData).catch(e => console.error('[sendEmails] admin:', e.message)),
+  ])
+}
+
+// ── Full process: PowerTranz + Sanity + schedule emails via after() ──────────
+// Use from route handlers that are NOT already inside after().
+export async function completePayment(spiToken, donationMeta = {}) {
+  const result = await processAndSave(spiToken, donationMeta)
+
+  if (result.success && result.approved) {
+    const emailData  = result._emailData
+    const receiptUrl = result.receiptUrl
+    after(async () => {
+      try {
+        await sendEmails(emailData, receiptUrl)
+        console.log('[completePayment] Emails sent:', result.orderId)
+      } catch (e) {
+        console.error('[completePayment] Email error:', e.message)
+      }
+    })
+  }
+
+  return result
 }
