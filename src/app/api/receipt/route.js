@@ -149,12 +149,11 @@ export async function GET(request) {
 
     const filename = 'Mico-Foundation-Receipt-' + (receiptData.transactionId || receiptData.orderId || 'donation') + '.pdf'
 
-    return new Response(pdfBuffer, {
+    return new Response(new Uint8Array(pdfBuffer), {
       status: 200,
       headers: {
         'Content-Type':        'application/pdf',
         'Content-Disposition': 'attachment; filename="' + filename + '"',
-        'Content-Length':      String(pdfBuffer.length),
         'Cache-Control':       'no-store',
       },
     })

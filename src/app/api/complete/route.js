@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
 import { createClient } from '@sanity/client'
 import nodemailer from 'nodemailer'
 
@@ -24,7 +24,9 @@ const transporter = nodemailer.createTransport({
 // ── Build receipt download URL ────────────────────────────────────────────────
 function buildReceiptUrl(receiptData) {
   try {
-    const encoded = Buffer.from(JSON.stringify(receiptData)).toString('base64').replace(/\+/g,'_').replace(/\//g,'-').replace(/=/g,'')
+    // Standard base64url: + → - , / → _ , strip =
+    const encoded = Buffer.from(JSON.stringify(receiptData)).toString('base64')
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
     return SITE_URL + '/api/receipt?data=' + encoded
   } catch (_) {
     return null
@@ -247,8 +249,6 @@ export async function POST(request) {
         donationType: donationMeta?.donationType || '',
       }
 
-      // Build the success response FIRST — return it immediately so the browser
-      // doesn't time out waiting for SMTP. Emails fire in the background.
       const successPayload = {
         success:           true,
         approved:          true,
@@ -261,12 +261,18 @@ export async function POST(request) {
         receiptUrl,
       }
 
-      // Fire emails non-blocking — Vercel will let the process finish briefly
-      // after the response is sent, giving SMTP time to complete.
-      Promise.all([
-        sendDonorConfirmation(emailData, receiptUrl).catch(e => console.error('Donor email error:', e)),
-        sendAdminNotification(emailData).catch(e => console.error('Admin email error:', e)),
-      ]).then(() => console.log('Emails sent for order:', orderId))
+      // after() runs guaranteed after the response is sent — safe for SMTP
+      after(async () => {
+        try {
+          await Promise.all([
+            sendDonorConfirmation(emailData, receiptUrl).catch(e => console.error('Donor email error:', e)),
+            sendAdminNotification(emailData).catch(e => console.error('Admin email error:', e)),
+          ])
+          console.log('Emails sent for order:', orderId)
+        } catch (e) {
+          console.error('Email batch error:', e)
+        }
+      })
 
       return NextResponse.json(successPayload)
     }

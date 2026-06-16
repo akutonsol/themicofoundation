@@ -45,6 +45,57 @@ function getCountryNumericCode(name) {
   return COUNTRY_ISO_NUMERIC[name.trim().toLowerCase()] || '840';
 }
 
+// Build /api/receipt URL client-side (relative, no SITE_URL dependency)
+function buildClientReceiptUrl(result, meta) {
+  try {
+    const donorName = ((meta?.firstName || '') + ' ' + (meta?.lastName || '')).trim()
+      || meta?.cardholderName || 'Donor';
+    const receiptData = {
+      donorName,
+      donorEmail:    meta?.email        || '',
+      amount:        result?.amount     || meta?.amount   || 0,
+      orderId:       result?.orderId    || meta?.orderId  || '',
+      transactionId: result?.transactionId || '',
+      authCode:      result?.authorizationCode || '',
+      cardBrand:     result?.cardBrand  || '',
+      projectTitle:  meta?.projectTitle || '',
+      donationType:  meta?.donationType || 'once',
+      address:       meta?.address      || '',
+      city:          meta?.city         || '',
+      state:         meta?.state        || '',
+      zip:           meta?.postalCode   || '',
+      country:       meta?.country      || 'Jamaica',
+      processedAt:   new Date().toISOString(),
+    };
+    const json   = JSON.stringify(receiptData);
+    const bytes  = new TextEncoder().encode(json);
+    const binary = Array.from(bytes, b => String.fromCharCode(b)).join('');
+    const encoded = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    return '/api/receipt?data=' + encoded;
+  } catch {
+    return null;
+  }
+}
+
+// Download the PDF via fetch so the browser always uses the correct filename/type
+async function downloadReceiptPDF(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = 'Mico-Foundation-Donation-Receipt.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
+  } catch {
+    window.open(url, '_blank');
+  }
+}
+
 function formatCardNumber(v) {
   return v.replace(/\D/g,"").slice(0,16).replace(/(.{4})/g,"$1 ").trim();
 }
@@ -518,14 +569,14 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
       <p style={{...inter,fontSize:"14px",color:"#6F7181",margin:0}}>A confirmation has been sent to your email address.</p>
       <a href="/" style={{...inter,display:"inline-flex",alignItems:"center",padding:"14px 32px",borderRadius:"14px",background:"#FFD900",color:"#040617",fontSize:"16px",fontWeight:600,textDecoration:"none"}}>Return to Home</a>
       {receiptUrl && (
-        <a href={receiptUrl} target="_blank" rel="noopener noreferrer"
-          style={{...inter,display:"inline-flex",alignItems:"center",gap:"8px",padding:"14px 32px",borderRadius:"14px",background:"#F5F3EE",color:"#040617",fontSize:"16px",fontWeight:600,border:"2px solid #E5E6EB",textDecoration:"none"}}>
+        <button onClick={() => downloadReceiptPDF(receiptUrl)}
+          style={{...inter,display:"inline-flex",alignItems:"center",gap:"8px",padding:"14px 32px",borderRadius:"14px",background:"#F5F3EE",color:"#040617",fontSize:"16px",fontWeight:600,border:"2px solid #E5E6EB",cursor:"pointer"}}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <path d="M12 15V3M12 15L8 11M12 15L16 11" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M3 17V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V17" stroke="#040617" strokeWidth="2" strokeLinecap="round"/>
           </svg>
           Download Receipt
-        </a>
+        </button>
       )}
     </motion.div>
   );
@@ -771,7 +822,7 @@ export default function DonationForm() {
           if (cd.success && cd.approved) {
             setPaymentResult(cd);
             setPaymentSuccess(true);
-            if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl);
+            setReceiptUrl(buildClientReceiptUrl(cd, meta));
           } else {
             processingRef.current = false; // Allow retry on failure
             setPayError(cd.error || "Payment was declined");
@@ -876,7 +927,7 @@ export default function DonationForm() {
         const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:data.spiToken, donationMeta:meta }) });
         const cd = await cr.json();
         setIsProcessing(false);
-        if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); if (cd.receiptUrl) setReceiptUrl(cd.receiptUrl); }
+        if (cd.success && cd.approved) { setPaymentResult(cd); setPaymentSuccess(true); setReceiptUrl(buildClientReceiptUrl(cd, meta)); }
         else setPayError(cd.error || "Payment was declined");
         return;
       }

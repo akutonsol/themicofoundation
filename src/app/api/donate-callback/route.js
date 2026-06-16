@@ -1,28 +1,19 @@
 import { NextResponse } from 'next/server'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mico.themicofoundationja.org'
-
-function makeRedirectHtml(path) {
-  const url = SITE_URL + path
+// postMessage payload sent into the parent page (DonationForm's message listener)
+function makeHtml(payload) {
+  const msg = JSON.stringify(payload)
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"/></head>
 <body>
 <script>
 (function(){
-  // Navigate the top-level page (parent of the 3DS iframe) to the result page
-  try {
-    if (window.parent && window.parent !== window) {
-      window.parent.location = ${JSON.stringify(url)};
-    } else {
-      window.location = ${JSON.stringify(url)};
-    }
-  } catch(e) {
-    // If cross-origin, fall back to window.top
-    try { window.top.location = ${JSON.stringify(url)}; } catch(e2) {
-      window.location = ${JSON.stringify(url)};
-    }
-  }
+  var msg = ${msg};
+  var sent = false;
+  try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); sent = true; } } catch(e) {}
+  if (!sent) { try { window.top.postMessage(msg, '*'); sent = true; } catch(e) {} }
+  if (!sent) { try { if (window.opener && !window.opener.closed) { window.opener.postMessage(msg, '*'); } } catch(e) {} }
 })();
 </script>
 </body>
@@ -43,26 +34,21 @@ export async function POST(request) {
         body[key] = value
       }
     } else {
-      // Try form data first, then raw text
       try {
         const formData = await request.formData()
-        for (const [key, value] of formData.entries()) {
-          body[key] = value
-        }
+        for (const [key, value] of formData.entries()) { body[key] = value }
       } catch {
         const text = await request.text()
         try { body = JSON.parse(text) } catch {
           const params = new URLSearchParams(text)
-          for (const [key, value] of params.entries()) {
-            body[key] = value
-          }
+          for (const [key, value] of params.entries()) { body[key] = value }
         }
       }
     }
 
-    // PowerTranz sends the full response as a JSON string in body.Response,
+    // PowerTranz sends the full response JSON as a string inside body.Response,
     // with SpiToken and TransactionIdentifier also at the top level.
-    let parsed = body
+    let parsed = { ...body }
     if (body.Response && typeof body.Response === 'string') {
       try { parsed = { ...body, ...JSON.parse(body.Response) } } catch {}
     }
@@ -81,23 +67,22 @@ export async function POST(request) {
     )
 
     if (is3dsComplete) {
-      const path = `/donate-result?spiToken=${encodeURIComponent(spiToken)}&status=3ds_complete`
-      return new Response(makeRedirectHtml(path), { headers: { 'Content-Type': 'text/html' } })
+      return new Response(makeHtml({ status: '3ds_complete', spiToken }), {
+        headers: { 'Content-Type': 'text/html' },
+      })
     }
 
     const fieldErr = parsed.Errors?.[0]?.Message
-    const errMsg = encodeURIComponent(fieldErr || parsed.ResponseMessage || 'Authentication failed')
-    return new Response(
-      makeRedirectHtml(`/donate-result?status=declined&message=${errMsg}`),
-      { headers: { 'Content-Type': 'text/html' } }
-    )
+    const errMsg   = fieldErr || parsed.ResponseMessage || 'Authentication failed'
+    return new Response(makeHtml({ status: 'declined', message: errMsg }), {
+      headers: { 'Content-Type': 'text/html' },
+    })
 
   } catch (error) {
     console.error('Callback error:', error)
-    return new Response(
-      makeRedirectHtml('/donate-result?status=error&message=An+error+occurred'),
-      { headers: { 'Content-Type': 'text/html' } }
-    )
+    return new Response(makeHtml({ status: 'error', message: 'An error occurred' }), {
+      headers: { 'Content-Type': 'text/html' },
+    })
   }
 }
 
@@ -106,17 +91,16 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const spiToken = searchParams.get('SpiToken') || searchParams.get('spiToken')
     if (spiToken) {
-      const path = `/donate-result?spiToken=${encodeURIComponent(spiToken)}&status=3ds_complete`
-      return new Response(makeRedirectHtml(path), { headers: { 'Content-Type': 'text/html' } })
+      return new Response(makeHtml({ status: '3ds_complete', spiToken }), {
+        headers: { 'Content-Type': 'text/html' },
+      })
     }
-    return new Response(
-      makeRedirectHtml('/donate-result?status=error&message=No+token+received'),
-      { headers: { 'Content-Type': 'text/html' } }
-    )
-  } catch (error) {
-    return new Response(
-      makeRedirectHtml('/donate-result?status=error&message=An+error+occurred'),
-      { headers: { 'Content-Type': 'text/html' } }
-    )
+    return new Response(makeHtml({ status: 'error', message: 'No token received' }), {
+      headers: { 'Content-Type': 'text/html' },
+    })
+  } catch {
+    return new Response(makeHtml({ status: 'error', message: 'An error occurred' }), {
+      headers: { 'Content-Type': 'text/html' },
+    })
   }
 }
