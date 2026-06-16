@@ -37,8 +37,20 @@ export async function POST(request) {
 
     const transactionId = uuidv4()
     const orderId = `MICO-${uuidv4().split('-')[0].toUpperCase()}`
-    const callbackUrl = `${SITE_URL}/api/donate-callback`
-    console.log('Initiating PowerTranz Sale:', { orderId, amount, currency, callbackUrl })
+
+    // Encode donationMeta into the callback URL so the server-side callback
+    // has donor info for Sanity save and emails (frictionless 3DS is server-to-server)
+    const metaPayload = {
+      amount, currency, donationType, message, email,
+      cardholderName, firstName, lastName, phone,
+      address, city, state, postalCode, country,
+      orderId, projectId, projectTitle,
+    }
+    const metaEncoded = Buffer.from(JSON.stringify(metaPayload))
+      .toString('base64')
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+    const callbackUrl = `${SITE_URL}/api/donate-callback?meta=${metaEncoded}`
+    console.log('Initiating PowerTranz Sale:', { orderId, amount, currency })
     console.log('PT credentials present — ID:', !!PT_ID, 'PW:', !!PT_PASSWORD, 'Base:', PT_BASE_URL)
 
     const payload = {

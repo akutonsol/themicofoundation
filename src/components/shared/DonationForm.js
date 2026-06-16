@@ -845,7 +845,7 @@ function AuthStep({ redirectData, onCancel }) {
             <div style={{display:"flex",alignItems:"center",gap:"6px",background:"rgba(255,217,0,0.1)",borderRadius:"20px",padding:"4px 10px"}}>
               <div style={{width:"7px",height:"7px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
               <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>
-                {isSlowLoad ? "Authenticating..." : "Waiting..."}
+                {isSlowLoad ? "Processing..." : "Waiting..."}
               </span>
             </div>
             {onCancel && (
@@ -883,8 +883,8 @@ function AuthStep({ redirectData, onCancel }) {
         {isSlowLoad && !isTimedOut && (
           <div style={{padding:"48px 32px",textAlign:"center"}}>
             <div style={{width:"44px",height:"44px",border:"3px solid #FFD900",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 16px"}}/>
-            <p style={{...inter,fontSize:"16px",color:"#040617",fontWeight:600,margin:"0 0 6px"}}>Authenticating with your bank...</p>
-            <p style={{...inter,fontSize:"13px",color:"#6F7181",margin:0}}>This usually takes a few seconds.</p>
+            <p style={{...inter,fontSize:"16px",color:"#040617",fontWeight:600,margin:"0 0 6px"}}>Processing your payment...</p>
+            <p style={{...inter,fontSize:"13px",color:"#6F7181",margin:0}}>Completing secure authentication. This usually takes a few seconds.</p>
           </div>
         )}
       </div>
@@ -913,8 +913,7 @@ export default function DonationForm() {
   const [redirectData,    setRedirectData]    = useState(null);
   const [donationMeta,    setDonationMeta]    = useState(null);
   const [receiptUrl,      setReceiptUrl]      = useState(null);
-  const [pendingSpiToken, setPendingSpiToken] = useState(null); // pre-3DS token for frictionless fallback
-  const processingRef = useRef(false); // Guard against duplicate 3DS postMessages
+  const processingRef = useRef(false); // Guard against duplicate completion events
 
   useEffect(() => {
     async function load() {
@@ -933,38 +932,25 @@ export default function DonationForm() {
     load();
   }, []);
 
-  // Shared handler for both postMessage and localStorage-poll events
+  // postMessage from 3DS callback iframe — callback now completes the payment
+  // server-side and sends payment_complete (not 3ds_complete with raw spiToken)
   const handle3dsResult = useRef(null);
-  handle3dsResult.current = async (payload) => {
+  handle3dsResult.current = (payload) => {
     let data = payload;
     if (typeof data === "string") { try { data = JSON.parse(data); } catch { return; } }
     if (!data || typeof data !== "object") return;
 
-    if (data.status === "3ds_complete" && data.spiToken) {
+    if (data.status === "payment_complete") {
       if (processingRef.current) return;
       processingRef.current = true;
+      const meta = donationMeta || {};
       setPayError("");
       setRedirectData(null);
       setStep(3);
-      setIsProcessing(true);
-      const meta = donationMeta || {};
-      try {
-        const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:data.spiToken, donationMeta:meta }) });
-        const cd = await cr.json();
-        setIsProcessing(false);
-        if (cd.success && cd.approved) {
-          setPaymentResult(cd);
-          setPaymentSuccess(true);
-          setReceiptUrl(buildClientReceiptUrl(cd, meta));
-        } else {
-          processingRef.current = false;
-          setPayError(cd.error || "Payment was declined");
-        }
-      } catch {
-        processingRef.current = false;
-        setIsProcessing(false);
-        setPayError("Failed to complete payment");
-      }
+      setIsProcessing(false);
+      setPaymentResult(data);
+      setPaymentSuccess(true);
+      setReceiptUrl(buildClientReceiptUrl(data, meta));
     } else if (data.status === "declined" || data.status === "error") {
       if (processingRef.current) return;
       setPayError(data.message || "Authentication failed");
@@ -973,69 +959,52 @@ export default function DonationForm() {
     }
   };
 
-  // postMessage listener (primary channel)
   useEffect(() => {
     const handler = e => handle3dsResult.current(e.data);
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, []);
 
-  // localStorage poller — backup when callback iframe DOES navigate (challenge flow)
+  // Poll Sanity every 2 seconds for payment completion.
+  // This is the primary completion path for frictionless 3DS2 (where the ACS
+  // calls our callback server-to-server — the iframe never navigates, so
+  // postMessage never fires). It also catches challenge flow if postMessage fails.
   useEffect(() => {
-    if (!redirectData) return;
-    try { localStorage.removeItem("mf_3ds_result"); } catch {}
-    const timer = setInterval(() => {
-      try {
-        const stored = localStorage.getItem("mf_3ds_result");
-        if (!stored) return;
-        localStorage.removeItem("mf_3ds_result");
-        clearInterval(timer);
-        handle3dsResult.current(stored);
-      } catch {}
-    }, 500);
-    return () => clearInterval(timer);
-  }, [redirectData]);
+    if (!redirectData || !donationMeta?.orderId) return;
+    const oid = donationMeta.orderId;
+    let active = true;
 
-  // Frictionless 3DS fallback: after 8s of blank iframe, attempt payment with
-  // the pre-3DS SpiToken. For frictionless cards PowerTranz marks the token
-  // auth-complete server-side, so /api/spi/payment will succeed immediately.
-  // For challenge cards this attempt returns an error — we silently ignore it
-  // and let the challenge iframe flow complete normally.
-  useEffect(() => {
-    if (!redirectData || !pendingSpiToken) return;
-    const timer = setTimeout(async () => {
-      if (processingRef.current) return; // postMessage/localStorage already succeeded
-      console.log('[3DS] Frictionless fallback: attempting completion with pre-3DS token');
-      const meta = donationMeta || {};
+    const checkStatus = async () => {
+      if (!active || processingRef.current) return;
       try {
-        const cr = await fetch("/api/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ spiToken: pendingSpiToken, donationMeta: meta }),
-        });
-        const cd = await cr.json();
-        if (cd.success && cd.approved) {
-          if (processingRef.current) return; // race: postMessage won
+        const res = await fetch(`/api/payment-status?oid=${encodeURIComponent(oid)}`);
+        const d = await res.json();
+        if (d.status === "completed" && !processingRef.current && active) {
           processingRef.current = true;
+          active = false;
+          const meta = donationMeta || {};
           setPayError("");
           setRedirectData(null);
-          setPendingSpiToken(null);
           setStep(3);
           setIsProcessing(false);
-          setPaymentResult(cd);
+          setPaymentResult({
+            success: true, approved: true,
+            authorizationCode: d.authorizationCode,
+            transactionId:     d.transactionId,
+            orderId:           d.orderId,
+            cardBrand:         d.cardBrand,
+            amount:            d.amount,
+          });
           setPaymentSuccess(true);
-          setReceiptUrl(buildClientReceiptUrl(cd, meta));
-          console.log('[3DS] Frictionless auto-complete SUCCESS');
-        } else {
-          // Expected for challenge cards — they haven't authenticated yet
-          console.log('[3DS] Frictionless attempt failed (likely challenge card):', cd.error || cd.isoResponseCode);
+          setReceiptUrl(buildClientReceiptUrl(d, meta));
         }
-      } catch (e) {
-        console.log('[3DS] Frictionless attempt error:', e.message);
-      }
-    }, 8000);
-    return () => clearTimeout(timer);
-  }, [redirectData, pendingSpiToken, donationMeta]);
+      } catch {}
+    };
+
+    checkStatus();
+    const timer = setInterval(checkStatus, 2000);
+    return () => { active = false; clearInterval(timer); };
+  }, [redirectData, donationMeta]);
 
   const prevProject = () => setCurrentProject(p => (p - 1 + (projectsData?.length||1)) % (projectsData?.length||1));
   const nextProject = () => setCurrentProject(p => (p + 1) % (projectsData?.length||1));
@@ -1119,7 +1088,6 @@ export default function DonationForm() {
       setDonationMeta(meta);
       try { sessionStorage.setItem("donationMeta", JSON.stringify(meta)); } catch(_) {}
       if (data.requiresRedirect && data.redirectData) {
-        setPendingSpiToken(data.spiToken); // stored for frictionless fallback
         setRedirectData(data.redirectData);
         setStep(4);
         return;
@@ -1150,7 +1118,7 @@ export default function DonationForm() {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
     if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
-    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} onCancel={() => { setRedirectData(null); setPendingSpiToken(null); setStep(3); setPayError(""); processingRef.current = false; }}/>;
+    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} onCancel={() => { setRedirectData(null); setStep(3); setPayError(""); processingRef.current = false; }}/>;
     return null;
   };
 
