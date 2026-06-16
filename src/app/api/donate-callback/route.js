@@ -60,16 +60,20 @@ export async function POST(request) {
       }
     }
 
-    console.log('3DS callback raw body keys:', Object.keys(body))
-    console.log('3DS callback — IsoResponseCode:', body.IsoResponseCode, '| ResponseMessage:', body.ResponseMessage, '| SpiToken:', !!body.SpiToken, '| AuthStatus:', body.RiskManagement?.ThreeDSecure?.AuthenticationStatus)
-    console.log('3DS callback full body:', JSON.stringify(body).slice(0, 1000))
+    // PowerTranz sends the full response as a JSON string in body.Response,
+    // with SpiToken and TransactionIdentifier also at the top level.
+    let parsed = body
+    if (body.Response && typeof body.Response === 'string') {
+      try { parsed = { ...body, ...JSON.parse(body.Response) } } catch {}
+    }
 
-    const spiToken   = body.SpiToken   || body.spiToken
-    const isoCode    = body.IsoResponseCode
-    // Handle both nested JSON object and dot-notation URL-encoded keys
-    const authStatus = body.RiskManagement?.ThreeDSecure?.AuthenticationStatus
-      || body['RiskManagement.ThreeDSecure.AuthenticationStatus']
-      || body['AuthenticationStatus']
+    console.log('3DS callback — IsoResponseCode:', parsed.IsoResponseCode, '| ResponseMessage:', parsed.ResponseMessage, '| SpiToken:', !!parsed.SpiToken, '| AuthStatus:', parsed.RiskManagement?.ThreeDSecure?.AuthenticationStatus, '| Errors:', JSON.stringify(parsed.Errors))
+
+    const spiToken   = parsed.SpiToken || parsed.spiToken
+    const isoCode    = parsed.IsoResponseCode
+    const authStatus = parsed.RiskManagement?.ThreeDSecure?.AuthenticationStatus
+      || parsed['RiskManagement.ThreeDSecure.AuthenticationStatus']
+      || parsed['AuthenticationStatus']
 
     const is3dsComplete = spiToken && (
       isoCode === '3D0' || isoCode === 'SP4' || isoCode === 'SP1' ||
@@ -81,7 +85,8 @@ export async function POST(request) {
       return new Response(makeRedirectHtml(path), { headers: { 'Content-Type': 'text/html' } })
     }
 
-    const errMsg = encodeURIComponent(body.ResponseMessage || 'Authentication failed')
+    const fieldErr = parsed.Errors?.[0]?.Message
+    const errMsg = encodeURIComponent(fieldErr || parsed.ResponseMessage || 'Authentication failed')
     return new Response(
       makeRedirectHtml(`/donate-result?status=declined&message=${errMsg}`),
       { headers: { 'Content-Type': 'text/html' } }

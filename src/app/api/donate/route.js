@@ -57,7 +57,7 @@ export async function POST(request) {
         LastName: lastName || cardholderName.split(' ').slice(1).join(' ') || '',
         Line1: address || '',
         City: city || '',
-        State: state ? state.trim().substring(0, 20) : '',
+        State: (state && /^[A-Za-z0-9]{2,3}$/.test(state.trim())) ? state.trim().toUpperCase() : '',
         PostalCode: postalCode || '',
         CountryCode: countryCode,
         EmailAddress: email || '',

@@ -28,6 +28,23 @@ const formatCurrency = (n) => {
   return "$" + n;
 };
 
+const COUNTRY_ISO_NUMERIC = {
+  'jamaica': '388', 'jm': '388',
+  'united states': '840', 'usa': '840', 'us': '840', 'united states of america': '840',
+  'canada': '124', 'ca': '124',
+  'united kingdom': '826', 'uk': '826', 'gb': '826', 'great britain': '826',
+  'trinidad': '780', 'trinidad and tobago': '780', 'tt': '780',
+  'barbados': '052', 'bb': '052',
+  'bahamas': '044', 'bs': '044',
+  'guyana': '328', 'gy': '328',
+  'antigua': '028', 'antigua and barbuda': '028',
+  'st lucia': '662', 'saint lucia': '662',
+};
+function getCountryNumericCode(name) {
+  if (!name) return '840';
+  return COUNTRY_ISO_NUMERIC[name.trim().toLowerCase()] || '840';
+}
+
 function formatCardNumber(v) {
   return v.replace(/\D/g,"").slice(0,16).replace(/(.{4})/g,"$1 ").trim();
 }
@@ -836,7 +853,7 @@ export default function DonationForm() {
           city:          form.city,
           state:         form.state,
           postalCode:    form.zip,
-          countryCode:   "840",
+          countryCode:   getCountryNumericCode(form.country),
           donationType:  tab,
           message:       "",
           projectId:     projectsData?.[currentProject]?.id,
