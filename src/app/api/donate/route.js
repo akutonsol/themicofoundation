@@ -26,6 +26,8 @@ export async function POST(request) {
       countryCode = '840',
       donationType,
       message,
+      projectId,
+      projectTitle,
     } = await request.json()
 
     if (!amount || !cardPan || !cardCvv || !cardExpiration || !cardholderName) {
@@ -35,6 +37,8 @@ export async function POST(request) {
     const transactionId = uuidv4()
     const orderId = `MICO-${uuidv4().split('-')[0].toUpperCase()}`
     const callbackUrl = `${SITE_URL}/api/donate-callback`
+    console.log('Initiating PowerTranz Sale:', { orderId, amount, currency, callbackUrl })
+    console.log('PT credentials present — ID:', !!PT_ID, 'PW:', !!PT_PASSWORD, 'Base:', PT_BASE_URL)
 
     const payload = {
       TransactionIdentifier: transactionId,
@@ -53,7 +57,7 @@ export async function POST(request) {
         LastName: lastName || cardholderName.split(' ').slice(1).join(' ') || '',
         Line1: address || '',
         City: city || '',
-        State: (state && state.trim().length <= 3) ? state.trim() : '',
+        State: state ? state.trim().substring(0, 20) : '',
         PostalCode: postalCode || '',
         CountryCode: countryCode,
         EmailAddress: email || '',
@@ -61,13 +65,15 @@ export async function POST(request) {
       },
       AddressMatch: false,
       ExtendedData: {
+        MerchantResponseUrl: callbackUrl,
         ThreeDSecure: {
-          ChallengeWindowSize: 4,
+          ChallengeWindowSize: '04',
           ChallengeIndicator: '01',
         },
-        MerchantResponseUrl: callbackUrl,
       },
     }
+
+    console.log('PT Sale payload:', JSON.stringify({ ...payload, Source: { ...payload.Source, CardPan: payload.Source.CardPan.slice(0,4) + '****' + payload.Source.CardPan.slice(-4), CardCvv: '***' } }, null, 2))
 
     const response = await fetch(`${PT_BASE_URL}/Api/spi/Sale`, {
       method: 'POST',
@@ -82,8 +88,8 @@ export async function POST(request) {
     const data = await response.json()
 
     if (!response.ok) {
-      console.error('PowerTranz Sale error:', data)
-      return NextResponse.json({ error: 'Payment gateway error', details: data }, { status: 500 })
+      console.error('PowerTranz Sale HTTP error', response.status, ':', JSON.stringify(data))
+      return NextResponse.json({ error: data.ResponseMessage || `Gateway HTTP ${response.status}`, details: data }, { status: 502 })
     }
 
     // SP4 = SPI preprocessing complete, 3DS initiated
@@ -95,8 +101,12 @@ export async function POST(request) {
         spiToken: data.SpiToken,
         transactionId: data.TransactionIdentifier,
         orderId,
-        // Store donation metadata for after payment completes
-        donationMeta: { amount, currency, donationType, message, email, cardholderName, orderId },
+        donationMeta: {
+          amount, currency, donationType, message, email,
+          cardholderName, firstName, lastName, phone,
+          address, city, state, postalCode,
+          orderId, projectId, projectTitle,
+        },
       })
     }
 
@@ -108,15 +118,20 @@ export async function POST(request) {
         spiToken: data.SpiToken,
         transactionId: data.TransactionIdentifier,
         orderId,
-        donationMeta: { amount, currency, donationType, message, email, cardholderName, orderId },
+        donationMeta: {
+          amount, currency, donationType, message, email,
+          cardholderName, firstName, lastName, phone,
+          address, city, state, postalCode,
+          orderId, projectId, projectTitle,
+        },
       })
     }
 
-    console.error('PowerTranz unexpected response:', JSON.stringify(data))
+    console.error('PowerTranz unexpected response — IsoResponseCode:', data.IsoResponseCode, '| ResponseMessage:', data.ResponseMessage, '| Full:', JSON.stringify(data))
     return NextResponse.json({
-     error: data.ResponseMessage || 'Payment initiation failed',
-    isoResponseCode: data.IsoResponseCode,
-    details: data,
+      error: data.ResponseMessage || `Payment gateway returned code: ${data.IsoResponseCode || 'unknown'}`,
+      isoResponseCode: data.IsoResponseCode,
+      details: data,
     }, { status: 400 })
 
   } catch (error) {

@@ -9,7 +9,7 @@ const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset:   process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   apiVersion: '2024-01-01',
-  token:     process.env.SANITY_API_TOKEN,
+  token:     process.env.SANITY_API_WRITE_TOKEN || process.env.SANITY_API_TOKEN,
   useCdn:    false,
 })
 
@@ -190,26 +190,31 @@ export async function POST(request) {
 
       // Save to Sanity
       try {
-        await sanityClient.create({
-          _type:             'donation',
-          amount:            amount || 0,
-          currency:          donationMeta?.currency || 'USD',
+        const sanityDoc = {
+          _type:            'donation',
           donorName,
-          email:             donorEmail,
-          donationType:      donationMeta?.donationType || 'general',
-          message:           donationMeta?.message || '',
+          email:            donorEmail,
+          amount:           typeof amount === 'number' ? amount : parseFloat(amount) || 0,
+          currency:         donationMeta?.currency || 'USD',
+          donationType:     donationMeta?.donationType || 'once',
+          message:          donationMeta?.message || '',
           orderId,
           transactionId,
           authorizationCode: authCode,
           cardBrand,
-          rrn:               data.RRN,
-          status:            'completed',
+          rrn:              data.RRN || '',
+          status:           'completed',
           processedAt,
-          gateway:           'powertranz',
-        })
+          gateway:          'powertranz',
+          projectTitle:     donationMeta?.projectTitle || '',
+        }
+        if (donationMeta?.projectId) {
+          sanityDoc.project = { _type: 'reference', _ref: donationMeta.projectId }
+        }
+        await sanityClient.create(sanityDoc)
         console.log('Donation saved to Sanity:', orderId)
       } catch (sanityErr) {
-        console.error('Sanity save error:', sanityErr)
+        console.error('Sanity save error:', sanityErr.message)
       }
 
       // Build receipt download URL (uses /api/receipt endpoint with pdf-lib)

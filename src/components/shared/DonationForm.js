@@ -655,26 +655,6 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
 }
 
 function AuthStep({ redirectData, onCancel }) {
-  const iframeRef = useRef(null);
-
-  // Write content to iframe - called on mount, on load, and after a delay as fallback
-  const writeContent = () => {
-    if (!redirectData || !iframeRef.current) return;
-    const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
-    if (doc) {
-      doc.open();
-      doc.write(redirectData);
-      doc.close();
-    }
-  };
-
-  useEffect(() => {
-    // Try immediately and again after 150ms in case iframe not yet painted
-    writeContent();
-    const t = setTimeout(writeContent, 150);
-    return () => clearTimeout(t);
-  }, [redirectData]);
-
   return (
     <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(4,6,23,0.75)",backdropFilter:"blur(4px)"}}>
       <div style={{width:"min(520px, 95vw)",backgroundColor:"white",borderRadius:"20px",overflow:"hidden",boxShadow:"0 24px 80px rgba(0,0,0,0.35)"}}>
@@ -701,15 +681,14 @@ function AuthStep({ redirectData, onCancel }) {
             )}
           </div>
         </div>
-        {/* iframe - no sandbox so doc.write works */}
+        {/* srcDoc avoids cross-origin contentDocument access on subsequent navigations */}
         <iframe
-          ref={iframeRef}
+          srcDoc={redirectData}
           frameBorder="0"
           width="100%"
           height="640"
           style={{display:"block"}}
           title="3D Secure Authentication"
-          onLoad={writeContent}
         />
       </div>
     </div>
@@ -865,7 +844,12 @@ export default function DonationForm() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) { setPayError(data.error || "Payment failed. Please try again."); return; }
+      if (!res.ok) {
+        console.error('Donate API full response:', data);
+        const code = data.isoResponseCode ? ` [${data.isoResponseCode}]` : '';
+        setPayError((data.error || "Payment failed. Please try again.") + code);
+        return;
+      }
       const meta = data.donationMeta || {};
       setDonationMeta(meta);
       try { sessionStorage.setItem("donationMeta", JSON.stringify(meta)); } catch(_) {}
