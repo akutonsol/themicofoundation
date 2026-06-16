@@ -24,6 +24,7 @@ export async function POST(request) {
       state,
       postalCode,
       countryCode = '840',
+      country = 'Jamaica',
       donationType,
       message,
       projectId,
@@ -104,7 +105,7 @@ export async function POST(request) {
         donationMeta: {
           amount, currency, donationType, message, email,
           cardholderName, firstName, lastName, phone,
-          address, city, state, postalCode,
+          address, city, state, postalCode, country,
           orderId, projectId, projectTitle,
         },
       })
@@ -121,7 +122,7 @@ export async function POST(request) {
         donationMeta: {
           amount, currency, donationType, message, email,
           cardholderName, firstName, lastName, phone,
-          address, city, state, postalCode,
+          address, city, state, postalCode, country,
           orderId, projectId, projectTitle,
         },
       })

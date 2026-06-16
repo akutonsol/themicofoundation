@@ -129,34 +129,95 @@ function CardTypeIcon({ type }) {
 }
 
 const COUNTRIES = [
-  { code:"JM", name:"Jamaica", states:["Clarendon","Hanover","Kingston","Manchester","Portland","Saint Andrew","Saint Ann","Saint Catherine","Saint Elizabeth","Saint James","Saint Mary","Saint Thomas","Trelawny","Westmoreland"] },
-  { code:"US", name:"United States", states:["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming","District of Columbia"] },
-  { code:"CA", name:"Canada", states:["Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Northwest Territories","Nova Scotia","Nunavut","Ontario","Prince Edward Island","Quebec","Saskatchewan","Yukon"] },
-  { code:"GB", name:"United Kingdom", states:["England","Scotland","Wales","Northern Ireland"] },
-  { code:"AG", name:"Antigua and Barbuda", states:[] },
-  { code:"BB", name:"Barbados", states:[] },
-  { code:"BS", name:"Bahamas", states:[] },
-  { code:"BZ", name:"Belize", states:[] },
-  { code:"DM", name:"Dominica", states:[] },
-  { code:"DO", name:"Dominican Republic", states:[] },
-  { code:"GD", name:"Grenada", states:[] },
-  { code:"GY", name:"Guyana", states:[] },
-  { code:"HT", name:"Haiti", states:[] },
-  { code:"KN", name:"Saint Kitts and Nevis", states:[] },
-  { code:"LC", name:"Saint Lucia", states:[] },
-  { code:"SR", name:"Suriname", states:[] },
-  { code:"TT", name:"Trinidad and Tobago", states:[] },
+  { code:"JM", name:"Jamaica",                        states:["Clarendon","Hanover","Kingston","Manchester","Portland","Saint Andrew","Saint Ann","Saint Catherine","Saint Elizabeth","Saint James","Saint Mary","Saint Thomas","Trelawny","Westmoreland"] },
+  { code:"US", name:"United States",                  states:["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming","District of Columbia"] },
+  { code:"CA", name:"Canada",                         states:["Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Northwest Territories","Nova Scotia","Nunavut","Ontario","Prince Edward Island","Quebec","Saskatchewan","Yukon"] },
+  { code:"GB", name:"United Kingdom",                 states:["England","Scotland","Wales","Northern Ireland"] },
+  { code:"AG", name:"Antigua and Barbuda",            states:[] },
+  { code:"BB", name:"Barbados",                       states:[] },
+  { code:"BS", name:"Bahamas",                        states:[] },
+  { code:"BZ", name:"Belize",                         states:[] },
+  { code:"DM", name:"Dominica",                       states:[] },
+  { code:"DO", name:"Dominican Republic",             states:[] },
+  { code:"GD", name:"Grenada",                        states:[] },
+  { code:"GY", name:"Guyana",                         states:[] },
+  { code:"HT", name:"Haiti",                          states:[] },
+  { code:"KN", name:"Saint Kitts and Nevis",          states:[] },
+  { code:"LC", name:"Saint Lucia",                    states:[] },
+  { code:"SR", name:"Suriname",                       states:[] },
+  { code:"TT", name:"Trinidad and Tobago",            states:[] },
   { code:"VC", name:"Saint Vincent and the Grenadines", states:[] },
-  { code:"AU", name:"Australia", states:["Australian Capital Territory","New South Wales","Northern Territory","Queensland","South Australia","Tasmania","Victoria","Western Australia"] },
-  { code:"DE", name:"Germany", states:[] },
-  { code:"FR", name:"France", states:[] },
-  { code:"IN", name:"India", states:[] },
-  { code:"NG", name:"Nigeria", states:[] },
-  { code:"NL", name:"Netherlands", states:[] },
-  { code:"NZ", name:"New Zealand", states:[] },
-  { code:"SG", name:"Singapore", states:[] },
-  { code:"ZA", name:"South Africa", states:[] },
+  { code:"AU", name:"Australia",                      states:["Australian Capital Territory","New South Wales","Northern Territory","Queensland","South Australia","Tasmania","Victoria","Western Australia"] },
+  { code:"DE", name:"Germany",                        states:[] },
+  { code:"FR", name:"France",                         states:[] },
+  { code:"IN", name:"India",                          states:[] },
+  { code:"NG", name:"Nigeria",                        states:[] },
+  { code:"NL", name:"Netherlands",                    states:[] },
+  { code:"NZ", name:"New Zealand",                    states:[] },
+  { code:"SG", name:"Singapore",                      states:[] },
+  { code:"ZA", name:"South Africa",                   states:[] },
 ];
+
+// Per-country config: ZIP label (null = no ZIP), state label, phone placeholder
+const COUNTRY_CONFIG = {
+  JM: { zipLabel:null,             zipRequired:false, stateLabel:"Parish",            phonePh:"(876) 555-0000" },
+  US: { zipLabel:"ZIP Code",       zipRequired:true,  stateLabel:"State",             phonePh:"(555) 000-0000" },
+  CA: { zipLabel:"Postal Code",    zipRequired:true,  stateLabel:"Province",          phonePh:"(555) 000-0000" },
+  GB: { zipLabel:"Postcode",       zipRequired:true,  stateLabel:"County / Region",   phonePh:"+44 7700 900000" },
+  AU: { zipLabel:"Postcode",       zipRequired:true,  stateLabel:"State / Territory", phonePh:"+61 400 000 000" },
+  AG: { zipLabel:null,             zipRequired:false, stateLabel:"Parish",            phonePh:"(268) 555-0000" },
+  BB: { zipLabel:null,             zipRequired:false, stateLabel:"Parish",            phonePh:"(246) 555-0000" },
+  BS: { zipLabel:null,             zipRequired:false, stateLabel:"Island",            phonePh:"(242) 555-0000" },
+  BZ: { zipLabel:null,             zipRequired:false, stateLabel:"District",          phonePh:"(501) 555-0000" },
+  DM: { zipLabel:null,             zipRequired:false, stateLabel:"Parish",            phonePh:"(767) 555-0000" },
+  DO: { zipLabel:"Postal Code",    zipRequired:false, stateLabel:"Province",          phonePh:"(809) 555-0000" },
+  GD: { zipLabel:null,             zipRequired:false, stateLabel:"Parish",            phonePh:"(473) 555-0000" },
+  GY: { zipLabel:null,             zipRequired:false, stateLabel:"Region",            phonePh:"(592) 555-0000" },
+  HT: { zipLabel:null,             zipRequired:false, stateLabel:"Department",        phonePh:"(509) 555-0000" },
+  KN: { zipLabel:null,             zipRequired:false, stateLabel:"Parish",            phonePh:"(869) 555-0000" },
+  LC: { zipLabel:null,             zipRequired:false, stateLabel:"District",          phonePh:"(758) 555-0000" },
+  SR: { zipLabel:null,             zipRequired:false, stateLabel:"District",          phonePh:"(597) 555-0000" },
+  TT: { zipLabel:null,             zipRequired:false, stateLabel:"Borough / County",  phonePh:"(868) 555-0000" },
+  VC: { zipLabel:null,             zipRequired:false, stateLabel:"Parish",            phonePh:"(784) 555-0000" },
+  DE: { zipLabel:"Postal Code",    zipRequired:true,  stateLabel:"State",             phonePh:"+49 30 000 0000" },
+  FR: { zipLabel:"Postal Code",    zipRequired:true,  stateLabel:"Region",            phonePh:"+33 6 00 00 00 00" },
+  IN: { zipLabel:"PIN Code",       zipRequired:true,  stateLabel:"State",             phonePh:"+91 98765 43210" },
+  NG: { zipLabel:"Postal Code",    zipRequired:false, stateLabel:"State",             phonePh:"+234 800 000 0000" },
+  NL: { zipLabel:"Postcode",       zipRequired:true,  stateLabel:"Province",          phonePh:"+31 6 00 000000" },
+  NZ: { zipLabel:"Postcode",       zipRequired:true,  stateLabel:"Region",            phonePh:"+64 21 000 0000" },
+  SG: { zipLabel:"Postal Code",    zipRequired:true,  stateLabel:"District",          phonePh:"+65 9123 4567" },
+  ZA: { zipLabel:"Postal Code",    zipRequired:true,  stateLabel:"Province",          phonePh:"+27 71 000 0000" },
+};
+function getCountryCfg(code) {
+  return COUNTRY_CONFIG[code] || { zipLabel:"Postal Code", zipRequired:false, stateLabel:"State / Province", phonePh:"+1 000 000 0000" };
+}
+
+// Format phone number as user types based on country code
+function formatPhone(v, code) {
+  if (code === "US" || code === "CA" || code === "JM") {
+    const digits = v.replace(/\D/g,"").slice(0,10);
+    if (digits.length === 0) return "";
+    if (digits.length <= 3) return "(" + digits;
+    if (digits.length <= 6) return "(" + digits.slice(0,3) + ") " + digits.slice(3);
+    return "(" + digits.slice(0,3) + ") " + digits.slice(3,6) + "-" + digits.slice(6);
+  }
+  // International: keep + and digits/spaces/hyphens, max 20 chars
+  return v.replace(/[^\d\s\-+()]/g,"").slice(0,20);
+}
+
+// Format ZIP / postal code as user types based on country code
+function formatZip(v, code) {
+  if (code === "US") {
+    const d = v.replace(/\D/g,"").slice(0,9);
+    return d.length > 5 ? d.slice(0,5) + "-" + d.slice(5) : d;
+  }
+  if (code === "CA") {
+    const c = v.replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,6);
+    return c.length > 3 ? c.slice(0,3) + " " + c.slice(3) : c;
+  }
+  if (code === "GB") return v.toUpperCase().replace(/[^A-Z0-9\s]/g,"").slice(0,8);
+  return v.slice(0,12);
+}
 
 const SELECT_STYLE = {
   width:"100%",
@@ -454,9 +515,27 @@ function SelectField({ label, value, onChange, options, placeholder, error }) {
 }
 
 function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
-  const upd = f => e => setForm({...form, [f]:e.target.value});
   const selectedCountry = COUNTRIES.find(c => c.name === form.country);
+  const cfg = getCountryCfg(selectedCountry?.code || "JM");
   const hasStates = selectedCountry && selectedCountry.states.length > 0;
+
+  const upd = f => e => setForm({...form, [f]:e.target.value});
+
+  const handleCountryChange = e => {
+    // Reset state and zip when country changes since formats differ
+    setForm({...form, country:e.target.value, state:"", zip:""});
+  };
+
+  const handlePhone = e => {
+    const code = selectedCountry?.code || "JM";
+    setForm({...form, phone: formatPhone(e.target.value, code)});
+  };
+
+  const handleZip = e => {
+    const code = selectedCountry?.code || "JM";
+    setForm({...form, zip: formatZip(e.target.value, code)});
+  };
+
   return (
     <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden"}}>
       <div style={{borderBottom:"1px solid #E5E6EB",padding:"20px 24px",textAlign:"center"}}>
@@ -469,28 +548,39 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
         </div>
         <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:"20px"}}>
           <InputField label="Email Address" placeholder="your.email@example.com" value={form.email} onChange={upd("email")} error={errors.email}/>
-          <InputField label="Phone Number" placeholder="+1 876 000 0000" value={form.phone} onChange={upd("phone")} error={errors.phone}/>
+          <InputField label="Phone Number" placeholder={cfg.phonePh} value={form.phone} onChange={handlePhone} error={errors.phone}/>
         </div>
         <InputField label="Address Line 1" value={form.address1} onChange={upd("address1")} error={errors.address1}/>
         <InputField label="Address Line 2 (Optional)" value={form.address2} onChange={upd("address2")}/>
         <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:"20px"}}>
           <SelectField label="Country" value={form.country}
-            onChange={e => setForm({...form, country:e.target.value, state:""})}
+            onChange={handleCountryChange}
             options={COUNTRIES.map(c => ({value:c.name, label:c.name}))}
             placeholder="Select country..." error={errors.country}/>
           <InputField label="City" value={form.city} onChange={upd("city")} error={errors.city}/>
         </div>
         <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":"1fr 1fr",gap:"20px"}}>
-          <InputField label="ZIP / Postal Code" value={form.zip} onChange={upd("zip")} error={errors.zip}/>
+          {/* ZIP — hidden for countries without postal codes (e.g. Jamaica) */}
+          {cfg.zipLabel ? (
+            <InputField
+              label={cfg.zipLabel}
+              placeholder={selectedCountry?.code === "US" ? "e.g. 90210" : selectedCountry?.code === "CA" ? "e.g. K1A 0A6" : ""}
+              value={form.zip}
+              onChange={handleZip}
+              error={errors.zip}/>
+          ) : (
+            <div/> /* spacer so state field stays in right column */
+          )}
           {hasStates ? (
             <SelectField
-              label={selectedCountry.code === "JM" ? "Parish" : "State / Province"}
+              label={cfg.stateLabel}
               value={form.state}
               onChange={upd("state")}
               options={selectedCountry.states.map(s => ({value:s, label:s}))}
-              placeholder="Select..." error={errors.state}/>
+              placeholder={"Select " + cfg.stateLabel + "..."}
+              error={errors.state}/>
           ) : (
-            <InputField label="State / Province" value={form.state} onChange={upd("state")} error={errors.state}/>
+            <InputField label={cfg.stateLabel} value={form.state} onChange={upd("state")} error={errors.state}/>
           )}
         </div>
         <div style={{display:"flex",gap:"16px",flexDirection:mobile?"column":"row"}}>
@@ -923,6 +1013,8 @@ export default function DonationForm() {
 
   const validateStep2 = () => {
     const e = {};
+    const selCountry = COUNTRIES.find(c => c.name === form.country);
+    const cfg = getCountryCfg(selCountry?.code || "JM");
     if (!form.firstName.trim()) e.firstName = "First name is required";
     if (!form.lastName.trim())  e.lastName  = "Last name is required";
     if (!form.email.trim())     e.email     = "Email is required";
@@ -931,7 +1023,7 @@ export default function DonationForm() {
     if (!form.address1.trim()) e.address1 = "Address is required";
     if (!form.country.trim())  e.country  = "Country is required";
     if (!form.city.trim())     e.city     = "City is required";
-    if (!form.zip.trim())      e.zip      = "ZIP/Postal code is required";
+    if (cfg.zipRequired && !form.zip.trim()) e.zip = (cfg.zipLabel || "Postal code") + " is required";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -961,6 +1053,7 @@ export default function DonationForm() {
           state:         form.state,
           postalCode:    form.zip,
           countryCode:   getCountryNumericCode(form.country),
+          country:       form.country,
           donationType:  tab,
           message:       "",
           projectId:     projectsData?.[currentProject]?.id,
