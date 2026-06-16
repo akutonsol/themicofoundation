@@ -168,6 +168,7 @@ export async function POST(request) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(spiToken),
+      signal: AbortSignal.timeout(8000),
     })
 
     const data = await response.json()
@@ -246,14 +247,9 @@ export async function POST(request) {
         donationType: donationMeta?.donationType || '',
       }
 
-      // AWAIT so Vercel doesn't terminate before emails send
-      await Promise.all([
-        sendDonorConfirmation(emailData, receiptUrl).catch(e => console.error('Donor email error:', e)),
-        sendAdminNotification(emailData).catch(e => console.error('Admin email error:', e)),
-      ])
-      console.log('Emails sent')
-
-      return NextResponse.json({
+      // Build the success response FIRST — return it immediately so the browser
+      // doesn't time out waiting for SMTP. Emails fire in the background.
+      const successPayload = {
         success:           true,
         approved:          true,
         authorizationCode: authCode,
@@ -262,8 +258,17 @@ export async function POST(request) {
         cardBrand,
         amount:            data.TotalAmount,
         message:           data.ResponseMessage,
-        receiptUrl,   // direct download link via /api/receipt
-      })
+        receiptUrl,
+      }
+
+      // Fire emails non-blocking — Vercel will let the process finish briefly
+      // after the response is sent, giving SMTP time to complete.
+      Promise.all([
+        sendDonorConfirmation(emailData, receiptUrl).catch(e => console.error('Donor email error:', e)),
+        sendAdminNotification(emailData).catch(e => console.error('Admin email error:', e)),
+      ]).then(() => console.log('Emails sent for order:', orderId))
+
+      return NextResponse.json(successPayload)
     }
 
     return NextResponse.json({

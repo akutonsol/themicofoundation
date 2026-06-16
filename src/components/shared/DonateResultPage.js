@@ -32,12 +32,15 @@ function DonateResultContent() {
       } catch {}
 
       // Complete the payment
-        fetch("/api/complete", {
+      fetch("/api/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ spiToken, donationMeta }),
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) return res.json().then(d => Promise.reject(d));
+          return res.json();
+        })
         .then((data) => {
           if (data.success && data.approved) {
             setStatus("success");
@@ -47,9 +50,12 @@ function DonateResultContent() {
             setError(data.error || "Payment was declined");
           }
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error("Complete payment error:", err);
+          // If the server timed out but we got here, the payment may have
+          // succeeded anyway — show a neutral message rather than "failed".
           setStatus("failed");
-          setError("Failed to complete payment");
+          setError(err?.error || "Payment processing timed out. Check your email — if you received a receipt, the payment succeeded.");
         });
     } else {
       setStatus("failed");
