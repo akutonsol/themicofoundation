@@ -723,6 +723,14 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
 }
 
 function AuthStep({ redirectData, onCancel }) {
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setElapsed(s => s + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const isSlowLoad = elapsed >= 8;  // blank for 8+ seconds = likely frictionless
+  const isTimedOut = elapsed >= 120; // 2 min hard timeout
+
   return (
     <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(4,6,23,0.75)",backdropFilter:"blur(4px)"}}>
       <div style={{width:"min(520px, 95vw)",backgroundColor:"white",borderRadius:"20px",overflow:"hidden",boxShadow:"0 24px 80px rgba(0,0,0,0.35)"}}>
@@ -740,7 +748,9 @@ function AuthStep({ redirectData, onCancel }) {
           <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:"10px"}}>
             <div style={{display:"flex",alignItems:"center",gap:"6px",background:"rgba(255,217,0,0.1)",borderRadius:"20px",padding:"4px 10px"}}>
               <div style={{width:"7px",height:"7px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
-              <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>Waiting...</span>
+              <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>
+                {isSlowLoad ? "Authenticating..." : "Waiting..."}
+              </span>
             </div>
             {onCancel && (
               <button onClick={onCancel} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#9CA3AF",cursor:"pointer",borderRadius:"6px",padding:"4px 10px",...inter,fontSize:"12px",flexShrink:0}}>
@@ -749,15 +759,38 @@ function AuthStep({ redirectData, onCancel }) {
             )}
           </div>
         </div>
-        {/* srcDoc avoids cross-origin contentDocument access on subsequent navigations */}
-        <iframe
-          srcDoc={redirectData}
-          frameBorder="0"
-          width="100%"
-          height="640"
-          style={{display:"block"}}
-          title="3D Secure Authentication"
-        />
+
+        {/* Timeout state — show message instead of blank iframe */}
+        {isTimedOut ? (
+          <div style={{padding:"48px 32px",textAlign:"center"}}>
+            <p style={{...inter,fontSize:"17px",color:"#040617",fontWeight:600,margin:"0 0 8px"}}>Authentication timed out</p>
+            <p style={{...inter,fontSize:"14px",color:"#6F7181",margin:"0 0 24px"}}>The bank&apos;s 3DS server did not respond. Please try again.</p>
+            {onCancel && (
+              <button onClick={onCancel} style={{...inter,padding:"12px 28px",borderRadius:"12px",background:"#FFD900",color:"#040617",fontSize:"15px",fontWeight:600,border:"none",cursor:"pointer"}}>
+                Try Again
+              </button>
+            )}
+          </div>
+        ) : (
+          /* srcDoc avoids cross-origin contentDocument access on subsequent navigations */
+          <iframe
+            srcDoc={redirectData}
+            frameBorder="0"
+            width="100%"
+            height={isSlowLoad ? "0" : "640"}
+            style={{display:"block",minHeight: isSlowLoad ? "0" : "640"}}
+            title="3D Secure Authentication"
+          />
+        )}
+
+        {/* Frictionless message — shown when iframe collapses to 0 height */}
+        {isSlowLoad && !isTimedOut && (
+          <div style={{padding:"48px 32px",textAlign:"center"}}>
+            <div style={{width:"44px",height:"44px",border:"3px solid #FFD900",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 16px"}}/>
+            <p style={{...inter,fontSize:"16px",color:"#040617",fontWeight:600,margin:"0 0 6px"}}>Authenticating with your bank...</p>
+            <p style={{...inter,fontSize:"13px",color:"#6F7181",margin:0}}>This usually takes a few seconds.</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -803,45 +836,68 @@ export default function DonationForm() {
     load();
   }, []);
 
-  useEffect(() => {
-    const handler = async e => {
-      if (!e.data || typeof e.data !== "object") return;
-      if (e.data.status === "3ds_complete" && e.data.spiToken) {
-        // Guard: ignore if already processing or payment already succeeded
-        if (processingRef.current) return;
-        processingRef.current = true;
-        setPayError("");
-        setRedirectData(null);
-        setStep(3);
-        setIsProcessing(true);
-        const meta = donationMeta || {};
-        try {
-          const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:e.data.spiToken, donationMeta:meta }) });
-          const cd = await cr.json();
-          setIsProcessing(false);
-          if (cd.success && cd.approved) {
-            setPaymentResult(cd);
-            setPaymentSuccess(true);
-            setReceiptUrl(buildClientReceiptUrl(cd, meta));
-          } else {
-            processingRef.current = false; // Allow retry on failure
-            setPayError(cd.error || "Payment was declined");
-          }
-        } catch {
+  // Shared handler for both postMessage and localStorage-poll events
+  const handle3dsResult = useRef(null);
+  handle3dsResult.current = async (payload) => {
+    let data = payload;
+    if (typeof data === "string") { try { data = JSON.parse(data); } catch { return; } }
+    if (!data || typeof data !== "object") return;
+
+    if (data.status === "3ds_complete" && data.spiToken) {
+      if (processingRef.current) return;
+      processingRef.current = true;
+      setPayError("");
+      setRedirectData(null);
+      setStep(3);
+      setIsProcessing(true);
+      const meta = donationMeta || {};
+      try {
+        const cr = await fetch("/api/complete", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ spiToken:data.spiToken, donationMeta:meta }) });
+        const cd = await cr.json();
+        setIsProcessing(false);
+        if (cd.success && cd.approved) {
+          setPaymentResult(cd);
+          setPaymentSuccess(true);
+          setReceiptUrl(buildClientReceiptUrl(cd, meta));
+        } else {
           processingRef.current = false;
-          setIsProcessing(false);
-          setPayError("Failed to complete payment");
+          setPayError(cd.error || "Payment was declined");
         }
-      } else if (e.data.status === "declined" || e.data.status === "error") {
-        if (processingRef.current) return; // Ignore if already processing success
-        setPayError(e.data.message || "Authentication failed");
-        setRedirectData(null);
-        setStep(3);
+      } catch {
+        processingRef.current = false;
+        setIsProcessing(false);
+        setPayError("Failed to complete payment");
       }
-    };
+    } else if (data.status === "declined" || data.status === "error") {
+      if (processingRef.current) return;
+      setPayError(data.message || "Authentication failed");
+      setRedirectData(null);
+      setStep(3);
+    }
+  };
+
+  // postMessage listener (primary channel)
+  useEffect(() => {
+    const handler = e => handle3dsResult.current(e.data);
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, [donationMeta]);
+  }, []);
+
+  // localStorage poller — backup for frictionless 3DS where iframe doesn't navigate
+  useEffect(() => {
+    if (!redirectData) return;
+    try { localStorage.removeItem("mf_3ds_result"); } catch {}
+    const timer = setInterval(() => {
+      try {
+        const stored = localStorage.getItem("mf_3ds_result");
+        if (!stored) return;
+        localStorage.removeItem("mf_3ds_result");
+        clearInterval(timer);
+        handle3dsResult.current(stored);
+      } catch {}
+    }, 500);
+    return () => clearInterval(timer);
+  }, [redirectData]);
 
   const prevProject = () => setCurrentProject(p => (p - 1 + (projectsData?.length||1)) % (projectsData?.length||1));
   const nextProject = () => setCurrentProject(p => (p + 1) % (projectsData?.length||1));

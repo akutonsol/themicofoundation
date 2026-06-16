@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-// postMessage payload sent into the parent page (DonationForm's message listener)
+// Signal the parent page via three mechanisms (most-to-least reliable)
 function makeHtml(payload) {
   const msg = JSON.stringify(payload)
   return `<!DOCTYPE html>
@@ -10,6 +10,10 @@ function makeHtml(payload) {
 <script>
 (function(){
   var msg = ${msg};
+  var msgStr = JSON.stringify(msg);
+  // 1. localStorage — parent polls this; works even when postMessage is blocked
+  try { localStorage.setItem('mf_3ds_result', msgStr); } catch(e) {}
+  // 2. postMessage — primary channel
   var sent = false;
   try { if (window.parent && window.parent !== window) { window.parent.postMessage(msg, '*'); sent = true; } } catch(e) {}
   if (!sent) { try { window.top.postMessage(msg, '*'); sent = true; } catch(e) {} }
