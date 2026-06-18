@@ -26,6 +26,90 @@ function buildReceiptUrl(data) {
   } catch { return null }
 }
 
+// Deterministic Sanity document _id for a given orderId — makes every write
+// idempotent and lets the callback find the donation by orderId alone.
+export function donationId(orderId) {
+  return 'donation-' + String(orderId || '').replace(/[^A-Za-z0-9_-]/g, '')
+}
+
+// ── Write a "pending" donation record at Sale time ───────────────────────────
+// Stores all donor info up front so the 3DS callback only needs the orderId
+// (no PII in the MerchantResponseUrl). Also captures abandoned/incomplete attempts.
+export async function savePendingDonation(donationMeta = {}) {
+  const orderId = donationMeta.orderId
+  if (!orderId) return
+  try {
+    const donorName = donationMeta.donorName
+      || ((donationMeta.firstName || '') + ' ' + (donationMeta.lastName || '')).trim()
+      || donationMeta.cardholderName || 'Donor'
+    const doc = {
+      _id:          donationId(orderId),
+      _type:        'donation',
+      donorName,
+      email:        donationMeta.email      || '',
+      phone:        donationMeta.phone       || '',
+      amount:       parseFloat(donationMeta.amount) || 0,
+      currency:     donationMeta.currency    || 'USD',
+      donationType: donationMeta.donationType || 'once',
+      message:      donationMeta.message      || '',
+      address:      donationMeta.address      || '',
+      city:         donationMeta.city         || '',
+      state:        donationMeta.state        || '',
+      postalCode:   donationMeta.postalCode   || '',
+      country:      donationMeta.country      || '',
+      orderId,
+      status:       'pending',
+      gateway:      'powertranz',
+      processedAt:  new Date().toISOString(),
+      projectTitle: donationMeta.projectTitle || '',
+    }
+    if (donationMeta.projectId) {
+      doc.project = { _type: 'reference', _ref: donationMeta.projectId }
+    }
+    await sanity.createOrReplace(doc)
+    console.log('[savePendingDonation] Pending record saved:', orderId)
+  } catch (err) {
+    console.error('[savePendingDonation] Sanity error:', err.message)
+  }
+}
+
+// ── Read a pending donation back into a donationMeta shape ────────────────────
+export async function getDonationMeta(orderId) {
+  if (!orderId) return null
+  try {
+    const doc = await sanity.fetch(
+      `*[_id == $id][0]{
+        donorName, email, phone, amount, currency, donationType, message,
+        address, city, state, postalCode, country, orderId, projectTitle,
+        "projectId": project._ref, status
+      }`,
+      { id: donationId(orderId) },
+    )
+    if (!doc) return null
+    return {
+      donorName:     doc.donorName,
+      cardholderName: doc.donorName,
+      email:         doc.email,
+      phone:         doc.phone,
+      amount:        doc.amount,
+      currency:      doc.currency,
+      donationType:  doc.donationType,
+      message:       doc.message,
+      address:       doc.address,
+      city:          doc.city,
+      state:         doc.state,
+      postalCode:    doc.postalCode,
+      country:       doc.country,
+      orderId:       doc.orderId,
+      projectTitle:  doc.projectTitle,
+      projectId:     doc.projectId,
+    }
+  } catch (err) {
+    console.error('[getDonationMeta] Sanity error:', err.message)
+    return null
+  }
+}
+
 // ── Email senders ─────────────────────────────────────────────────────────────
 
 async function sendDonorEmail(data, receiptUrl) {
@@ -148,16 +232,53 @@ export async function processAndSave(spiToken, donationMeta = {}) {
   console.log('[processAndSave] PT response:', JSON.stringify(pt))
 
   if (!ptRes.ok || !pt.Approved || pt.IsoResponseCode !== '00') {
+    const declineMsg = pt.Errors?.[0]?.Message || pt.ResponseMessage || 'Payment was declined'
+    // Mark the pending record declined so the client poll surfaces it immediately
+    // instead of waiting for the 2-minute timeout. Never overwrite a completed
+    // record (guards against a late duplicate callback clobbering a success).
+    const declineOrderId = donationMeta?.orderId || pt.OrderIdentifier
+    if (declineOrderId) {
+      try {
+        const id  = donationId(declineOrderId)
+        const cur = await sanity.fetch('*[_id == $id][0].status', { id })
+        if (cur !== 'completed') {
+          await sanity.patch(id)
+            .set({ status: 'declined', message: declineMsg, processedAt: new Date().toISOString() })
+            .commit()
+        }
+      } catch (e) {
+        // Pending doc may not exist (e.g. SP1 path) — create a minimal declined record.
+        try {
+          await sanity.createOrReplace({
+            _id:          donationId(declineOrderId),
+            _type:        'donation',
+            donorName:    donationMeta?.donorName || ((donationMeta?.firstName || '') + ' ' + (donationMeta?.lastName || '')).trim() || donationMeta?.cardholderName || 'Donor',
+            email:        donationMeta?.email || '',
+            amount:       parseFloat(donationMeta?.amount) || 0,
+            currency:     donationMeta?.currency || 'USD',
+            orderId:      declineOrderId,
+            status:       'declined',
+            message:      declineMsg,
+            gateway:      'powertranz',
+            processedAt:  new Date().toISOString(),
+            projectTitle: donationMeta?.projectTitle || '',
+          })
+        } catch (e2) {
+          console.error('[processAndSave] Decline record error:', e2.message)
+        }
+      }
+    }
     return {
       success:         false,
       approved:        false,
-      error:           pt.ResponseMessage || 'Payment was declined',
+      error:           declineMsg,
       isoResponseCode: pt.IsoResponseCode,
       errors:          pt.Errors,
     }
   }
 
-  const donorName     = ((donationMeta?.firstName || '') + ' ' + (donationMeta?.lastName || '')).trim()
+  const donorName     = donationMeta?.donorName
+                        || ((donationMeta?.firstName || '') + ' ' + (donationMeta?.lastName || '')).trim()
                         || donationMeta?.cardholderName || 'Donor'
   const donorEmail    = donationMeta?.email || ''
   const orderId       = donationMeta?.orderId || pt.OrderIdentifier
@@ -168,7 +289,10 @@ export async function processAndSave(spiToken, donationMeta = {}) {
   const processedAt   = new Date().toISOString()
 
   try {
+    // Deterministic _id keyed on orderId makes the write idempotent and updates
+    // the pending record (written at Sale time) in place — completed always wins.
     const doc = {
+      _id:               donationId(orderId),
       _type:             'donation',
       donorName,
       email:             donorEmail,
@@ -195,8 +319,8 @@ export async function processAndSave(spiToken, donationMeta = {}) {
     if (donationMeta?.projectId) {
       doc.project = { _type: 'reference', _ref: donationMeta.projectId }
     }
-    await sanity.create(doc)
-    console.log('[processAndSave] Saved to Sanity:', orderId)
+    await sanity.createOrReplace(doc)
+    console.log('[processAndSave] Completed donation saved:', orderId)
   } catch (err) {
     console.error('[processAndSave] Sanity error:', err.message)
   }

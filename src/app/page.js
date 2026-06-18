@@ -7,8 +7,6 @@ import LegacyImpactSection from "@/components/home/LegacyImpactSection";
 import Projects from '@/components/home/Projects'
 import Community from '@/components/home/Community'
 import MarqueeLines from '@/components/home/MarqueeLines'
- {/*} import Messages from '@/components/home/Messages'  {/*} 
-    {/*} import DonationForm from '@/components/home/DonationForm' >*/}
     import Messages from "@/components/messages/Messages";
 import PeopleImpact from '@/components/home/PeopleImpact'
 import NewsEvents from '@/components/home/NewsEvents'

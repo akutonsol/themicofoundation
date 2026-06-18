@@ -19,14 +19,17 @@ export async function GET(request) {
 
   try {
     const doc = await sanity.fetch(
-      `*[_type == "donation" && orderId == $oid && status == "completed"][0]{
-        orderId, transactionId, authorizationCode, cardBrand, amount, donorName, processedAt
+      `*[_type == "donation" && orderId == $oid][0]{
+        orderId, transactionId, authorizationCode, cardBrand, amount, donorName, processedAt, status, message
       }`,
       { oid },
     )
 
-    if (doc) {
+    if (doc && doc.status === 'completed') {
       return NextResponse.json({ status: 'completed', ...doc })
+    }
+    if (doc && doc.status === 'declined') {
+      return NextResponse.json({ status: 'declined', error: doc.message || 'Payment was declined' })
     }
     return NextResponse.json({ status: 'pending' })
   } catch (err) {

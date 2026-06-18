@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
+import { savePendingDonation } from '@/lib/completePayment'
 
 const PT_ID = process.env.POWERTRANZ_ID
 const PT_PASSWORD = process.env.POWERTRANZ_PASSWORD
@@ -38,18 +39,18 @@ export async function POST(request) {
     const transactionId = uuidv4()
     const orderId = `MICO-${uuidv4().split('-')[0].toUpperCase()}`
 
-    // Encode donationMeta into the callback URL so the server-side callback
-    // has donor info for Sanity save and emails (frictionless 3DS is server-to-server)
-    const metaPayload = {
+    // Persist all donor info as a "pending" donation up front. The 3DS callback
+    // (which for frictionless flows is a server-to-server POST with no donor data)
+    // reads it back by orderId — so no PII travels in the MerchantResponseUrl.
+    const donationMeta = {
       amount, currency, donationType, message, email,
       cardholderName, firstName, lastName, phone,
       address, city, state, postalCode, country,
       orderId, projectId, projectTitle,
     }
-    const metaEncoded = Buffer.from(JSON.stringify(metaPayload))
-      .toString('base64')
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-    const callbackUrl = `${SITE_URL}/api/donate-callback?meta=${metaEncoded}`
+    await savePendingDonation(donationMeta)
+
+    const callbackUrl = `${SITE_URL}/api/donate-callback?oid=${encodeURIComponent(orderId)}`
     console.log('Initiating PowerTranz Sale:', { orderId, amount, currency })
     console.log('PT credentials present — ID:', !!PT_ID, 'PW:', !!PT_PASSWORD, 'Base:', PT_BASE_URL)
 
@@ -114,12 +115,7 @@ export async function POST(request) {
         spiToken: data.SpiToken,
         transactionId: data.TransactionIdentifier,
         orderId,
-        donationMeta: {
-          amount, currency, donationType, message, email,
-          cardholderName, firstName, lastName, phone,
-          address, city, state, postalCode, country,
-          orderId, projectId, projectTitle,
-        },
+        donationMeta,
       })
     }
 
@@ -131,12 +127,7 @@ export async function POST(request) {
         spiToken: data.SpiToken,
         transactionId: data.TransactionIdentifier,
         orderId,
-        donationMeta: {
-          amount, currency, donationType, message, email,
-          cardholderName, firstName, lastName, phone,
-          address, city, state, postalCode, country,
-          orderId, projectId, projectTitle,
-        },
+        donationMeta,
       })
     }
 

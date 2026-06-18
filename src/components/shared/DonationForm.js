@@ -961,6 +961,7 @@ export default function DonationForm() {
       setReceiptUrl(buildClientReceiptUrl(data, meta));
     } else if (data.status === "declined" || data.status === "error") {
       if (processingRef.current) return;
+      processingRef.current = true;
       setPayError(data.message || "Authentication failed");
       setRedirectData(null);
       setStep(3);
@@ -1005,6 +1006,13 @@ export default function DonationForm() {
           });
           setPaymentSuccess(true);
           setReceiptUrl(buildClientReceiptUrl(d, meta));
+        } else if (d.status === "declined" && !processingRef.current && active) {
+          processingRef.current = true;
+          active = false;
+          setRedirectData(null);
+          setStep(3);
+          setIsProcessing(false);
+          setPayError(d.error || "Payment was declined. Please try a different card.");
         }
       } catch {}
     };

@@ -1,5 +1,5 @@
 import { after } from 'next/server'
-import { processAndSave, sendEmails } from '@/lib/completePayment'
+import { processAndSave, sendEmails, getDonationMeta } from '@/lib/completePayment'
 
 // Minimal HTML that fires postMessage to the parent frame.
 // For frictionless 3DS, PowerTranz calls this server-to-server — the HTML is ignored.
@@ -23,17 +23,12 @@ function makeHtml(payload) {
 </html>`
 }
 
-function decodeMeta(b64url) {
-  try {
-    const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/')
-    return JSON.parse(Buffer.from(b64, 'base64').toString('utf8'))
-  } catch { return {} }
-}
-
 export async function POST(request) {
   try {
     const { searchParams } = new URL(request.url)
-    const donationMeta = searchParams.get('meta') ? decodeMeta(searchParams.get('meta')) : {}
+    const orderId = searchParams.get('oid')
+    // Read the donor info persisted as a pending donation at Sale time.
+    const donationMeta = (await getDonationMeta(orderId)) || { orderId }
 
     // Parse body — PowerTranz may send form-encoded or JSON
     let body = {}
@@ -122,7 +117,8 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
     const spiToken     = searchParams.get('SpiToken') || searchParams.get('spiToken')
-    const donationMeta = searchParams.get('meta') ? decodeMeta(searchParams.get('meta')) : {}
+    const orderId      = searchParams.get('oid')
+    const donationMeta = (await getDonationMeta(orderId)) || { orderId }
 
     if (spiToken) {
       const capturedToken = spiToken
