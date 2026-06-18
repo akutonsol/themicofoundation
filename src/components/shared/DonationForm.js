@@ -820,16 +820,8 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
 
 function AuthStep({ redirectData, onCancel, processing }) {
   const [elapsed, setElapsed] = useState(0);
-  const [bridgeReady, setBridgeReady] = useState(false);
-
-  // Stash the RedirectData where the same-origin bridge page can read it,
-  // THEN load the iframe — so the 3DS form submits from a real document
-  // (not about:srcdoc, which makes the Conductor response download).
-  useEffect(() => {
-    try { sessionStorage.setItem("mf_3ds_rd", redirectData || ""); } catch {}
-    setBridgeReady(true);
-    return () => { try { sessionStorage.removeItem("mf_3ds_rd"); } catch {} };
-  }, [redirectData]);
+  const iframeRef = useRef(null);
+  const wroteFor  = useRef(null);
 
   useEffect(() => {
     const t = setInterval(() => setElapsed(s => s + 1), 1000);
@@ -838,6 +830,27 @@ function AuthStep({ redirectData, onCancel, processing }) {
   // PowerTranz SpiTokens expire ~5 min after issue — only show a timeout after that,
   // and never while a challenge is being completed.
   const isTimedOut = elapsed >= 300 && !processing;
+  const showIframe = !isTimedOut && !processing;
+
+  // Write the RedirectData into an about:blank iframe via contentDocument.
+  // about:blank INHERITS this page's origin (unlike srcDoc's opaque origin),
+  // so the 3DS form can POST to the cross-origin /Api/spi/Conductor endpoint and
+  // the response renders in the iframe instead of being downloaded as a file.
+  useEffect(() => {
+    if (!showIframe || !redirectData) return;
+    if (wroteFor.current === redirectData) return; // write once per token
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    try {
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(redirectData);
+      doc.close();
+      wroteFor.current = redirectData;
+    } catch (e) {
+      console.error("[3DS] iframe write failed:", e?.message || e);
+    }
+  }, [showIframe, redirectData]);
 
   return (
     <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(4,6,23,0.75)",backdropFilter:"blur(4px)"}}>
@@ -887,24 +900,19 @@ function AuthStep({ redirectData, onCancel, processing }) {
             <p style={{...inter,fontSize:"13px",color:"#6F7181",margin:0}}>Authentication succeeded. Please do not close this window.</p>
           </div>
         ) : (
-          /* Keep the 3DS iframe visible and interactive the whole time —
-             never hide it on a timer or the challenge form becomes unusable.
-             Loads the same-origin /3ds-bridge (reads RedirectData from
-             sessionStorage) so the 3DS form submits from a real document. */
-          bridgeReady ? (
-            <iframe
-              src="/3ds-bridge"
-              frameBorder="0"
-              width="100%"
-              height="640"
-              style={{display:"block",minHeight:"640px"}}
-              title="3D Secure Authentication"
-            />
-          ) : (
-            <div style={{height:"640px",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <div style={{width:"44px",height:"44px",border:"3px solid #FFD900",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 1s linear infinite"}}/>
-            </div>
-          )
+          /* Keep the 3DS iframe visible and interactive the whole time — never
+             hide it on a timer or the challenge form becomes unusable. We write
+             the RedirectData into this about:blank iframe via contentDocument
+             (see effect above) so the cross-origin Conductor POST renders here. */
+          <iframe
+            ref={iframeRef}
+            src="about:blank"
+            frameBorder="0"
+            width="100%"
+            height="640"
+            style={{display:"block",minHeight:"640px"}}
+            title="3D Secure Authentication"
+          />
         )}
       </div>
     </div>
