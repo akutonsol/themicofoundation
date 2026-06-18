@@ -818,14 +818,15 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
   );
 }
 
-function AuthStep({ redirectData, onCancel }) {
+function AuthStep({ redirectData, onCancel, processing }) {
   const [elapsed, setElapsed] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setElapsed(s => s + 1), 1000);
     return () => clearInterval(t);
   }, []);
-  const isSlowLoad = elapsed >= 3;  // blank for 3+ seconds = 3DS submitted, waiting for poll
-  const isTimedOut = elapsed >= 120; // 2 min hard timeout
+  // PowerTranz SpiTokens expire ~5 min after issue — only show a timeout after that,
+  // and never while a challenge is being completed.
+  const isTimedOut = elapsed >= 300 && !processing;
 
   return (
     <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(4,6,23,0.75)",backdropFilter:"blur(4px)"}}>
@@ -845,10 +846,10 @@ function AuthStep({ redirectData, onCancel }) {
             <div style={{display:"flex",alignItems:"center",gap:"6px",background:"rgba(255,217,0,0.1)",borderRadius:"20px",padding:"4px 10px"}}>
               <div style={{width:"7px",height:"7px",borderRadius:"50%",backgroundColor:"#FFD900",animation:"pulse 1.4s infinite"}}/>
               <span style={{...inter,fontSize:"11px",color:"#FFD900"}}>
-                {isSlowLoad ? "Processing..." : "Waiting..."}
+                {processing ? "Processing..." : "Awaiting authentication..."}
               </span>
             </div>
-            {onCancel && (
+            {onCancel && !processing && (
               <button onClick={onCancel} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#9CA3AF",cursor:"pointer",borderRadius:"6px",padding:"4px 10px",...inter,fontSize:"12px",flexShrink:0}}>
                 Cancel
               </button>
@@ -856,36 +857,36 @@ function AuthStep({ redirectData, onCancel }) {
           </div>
         </div>
 
-        {/* Timeout state — show message instead of blank iframe */}
         {isTimedOut ? (
+          /* Hard timeout — token likely expired */
           <div style={{padding:"48px 32px",textAlign:"center"}}>
             <p style={{...inter,fontSize:"17px",color:"#040617",fontWeight:600,margin:"0 0 8px"}}>Authentication timed out</p>
-            <p style={{...inter,fontSize:"14px",color:"#6F7181",margin:"0 0 24px"}}>The bank&apos;s 3DS server did not respond. Please try again.</p>
+            <p style={{...inter,fontSize:"14px",color:"#6F7181",margin:"0 0 24px"}}>The session expired before authentication completed. Please try again.</p>
             {onCancel && (
               <button onClick={onCancel} style={{...inter,padding:"12px 28px",borderRadius:"12px",background:"#FFD900",color:"#040617",fontSize:"15px",fontWeight:600,border:"none",cursor:"pointer"}}>
                 Try Again
               </button>
             )}
           </div>
+        ) : processing ? (
+          /* Challenge completed — payment is being finalized server-side */
+          <div style={{padding:"60px 32px",textAlign:"center"}}>
+            <div style={{width:"48px",height:"48px",border:"3px solid #FFD900",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 18px"}}/>
+            <p style={{...inter,fontSize:"17px",color:"#040617",fontWeight:600,margin:"0 0 6px"}}>Finalizing your payment...</p>
+            <p style={{...inter,fontSize:"13px",color:"#6F7181",margin:0}}>Authentication succeeded. Please do not close this window.</p>
+          </div>
         ) : (
-          /* srcDoc avoids cross-origin contentDocument access on subsequent navigations */
+          /* Keep the 3DS iframe visible and interactive the whole time —
+             never hide it on a timer or the challenge form becomes unusable.
+             srcDoc avoids cross-origin contentDocument access on navigations. */
           <iframe
             srcDoc={redirectData}
             frameBorder="0"
             width="100%"
-            height={isSlowLoad ? "0" : "640"}
-            style={{display:"block",minHeight: isSlowLoad ? "0" : "640"}}
+            height="640"
+            style={{display:"block",minHeight:"640px"}}
             title="3D Secure Authentication"
           />
-        )}
-
-        {/* Frictionless message — shown when iframe collapses to 0 height */}
-        {isSlowLoad && !isTimedOut && (
-          <div style={{padding:"48px 32px",textAlign:"center"}}>
-            <div style={{width:"44px",height:"44px",border:"3px solid #FFD900",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 16px"}}/>
-            <p style={{...inter,fontSize:"16px",color:"#040617",fontWeight:600,margin:"0 0 6px"}}>Processing your payment...</p>
-            <p style={{...inter,fontSize:"13px",color:"#6F7181",margin:0}}>Completing secure authentication. This usually takes a few seconds.</p>
-          </div>
         )}
       </div>
     </div>
@@ -913,6 +914,7 @@ export default function DonationForm() {
   const [redirectData,    setRedirectData]    = useState(null);
   const [donationMeta,    setDonationMeta]    = useState(null);
   const [receiptUrl,      setReceiptUrl]      = useState(null);
+  const [auth3dsProcessing, setAuth3dsProcessing] = useState(false); // challenge done, finalizing
   const processingRef = useRef(false); // Guard against duplicate completion events
 
   useEffect(() => {
@@ -943,8 +945,9 @@ export default function DonationForm() {
     if (!data || typeof data !== "object") return;
 
     if (data.status === "payment_processing") {
-      // 3DS auth is done — the polling loop will catch the completed Sanity record.
-      // Nothing to do here; just let the poll resolve it.
+      // Challenge completed — swap the iframe for a "finalizing" spinner.
+      // The polling loop will catch the completed Sanity record and show success.
+      setAuth3dsProcessing(true);
       return;
     }
     if (data.status === "payment_complete") {
@@ -1064,6 +1067,7 @@ export default function DonationForm() {
   const handlePayment = async () => {
     if (!cardNumber || !cardExpiry || !cardCvv) { setPayError("Please fill in all card fields"); return; }
     processingRef.current = false; // Reset guard for fresh attempt
+    setAuth3dsProcessing(false);
     setLoading(true); setPayError("");
     try {
       const parts = cardExpiry.split("/");
@@ -1134,7 +1138,7 @@ export default function DonationForm() {
     if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
     if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
     if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
-    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} onCancel={() => { setRedirectData(null); setStep(3); setPayError(""); processingRef.current = false; }}/>;
+    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} processing={auth3dsProcessing} onCancel={() => { setRedirectData(null); setAuth3dsProcessing(false); setStep(3); setPayError(""); processingRef.current = false; }}/>;
     return null;
   };
 
