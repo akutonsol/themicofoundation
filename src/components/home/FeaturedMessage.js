@@ -163,7 +163,7 @@ export default function FeaturedMessage() {
                     {featured.role}
                   </p>
                 </div>
-                <h3 style={{ ...inter, fontSize:'34px', fontWeight:700, color:'#040617', letterSpacing:'-0.5px', lineHeight:'1.1', margin:0, textTransform:'capitalize' }}>
+                <h3 style={{ ...inter, fontSize:'34px', fontWeight:700, color:'#FFFFFF', letterSpacing:'-0.5px', lineHeight:'1.1', margin:0, textTransform:'capitalize' }}>
                   {featured.name}
                 </h3>
               </div>
@@ -187,8 +187,8 @@ export default function FeaturedMessage() {
         >
           {/* Badge */}
           <div style={{ marginBottom:'28px' }}>
-            <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#FFD900', backgroundColor:'rgba(255,217,0,0.1)', border:'1px solid rgba(255,217,0,0.25)', padding:'6px 16px', borderRadius:'100px', letterSpacing:'0.14em', textTransform:'uppercase' }}>
-              A Word From Our Leadership
+            <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#040617', backgroundColor:'rgba(255,217,0,0.1)', border:'1px solid rgba(255,217,0,0.25)', padding:'6px 16px', borderRadius:'100px', letterSpacing:'0.14em', textTransform:'uppercase' }}>
+              Message from Chairman of the Board
             </span>
           </div>
 
@@ -265,8 +265,8 @@ export default function FeaturedMessage() {
         {/* Badge + heading */}
         <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
           style={{ textAlign:'center' }}>
-          <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#FFD900', backgroundColor:'rgba(255,217,0,0.1)', border:'1px solid rgba(255,217,0,0.25)', padding:'6px 14px', borderRadius:'100px', letterSpacing:'0.12em', textTransform:'uppercase', display:'inline-block', marginBottom:'20px' }}>
-            A Word From Our Leadership
+          <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#040617', backgroundColor:'rgba(255,217,0,0.1)', border:'1px solid rgba(255,217,0,0.25)', padding:'6px 14px', borderRadius:'100px', letterSpacing:'0.12em', textTransform:'uppercase', display:'inline-block', marginBottom:'20px' }}>
+            Message from Chairman of the Board
           </span>
           <h2 style={{ ...inter, fontSize:'40px', fontWeight:800, color:'#040617', letterSpacing:'-1.5px', lineHeight:'0.95', margin:0 }}>
             Message from<br />
@@ -290,7 +290,7 @@ export default function FeaturedMessage() {
               <div style={{ width:'18px', height:'2px', backgroundColor:'#FFD900' }} />
               <p style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#FFD900', letterSpacing:'0.16em', margin:0, textTransform:'uppercase' }}>{featured.role}</p>
             </div>
-            <h3 style={{ ...inter, fontSize:'28px', fontWeight:700, color:'#040617', letterSpacing:'-0.4px', margin:0, textTransform:'capitalize' }}>{featured.name}</h3>
+            <h3 style={{ ...inter, fontSize:'28px', fontWeight:700, color:'#FFFFFF', letterSpacing:'-0.4px', margin:0, textTransform:'capitalize' }}>{featured.name}</h3>
           </div>
         </motion.div>
 
