@@ -42,8 +42,8 @@ export default defineType({
       name: 'quote',
       title: 'Short Quote',
       type: 'text',
-      description: 'Brief message shown in carousel (keep under 200 characters)',
-      validation: Rule => Rule.required().max(300)
+      description: 'Brief message shown in carousel (keep under 1000 characters)',
+      validation: Rule => Rule.required().max(1000)
     },
     {
       name: 'fullMessage',
