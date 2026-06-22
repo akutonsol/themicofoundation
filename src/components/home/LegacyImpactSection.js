@@ -82,7 +82,7 @@ export default function LegacyImpactSection() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
         .legacy-wrap  { display: flex; min-height: 640px; }
-        .legacy-left  { flex: 0 0 50%; position: relative; overflow: hidden; min-height: 600px; }
+        .legacy-left  { flex: 0 0 50%; position: relative; overflow: hidden; min-height: 600px; background: #040617; }
         .legacy-right { flex: 1; display: flex; align-items: center; padding: 80px 90px 80px 80px; position: relative; }
 
         @media (max-width: 1100px) { .legacy-right { padding: 64px 48px; } }
@@ -158,7 +158,7 @@ export default function LegacyImpactSection() {
           <img
             src={heroImageUrl}
             alt="Mico Foundation legacy"
-            style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }}
+            style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'contain', objectPosition:'center' }}
           />
           {/* Gradient overlay */}
           <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(4,6,23,0.75) 0%, rgba(4,6,23,0) 55%)' }} />
@@ -177,24 +177,6 @@ export default function LegacyImpactSection() {
             </p>
           </div>
 
-          {/* Floating mini card */}
-          <motion.div
-            initial={{ opacity:0, y:16, rotate:-2 }}
-            whileInView={{ opacity:1, y:0, rotate:-2 }}
-            viewport={{ once:true }}
-            transition={{ duration:0.7, delay:0.3 }}
-            style={{ position:'absolute', top:'38%', left:'50%', transform:'translate(-50%,-50%) rotate(-2deg)', zIndex:10, width:'210px', backgroundColor:'rgba(4,6,23,0.88)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:'16px', padding:'18px', backdropFilter:'blur(10px)' }}
-          >
-            <p style={{ ...inter, fontSize:'16px', fontWeight:700, color:'white', margin:'0 0 6px', lineHeight:1.2 }}>Be Part of the Legacy</p>
-            <p style={{ ...inter, fontSize:'11px', color:'rgba(255,255,255,0.5)', margin:'0 0 12px', lineHeight:1.5 }}>Support education in Jamaica</p>
-            <div style={{ display:'flex', gap:'6px', alignItems:'center' }}>
-              <div style={{ height:'26px', background:'#FFD900', borderRadius:'6px', padding:'0 10px', display:'flex', alignItems:'center' }}>
-                <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#040617' }}>Donate</span>
-              </div>
-              <img src="/images/home-static/visa.png" alt="Visa" style={{ height:'14px', opacity:0.5 }} />
-              <img src="/images/home-static/mastercard.png" alt="MC" style={{ height:'14px', opacity:0.5 }} />
-            </div>
-          </motion.div>
         </div>
 
         {/* RIGHT - content */}
@@ -319,11 +301,11 @@ export default function LegacyImpactSection() {
 
                         {/* LEFT: image sticky */}
                         <div style={{ position:'sticky', top:0 }}>
-                          <div style={{ borderRadius:'20px', overflow:'hidden', position:'relative', aspectRatio:'4/5' }}>
+                          <div style={{ borderRadius:'20px', overflow:'hidden', position:'relative', aspectRatio:'4/3', background:'#040617' }}>
                             <img
                               src={heroImageUrl}
                               alt="Mico Foundation legacy"
-                              style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }}
+                              style={{ width:'100%', height:'100%', objectFit:'contain', objectPosition:'center' }}
                             />
                             <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(4,6,23,0.75) 0%, rgba(4,6,23,0) 55%)' }} />
                             <div style={{ position:'absolute', bottom:'24px', left:'24px', right:'24px' }}>
