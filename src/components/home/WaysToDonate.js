@@ -78,7 +78,7 @@ export default function WaysToDonate() {
     <section style={{ backgroundColor:'#FFFDF9', position:'relative', overflow:'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        .wtd-desktop { display: block; padding: 80px 165px; }
+        .wtd-desktop { display: block; padding: 80px clamp(24px, 8vw, 165px); }
         .wtd-mobile  { display: none; }
         .wtd-grid    { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
         .wtd-card    { display: flex; flex-direction: column; border: 1px solid #E5E6EB; border-radius: 24px; overflow: hidden; background: #FFFDF9; transition: transform 0.25s, box-shadow 0.25s; }

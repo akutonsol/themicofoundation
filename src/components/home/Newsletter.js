@@ -54,7 +54,7 @@ export default function Newsletter() {
         .nl-btn     { width: 100%; }
 
         @media (min-width: 768px) {
-          .nl-section { padding: 80px 165px; }
+          .nl-section { padding: 80px clamp(24px, 8vw, 165px); }
           .nl-title   { font-size: 75px; line-height: 85px; }
           .nl-form    { flex-direction: row; align-items: flex-end; gap: 16px; }
           .nl-fields  { flex-direction: row; gap: 16px; flex: 1; }

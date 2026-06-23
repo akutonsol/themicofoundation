@@ -23,7 +23,7 @@ const dropdownCols = [
     { label: 'Work With Us',    href: '/workwithus' },
   ],
   [
-    { label: 'History',    href: '/history' },
+    /* { label: 'History',    href: '/history' }, */
     { label: 'Contact Us', href: '/contact' },
   ],
 ]
@@ -41,10 +41,10 @@ function DropdownItem({ label, href }) {
   return (
     <a href={href} className="dropdown-item"
       style={{ display:'flex', alignItems:'center', gap:'8px', textDecoration:'none', cursor:'pointer' }}>
-      <img src={imgStar} alt="" style={{ width:'26px', height:'26px', flexShrink:0 }} />
+      <img src={imgStar} alt="" style={{ width:'20px', height:'20px', flexShrink:0 }} />
       <p style={{
-        ...inter, fontSize:'25px', fontWeight:400, color:'#040617',
-        letterSpacing:'-0.28px', lineHeight:'34px', margin:0, whiteSpace:'nowrap', transition:'color 0.2s',
+        ...inter, fontSize:'18px', fontWeight:400, color:'#040617',
+        letterSpacing:'-0.2px', lineHeight:'26px', margin:0, whiteSpace:'nowrap', transition:'color 0.2s',
       }}>
         {label}
       </p>

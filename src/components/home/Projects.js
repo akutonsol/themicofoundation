@@ -106,9 +106,15 @@ export default function Projects() {
     <section style={{ backgroundColor:p.bg, position:'relative', overflow:'hidden', transition:'background-color 0.5s ease' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        .proj-desktop { display: block; padding: 80px 85px; min-height: 780px; }
+        .proj-desktop { display: block; padding: clamp(48px,6vw,80px) clamp(24px,6vw,85px); min-height: 780px; }
         .proj-mobile  { display: none; }
-        .proj-inner   { display: flex; align-items: center; gap: 60px; }
+        .proj-inner   { display: flex; align-items: center; gap: clamp(32px,4vw,60px); }
+        /* Tablet / small laptop — stack text over media, let text fill width */
+        @media (max-width: 1100px) {
+          .proj-inner { flex-direction: column; align-items: flex-start; gap: 40px; }
+          .proj-text-col { flex: 1 1 auto !important; width: 100% !important; }
+          .proj-heading { font-size: clamp(48px, 8vw, 100px) !important; line-height: 1.02 !important; }
+        }
         @media (max-width: 768px) {
           .proj-desktop { display: none !important; }
           .proj-mobile  { display: flex !important; }
@@ -141,10 +147,10 @@ export default function Projects() {
               className="proj-inner">
 
               {/* Left — text */}
-              <div style={{ flex:'0 0 816px', display:'flex', flexDirection:'column', gap:'16px' }}>
+              <div className="proj-text-col" style={{ flex:'0 0 816px', display:'flex', flexDirection:'column', gap:'16px' }}>
                 <div style={{ paddingBottom:'8px' }}>
-                  <p style={{ ...inter, fontSize:'32px', fontWeight:600, color:'#6F7181', letterSpacing:'-0.32px', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{p.label}</p>
-                  <h2 style={{ ...inter, fontSize:'100px', fontWeight:800, color:'#FFFFFF', letterSpacing:'-1px', lineHeight:'96.93%', margin:0, textTransform:'capitalize' }}>{p.title}</h2>
+                  <p style={{ ...inter, fontSize:'clamp(20px,2.4vw,32px)', fontWeight:600, color:'#6F7181', letterSpacing:'-0.32px', lineHeight:1.4, margin:0, textTransform:'capitalize' }}>{p.label}</p>
+                  <h2 className="proj-heading" style={{ ...inter, fontSize:'clamp(54px,7vw,100px)', fontWeight:800, color:'#FFFFFF', letterSpacing:'-1px', lineHeight:'96.93%', margin:0, textTransform:'capitalize' }}>{p.title}</h2>
                 </div>
 
                 {p.type === 'active' ? (

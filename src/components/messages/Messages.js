@@ -92,7 +92,7 @@ export default function Messages() {
     <section style={{ backgroundColor:'#FFFDF9', position:'relative', overflow:'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        .msg-desktop { display: flex; padding: 80px 165px; }
+        .msg-desktop { display: flex; padding: 80px clamp(24px, 8vw, 165px); }
         .msg-mobile  { display: none; }
         @media (max-width: 768px) {
           .msg-desktop { display: none !important; }

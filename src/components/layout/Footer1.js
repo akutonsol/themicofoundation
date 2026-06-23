@@ -53,7 +53,7 @@ export default function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
   return (
-    <footer className="footer-section relative bg-[#1A1600] px-6 py-12 md:px-[165px] md:py-[60px]">
+    <footer className="footer-section relative bg-[#1A1600] px-6 py-12 md:px-[clamp(24px, 8vw, 165px)] md:py-[60px]">
 
       <style>{`
         .footer-link {

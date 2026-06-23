@@ -23,7 +23,7 @@ const staticAssets = {
     sparkleSmall: "/images/home-static/sparkle-left.png",
     sparkleLarge: "/images/home-static/sparkle-left.png",
   },
-  logo: "/images/home/mico-logo.png",
+  logo: "/images/home/the_mico_foundation.png",
 }
 
 const TOTAL = 40
@@ -207,7 +207,7 @@ export default function Hero() {
         <div style={{ maxWidth:'1920px', margin:'0 auto', position:'relative', zIndex:2 }}>
           <motion.div
             initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}
-            style={{ textAlign:'center', padding:'80px 165px 0', position:'relative', zIndex:3 }}
+            style={{ textAlign:'center', padding:'80px clamp(24px, 8vw, 165px) 0', position:'relative', zIndex:3 }}
           >
             <h1 style={{
               fontFamily:    "'Inter', sans-serif",
@@ -242,15 +242,15 @@ export default function Hero() {
               <Image
                 src={staticAssets.logo}
                 alt="The Mico Foundation"
-                width={260} height={200}
-                style={{ objectFit:'contain', height:'200px', width:'auto' }}
+                width={360} height={280}
+                style={{ objectFit:'contain', height:'280px', width:'auto' }}
               />
             </motion.div>
           </motion.div>
 
           <motion.div
             initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.3 }}
-            style={{ padding:'0 165px', marginTop:'-140px', position:'relative', zIndex:1 }}
+            style={{ padding:'0 clamp(24px, 8vw, 165px)', marginTop:'-140px', position:'relative', zIndex:1 }}
           >
             <div className="hero-grid">
 
@@ -357,7 +357,7 @@ export default function Hero() {
               {subheadline}
             </p>
           </div>
-          <Image src={staticAssets.logo} alt="The Mico Foundation" width={160} height={120} style={{ objectFit:'contain', height:'120px', width:'auto' }} />
+          <Image src={staticAssets.logo} alt="The Mico Foundation" width={230} height={180} style={{ objectFit:'contain', height:'180px', width:'auto' }} />
         </motion.div>
 
         <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.2 }}

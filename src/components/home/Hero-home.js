@@ -300,7 +300,7 @@ export default function Hero() {
 
           {/* Photo grid - ALL 6 Images Auto-Rotating Simultaneously */}
           <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.8,delay:0.3}}
-            style={{ padding:'0 165px' }}>
+            style={{ padding:'0 clamp(24px, 8vw, 165px)' }}>
             <div className="hero-grid">
 
               {/* Left - Rotating Image Position 0 */}

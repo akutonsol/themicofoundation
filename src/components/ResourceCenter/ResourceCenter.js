@@ -198,7 +198,7 @@ export default function ResourceCenter() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
         .pub-card { transition: all 0.2s ease; }
         .pub-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
-        .rc-padding { padding: 80px 165px; }
+        .rc-padding { padding: 80px clamp(24px, 8vw, 165px); }
         .resource-top-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 80px; align-items: start; }
         .resource-filter-grid { display: grid; grid-template-columns: 1.05fr 1.05fr 1.05fr 240px; gap: 16px; align-items: end; }
         .rc-dropdown { position: relative; }

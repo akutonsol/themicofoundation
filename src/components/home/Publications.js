@@ -116,7 +116,7 @@ export default function Publications() {
         .pub-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
 
         /* ── DESKTOP ── */
-        .pub-desktop { display: block; padding: 80px 165px; }
+        .pub-desktop { display: block; padding: 80px clamp(24px, 8vw, 165px); }
         .pub-mobile  { display: none; }
 
         /* ── MOBILE (≤768px) — Figma 388:43268 ── */

@@ -15,6 +15,7 @@ import newsletterSubscriber from './newsletterSubscriber'
 import teamMember from './teamMember'
 import formerTrustee from './formerTrustee'
 import trusteeLegacy from './trusteeLegacy'
+import trusteeLeader from './trusteeLeader'
 import about from './about'
 import aboutContent from './aboutContent'
 import siteStats from './siteStats'
@@ -52,6 +53,7 @@ export const schema = {
      teamMember,
      formerTrustee,
      trusteeLegacy,
+     trusteeLeader,
      about,
      aboutContent,
      siteStats,

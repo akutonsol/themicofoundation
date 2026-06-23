@@ -278,6 +278,11 @@ trusteeLegacy: `*[_type == "trusteeLegacy"][0]{
   ctaTitle, ctaButtonText, ctaButtonLink
 }`,
 
+trusteeLeader: `*[_type == "trusteeLeader"][0]{
+  eyebrow, headingBefore, headingHighlight, headingAfter,
+  name, role, org, message, portrait
+}`,
+
 chairmen: `*[_type == "historicalPerson" && type == "chairman" && isActive == true] | order(order asc) {
     _id,
     name,

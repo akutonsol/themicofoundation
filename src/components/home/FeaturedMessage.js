@@ -67,7 +67,7 @@ export default function FeaturedMessage() {
           z-index: 0;
         }
 
-        .fm-desktop { display: flex; padding: 100px 165px; }
+        .fm-desktop { display: flex; padding: 100px clamp(24px, 8vw, 165px); }
         .fm-mobile  { display: none; }
 
         @media (max-width: 1024px) {
@@ -204,22 +204,13 @@ export default function FeaturedMessage() {
             <div style={{ fontSize:'120px', lineHeight:1, color:'#FFD900', opacity:0.12, fontFamily:'Georgia, serif', position:'absolute', top:'-20px', left:'-10px', pointerEvents:'none', userSelect:'none' }}>
               "
             </div>
-            <blockquote style={{ ...inter, fontSize:'22px', fontWeight:400, color:'#040617', lineHeight:'1.8', margin:0, paddingLeft:'20px', borderLeft:'3px solid #FFD900', fontStyle:'italic' }}>
+            <blockquote style={{ ...inter, fontSize:'26px', fontWeight:400, color:'#040617', lineHeight:'1.8', margin:0, paddingLeft:'20px', borderLeft:'3px solid #FFD900', fontStyle:'italic' }}>
               {excerpt}
             </blockquote>
           </div>
 
           {/* Divider */}
           <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'36px' }} />
-
-          {/* Body text (fullMessage preview) */}
-          {featured.fullMessage && (
-            <p style={{ ...inter, fontSize:'17px', color:'#6F7181', lineHeight:'1.8', margin:'0 0 40px', maxWidth:'640px' }}>
-              {typeof featured.fullMessage === 'string'
-                ? featured.fullMessage.slice(0, 240) + '...'
-                : ''}
-            </p>
-          )}
 
           {/* CTAs */}
           <div style={{ display:'flex', alignItems:'center', gap:'14px', marginBottom:'44px', flexWrap:'wrap' }}>
@@ -296,7 +287,7 @@ export default function FeaturedMessage() {
 
         {/* Quote */}
         <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.2 }}>
-          <blockquote style={{ ...inter, fontSize:'19px', color:'#040617', lineHeight:'1.8', margin:0, paddingLeft:'20px', borderLeft:'3px solid #FFD900', fontStyle:'italic' }}>
+          <blockquote style={{ ...inter, fontSize:'22px', color:'#040617', lineHeight:'1.8', margin:0, paddingLeft:'20px', borderLeft:'3px solid #FFD900', fontStyle:'italic' }}>
             {excerpt}
           </blockquote>
         </motion.div>

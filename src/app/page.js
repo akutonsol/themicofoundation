@@ -2,7 +2,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import Hero from '@/components/home/Hero'
 import TrustedBy from '@/components/home/TrustedBy'
-    {/*}import Mission from '@/components/home/Mission' >*/}
+import Mission from '@/components/home/Mission'
 import LegacyImpactSection from "@/components/home/LegacyImpactSection";
 import Projects from '@/components/home/Projects'
 import Community from '@/components/home/Community'
@@ -24,7 +24,7 @@ export default function Home() {
       <Hero />
    
         <FeaturedMessage />
-    {/*}  <Mission />*/}
+        <Mission />
 <LegacyImpactSection />
       <Projects />
     

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
@@ -52,19 +52,10 @@ function getSignature(name) {
   return `${first}. ${last}`;
 }
 
-function CloseIcon({ size = 20 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
 export default function MessageDetail({ slug }) {
   const [message,     setMessage]     = useState(null);
   const [allMessages, setAllMessages] = useState([]);
   const [loading,     setLoading]     = useState(true);
-  const [panelOpen,   setPanelOpen]   = useState(false);
 
   useEffect(() => {
     async function fetchMessage() {
@@ -119,39 +110,22 @@ export default function MessageDetail({ slug }) {
   const prevMessage  = currentIndex > 0 ? allMessages[currentIndex - 1] : null;
   const nextMessage  = currentIndex < allMessages.length - 1 ? allMessages[currentIndex + 1] : null;
   const signature    = getSignature(message.name);
-  const previewBody  = message.body.slice(0, 2);
-
-  // Panel split: first 2 beside image, rest below in large text
-  const panelSide  = message.body.slice(0, 2);
-  const panelBelow = message.body.slice(2);
+  const isChairman   = (message.role || "").toLowerCase().includes("chairman");
+  const title        = isChairman ? "Chairman Message" : "Message from the Foundation";
 
   return (
     <main style={{ backgroundColor:"#FAF9F6", position:"relative", overflow:"hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,600&display=swap');
 
-        .md-section { padding: 48px 165px 80px; max-width: 1760px; margin: 0 auto; }
+        .md-section { padding: 48px clamp(24px, 8vw, 165px) 80px; max-width: 1760px; margin: 0 auto; }
 
         @media (max-width: 1200px) { .md-section { padding: 48px 64px 80px; } }
         @media (max-width: 900px) {
           .md-section { padding: 40px 28px 60px; }
-          .md-grid { grid-template-columns: 1fr !important; }
-          .md-left { width: 100% !important; }
+          .md-left { float: none !important; width: 100% !important; margin-right: 0 !important; }
           .md-heading { font-size: 40px !important; }
-          .md-quote { font-size: 22px !important; }
         }
-
-        .md-read-btn {
-          display: inline-flex; align-items: center; gap: 10px;
-          background: #040617; color: white;
-          font-size: 15px; font-weight: 600;
-          padding: 16px 32px; border-radius: 12px;
-          border: none; cursor: pointer;
-          font-family: 'Inter', sans-serif;
-          transition: background 0.2s, transform 0.15s;
-          text-decoration: none;
-        }
-        .md-read-btn:hover { background: #1a1f3c; transform: scale(1.02); }
 
         .md-nav-arrow {
           width: 54px; height: 54px; border-radius: 14px;
@@ -161,17 +135,6 @@ export default function MessageDetail({ slug }) {
           flex-shrink: 0;
         }
         .md-nav-arrow:hover { background: #FFD900; }
-
-        /* Panel large editorial text below image */
-        .panel-editorial {
-          font-size: clamp(1.6rem, 2.8vw, 2.4rem);
-          font-weight: 600;
-          color: white;
-          line-height: 1.5;
-          letter-spacing: -0.03em;
-          font-family: 'Inter', sans-serif;
-          margin: 0 0 32px;
-        }
       `}</style>
 
       <div className="md-section">
@@ -195,14 +158,21 @@ export default function MessageDetail({ slug }) {
 
         {/* Main card */}
         <div style={{ borderRadius:"32px", border:"1px solid #E5E6EB", backgroundColor:"rgba(255,255,255,0.85)", padding:"64px", backdropFilter:"blur(8px)" }}>
-          <div className="md-grid" style={{ display:"grid", gridTemplateColumns:"400px 1fr", gap:"64px", alignItems:"start" }}>
 
-            {/* LEFT: photo + name card */}
-            <motion.div
-              initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
-              className="md-left"
-              style={{ width:"400px" }}
-            >
+          {/* Title */}
+          <motion.h1
+            initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
+            className="md-heading"
+            style={{ ...inter, fontSize:"clamp(2.4rem,4vw,3.8rem)", fontWeight:800, color:"#040617", lineHeight:"1.05", letterSpacing:"-2px", margin:"0 0 44px" }}>
+            {title}
+          </motion.h1>
+
+          {/* Full message wrapped around the floated image */}
+          <motion.div
+            initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, delay:0.1 }}
+          >
+            {/* Floated photo + name card */}
+            <div className="md-left" style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"28px" }}>
               <div style={{ display:"flex", gap:"0" }}>
                 <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", flexShrink:0, alignSelf:"stretch" }} />
                 <div style={{ flex:1 }}>
@@ -210,7 +180,7 @@ export default function MessageDetail({ slug }) {
                     <img
                       src={message.image || "/images/home/holness.jpg"}
                       alt={message.name}
-                      style={{ width:"100%", height:"580px", objectFit:"cover", objectPosition:"top", display:"block" }}
+                      style={{ width:"100%", height:"560px", objectFit:"cover", objectPosition:"top", display:"block" }}
                     />
                   </div>
                   <div style={{ backgroundColor:"#040617", padding:"24px 28px", borderRadius:"0 0 20px 0" }}>
@@ -223,61 +193,27 @@ export default function MessageDetail({ slug }) {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            {/* RIGHT: content */}
-            <motion.div
-              initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, delay:0.1 }}
-            >
-              <h1 className="md-heading"
-                style={{ ...inter, fontSize:"clamp(2.4rem,4vw,3.8rem)", fontWeight:800, color:"#040617", lineHeight:"1.05", letterSpacing:"-2px", margin:"0 0 36px" }}>
-                Message from<br />
-                <span style={{ color:"#040617" }}>the Foundation</span>
-              </h1>
+            {/* Full message body — flows around and below the image */}
+            {message.body.map((para, i) => (
+              <p key={i} style={{ ...inter, fontSize:"19px", color:"#414651", lineHeight:"1.9", margin:"0 0 24px" }}>
+                {para}
+              </p>
+            ))}
 
-              <div style={{ position:"relative", marginBottom:"36px" }}>
-                <span style={{ position:"absolute", top:"-12px", left:"-8px", fontSize:"80px", color:"#E5E6EB", fontFamily:"Georgia, serif", lineHeight:1, pointerEvents:"none", userSelect:"none" }}>
-                  "
-                </span>
-                <blockquote className="md-quote"
-                  style={{ ...inter, fontSize:"clamp(1.2rem,2vw,1.5rem)", fontWeight:500, color:"#040617", lineHeight:"1.7", fontStyle:"italic", margin:0, paddingLeft:"16px" }}>
-                  {message.intro}"
-                </blockquote>
-              </div>
+            <div style={{ clear:"both" }} />
 
-              <div style={{ height:"1px", backgroundColor:"#E5E6EB", margin:"32px 0" }} />
-
-              <div style={{ display:"flex", flexDirection:"column", gap:"20px", marginBottom:"40px" }}>
-                {previewBody.map((para, i) => (
-                  <p key={i} style={{ ...inter, fontSize:"17px", color:"#6F7181", lineHeight:"1.8", margin:0 }}>
-                    {para}
-                  </p>
-                ))}
-                {message.body.length > 2 && (
-                  <p style={{ ...inter, fontSize:"14px", color:"#9CA3AF", margin:0, fontStyle:"italic" }}>
-                    Continue reading for the full message...
-                  </p>
-                )}
-              </div>
-
-              <div style={{ height:"1px", backgroundColor:"#E5E6EB", marginBottom:"32px" }} />
-
-              <div style={{ display:"flex", alignItems:"center", gap:"32px", flexWrap:"wrap" }}>
-                <div>
-                  <p style={{ ...inter, fontSize:"11px", fontWeight:600, color:"#9CA3AF", letterSpacing:"0.18em", textTransform:"uppercase", margin:"0 0 8px" }}>
-                    Official Signature
-                  </p>
-                  <p style={{ fontSize:"36px", color:"#040617", margin:0, fontFamily:"'Playfair Display', Georgia, serif", fontStyle:"italic", letterSpacing:"-0.5px" }}>
-                    {signature}
-                  </p>
-                </div>
-                <button onClick={() => setPanelOpen(true)} className="md-read-btn">
-                  Read Full Message
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-            </motion.div>
-          </div>
+            {/* Signature */}
+            <div style={{ borderTop:"1px solid #E5E6EB", paddingTop:"32px", marginTop:"20px" }}>
+              <p style={{ ...inter, fontSize:"11px", fontWeight:600, color:"#9CA3AF", letterSpacing:"0.18em", textTransform:"uppercase", margin:"0 0 8px" }}>
+                Official Signature
+              </p>
+              <p style={{ fontSize:"36px", color:"#040617", margin:0, fontFamily:"'Playfair Display', Georgia, serif", fontStyle:"italic", letterSpacing:"-0.5px" }}>
+                {signature}
+              </p>
+            </div>
+          </motion.div>
         </div>
 
         {/* Prev / Next */}
@@ -311,116 +247,6 @@ export default function MessageDetail({ slug }) {
         </div>
       </div>
 
-      {/* SLIDE-UP PANEL */}
-      <AnimatePresence>
-        {panelOpen && (
-          <>
-            <motion.div
-              key="backdrop"
-              initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-              onClick={() => setPanelOpen(false)}
-              style={{ position:"fixed", inset:0, backgroundColor:"rgba(4,6,23,0.6)", zIndex:9998, backdropFilter:"blur(4px)", cursor:"pointer" }}
-            />
-
-            <motion.div
-              key="panel"
-              initial={{ y:"100%" }} animate={{ y:0 }} exit={{ y:"100%" }}
-              transition={{ type:"spring", damping:28, stiffness:260 }}
-              style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#040617", borderRadius:"28px 28px 0 0", height:"90vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.5)" }}
-            >
-              {/* Close button */}
-              <button
-                onClick={() => setPanelOpen(false)}
-                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.8)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
-              >
-                <CloseIcon size={17} />
-              </button>
-
-              {/* Scrollable content */}
-              <div style={{ flex:1, overflowY:"auto", padding:"44px 6% 60px" }}>
-                <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
-
-                  {/* Full-width header */}
-                  <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"16px" }}>
-                    <div style={{ width:"28px", height:"2px", backgroundColor:"#FFD900" }} />
-                    <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.2em", textTransform:"uppercase" }}>
-                      Full Message
-                    </span>
-                  </div>
-                  <h2 style={{ ...inter, fontSize:"clamp(2rem,4vw,3.5rem)", fontWeight:800, color:"white", letterSpacing:"-2px", lineHeight:"1.0", margin:"0 0 20px" }}>
-                    {message.name}
-                  </h2>
-                  <div style={{ height:"1px", backgroundColor:"rgba(255,255,255,0.1)", marginBottom:"32px" }} />
-
-                  {/* Image floated left - quote + 2 paragraphs beside it */}
-                  <div style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"16px" }}>
-                    <div style={{ borderRadius:"16px", overflow:"hidden", position:"relative" }}>
-                      <img
-                        src={message.image || "/images/home/holness.jpg"}
-                        alt={message.name}
-                        style={{ width:"100%", height:"500px", objectFit:"cover", objectPosition:"top", display:"block" }}
-                      />
-                      <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(4,6,23,0.85) 0%, rgba(4,6,23,0) 55%)" }} />
-                      <div style={{ position:"absolute", bottom:"20px", left:"20px", right:"20px" }}>
-                        <div style={{ display:"flex", alignItems:"center", gap:"8px", marginBottom:"6px" }}>
-                          <div style={{ width:"14px", height:"2px", backgroundColor:"#FFD900" }} />
-                          <span style={{ ...inter, fontSize:"10px", fontWeight:700, color:"#FFD900", letterSpacing:"0.16em", textTransform:"uppercase" }}>
-                            {message.role}
-                          </span>
-                        </div>
-                        <p style={{ ...inter, fontSize:"20px", fontWeight:700, color:"white", lineHeight:1.2, margin:0 }}>
-                          {message.name}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Quote + first 2 paragraphs beside the image */}
-                  <blockquote style={{ ...inter, fontSize:"20px", fontWeight:500, color:"rgba(255,255,255,0.85)", lineHeight:"1.75", fontStyle:"italic", margin:"0 0 24px", paddingLeft:"20px", borderLeft:"3px solid #FFD900" }}>
-                    "{message.intro}"
-                  </blockquote>
-
-                  {panelSide.map((para, i) => (
-                    <p key={i} style={{ ...inter, fontSize:"17px", color:"rgba(255,255,255,0.65)", lineHeight:"1.85", margin:"0 0 18px" }}>
-                      {para}
-                    </p>
-                  ))}
-
-                  {/* Clear float - editorial large text below */}
-                  <div style={{ clear:"both" }} />
-
-                  {panelBelow.length > 0 && (
-                    <div style={{ marginTop:"12px" }}>
-                      {panelBelow.map((para, i) => (
-                        <p key={i} className="panel-editorial">
-                          {para}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Signature */}
-                  <div style={{ borderTop:"1px solid rgba(255,255,255,0.1)", paddingTop:"28px", marginTop:"16px", display:"flex", alignItems:"center", gap:"24px", flexWrap:"wrap" }}>
-                    <div>
-                      <p style={{ ...inter, fontSize:"11px", color:"rgba(255,255,255,0.3)", letterSpacing:"0.14em", textTransform:"uppercase", margin:"0 0 6px" }}>
-                        Official Signature
-                      </p>
-                      <p style={{ fontSize:"32px", color:"#FFD900", margin:0, fontFamily:"'Playfair Display', Georgia, serif", fontStyle:"italic" }}>
-                        {signature}
-                      </p>
-                    </div>
-                    <button onClick={() => setPanelOpen(false)}
-                      style={{ ...inter, display:"inline-flex", alignItems:"center", gap:"8px", backgroundColor:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.15)", color:"rgba(255,255,255,0.6)", fontSize:"14px", fontWeight:600, padding:"12px 24px", borderRadius:"12px", cursor:"pointer" }}>
-                      Close
-                    </button>
-                  </div>
-
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </main>
   );
 }

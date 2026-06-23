@@ -1172,7 +1172,7 @@ export default function DonationForm() {
     <section style={{backgroundColor:"#FFFDF9",position:"relative",overflow:"hidden"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        .don-desktop { display: block; padding: 80px 165px; }
+        .don-desktop { display: block; padding: 80px clamp(24px, 8vw, 165px); }
         .don-mobile  { display: none; }
         .don-grid    { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1590px; margin: 0 auto; }
         .amt-btn     { cursor:pointer; border:1px solid #E5E6EB; background:#FFFDF9; border-radius:20px; padding:10px 32px; font-family:'Inter',sans-serif; font-size:24px; line-height:38px; letter-spacing:0.24px; color:#040617; text-align:center; transition:all 0.2s; width:100%; }

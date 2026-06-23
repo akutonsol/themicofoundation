@@ -2,13 +2,18 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { client, queries } from "@/sanity/lib/sanity";
+import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
 const staticBlocks = [
   { year: "1835", label: "Foundation", text: "The Lady Mico Charity was established by an Act of Parliament in England and Wales, with Sir Thomas Fowell Buxton as its first chairman. Under his leadership, the Charity rapidly expanded educational opportunities throughout the British colonies — establishing teachers' colleges and elementary schools across Mauritius, the Seychelles, and the West Indies." },
   { year: "1966", label: "Survival", text: "Today, The Mico University College in Kingston, Jamaica remains the only surviving institution from that original educational movement — the longest sustained educational charity legacy in the West Indies. As the organization evolved into the Lady Mico Trust, its mission continued through sustained support for teacher training and educational advancement." },
   { year: "2000", label: "Custodianship", text: "Professor The Honourable Errol Lawrence Miller, OJ, became the first and only citizen outside the United Kingdom to serve as Trustee of the Lady Mico Trust. In 2000, the Jamaican assets of the Trust were transferred to The Mico Foundation, which now serves as the chief custodian of its enduring mission, history, and institutional legacy." },
 ];
+
+// Joe Bartley — Lead Trustee. Drop his photo at /public/images/trustees/joe-bartley.jpg
+// (falls back to a placeholder portrait until the file is added).
+const joeBartleyImage = "/images/trustees/joe-bartley.jpg";
+const joeBartleyFallback = "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1000&q=80";
 
 const staticContent = {
   heroEyebrow: 'The Mico Foundation — Trustee Legacy',
@@ -44,6 +49,7 @@ function Block({ block, index }) {
 export default function TrusteeLegacySection() {
   const [content, setContent] = useState(staticContent);
   const [blocks, setBlocks] = useState(staticBlocks);
+  const [leaderImg, setLeaderImg] = useState(null);
   const heroRef = useRef(null);
 
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -73,7 +79,16 @@ export default function TrusteeLegacySection() {
         console.error('Error fetching trustee legacy content:', error);
       }
     }
+    async function fetchLeaderImg() {
+      try {
+        const leaderData = await client.fetch(queries.trusteeLeader);
+        if (leaderData?.portrait) setLeaderImg(urlFor(leaderData.portrait).width(1000).url());
+      } catch (error) {
+        console.error('Error fetching trustee leader portrait:', error);
+      }
+    }
     fetchContent();
+    fetchLeaderImg();
   }, []);
 
   return (
@@ -81,11 +96,18 @@ export default function TrusteeLegacySection() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;500;700&display=swap');
 
-        .legacy-hero { position: relative; height: 100vh; min-height: 700px; background: #05080F; overflow: hidden; display: flex; align-items: flex-end; padding: clamp(40px,6vw,80px) clamp(24px,5vw,80px); }
+        .legacy-hero { position: relative; height: 100vh; min-height: 700px; background: #05080F; overflow: hidden; display: flex; align-items: center; padding: clamp(40px,6vw,80px) clamp(24px,5vw,80px); }
         .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,217,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,217,0,0.04) 1px, transparent 1px); background-size: 72px 72px; }
         .hero-gradient { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,31,63,0.9) 0%, rgba(5,8,15,0.4) 60%, transparent 100%); }
-        .hero-year-bg { position: absolute; right: -2%; top: 50%; transform: translateY(-50%); font-family: 'Cormorant Garamond', serif; font-size: clamp(200px, 28vw, 420px); font-weight: 300; color: rgba(255,217,0,0.04); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -0.05em; }
-        .hero-content { position: relative; z-index: 2; max-width: 1500px; margin: 0 auto; width: 100%; }
+        .hero-year-bg { position: absolute; left: -2%; top: 50%; transform: translateY(-50%); font-family: 'Cormorant Garamond', serif; font-size: clamp(200px, 28vw, 420px); font-weight: 300; color: rgba(255,217,0,0.035); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -0.05em; }
+        .hero-content { position: relative; z-index: 2; max-width: 1500px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(40px,5vw,80px); align-items: center; }
+        .hero-text { min-width: 0; }
+        .hero-image-wrap { position: relative; width: 100%; }
+        .hero-image { width: 100%; height: clamp(440px, 66vh, 660px); object-fit: cover; object-position: top center; border-radius: 24px; display: block; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+        .hero-image-frame { position: absolute; inset: 0; border-radius: 24px; border: 1px solid rgba(255,217,0,0.25); pointer-events: none; }
+        .hero-image-cap { position: absolute; left: 20px; bottom: 20px; right: 20px; background: linear-gradient(to top, rgba(5,8,15,0.92), rgba(5,8,15,0)); border-radius: 0 0 24px 24px; padding: 40px 24px 22px; }
+        .hero-image-cap .cap-role { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 6px; }
+        .hero-image-cap .cap-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: #fff; margin: 0; line-height: 1.05; letter-spacing: -0.02em; }
         .hero-eyebrow { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #FFD900; margin: 0 0 28px; }
         .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(64px, 10vw, 152px); font-weight: 300; line-height: 0.88; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
         .hero-title em { font-style: italic; color: #FFD900; }
@@ -121,6 +143,12 @@ export default function TrusteeLegacySection() {
         .cta-arrow { width: 20px; height: 20px; transition: transform 0.2s; }
         .cta-btn:hover .cta-arrow { transform: translate(2px, -2px); }
 
+        @media (max-width: 980px) {
+          .legacy-hero { height: auto; min-height: 0; align-items: stretch; padding-top: clamp(100px,14vw,140px); padding-bottom: clamp(60px,8vw,80px); }
+          .hero-content { grid-template-columns: 1fr; gap: 40px; }
+          .hero-image { height: clamp(360px, 70vw, 520px); }
+          .hero-year-bg { display: none; }
+        }
         @media (max-width: 900px) {
           .timeline-header { grid-template-columns: 1fr; }
           .blocks-list::before { left: 80px; }
@@ -142,16 +170,34 @@ export default function TrusteeLegacySection() {
         <div className="hero-gradient" />
         <div className="hero-year-bg">1835</div>
         <motion.div className="hero-content" style={{ y: titleY, opacity: titleOpacity }}>
-          <p className="hero-eyebrow">{content.heroEyebrow}</p>
-          <h1 className="hero-title">
-            {content.heroTitleLine1}<br />
-            <em>{content.heroTitleHighlight}</em><br />
-            {content.heroTitleLine3}
-          </h1>
-          <p className="hero-sub">{content.heroSubtitle}</p>
-          <div className="scroll-hint">
-            <div className="scroll-line" />
-            Scroll to explore
+          {/* LEFT — content */}
+          <div className="hero-text">
+            <p className="hero-eyebrow">{content.heroEyebrow}</p>
+            <h1 className="hero-title">
+              {content.heroTitleLine1}<br />
+              <em>{content.heroTitleHighlight}</em><br />
+              {content.heroTitleLine3}
+            </h1>
+            <p className="hero-sub">{content.heroSubtitle}</p>
+            <div className="scroll-hint">
+              <div className="scroll-line" />
+              Scroll to explore
+            </div>
+          </div>
+
+          {/* RIGHT — Joe Bartley portrait */}
+          <div className="hero-image-wrap">
+            <img
+              className="hero-image"
+              src={leaderImg || joeBartleyImage}
+              alt="Joe Bartley, Lead Trustee"
+              onError={(e) => { if (e.currentTarget.src !== joeBartleyFallback) e.currentTarget.src = joeBartleyFallback; }}
+            />
+            <div className="hero-image-frame" />
+            <div className="hero-image-cap">
+              <p className="cap-role">Lead Trustee</p>
+              <p className="cap-name">Joe Bartley</p>
+            </div>
           </div>
         </motion.div>
       </section>

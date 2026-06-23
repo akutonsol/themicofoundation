@@ -110,7 +110,7 @@ export default function NewsEvents() {
     <section style={{ backgroundColor:'#FFFDF9', position:'relative', overflow:'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        .news-desktop { display: block; padding: 60px 165px 80px; }
+        .news-desktop { display: block; padding: 60px clamp(24px, 8vw, 165px) 80px; }
         .news-mobile  { display: none; }
         .news-grid    { display: grid; grid-template-columns: 780px 1fr; gap: 30px; align-items: start; }
         .article-row  { display: flex; gap: 24px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid rgba(225,225,225,0.3); cursor: pointer; transition: opacity 0.2s; text-decoration: none; }

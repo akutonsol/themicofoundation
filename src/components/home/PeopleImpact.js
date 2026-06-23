@@ -101,7 +101,7 @@ export default function PeopleImpact() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-        .impact-desktop { display: grid; grid-template-columns: 780px 1fr; gap: 165px; align-items: center; padding: 80px 165px; }
+        .impact-desktop { display: grid; grid-template-columns: 780px 1fr; gap: clamp(24px, 8vw, 165px); align-items: center; padding: 80px clamp(24px, 8vw, 165px); }
         .impact-mobile  { display: none; }
 
         @media (max-width: 1200px) {

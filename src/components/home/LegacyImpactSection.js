@@ -91,6 +91,7 @@ export default function LegacyImpactSection() {
           .legacy-left  { flex: none; height: 360px; }
           .legacy-right { padding: 52px 28px; }
           .legacy-headline { font-size: 44px !important; }
+          .legacy-modal-img { float: none !important; width: 100% !important; margin-right: 0 !important; }
         }
 
         .legacy-read-btn {
@@ -297,10 +298,26 @@ export default function LegacyImpactSection() {
 
                     {/* Scrollable content */}
                     <div style={{ flex:1, overflowY:'auto', display:'flex', justifyContent:'center', padding:'48px 5% 60px' }}>
-                      <div style={{ width:'100%', maxWidth:'100%', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'48px', alignItems:'start' }}>
+                      <div style={{ width:'100%', maxWidth:'1200px' }}>
 
-                        {/* LEFT: image sticky */}
-                        <div style={{ position:'sticky', top:0 }}>
+                        {/* Eyebrow */}
+                        <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'16px' }}>
+                          <div style={{ width:'20px', height:'2px', backgroundColor:'#FFD900' }} />
+                          <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#FFD900', letterSpacing:'0.18em', textTransform:'uppercase' }}>
+                            {badge}
+                          </span>
+                        </div>
+
+                        {/* Headline */}
+                        <h3 style={{ ...inter, fontSize:'clamp(2rem,3.4vw,3rem)', fontWeight:800, color:'white', letterSpacing:'-1.5px', lineHeight:'1.05', margin:'0 0 24px' }}>
+                          {headline}
+                        </h3>
+
+                        {/* Divider */}
+                        <div style={{ height:'1px', backgroundColor:'rgba(255,255,255,0.1)', marginBottom:'32px' }} />
+
+                        {/* Floated image — description wraps around it and flows to the end */}
+                        <div className="legacy-modal-img" style={{ float:'left', width:'440px', marginRight:'44px', marginBottom:'24px' }}>
                           <div style={{ borderRadius:'20px', overflow:'hidden', position:'relative', aspectRatio:'4/3', background:'#040617' }}>
                             <img
                               src={heroImageUrl}
@@ -322,51 +339,34 @@ export default function LegacyImpactSection() {
                           </div>
                         </div>
 
-                        {/* RIGHT: full article text - all lines end at same right edge */}
-                        <div>
-                          {/* Eyebrow */}
-                          <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'16px' }}>
-                            <div style={{ width:'20px', height:'2px', backgroundColor:'#FFD900' }} />
-                            <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#FFD900', letterSpacing:'0.18em', textTransform:'uppercase' }}>
-                              {badge}
-                            </span>
-                          </div>
+                        {/* Full description — flows around the image and continues to the end */}
+                        <p style={{ ...inter, fontSize:'18px', color:'rgba(255,255,255,0.82)', lineHeight:'1.9', margin:'0 0 22px' }}>
+                          {paragraph1}
+                        </p>
+                        <p style={{ ...inter, fontSize:'18px', color:'rgba(255,255,255,0.7)', lineHeight:'1.9', margin:'0 0 28px' }}>
+                          {paragraph2}
+                        </p>
 
-                          {/* Headline */}
-                          <h3 style={{ ...inter, fontSize:'clamp(1.8rem,2.8vw,2.6rem)', fontWeight:800, color:'white', letterSpacing:'-1.5px', lineHeight:'1.0', margin:'0 0 20px' }}>
-                            {headline}
-                          </h3>
-
-                          {/* Divider */}
-                          <div style={{ height:'1px', backgroundColor:'rgba(255,255,255,0.1)', marginBottom:'24px' }} />
-
-                          {/* Article paragraphs - width:100% ensures consistent right edge */}
-                          <p style={{ ...inter, fontSize:'17px', color:'rgba(255,255,255,0.82)', lineHeight:'1.85', margin:'0 0 20px', width:'100%', display:'block' }}>
-                            {paragraph1}
+                        {/* Quote */}
+                        <div style={{ borderLeft:'3px solid #FFD900', paddingLeft:'20px', marginBottom:'36px' }}>
+                          <p style={{ ...inter, fontSize:'19px', fontWeight:500, color:'rgba(255,255,255,0.78)', fontStyle:'italic', lineHeight:'1.7', margin:0 }}>
+                            "{bottomQuote}"
                           </p>
-                          <p style={{ ...inter, fontSize:'17px', color:'rgba(255,255,255,0.65)', lineHeight:'1.85', margin:'0 0 32px', width:'100%', display:'block' }}>
-                            {paragraph2}
-                          </p>
+                        </div>
 
-                          {/* Quote */}
-                          <div style={{ borderLeft:'3px solid #FFD900', paddingLeft:'20px', marginBottom:'36px' }}>
-                            <p style={{ ...inter, fontSize:'18px', fontWeight:500, color:'rgba(255,255,255,0.75)', fontStyle:'italic', lineHeight:'1.65', margin:0 }}>
-                              "{bottomQuote}"
-                            </p>
-                          </div>
+                        <div style={{ clear:'both' }} />
 
-                          {/* CTAs */}
-                          <div style={{ display:'flex', gap:'12px', flexWrap:'wrap' }}>
-                            <Link href={button1Link} onClick={() => setPanelOpen(false)}
-                              style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'10px', backgroundColor:'#FFD900', color:'#040617', fontSize:'14px', fontWeight:700, padding:'14px 28px', borderRadius:'12px', textDecoration:'none' }}>
-                              {button1Text}
-                              <ArrowIcon size={15} color="#040617" />
-                            </Link>
-                            <Link href={button2Link} onClick={() => setPanelOpen(false)}
-                              style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'10px', border:'1px solid rgba(255,255,255,0.2)', color:'rgba(255,255,255,0.7)', fontSize:'14px', fontWeight:600, padding:'14px 24px', borderRadius:'12px', textDecoration:'none' }}>
-                              {button2Text}
-                            </Link>
-                          </div>
+                        {/* CTAs */}
+                        <div style={{ display:'flex', gap:'12px', flexWrap:'wrap', paddingTop:'8px' }}>
+                          <Link href={button1Link} onClick={() => setPanelOpen(false)}
+                            style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'10px', backgroundColor:'#FFD900', color:'#040617', fontSize:'14px', fontWeight:700, padding:'14px 28px', borderRadius:'12px', textDecoration:'none' }}>
+                            {button1Text}
+                            <ArrowIcon size={15} color="#040617" />
+                          </Link>
+                          <Link href={button2Link} onClick={() => setPanelOpen(false)}
+                            style={{ ...inter, display:'inline-flex', alignItems:'center', gap:'10px', border:'1px solid rgba(255,255,255,0.2)', color:'rgba(255,255,255,0.7)', fontSize:'14px', fontWeight:600, padding:'14px 24px', borderRadius:'12px', textDecoration:'none' }}>
+                            {button2Text}
+                          </Link>
                         </div>
 
                       </div>

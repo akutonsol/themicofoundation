@@ -62,7 +62,7 @@ export default function LeadershipSpotlight() {
     <section style={{ backgroundColor: '#040617', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        .ls-desktop { display: block; padding: 80px 165px; }
+        .ls-desktop { display: block; padding: 80px clamp(24px, 8vw, 165px); }
         .ls-mobile  { display: none; }
         .ls-grid    { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 52px; }
         .ls-card    {

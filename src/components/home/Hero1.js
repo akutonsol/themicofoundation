@@ -207,7 +207,7 @@ export default function Hero() {
         <div style={{ maxWidth:'1920px', margin:'0 auto', position:'relative', zIndex:2 }}>
           <motion.div
             initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}
-            style={{ textAlign:'center', padding:'100px 165px 0' }}
+            style={{ textAlign:'center', padding:'100px clamp(24px, 8vw, 165px) 0' }}
           >
             <h1 style={{
               fontFamily:    "'Inter', sans-serif",
@@ -252,7 +252,7 @@ export default function Hero() {
 
           <motion.div
             initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.3 }}
-            style={{ padding:'0 165px' }}
+            style={{ padding:'0 clamp(24px, 8vw, 165px)' }}
           >
             <div className="hero-grid">
 

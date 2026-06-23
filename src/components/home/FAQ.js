@@ -41,7 +41,7 @@ export default function FAQ() {
   const toggle = (id) => setOpenId(openId === id ? null : id)
 
   return (
-    <section className="relative overflow-hidden bg-[#FFFDF9] px-4 py-10 md:px-[165px] md:pt-[40px] md:pb-[80px]">
+    <section className="relative overflow-hidden bg-[#FFFDF9] px-4 py-10 md:px-[clamp(24px, 8vw, 165px)] md:pt-[40px] md:pb-[80px]">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
         .faq-row { cursor: pointer; transition: background 0.2s; }
