@@ -138,13 +138,22 @@ export default function ProjectDetailPage({ slug }) {
         .pd-item:hover { background:rgba(255,217,0,0.06) !important; border-color:rgba(255,217,0,0.2) !important; }
         .pd-next:hover { background:rgba(255,217,0,0.05) !important; }
         .pd-next:hover .pd-next-arrow { background:#FFD900 !important; }
+
+        .pd-hero { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; position:relative; }
+        .pd-used-head { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:clamp(48px,6vw,80px); }
+        @media (max-width: 900px) {
+          .pd-hero { grid-template-columns:1fr; min-height:auto; }
+          .pd-hero-img { height:56vh; min-height:320px; order:-1; }
+          .pd-hero-text { justify-content:flex-start !important; gap:44px; padding-top:96px !important; padding-bottom:56px !important; }
+          .pd-used-head { grid-template-columns:1fr !important; gap:24px !important; }
+        }
       `}</style>
 
       {/* ── HERO: SPLIT LAYOUT ── */}
-      <section style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr", position: "relative" }}>
+      <section className="pd-hero">
 
         {/* Left — text panel */}
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "clamp(32px,4vw,56px) clamp(32px,4vw,72px)", background: "#05060F", position: "relative", zIndex: 2 }}>
+        <div className="pd-hero-text" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "clamp(32px,4vw,56px) clamp(32px,4vw,72px)", background: "#05060F", position: "relative", zIndex: 2 }}>
 
           {/* Top nav */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -198,7 +207,7 @@ export default function ProjectDetailPage({ slug }) {
         </div>
 
         {/* Right — image panel */}
-        <div style={{ position: "relative", overflow: "hidden" }}>
+        <div className="pd-hero-img" style={{ position: "relative", overflow: "hidden" }}>
           <motion.img src={project.mediaUrl} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover", scale: imgScale, opacity: imgOpacity }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #05060F 0%, rgba(5,6,15,0.2) 40%, rgba(5,6,15,0) 100%)" }} />
           <div style={{ position: "absolute", bottom: "48px", right: "48px", fontFamily: "'Playfair Display',serif", fontSize: "160px", fontWeight: 900, color: "rgba(255,255,255,0.04)", lineHeight: 1, userSelect: "none" }}>01</div>
@@ -230,7 +239,7 @@ export default function ProjectDetailPage({ slug }) {
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontFamily: "'Playfair Display',serif", fontSize: "clamp(100px,18vw,280px)", fontWeight: 900, color: "rgba(255,217,0,0.025)", whiteSpace: "nowrap", pointerEvents: "none", lineHeight: 1, userSelect: "none" }}>BUILD</div>
 
         <div style={{ maxWidth: "1400px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "end", marginBottom: "clamp(48px,6vw,80px)" }}>
+          <div className="pd-used-head">
             <motion.h2 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
               style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(36px,5vw,72px)", fontWeight: 700, color: "#FFFFFF", margin: 0, lineHeight: 1.05, letterSpacing: "-0.02em" }}>
               How Your<br /><em style={{ color: "#FFD900" }}>Donation</em><br />Is Used
@@ -255,7 +264,7 @@ export default function ProjectDetailPage({ slug }) {
           </div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1px", background: "rgba(255,255,255,0.04)", borderRadius: "20px", overflow: "hidden", marginTop: "48px" }}>
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1px", background: "rgba(255,255,255,0.04)", borderRadius: "20px", overflow: "hidden", marginTop: "48px" }}>
             {[
               { label: "Fundraising Goal", value: project.goalRaw || 20000000, prefix: "$", suffix: "" },
               { label: "Total Raised", value: project.raisedRaw || 14000000, prefix: "$", suffix: "" },

@@ -36,8 +36,9 @@ function DetailModal({ project, onClose }) {
       onClick={onClose}>
       <motion.div initial={{ scale: 0.94, y: 24, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.94, y: 24, opacity: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} onClick={e => e.stopPropagation()}
-        style={{ width: '100%', maxWidth: '1100px', background: '#0A1628', borderRadius: '28px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-        <div style={{ position: 'relative', minHeight: '520px', background: '#0d1b2e' }}>
+        className="proj-modal-card"
+        style={{ width: '100%', maxWidth: '1100px', maxHeight: '90vh', overflowY: 'auto', background: '#0A1628', borderRadius: '28px', border: '1px solid rgba(255,255,255,0.08)', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+        <div className="proj-modal-img" style={{ position: 'relative', minHeight: '520px', background: '#0d1b2e' }}>
           {project.image && <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', inset: 0 }} />}
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent 60%, #0A1628)' }} />
           <div style={{ position: 'absolute', top: '24px', left: '24px' }}>
@@ -201,7 +202,11 @@ export default function FoundationProjectsDeck() {
             </AnimatePresence>
           </div>
         </div>
-        <style>{`@media (max-width: 900px) { .projects-main-grid { grid-template-columns: 1fr !important; } }`}</style>
+        <style>{`@media (max-width: 900px) {
+          .projects-main-grid { grid-template-columns: 1fr !important; }
+          .proj-modal-card { grid-template-columns: 1fr !important; }
+          .proj-modal-img { min-height: 280px !important; height: 280px !important; }
+        }`}</style>
       </section>
 
       <AnimatePresence>

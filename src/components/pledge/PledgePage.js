@@ -241,7 +241,7 @@ export default function PledgePage() {
                 <div style={{ marginTop: 42 }}>
                   <h3 style={{ ...inter, fontSize: 24, fontWeight: 800, color: "#040617", margin: "0 0 8px", textTransform: "uppercase" }}>Personal Info</h3>
                   <p style={{ ...inter, fontSize: 16, color: "#6F7181", margin: "0 0 26px" }}>Complete and submit the form below to reflect your donation or pledge.</p>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20 }}>
                     <Field label="First Name:" required placeholder="First Name" value={form.firstName} onChange={update('firstName')} error={errors.firstName} />
                     <Field label="Last Name:" placeholder="Last Name" value={form.lastName} onChange={update('lastName')} />
                     <Field label="Email Address:" required placeholder="Email Address" type="email" value={form.email} onChange={update('email')} error={errors.email} />
@@ -249,7 +249,7 @@ export default function PledgePage() {
                   </div>
                 </div>
 
-                <div style={{ marginTop: 26, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                <div style={{ marginTop: 26, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20 }}>
                   <div>
                     <label style={{ ...inter, display: "block", marginBottom: 8, fontSize: 15, fontWeight: 700, color: "#040617" }}>Select Your Country And Follow Banking Instruction: *</label>
                     <select value={country} onChange={e => setCountry(e.target.value)}
@@ -272,7 +272,7 @@ export default function PledgePage() {
 
                 <div style={{ marginTop: 34 }}>
                   <h3 style={{ ...inter, fontSize: 20, fontWeight: 800, color: "#040617", margin: "0 0 16px" }}>Choose Payment Method</h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))", gap: 12 }}>
                     {paymentMethods.map(item => {
                       const Icon = item.icon;
                       const active = method === item.id;
