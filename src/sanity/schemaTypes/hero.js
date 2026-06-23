@@ -34,8 +34,15 @@ export default defineType({
       name: 'videoId',
       title: 'YouTube Video ID',
       type: 'string',
-      description: 'Just the video ID from YouTube URL (e.g., dQw4w9WgXcQ)',
+      description: 'Just the video ID from YouTube URL (e.g., dQw4w9WgXcQ). Used as a fallback if no background MP4 is uploaded.',
       validation: Rule => Rule.required()
+    },
+    {
+      name: 'backgroundVideo',
+      title: 'Background Video (MP4)',
+      type: 'file',
+      options: { accept: 'video/mp4,video/webm' },
+      description: 'Upload an MP4 to autoplay (muted) in the hero background — works reliably in Safari, unlike YouTube. Clicking play opens it unmuted from the same spot. Leave empty to fall back to the YouTube video.',
     },
     {
       name: 'locationText',

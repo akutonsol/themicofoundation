@@ -21,6 +21,7 @@ export const queries = {
     subHeadLine,
     heroImages,
     videoId,
+    "backgroundVideoUrl": backgroundVideo.asset->url,
     locationText,
     totalMoneyDonated,
     totalMoneyDonatedText,

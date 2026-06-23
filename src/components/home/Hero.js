@@ -74,6 +74,33 @@ const BackgroundVideo = memo(function BackgroundVideo({ videoId, playerKey, onRe
   return <div ref={holderRef} style={{ position: 'absolute', inset: 0 }} />
 })
 
+// Native MP4 background — autoplays muted reliably in ALL browsers incl. Safari
+// (which blocks YouTube iframe autoplay). Registers its element for the lightbox handoff.
+const NativeBackgroundVideo = memo(function NativeBackgroundVideo({ src, playerKey, onReady }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const v = ref.current
+    if (!v) return
+    if (onReady) onReady(playerKey, v)
+    const tryPlay = () => { try { v.muted = true; const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}) } catch (_) {} }
+    tryPlay()
+    v.addEventListener('canplay', tryPlay, { once: true })
+    return () => { v.removeEventListener('canplay', tryPlay) }
+  }, [src, playerKey, onReady])
+  return (
+    <video
+      ref={ref}
+      src={src}
+      muted
+      autoPlay
+      loop
+      playsInline
+      preload="auto"
+      style={{ position: 'absolute', top: '50%', left: '50%', width: '100%', height: '100%', objectFit: 'cover', transform: 'translate(-50%,-50%)', pointerEvents: 'none' }}
+    />
+  )
+})
+
 const staticAssets = {
   avatars: {
     one:   "/images/home-static/avatar-1.svg",
@@ -123,6 +150,7 @@ export default function Hero() {
   const headline              = heroData?.mainHeadline          || 'The Mico Foundation'
   const subheadline           = heroData?.subHeadLine            || 'Together for a Better Future'
   const videoId               = heroData?.videoId                || 'dQw4w9WgXcQ'
+  const bgVideoUrl            = heroData?.backgroundVideoUrl     || null
   const locationText          = heroData?.locationText           || 'Jamaica, Buxton'
   const totalMoneyDonated     = heroData?.totalMoneyDonated      || '$34M'
   const totalMoneyDonatedText = heroData?.totalMoneyDonatedText  || 'Total money donated.'
@@ -165,20 +193,30 @@ export default function Hero() {
     playersRef.current[key] = player
   }, [])
 
-  // Open lightbox at the background video's current time (unmuted)
+  // Open lightbox at the background video's current time (unmuted).
+  // Handles both a YouTube player and a native <video> element.
   const openVideo = key => {
     const p = playersRef.current[key]
     let t = 0
-    try { if (p && p.getCurrentTime) t = p.getCurrentTime() } catch (_) {}
+    try {
+      if (p && typeof p.getCurrentTime === 'function') t = p.getCurrentTime()  // YouTube
+      else if (p && typeof p.currentTime === 'number') t = p.currentTime        // native <video>
+    } catch (_) {}
     setVideoStartTime(Math.max(0, Math.floor(t)))
-    try { if (p && p.pauseVideo) p.pauseVideo() } catch (_) {}
+    try {
+      if (p && typeof p.pauseVideo === 'function') p.pauseVideo()
+      else if (p && typeof p.pause === 'function') p.pause()
+    } catch (_) {}
     setShowVideoModal(true)
   }
   // Close lightbox and resume the muted background loop
   const closeVideo = () => {
     setShowVideoModal(false)
     Object.values(playersRef.current).forEach(p => {
-      try { if (p && p.playVideo) { p.mute(); p.playVideo() } } catch (_) {}
+      try {
+        if (p && typeof p.playVideo === 'function') { p.mute(); p.playVideo() }    // YouTube
+        else if (p && typeof p.play === 'function') { p.muted = true; p.play() }     // native
+      } catch (_) {}
     })
   }
 
@@ -246,13 +284,27 @@ export default function Hero() {
         <div className="video-modal-overlay" onClick={closeVideo}>
           <div className="video-modal-content" onClick={e => e.stopPropagation()}>
             <button className="video-modal-close" onClick={closeVideo}>x</button>
-            <iframe
-              width="100%" height="100%"
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&start=${videoStartTime}`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{ borderRadius:'12px', border:'none' }}
-            />
+            {bgVideoUrl ? (
+              <video
+                src={bgVideoUrl}
+                controls
+                autoPlay
+                playsInline
+                onLoadedMetadata={e => {
+                  try { e.currentTarget.currentTime = videoStartTime } catch (_) {}
+                  const pr = e.currentTarget.play(); if (pr && pr.catch) pr.catch(() => {})
+                }}
+                style={{ width:'100%', height:'100%', borderRadius:'12px', background:'#000', display:'block' }}
+              />
+            ) : (
+              <iframe
+                width="100%" height="100%"
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&start=${videoStartTime}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ borderRadius:'12px', border:'none' }}
+              />
+            )}
           </div>
         </div>
       )}
@@ -353,7 +405,9 @@ export default function Hero() {
               <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
                 <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
                   <div className="video-background">
-                    <BackgroundVideo videoId={videoId} playerKey="desktop" onReady={registerPlayer} />
+                    {bgVideoUrl
+                      ? <NativeBackgroundVideo src={bgVideoUrl} playerKey="desktop" onReady={registerPlayer} />
+                      : <BackgroundVideo videoId={videoId} playerKey="desktop" onReady={registerPlayer} />}
                   </div>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
                   <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px', zIndex:3 }}>
@@ -443,7 +497,9 @@ export default function Hero() {
           {/* Video */}
           <div style={{ width:'100%', height:'312px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
             <div className="video-background">
-              <BackgroundVideo videoId={videoId} playerKey="mobile" onReady={registerPlayer} />
+              {bgVideoUrl
+                ? <NativeBackgroundVideo src={bgVideoUrl} playerKey="mobile" onReady={registerPlayer} />
+                : <BackgroundVideo videoId={videoId} playerKey="mobile" onReady={registerPlayer} />}
             </div>
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'4px', whiteSpace:'nowrap', zIndex:3 }}>
