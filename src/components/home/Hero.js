@@ -45,8 +45,19 @@ const BackgroundVideo = memo(function BackgroundVideo({ videoId, playerKey, onRe
         },
         events: {
           onReady: e => {
-            try { e.target.mute(); e.target.playVideo() } catch (_) {}
-            if (onReady) onReady(playerKey, e.target)
+            const p = e.target
+            try { p.mute(); p.playVideo() } catch (_) {}
+            if (onReady) onReady(playerKey, p)
+            // Nudge: some browsers ignore the first play() — keep retrying
+            // (muted) until the player reports it is actually PLAYING.
+            let tries = 0
+            const nudge = setInterval(() => {
+              tries += 1
+              let state = -99
+              try { state = p.getPlayerState() } catch (_) {}
+              if (state === 1 /* PLAYING */ || tries > 8) { clearInterval(nudge); return }
+              try { p.mute(); p.playVideo() } catch (_) {}
+            }, 600)
           },
           onStateChange: e => {
             // Safety net for looping (some browsers ignore loop on first end)
