@@ -1,8 +1,67 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { client, urlFor, queries } from '@/sanity/lib/sanity'
 import Image from 'next/image'
+
+// Loads the YouTube IFrame API once and resolves when ready.
+let ytApiPromise = null
+function loadYouTubeApi() {
+  if (typeof window === 'undefined') return Promise.resolve(null)
+  if (window.YT && window.YT.Player) return Promise.resolve(window.YT)
+  if (ytApiPromise) return ytApiPromise
+  ytApiPromise = new Promise(resolve => {
+    const prev = window.onYouTubeIframeAPIReady
+    window.onYouTubeIframeAPIReady = () => { if (prev) prev(); resolve(window.YT) }
+    if (!document.getElementById('yt-iframe-api')) {
+      const s = document.createElement('script')
+      s.id = 'yt-iframe-api'
+      s.src = 'https://www.youtube.com/iframe_api'
+      document.body.appendChild(s)
+    }
+  })
+  return ytApiPromise
+}
+
+// Background video player — the API CREATES the iframe (honours autoplay
+// playerVars). Memoised so the parent's frequent re-renders never disturb it.
+const BackgroundVideo = memo(function BackgroundVideo({ videoId, playerKey, onReady }) {
+  const holderRef = useRef(null)
+  useEffect(() => {
+    let player = null
+    let disposed = false
+    loadYouTubeApi().then(YT => {
+      if (disposed || !YT || !holderRef.current) return
+      // API replaces the inner node with an iframe; outer wrapper stays React-owned.
+      const target = document.createElement('div')
+      holderRef.current.appendChild(target)
+      player = new YT.Player(target, {
+        videoId,
+        playerVars: {
+          autoplay: 1, mute: 1, loop: 1, playlist: videoId,
+          controls: 0, showinfo: 0, modestbranding: 1, playsinline: 1,
+          rel: 0, fs: 0, disablekb: 1, iv_load_policy: 3,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: e => {
+            try { e.target.mute(); e.target.playVideo() } catch (_) {}
+            if (onReady) onReady(playerKey, e.target)
+          },
+          onStateChange: e => {
+            // Safety net for looping (some browsers ignore loop on first end)
+            if (e.data === window.YT.PlayerState.ENDED) { try { e.target.playVideo() } catch (_) {} }
+          },
+        },
+      })
+    })
+    return () => {
+      disposed = true
+      try { if (player && player.destroy) player.destroy() } catch (_) {}
+    }
+  }, [videoId, playerKey, onReady])
+  return <div ref={holderRef} style={{ position: 'absolute', inset: 0 }} />
+})
 
 const staticAssets = {
   avatars: {
@@ -90,44 +149,10 @@ export default function Hero() {
     return () => clearInterval(interval)
   }, [allImages.length])
 
-  // ── Background video via YouTube IFrame API ──────────────────────────────
-  // Plays muted+looping in the background; the play button hands the current
-  // timestamp to the lightbox so it continues from the same spot, unmuted.
-  useEffect(() => {
-    if (!videoId || loading) return  // iframes only exist once loaded
-    let cancelled = false
-
-    function buildPlayer(key) {
-      const elId = `yt-bg-${key}`
-      if (!document.getElementById(elId) || playersRef.current[key]) return
-      // Attach to the EXISTING React-rendered iframe (don't let the API replace
-      // a div — that would fight React's re-renders). The iframe src already
-      // carries autoplay/mute/loop; onReady just guarantees playback starts.
-      playersRef.current[key] = new window.YT.Player(elId, {
-        events: {
-          onReady: e => { try { e.target.mute(); e.target.playVideo() } catch (_) {} },
-        },
-      })
-    }
-    function createPlayers() {
-      if (cancelled) return
-      ;['desktop', 'mobile'].forEach(buildPlayer)
-    }
-
-    if (window.YT && window.YT.Player) {
-      createPlayers()
-    } else {
-      const prev = window.onYouTubeIframeAPIReady
-      window.onYouTubeIframeAPIReady = () => { if (prev) prev(); createPlayers() }
-      if (!document.getElementById('yt-iframe-api')) {
-        const s = document.createElement('script')
-        s.id = 'yt-iframe-api'
-        s.src = 'https://www.youtube.com/iframe_api'
-        document.body.appendChild(s)
-      }
-    }
-    return () => { cancelled = true }
-  }, [videoId, loading])
+  // Stable callback so <BackgroundVideo> stays memoised across re-renders
+  const registerPlayer = useCallback((key, player) => {
+    playersRef.current[key] = player
+  }, [])
 
   // Open lightbox at the background video's current time (unmuted)
   const openVideo = key => {
@@ -317,7 +342,7 @@ export default function Hero() {
               <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
                 <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
                   <div className="video-background">
-                    <iframe id="yt-bg-desktop" src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ border:'none' }} />
+                    <BackgroundVideo videoId={videoId} playerKey="desktop" onReady={registerPlayer} />
                   </div>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
                   <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px', zIndex:3 }}>
@@ -407,7 +432,7 @@ export default function Hero() {
           {/* Video */}
           <div style={{ width:'100%', height:'312px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
             <div className="video-background">
-              <iframe id="yt-bg-mobile" src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ border:'none' }} />
+              <BackgroundVideo videoId={videoId} playerKey="mobile" onReady={registerPlayer} />
             </div>
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'4px', whiteSpace:'nowrap', zIndex:3 }}>
