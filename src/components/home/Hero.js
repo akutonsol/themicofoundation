@@ -33,21 +33,8 @@ export default function Hero() {
   const [loading,            setLoading]            = useState(true)
   const [currentImageIndex,  setCurrentImageIndex]  = useState(0)
   const [showVideoModal,     setShowVideoModal]      = useState(false)
-  const modalIframeRef = useRef(null)
-
-  // Trigger YouTube play via postMessage once iframe is loaded
-  useEffect(() => {
-    if (!showVideoModal) return
-    const timer = setTimeout(() => {
-      if (modalIframeRef.current) {
-        modalIframeRef.current.contentWindow?.postMessage(
-          JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
-          '*'
-        )
-      }
-    }, 800)
-    return () => clearTimeout(timer)
-  }, [showVideoModal])
+  const [videoStartTime,     setVideoStartTime]      = useState(0)
+  const playersRef = useRef({})  // { desktop: YT.Player, mobile: YT.Player }
 
   useEffect(() => {
     async function fetchHeroData() {
@@ -102,6 +89,62 @@ export default function Hero() {
     }, 5000)
     return () => clearInterval(interval)
   }, [allImages.length])
+
+  // ── Background video via YouTube IFrame API ──────────────────────────────
+  // Plays muted+looping in the background; the play button hands the current
+  // timestamp to the lightbox so it continues from the same spot, unmuted.
+  useEffect(() => {
+    if (!videoId || loading) return  // iframes only exist once loaded
+    let cancelled = false
+
+    function buildPlayer(key) {
+      const elId = `yt-bg-${key}`
+      if (!document.getElementById(elId) || playersRef.current[key]) return
+      // Attach to the EXISTING React-rendered iframe (don't let the API replace
+      // a div — that would fight React's re-renders). The iframe src already
+      // carries autoplay/mute/loop; onReady just guarantees playback starts.
+      playersRef.current[key] = new window.YT.Player(elId, {
+        events: {
+          onReady: e => { try { e.target.mute(); e.target.playVideo() } catch (_) {} },
+        },
+      })
+    }
+    function createPlayers() {
+      if (cancelled) return
+      ;['desktop', 'mobile'].forEach(buildPlayer)
+    }
+
+    if (window.YT && window.YT.Player) {
+      createPlayers()
+    } else {
+      const prev = window.onYouTubeIframeAPIReady
+      window.onYouTubeIframeAPIReady = () => { if (prev) prev(); createPlayers() }
+      if (!document.getElementById('yt-iframe-api')) {
+        const s = document.createElement('script')
+        s.id = 'yt-iframe-api'
+        s.src = 'https://www.youtube.com/iframe_api'
+        document.body.appendChild(s)
+      }
+    }
+    return () => { cancelled = true }
+  }, [videoId, loading])
+
+  // Open lightbox at the background video's current time (unmuted)
+  const openVideo = key => {
+    const p = playersRef.current[key]
+    let t = 0
+    try { if (p && p.getCurrentTime) t = p.getCurrentTime() } catch (_) {}
+    setVideoStartTime(Math.max(0, Math.floor(t)))
+    try { if (p && p.pauseVideo) p.pauseVideo() } catch (_) {}
+    setShowVideoModal(true)
+  }
+  // Close lightbox and resume the muted background loop
+  const closeVideo = () => {
+    setShowVideoModal(false)
+    Object.values(playersRef.current).forEach(p => {
+      try { if (p && p.playVideo) { p.mute(); p.playVideo() } } catch (_) {}
+    })
+  }
 
   const getImageForPosition = offset => allImages[(currentImageIndex + offset) % allImages.length]
 
@@ -162,19 +205,17 @@ export default function Hero() {
         @media (max-aspect-ratio: 16/9) { .video-background iframe { width: 177.78vh; } }
       `}</style>
 
-      {/* Video Modal */}
+      {/* Video Modal — continues from the background video's timestamp, unmuted */}
       {showVideoModal && (
-        <div className="video-modal-overlay" onClick={() => setShowVideoModal(false)}>
+        <div className="video-modal-overlay" onClick={closeVideo}>
           <div className="video-modal-content" onClick={e => e.stopPropagation()}>
-            <button className="video-modal-close" onClick={() => setShowVideoModal(false)}>x</button>
+            <button className="video-modal-close" onClick={closeVideo}>x</button>
             <iframe
-              ref={modalIframeRef}
               width="100%" height="100%"
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1`}
-              frameBorder="0"
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&start=${videoStartTime}`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              style={{ borderRadius:'12px' }}
+              style={{ borderRadius:'12px', border:'none' }}
             />
           </div>
         </div>
@@ -276,7 +317,7 @@ export default function Hero() {
               <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
                 <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
                   <div className="video-background">
-                    <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius:'16px' }} />
+                    <iframe id="yt-bg-desktop" src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ border:'none' }} />
                   </div>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
                   <div style={{ position:'absolute', top:'24px', left:'24px', display:'flex', alignItems:'center', gap:'8px', zIndex:3 }}>
@@ -288,7 +329,7 @@ export default function Hero() {
                       <path id="cpth" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
                       <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpth">Play a video - Play a video - Play a video -</textPath></text>
                     </svg>
-                    <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', zIndex:1, boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
+                    <button onClick={() => openVideo('desktop')} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', zIndex:1, boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4L20 12L6 20V4Z" fill="#040617"/></svg>
                     </button>
                   </div>
@@ -366,7 +407,7 @@ export default function Hero() {
           {/* Video */}
           <div style={{ width:'100%', height:'312px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
             <div className="video-background">
-              <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ borderRadius:'12px' }} />
+              <iframe id="yt-bg-mobile" src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ border:'none' }} />
             </div>
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.3)', zIndex:1 }} />
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'4px', whiteSpace:'nowrap', zIndex:3 }}>
@@ -378,7 +419,7 @@ export default function Hero() {
                 <path id="cpthm" d="M83.5,83.5 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none" />
                 <text style={{ fontSize:'20px', fill:'white' }}><textPath href="#cpthm">Play a video - Play a video - Play a video -</textPath></text>
               </svg>
-              <button onClick={() => setShowVideoModal(true)} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, position:'relative', boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
+              <button onClick={() => openVideo('mobile')} style={{ width:'56px', height:'56px', backgroundColor:'#ffa801', borderRadius:'50%', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1, position:'relative', boxShadow:'0 0 0 10px rgba(4,6,23,0.55)' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 4L20 12L6 20V4Z" fill="#040617"/></svg>
               </button>
             </div>
