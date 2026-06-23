@@ -2,9 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { ArrowLeft, ArrowRight, MapPin, Play, X } from "lucide-react";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
+
+// Extract an 11-char YouTube id from a full URL, youtu.be link, or raw id.
+function getYouTubeId(url) {
+  if (!url) return null;
+  const m = String(url).match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  return /^[A-Za-z0-9_-]{11}$/.test(url) ? url : null;
+}
 
 const staticProjects = [
   {
@@ -66,6 +74,7 @@ export default function ProjectDetailPage({ slug }) {
   const [project, setProject] = useState(null);
   const [nextProject, setNextProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showVideo, setShowVideo] = useState(false);
   const { scrollYProgress } = useScroll();
   const imgScale = useTransform(scrollYProgress, [0, 0.25], [1.08, 1]);
   const imgOpacity = useTransform(scrollYProgress, [0, 0.3], [0.5, 0.25]);
@@ -85,6 +94,7 @@ export default function ProjectDetailPage({ slug }) {
               title: found.title,
               location: found.location,
               mediaUrl: found.image ? urlFor(found.image).width(2200).url() : staticProjects[0].mediaUrl,
+              videoUrl: found.videoUrl || null,
               progress,
               raised: formatCurrency(found.amountDonated),
               goal: formatCurrency(found.targetAmount),
@@ -118,6 +128,19 @@ export default function ProjectDetailPage({ slug }) {
     }
   }, [slug]);
 
+  // Lightbox: close on Escape, lock background scroll while open
+  useEffect(() => {
+    if (!showVideo) return;
+    const onKey = e => { if (e.key === "Escape") setShowVideo(false); };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [showVideo]);
+
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#05060F", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <style>{`@keyframes spin2{to{transform:rotate(360deg)}}`}</style>
@@ -126,6 +149,8 @@ export default function ProjectDetailPage({ slug }) {
   );
 
   if (!project) return null;
+
+  const videoId = getYouTubeId(project.videoUrl);
 
   return (
     <main style={{ background: "#05060F" }}>
@@ -139,6 +164,12 @@ export default function ProjectDetailPage({ slug }) {
         .pd-next:hover { background:rgba(255,217,0,0.05) !important; }
         .pd-next:hover .pd-next-arrow { background:#FFD900 !important; }
 
+        .pd-watch-btn { display:inline-flex; align-items:center; gap:12px; margin-top:32px; padding:11px 22px 11px 11px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:100px; color:#fff; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; letter-spacing:0.02em; cursor:pointer; transition:background 0.25s, border-color 0.25s, transform 0.2s; }
+        .pd-watch-btn:hover { background:rgba(255,217,0,0.12); border-color:rgba(255,217,0,0.4); transform:translateY(-2px); }
+        .pd-watch-icon { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:#FFD900; flex-shrink:0; transition:transform 0.2s; }
+        .pd-watch-btn:hover .pd-watch-icon { transform:scale(1.08); }
+        .pd-lb-close:hover { background:rgba(255,255,255,0.2) !important; }
+
         .pd-hero { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; position:relative; }
         .pd-used-head { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:clamp(48px,6vw,80px); }
         @media (max-width: 900px) {
@@ -148,6 +179,43 @@ export default function ProjectDetailPage({ slug }) {
           .pd-used-head { grid-template-columns:1fr !important; gap:24px !important; }
         }
       `}</style>
+
+      {/* ── VIDEO LIGHTBOX ── */}
+      <AnimatePresence>
+        {showVideo && videoId && (
+          <motion.div
+            key="pd-lightbox"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setShowVideo(false)}
+            style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(4,6,15,0.92)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(16px,4vw,48px)" }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.94, y: 16 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              onClick={e => e.stopPropagation()}
+              style={{ position: "relative", width: "100%", maxWidth: "1100px", aspectRatio: "16 / 9" }}
+            >
+              <button
+                onClick={() => setShowVideo(false)}
+                className="pd-lb-close"
+                aria-label="Close video"
+                style={{ position: "absolute", top: "-52px", right: "0", width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "background 0.2s" }}
+              >
+                <X size={20} />
+              </button>
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+                title={`${project.title} video`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ width: "100%", height: "100%", borderRadius: "14px", display: "block", boxShadow: "0 30px 80px rgba(0,0,0,0.55)" }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── HERO: SPLIT LAYOUT ── */}
       <section className="pd-hero">
@@ -182,6 +250,20 @@ export default function ProjectDetailPage({ slug }) {
 
             <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
               style={{ height: "2px", background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "36px", transformOrigin: "left" }} />
+
+            {/* Watch Video CTA — only when the CMS has a video link */}
+            {videoId && (
+              <motion.button
+                type="button"
+                onClick={() => setShowVideo(true)}
+                className="pd-watch-btn"
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}
+                aria-label="Watch project video"
+              >
+                <span className="pd-watch-icon"><Play size={15} fill="#040617" color="#040617" /></span>
+                <span>Watch the Video</span>
+              </motion.button>
+            )}
           </div>
 
           {/* Progress + stats */}

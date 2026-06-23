@@ -77,6 +77,12 @@ export default defineType({
       validation: Rule => Rule.required()
     },
     {
+      name: 'videoUrl',
+      title: 'Project Video (optional)',
+      type: 'url',
+      description: 'Paste a YouTube link to enable a "Watch Video" button on the project banner. Leave empty for no video.',
+    },
+    {
       name: 'targetAmount',
       title: 'Target Amount ($)',
       type: 'number',

@@ -71,6 +71,7 @@ export const queries = {
     description,
     completedItems,
     image,
+    videoUrl,
     targetAmount,
     amountDonated,
     buttonText,
