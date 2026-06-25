@@ -124,6 +124,11 @@ export default function MessageDetail({ slug }) {
   const isChairman   = (message.role || "").toLowerCase().includes("chairman");
   const title        = isChairman ? "Chairman Message" : "Message from the Foundation";
 
+  // Main page shows a preview ending at the "…historical legacy." line; the
+  // slide-up panel shows the complete message.
+  const legacyIdx    = message.body.findIndex(p => /historical legacy/i.test(p));
+  const previewBody  = legacyIdx >= 0 ? message.body.slice(0, legacyIdx + 1) : message.body.slice(0, 4);
+
   return (
     <main style={{ backgroundColor:"#040617", position:"relative", overflow:"hidden" }}>
       <style>{`
@@ -212,8 +217,8 @@ export default function MessageDetail({ slug }) {
               </div>
             </div>
 
-            {/* Message body — wraps around the floated image */}
-            {message.body.map((para, i) => (
+            {/* Message preview — ends at the historical-legacy line, then the button */}
+            {previewBody.map((para, i) => (
               <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>
                 {para}
               </p>
