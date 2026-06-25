@@ -107,14 +107,14 @@ export default function MessageDetail({ slug }) {
   }, [showPanel]);
 
   if (loading) return (
-    <section style={{ backgroundColor:"#FAF9F6", minHeight:"60vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      <p style={{ ...inter, fontSize:"20px", color:"#6F7181" }}>Loading message...</p>
+    <section style={{ backgroundColor:"#040617", minHeight:"60vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <p style={{ ...inter, fontSize:"20px", color:"rgba(255,255,255,0.6)" }}>Loading message...</p>
     </section>
   );
 
   if (!message) return (
-    <section style={{ backgroundColor:"#FAF9F6", minHeight:"60vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      <p style={{ ...inter, fontSize:"20px", color:"#6F7181" }}>Message not found</p>
+    <section style={{ backgroundColor:"#040617", minHeight:"60vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <p style={{ ...inter, fontSize:"20px", color:"rgba(255,255,255,0.6)" }}>Message not found</p>
     </section>
   );
 
@@ -125,7 +125,7 @@ export default function MessageDetail({ slug }) {
   const title        = isChairman ? "Chairman Message" : "Message from the Foundation";
 
   return (
-    <main style={{ backgroundColor:"#FAF9F6", position:"relative", overflow:"hidden" }}>
+    <main style={{ backgroundColor:"#040617", position:"relative", overflow:"hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,600&display=swap');
 
@@ -140,23 +140,23 @@ export default function MessageDetail({ slug }) {
 
         .md-nav-arrow {
           width: 54px; height: 54px; border-radius: 14px;
-          background: #E5E6EB; color: #040617;
+          background: rgba(255,255,255,0.08); color: #fff;
           display: flex; align-items: center; justify-content: center;
-          text-decoration: none; transition: background 0.2s;
+          text-decoration: none; transition: background 0.2s, color 0.2s;
           flex-shrink: 0;
         }
-        .md-nav-arrow:hover { background: #FFD900; }
+        .md-nav-arrow:hover { background: #FFD900; color: #040617; }
 
         .md-read-btn {
           display: inline-flex; align-items: center; gap: 10px;
-          background: #040617; color: white;
-          font-size: 15px; font-weight: 600;
+          background: #FFD900; color: #040617;
+          font-size: 15px; font-weight: 700;
           padding: 16px 32px; border-radius: 12px;
           border: none; cursor: pointer;
           font-family: 'Inter', sans-serif;
           transition: background 0.2s, transform 0.15s;
         }
-        .md-read-btn:hover { background: #1a1f3c; transform: scale(1.02); }
+        .md-read-btn:hover { background: #ffe24d; transform: scale(1.02); }
         .panel-editorial {
           font-size: clamp(1.1rem, 1.6vw, 1.35rem);
           font-weight: 400; color: rgba(255,255,255,0.7);
@@ -168,19 +168,19 @@ export default function MessageDetail({ slug }) {
       <div className="md-section">
 
         {/* Back link */}
-        <Link href="/messages" style={{ ...inter, display:"inline-flex", alignItems:"center", gap:"8px", fontSize:"14px", color:"#6F7181", textDecoration:"none", marginBottom:"40px" }}>
+        <Link href="/messages" style={{ ...inter, display:"inline-flex", alignItems:"center", gap:"8px", fontSize:"14px", color:"rgba(255,255,255,0.5)", textDecoration:"none", marginBottom:"40px" }}>
           <ArrowLeft size={16} />
           All Messages
         </Link>
 
-        {/* Main message section — same #FAF9F6 background as the slide-up panel */}
-        <div style={{ backgroundColor:"#FAF9F6", borderRadius:"24px", padding:"clamp(8px,2vw,16px) 0" }}>
+        {/* Main message section — dark navy, matching the slide-up panel */}
+        <div>
 
           {/* Title */}
           <motion.h1
             initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
             className="md-heading"
-            style={{ ...inter, fontSize:"clamp(2.4rem,4vw,3.8rem)", fontWeight:800, color:"#040617", lineHeight:"1.05", letterSpacing:"-2px", margin:"0 0 44px" }}>
+            style={{ ...inter, fontSize:"clamp(2.4rem,4vw,3.8rem)", fontWeight:800, color:"#FFFFFF", lineHeight:"1.05", letterSpacing:"-2px", margin:"0 0 44px" }}>
             {title}
           </motion.h1>
 
@@ -214,7 +214,7 @@ export default function MessageDetail({ slug }) {
 
             {/* Message body — wraps around the floated image */}
             {message.body.map((para, i) => (
-              <p key={i} style={{ ...inter, fontSize:"19px", color:"#414651", lineHeight:"1.9", margin:"0 0 24px" }}>
+              <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>
                 {para}
               </p>
             ))}
@@ -231,14 +231,14 @@ export default function MessageDetail({ slug }) {
         </div>
 
         {/* Prev / Next */}
-        <div style={{ marginTop:"60px", paddingTop:"32px", borderTop:"1px solid #E5E6EB", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"16px" }}>
+        <div style={{ marginTop:"60px", paddingTop:"32px", borderTop:"1px solid rgba(255,255,255,0.1)", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"16px" }}>
           <div>
             {prevMessage ? (
               <Link href={`/messagesdetail/${prevMessage.slug}`} style={{ display:"inline-flex", alignItems:"center", gap:"14px", textDecoration:"none" }}>
                 <span className="md-nav-arrow"><ArrowLeft size={22} /></span>
                 <div>
                   <p style={{ ...inter, fontSize:"13px", fontWeight:600, color:"#9CA3AF", margin:"0 0 2px", textTransform:"uppercase", letterSpacing:"0.1em" }}>Previous</p>
-                  <p style={{ ...inter, fontSize:"16px", fontWeight:600, color:"#040617", margin:0 }}>{prevMessage.name}</p>
+                  <p style={{ ...inter, fontSize:"16px", fontWeight:600, color:"#FFFFFF", margin:0 }}>{prevMessage.name}</p>
                 </div>
               </Link>
             ) : (
@@ -250,7 +250,7 @@ export default function MessageDetail({ slug }) {
               <Link href={`/messagesdetail/${nextMessage.slug}`} style={{ display:"inline-flex", alignItems:"center", gap:"14px", textDecoration:"none" }}>
                 <div>
                   <p style={{ ...inter, fontSize:"13px", fontWeight:600, color:"#9CA3AF", margin:"0 0 2px", textTransform:"uppercase", letterSpacing:"0.1em" }}>Next</p>
-                  <p style={{ ...inter, fontSize:"16px", fontWeight:600, color:"#040617", margin:0 }}>{nextMessage.name}</p>
+                  <p style={{ ...inter, fontSize:"16px", fontWeight:600, color:"#FFFFFF", margin:0 }}>{nextMessage.name}</p>
                 </div>
                 <span className="md-nav-arrow"><ArrowRight size={22} /></span>
               </Link>
@@ -275,11 +275,11 @@ export default function MessageDetail({ slug }) {
               key="md-panel"
               initial={{ y:"100%" }} animate={{ y:0 }} exit={{ y:"100%" }}
               transition={{ type:"spring", damping:28, stiffness:260 }}
-              style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#FAF9F6", borderRadius:"28px 28px 0 0", height:"92vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.4)" }}
+              style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#040617", borderRadius:"28px 28px 0 0", height:"92vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.5)" }}
             >
               <button
                 onClick={() => setShowPanel(false)}
-                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(4,6,23,0.06)", border:"1px solid #E5E6EB", color:"#040617", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
+                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.85)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
               >
                 <CloseIcon size={17} />
               </button>
@@ -287,8 +287,8 @@ export default function MessageDetail({ slug }) {
               <div style={{ flex:1, overflowY:"auto", padding:"clamp(40px,5vw,64px) clamp(24px,6vw,80px) 64px" }}>
                 <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
 
-                  {/* Dark header banner */}
-                  <div style={{ background:"#040617", borderRadius:"20px", padding:"clamp(28px,3vw,44px)", marginBottom:"40px" }}>
+                  {/* Header banner — subtly elevated on the dark panel */}
+                  <div style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"20px", padding:"clamp(28px,3vw,44px)", marginBottom:"40px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"14px" }}>
                       <div style={{ width:"28px", height:"2px", backgroundColor:"#FFD900" }} />
                       <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.2em", textTransform:"uppercase" }}>
@@ -326,7 +326,7 @@ export default function MessageDetail({ slug }) {
                     </div>
 
                     {message.body.map((para, i) => (
-                      <p key={i} style={{ ...inter, fontSize:"19px", color:"#414651", lineHeight:"1.9", margin:"0 0 24px" }}>{para}</p>
+                      <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>{para}</p>
                     ))}
 
                     <div style={{ clear:"both" }} />
