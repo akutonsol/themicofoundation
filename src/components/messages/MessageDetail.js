@@ -123,7 +123,6 @@ export default function MessageDetail({ slug }) {
   const nextMessage  = currentIndex < allMessages.length - 1 ? allMessages[currentIndex + 1] : null;
   const isChairman   = (message.role || "").toLowerCase().includes("chairman");
   const title        = isChairman ? "Chairman Message" : "Message from the Foundation";
-  const lead         = message.intro || message.body[0] || "";
 
   return (
     <main style={{ backgroundColor:"#FAF9F6", position:"relative", overflow:"hidden" }}>
@@ -213,17 +212,21 @@ export default function MessageDetail({ slug }) {
               </div>
             </div>
 
-            {/* Lead intro — reading ends here, then the Read Full Message button */}
-            <p style={{ ...inter, fontSize:"clamp(20px,1.8vw,24px)", color:"#2C2E3A", lineHeight:"1.7", margin:"0 0 32px", fontWeight:400 }}>
-              {lead}
-            </p>
-
-            <button onClick={() => setShowPanel(true)} className="md-read-btn">
-              Read Full Message
-              <ArrowRight size={16} />
-            </button>
+            {/* Message body — wraps around the floated image */}
+            {message.body.map((para, i) => (
+              <p key={i} style={{ ...inter, fontSize:"19px", color:"#414651", lineHeight:"1.9", margin:"0 0 24px" }}>
+                {para}
+              </p>
+            ))}
 
             <div style={{ clear:"both" }} />
+
+            <div style={{ display:"flex", justifyContent:"center", marginTop:"44px" }}>
+              <button onClick={() => setShowPanel(true)} className="md-read-btn">
+                Read Full Message
+                <ArrowRight size={16} />
+              </button>
+            </div>
           </motion.div>
         </div>
 
@@ -272,40 +275,62 @@ export default function MessageDetail({ slug }) {
               key="md-panel"
               initial={{ y:"100%" }} animate={{ y:0 }} exit={{ y:"100%" }}
               transition={{ type:"spring", damping:28, stiffness:260 }}
-              style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#040617", borderRadius:"28px 28px 0 0", height:"92vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.5)" }}
+              style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#FAF9F6", borderRadius:"28px 28px 0 0", height:"92vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.4)" }}
             >
               <button
                 onClick={() => setShowPanel(false)}
-                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.8)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
+                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(4,6,23,0.06)", border:"1px solid #E5E6EB", color:"#040617", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
               >
                 <CloseIcon size={17} />
               </button>
 
-              <div style={{ flex:1, overflowY:"auto", padding:"clamp(44px,6vw,72px) 6% 64px" }}>
-                <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"16px" }}>
-                    <div style={{ width:"28px", height:"2px", backgroundColor:"#FFD900" }} />
-                    <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.2em", textTransform:"uppercase" }}>
-                      {title}
-                    </span>
+              <div style={{ flex:1, overflowY:"auto", padding:"clamp(40px,5vw,64px) clamp(24px,6vw,80px) 64px" }}>
+                <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
+
+                  {/* Dark header banner */}
+                  <div style={{ background:"#040617", borderRadius:"20px", padding:"clamp(28px,3vw,44px)", marginBottom:"40px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"14px" }}>
+                      <div style={{ width:"28px", height:"2px", backgroundColor:"#FFD900" }} />
+                      <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.2em", textTransform:"uppercase" }}>
+                        {title}
+                      </span>
+                    </div>
+                    <h2 style={{ ...inter, fontSize:"clamp(2rem,4vw,3.4rem)", fontWeight:800, color:"white", letterSpacing:"-1.5px", lineHeight:1.04, margin:"0 0 8px" }}>
+                      {message.name}
+                    </h2>
+                    <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.55)", margin:0, fontStyle:"italic" }}>
+                      {message.role} of The Mico Foundation
+                    </p>
                   </div>
-                  <h2 style={{ ...inter, fontSize:"clamp(2rem,4vw,3.4rem)", fontWeight:800, color:"white", letterSpacing:"-1.5px", lineHeight:1.04, margin:"0 0 14px" }}>
-                    {message.name}
-                  </h2>
-                  <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:"0 0 28px", fontStyle:"italic" }}>
-                    {message.role} of The Mico Foundation
-                  </p>
-                  <div style={{ height:"1px", backgroundColor:"rgba(255,255,255,0.1)", marginBottom:"32px" }} />
 
-                  {message.intro && (
-                    <blockquote style={{ ...inter, fontSize:"clamp(20px,2vw,26px)", fontWeight:500, color:"rgba(255,255,255,0.9)", lineHeight:1.6, fontStyle:"italic", margin:"0 0 32px", paddingLeft:"22px", borderLeft:"3px solid #FFD900" }}>
-                      {message.intro}
-                    </blockquote>
-                  )}
+                  {/* Full message — same wrapped layout as the main page */}
+                  <div>
+                    <div className="md-left" style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"28px" }}>
+                      <div style={{ display:"flex", gap:"0" }}>
+                        <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", flexShrink:0, alignSelf:"stretch" }} />
+                        <div style={{ flex:1 }}>
+                          <div style={{ borderRadius:"0 20px 0 0", overflow:"hidden" }}>
+                            <img src={message.image || "/images/home/holness.jpg"} alt={message.name}
+                              style={{ width:"100%", height:"500px", objectFit:"cover", objectPosition:"top", display:"block" }} />
+                          </div>
+                          <div style={{ backgroundColor:"#040617", padding:"22px 26px", borderRadius:"0 0 20px 0" }}>
+                            <h3 style={{ ...inter, fontSize:"24px", fontWeight:700, color:"white", letterSpacing:"-0.3px", lineHeight:1.2, margin:"0 0 6px" }}>
+                              {message.name}
+                            </h3>
+                            <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:0, fontStyle:"italic" }}>
+                              {message.role} of The Mico Foundation
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-                  {message.body.map((para, i) => (
-                    <p key={i} className="panel-editorial">{para}</p>
-                  ))}
+                    {message.body.map((para, i) => (
+                      <p key={i} style={{ ...inter, fontSize:"19px", color:"#414651", lineHeight:"1.9", margin:"0 0 24px" }}>{para}</p>
+                    ))}
+
+                    <div style={{ clear:"both" }} />
+                  </div>
                 </div>
               </div>
             </motion.div>
