@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(node -e ' *)",
-      "Bash(node -e \"const {version} = require\\('/Users/dmac/Documents/projects/themicofoundation/node_modules/next/package.json'\\); console.log\\('Next version:', version\\)\")"
+      "Bash(node -e \"const {version} = require\\('/Users/dmac/Documents/projects/themicofoundation/node_modules/next/package.json'\\); console.log\\('Next version:', version\\)\")",
+      "Bash(npx next *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }

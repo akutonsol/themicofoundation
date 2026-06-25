@@ -371,8 +371,8 @@ export default function Hero() {
               <Image
                 src={staticAssets.logo}
                 alt="The Mico Foundation"
-                width={360} height={280}
-                style={{ objectFit:'contain', height:'280px', width:'auto' }}
+                width={420} height={330}
+                style={{ objectFit:'contain', height:'330px', width:'auto' }}
               />
             </motion.div>
           </motion.div>
@@ -488,7 +488,7 @@ export default function Hero() {
               {subheadline}
             </p>
           </div>
-          <Image src={staticAssets.logo} alt="The Mico Foundation" width={230} height={180} style={{ objectFit:'contain', height:'180px', width:'auto' }} />
+          <Image src={staticAssets.logo} alt="The Mico Foundation" width={270} height={210} style={{ objectFit:'contain', height:'210px', width:'auto' }} />
         </motion.div>
 
         <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.2 }}

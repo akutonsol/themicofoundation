@@ -68,23 +68,27 @@ export default function Mission() {
 
         /* ── DESKTOP ── */
         .mission-desktop {
-          display: grid;
-          grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
-          gap: clamp(28px, 3vw, 48px);
-          align-items: center;
+          display: flex;
+          flex-direction: column;
+          gap: clamp(20px, 2vw, 28px);
           padding: clamp(56px, 8vw, 80px) clamp(24px, 8vw, 165px);
         }
-        .values-grid-desktop {
+        .mission-top {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: clamp(16px, 1.8vw, 30px);
+          grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+          gap: clamp(20px, 2vw, 28px);
+          align-items: stretch;
         }
+        .mission-panel { background: #FAF7EF; border-radius: 28px; }
+        .mission-text-panel { display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: clamp(28px, 3vw, 44px); }
+        .mission-top-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1.6vw, 22px); padding: clamp(18px, 2vw, 24px); }
+        .mission-bottom-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 1.2vw, 18px); padding: clamp(18px, 2vw, 24px); }
         .mission-mobile { display: none; }
 
-        /* ── TABLET / small laptop (769–1100px) — stack columns, 2-up values ── */
+        /* ── TABLET / small laptop (769–1100px) ── */
         @media (max-width: 1100px) {
-          .mission-desktop { grid-template-columns: 1fr; gap: 48px; align-items: start; }
-          .values-grid-desktop { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .mission-top { grid-template-columns: 1fr; }
+          .mission-bottom-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
 
         /* ── Premium value-card hover ── */
@@ -113,117 +117,87 @@ export default function Mission() {
       ════════════════════════════════ */}
       <div className="mission-desktop">
 
-        {/* Left — text panel */}
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}
-        >
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFFFFF', border: '1px solid #ECEDF1', borderRadius: '100px', padding: '8px 18px', boxShadow: '0 2px 8px rgba(10,13,18,0.05)', marginBottom: '20px' }}>
-              <span style={{ display: 'inline-flex', gap: '4px' }}>
-                <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1A8C4A' }} />
-                <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#F5B700' }} />
-                <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#040617' }} />
-              </span>
-              <span style={{ ...inter, fontSize: '13px', fontWeight: 700, color: '#040617', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                Rooted in Jamaican Heritage
-              </span>
+        {/* TOP — text panel + first three value cards */}
+        <div className="mission-top">
+
+          {/* Left — text panel */}
+          <motion.div
+            className="mission-panel mission-text-panel"
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFFFFF', border: '1px solid #ECEDF1', borderRadius: '100px', padding: '8px 18px', boxShadow: '0 2px 8px rgba(10,13,18,0.05)', marginBottom: '20px' }}>
+                <span style={{ display: 'inline-flex', gap: '4px' }}>
+                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1A8C4A' }} />
+                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#F5B700' }} />
+                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#040617' }} />
+                </span>
+                <span style={{ ...inter, fontSize: '13px', fontWeight: 700, color: '#040617', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                  Rooted in Jamaican Heritage
+                </span>
+              </div>
+              <h2 style={{ ...inter, fontSize: 'clamp(40px, 4.6vw, 62px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.75px', lineHeight: 1.08, margin: 0 }}>
+                Our Mission <span style={{ color: '#1A8C4A' }}>&amp;</span> Values
+              </h2>
             </div>
-            <h2 style={{ ...inter, fontSize: 'clamp(42px, 5.2vw, 68px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.75px', lineHeight: 1.08, margin: 0 }}>
-              Our Mission <span style={{ color: '#1A8C4A' }}>&amp;</span> Values
-            </h2>
-          </div>
-          <div style={{ borderLeft: '1px solid #E5E6EB', paddingLeft: '16px' }}>
-            <p style={{ ...inter, fontSize: '24px', fontWeight: 400, color: '#6F7181', letterSpacing: '0.24px', lineHeight: '38px', margin: 0 }}>
-              We manage and grow Mico Foundation's assets and infrastructure to support the university's needs, benefit students and staff, and preserve the legacy of the Lady Mico Trust.
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-            <DonateButton text="Read Our Story" href="/about" />
-            <a href="/endowments" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFF7CC', color: '#040617', fontSize: '14px', fontWeight: 600, height: '46px', padding: '0 24px', borderRadius: '14px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-              Become Endowment
-            </a>
-          </div>
-        </motion.div>
+            <div style={{ borderLeft: '1px solid #E5E6EB', paddingLeft: '16px' }}>
+              <p style={{ ...inter, fontSize: 'clamp(18px, 1.4vw, 22px)', fontWeight: 400, color: '#6F7181', letterSpacing: '0.2px', lineHeight: 1.6, margin: 0 }}>
+                We manage and grow Mico Foundation's assets and infrastructure to support the university's needs, benefit students and staff, and preserve the legacy of the Lady Mico Trust.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <DonateButton text="Read Our Story" href="/about" />
+              <a href="/endowments" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFF7CC', color: '#040617', fontSize: '14px', fontWeight: 600, height: '46px', padding: '0 24px', borderRadius: '14px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                Become Endowment
+              </a>
+            </div>
+          </motion.div>
 
-        {/* Right — values grid 3x3 with logo in center */}
-        <div>
-          <div className="values-grid-desktop">
-           {values.map((value, i) => {
-  const isCenterSlot = i === 4;
-
-  return isCenterSlot ? (
-    <motion.div
-      key={`mission-group-${i}`}
-      className="contents"
-    >
-      {/* Logo card in center */}
-      <motion.div
-        key="logo"
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        style={{
-          background: 'linear-gradient(160deg, #040617 0%, #11152e 100%)',
-          border: '1px solid #040617',
-          borderRadius: '18px',
-          padding: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '250px',
-          boxShadow: '0 12px 30px rgba(4,6,23,0.18)'
-        }}
-      >
-        <img
-          src={foundationLogo}
-          alt="The Mico Foundation"
-          style={{
-            width: '78%',
-            objectFit: 'contain'
-          }}
-        />
-      </motion.div>
-
-      <motion.div
-        key={`value-${i}`}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 0.5,
-          delay: i * 0.07
-        }}
-      >
-        <ValueCard
-          value={value}
-          style={{ minHeight: '250px' }}
-        />
-      </motion.div>
-    </motion.div>
-  ) : (
-    <motion.div
-      key={`value-${i}`}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{
-        duration: 0.5,
-        delay: i * 0.07
-      }}
-    >
-      <ValueCard
-        value={value}
-        style={{ minHeight: '250px' }}
-      />
-    </motion.div>
-  );
-})}
+          {/* Right — first three value cards */}
+          <div className="mission-panel mission-top-cards">
+            {values.slice(0, 3).map((value, i) => (
+              <motion.div
+                key={value.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.07 }}
+              >
+                <ValueCard value={value} style={{ minHeight: '250px', height: '100%' }} />
+              </motion.div>
+            ))}
           </div>
+        </div>
+
+        {/* BOTTOM — value cards + foundation logo in one row */}
+        <div className="mission-panel mission-bottom-cards">
+          {/* Transparency */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+          >
+            <ValueCard value={values[3]} style={{ minHeight: '250px', height: '100%' }} />
+          </motion.div>
+
+          {/* Foundation logo card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.08 }}
+            style={{ background: 'linear-gradient(160deg, #040617 0%, #11152e 100%)', border: '1px solid #040617', borderRadius: '22px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '250px', height: '100%', boxShadow: '0 12px 30px rgba(4,6,23,0.18)' }}
+          >
+            <img src={foundationLogo} alt="The Mico Foundation" style={{ width: '86%', objectFit: 'contain' }} />
+          </motion.div>
+
+          {/* Innovation, Partnership, Service, Respect */}
+          {values.slice(4).map((value, i) => (
+            <motion.div
+              key={value.title}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: (i + 2) * 0.07 }}
+            >
+              <ValueCard value={value} style={{ minHeight: '250px', height: '100%' }} />
+            </motion.div>
+          ))}
         </div>
       </div>
 
