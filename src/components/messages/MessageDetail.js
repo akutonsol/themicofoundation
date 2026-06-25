@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
@@ -45,17 +45,19 @@ const staticMessages = [
   },
 ];
 
-function getSignature(name) {
-  const parts = name.replace(/^(Mr\.|Dr\.|Mrs\.|Ms\.)\s*/i, "").split(" ");
-  const first  = parts[0]?.[0] || "";
-  const last   = parts[parts.length - 1]?.replace(/,|CD\.|J\.P\./gi, "") || "";
-  return `${first}. ${last}`;
+function CloseIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    </svg>
+  );
 }
 
 export default function MessageDetail({ slug }) {
   const [message,     setMessage]     = useState(null);
   const [allMessages, setAllMessages] = useState([]);
   const [loading,     setLoading]     = useState(true);
+  const [showPanel,   setShowPanel]   = useState(false);
 
   useEffect(() => {
     async function fetchMessage() {
@@ -94,6 +96,16 @@ export default function MessageDetail({ slug }) {
     }
   }, [slug]);
 
+  // Full-message panel: close on Escape, lock background scroll while open
+  useEffect(() => {
+    if (!showPanel) return;
+    const onKey = e => { if (e.key === "Escape") setShowPanel(false); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [showPanel]);
+
   if (loading) return (
     <section style={{ backgroundColor:"#FAF9F6", minHeight:"60vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
       <p style={{ ...inter, fontSize:"20px", color:"#6F7181" }}>Loading message...</p>
@@ -109,9 +121,9 @@ export default function MessageDetail({ slug }) {
   const currentIndex = allMessages.findIndex(m => m.slug === message.slug);
   const prevMessage  = currentIndex > 0 ? allMessages[currentIndex - 1] : null;
   const nextMessage  = currentIndex < allMessages.length - 1 ? allMessages[currentIndex + 1] : null;
-  const signature    = getSignature(message.name);
   const isChairman   = (message.role || "").toLowerCase().includes("chairman");
   const title        = isChairman ? "Chairman Message" : "Message from the Foundation";
+  const lead         = message.intro || message.body[0] || "";
 
   return (
     <main style={{ backgroundColor:"#FAF9F6", position:"relative", overflow:"hidden" }}>
@@ -135,6 +147,23 @@ export default function MessageDetail({ slug }) {
           flex-shrink: 0;
         }
         .md-nav-arrow:hover { background: #FFD900; }
+
+        .md-read-btn {
+          display: inline-flex; align-items: center; gap: 10px;
+          background: #040617; color: white;
+          font-size: 15px; font-weight: 600;
+          padding: 16px 32px; border-radius: 12px;
+          border: none; cursor: pointer;
+          font-family: 'Inter', sans-serif;
+          transition: background 0.2s, transform 0.15s;
+        }
+        .md-read-btn:hover { background: #1a1f3c; transform: scale(1.02); }
+        .panel-editorial {
+          font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+          font-weight: 400; color: rgba(255,255,255,0.7);
+          line-height: 1.85; margin: 0 0 22px;
+          font-family: 'Inter', sans-serif;
+        }
       `}</style>
 
       <div className="md-section">
@@ -144,17 +173,6 @@ export default function MessageDetail({ slug }) {
           <ArrowLeft size={16} />
           All Messages
         </Link>
-
-        {/* Eyebrow bar */}
-        <div style={{ display:"flex", alignItems:"center", gap:"16px", marginBottom:"48px" }}>
-          <span style={{ ...inter, fontSize:"12px", fontWeight:700, color:"#040617", letterSpacing:"0.15em", textTransform:"uppercase" }}>
-            Leadership
-          </span>
-          <div style={{ flex:"0 0 48px", height:"1px", backgroundColor:"#FFD900" }} />
-          <span style={{ ...inter, fontSize:"13px", color:"#6F7181", letterSpacing:"0.04em" }}>
-            A Message from the {message.role}
-          </span>
-        </div>
 
         {/* Main card */}
         <div style={{ borderRadius:"32px", border:"1px solid #E5E6EB", backgroundColor:"rgba(255,255,255,0.85)", padding:"64px", backdropFilter:"blur(8px)" }}>
@@ -195,24 +213,17 @@ export default function MessageDetail({ slug }) {
               </div>
             </div>
 
-            {/* Full message body — flows around and below the image */}
-            {message.body.map((para, i) => (
-              <p key={i} style={{ ...inter, fontSize:"19px", color:"#414651", lineHeight:"1.9", margin:"0 0 24px" }}>
-                {para}
-              </p>
-            ))}
+            {/* Lead intro — reading ends here, then the Read Full Message button */}
+            <p style={{ ...inter, fontSize:"clamp(20px,1.8vw,24px)", color:"#2C2E3A", lineHeight:"1.7", margin:"0 0 32px", fontWeight:400 }}>
+              {lead}
+            </p>
+
+            <button onClick={() => setShowPanel(true)} className="md-read-btn">
+              Read Full Message
+              <ArrowRight size={16} />
+            </button>
 
             <div style={{ clear:"both" }} />
-
-            {/* Signature */}
-            <div style={{ borderTop:"1px solid #E5E6EB", paddingTop:"32px", marginTop:"20px" }}>
-              <p style={{ ...inter, fontSize:"11px", fontWeight:600, color:"#9CA3AF", letterSpacing:"0.18em", textTransform:"uppercase", margin:"0 0 8px" }}>
-                Official Signature
-              </p>
-              <p style={{ fontSize:"36px", color:"#040617", margin:0, fontFamily:"'Playfair Display', Georgia, serif", fontStyle:"italic", letterSpacing:"-0.5px" }}>
-                {signature}
-              </p>
-            </div>
           </motion.div>
         </div>
 
@@ -246,6 +257,61 @@ export default function MessageDetail({ slug }) {
           </div>
         </div>
       </div>
+
+      {/* ── SLIDE-UP FULL MESSAGE PANEL ── */}
+      <AnimatePresence>
+        {showPanel && (
+          <>
+            <motion.div
+              key="md-backdrop"
+              initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+              onClick={() => setShowPanel(false)}
+              style={{ position:"fixed", inset:0, backgroundColor:"rgba(4,6,23,0.6)", zIndex:9998, backdropFilter:"blur(4px)", cursor:"pointer" }}
+            />
+            <motion.div
+              key="md-panel"
+              initial={{ y:"100%" }} animate={{ y:0 }} exit={{ y:"100%" }}
+              transition={{ type:"spring", damping:28, stiffness:260 }}
+              style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#040617", borderRadius:"28px 28px 0 0", height:"92vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.5)" }}
+            >
+              <button
+                onClick={() => setShowPanel(false)}
+                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.8)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
+              >
+                <CloseIcon size={17} />
+              </button>
+
+              <div style={{ flex:1, overflowY:"auto", padding:"clamp(44px,6vw,72px) 6% 64px" }}>
+                <div style={{ maxWidth:"1000px", margin:"0 auto" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"16px" }}>
+                    <div style={{ width:"28px", height:"2px", backgroundColor:"#FFD900" }} />
+                    <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.2em", textTransform:"uppercase" }}>
+                      {title}
+                    </span>
+                  </div>
+                  <h2 style={{ ...inter, fontSize:"clamp(2rem,4vw,3.4rem)", fontWeight:800, color:"white", letterSpacing:"-1.5px", lineHeight:1.04, margin:"0 0 14px" }}>
+                    {message.name}
+                  </h2>
+                  <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:"0 0 28px", fontStyle:"italic" }}>
+                    {message.role} of The Mico Foundation
+                  </p>
+                  <div style={{ height:"1px", backgroundColor:"rgba(255,255,255,0.1)", marginBottom:"32px" }} />
+
+                  {message.intro && (
+                    <blockquote style={{ ...inter, fontSize:"clamp(20px,2vw,26px)", fontWeight:500, color:"rgba(255,255,255,0.9)", lineHeight:1.6, fontStyle:"italic", margin:"0 0 32px", paddingLeft:"22px", borderLeft:"3px solid #FFD900" }}>
+                      {message.intro}
+                    </blockquote>
+                  )}
+
+                  {message.body.map((para, i) => (
+                    <p key={i} className="panel-editorial">{para}</p>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
     </main>
   );
