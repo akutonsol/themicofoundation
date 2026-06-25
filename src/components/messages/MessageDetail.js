@@ -173,8 +173,8 @@ export default function MessageDetail({ slug }) {
           All Messages
         </Link>
 
-        {/* Main card */}
-        <div style={{ borderRadius:"32px", border:"1px solid #E5E6EB", backgroundColor:"rgba(255,255,255,0.85)", padding:"64px", backdropFilter:"blur(8px)" }}>
+        {/* Main message section — same #FAF9F6 background as the slide-up panel */}
+        <div style={{ backgroundColor:"#FAF9F6", borderRadius:"24px", padding:"clamp(8px,2vw,16px) 0" }}>
 
           {/* Title */}
           <motion.h1
