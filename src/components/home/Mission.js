@@ -70,19 +70,21 @@ export default function Mission() {
         .mission-desktop {
           display: flex;
           flex-direction: column;
-          gap: clamp(20px, 2vw, 28px);
-          padding: clamp(56px, 8vw, 80px) clamp(24px, 8vw, 165px);
+          gap: clamp(18px, 1.8vw, 26px);
+          max-width: 1860px;
+          margin: 0 auto;
+          padding: clamp(56px, 7vw, 80px) clamp(24px, 4vw, 64px);
         }
         .mission-top {
           display: grid;
-          grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
-          gap: clamp(20px, 2vw, 28px);
-          align-items: stretch;
+          grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+          gap: clamp(18px, 1.8vw, 26px);
+          align-items: start;
         }
         .mission-panel { background: #FAF7EF; border-radius: 28px; }
-        .mission-text-panel { display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: clamp(28px, 3vw, 44px); }
-        .mission-top-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1.6vw, 22px); padding: clamp(18px, 2vw, 24px); }
-        .mission-bottom-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 1.2vw, 18px); padding: clamp(18px, 2vw, 24px); }
+        .mission-text-panel { display: flex; flex-direction: column; justify-content: center; gap: 26px; padding: clamp(28px, 3vw, 44px); }
+        .mission-top-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1.4vw, 22px); padding: clamp(18px, 1.8vw, 24px); }
+        .mission-bottom-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 1.1vw, 18px); padding: clamp(18px, 1.8vw, 24px); }
         .mission-mobile { display: none; }
 
         /* ── TABLET / small laptop (769–1100px) ── */
@@ -144,7 +146,7 @@ export default function Mission() {
               </h2>
             </div>
             <div style={{ borderLeft: '1px solid #E5E6EB', paddingLeft: '16px' }}>
-              <p style={{ ...inter, fontSize: 'clamp(18px, 1.4vw, 22px)', fontWeight: 400, color: '#6F7181', letterSpacing: '0.2px', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ ...inter, fontSize: 'clamp(17px, 1.1vw, 19px)', fontWeight: 400, color: '#6F7181', letterSpacing: '0.2px', lineHeight: 1.55, margin: 0 }}>
                 We manage and grow Mico Foundation's assets and infrastructure to support the university's needs, benefit students and staff, and preserve the legacy of the Lady Mico Trust.
               </p>
             </div>
@@ -166,36 +168,39 @@ export default function Mission() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}
               >
-                <ValueCard value={value} style={{ minHeight: '250px', height: '100%' }} />
+                <ValueCard value={value} style={{ minHeight: '230px', height: '100%' }} />
               </motion.div>
             ))}
           </div>
         </div>
 
-        {/* BOTTOM — value cards + foundation logo in one row */}
+        {/* BOTTOM — value cards with the foundation logo in the middle */}
         <div className="mission-panel mission-bottom-cards">
-          {/* Transparency */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-          >
-            <ValueCard value={values[3]} style={{ minHeight: '250px', height: '100%' }} />
-          </motion.div>
+          {/* Transparency, Innovation */}
+          {[values[3], values[4]].map((value, i) => (
+            <motion.div
+              key={value.title}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.07 }}
+            >
+              <ValueCard value={value} style={{ minHeight: '230px', height: '100%' }} />
+            </motion.div>
+          ))}
 
-          {/* Foundation logo card */}
+          {/* Foundation logo card — centre */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.08 }}
-            style={{ background: 'linear-gradient(160deg, #040617 0%, #11152e 100%)', border: '1px solid #040617', borderRadius: '22px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '250px', height: '100%', boxShadow: '0 12px 30px rgba(4,6,23,0.18)' }}
+            initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.16 }}
+            style={{ background: 'linear-gradient(160deg, #040617 0%, #11152e 100%)', border: '1px solid #040617', borderRadius: '22px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '230px', height: '100%', boxShadow: '0 12px 30px rgba(4,6,23,0.18)' }}
           >
             <img src={foundationLogo} alt="The Mico Foundation" style={{ width: '86%', objectFit: 'contain' }} />
           </motion.div>
 
-          {/* Innovation, Partnership, Service, Respect */}
-          {values.slice(4).map((value, i) => (
+          {/* Partnership, Service, Respect */}
+          {[values[5], values[6], values[7]].map((value, i) => (
             <motion.div
               key={value.title}
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: (i + 2) * 0.07 }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: (i + 3) * 0.07 }}
             >
-              <ValueCard value={value} style={{ minHeight: '250px', height: '100%' }} />
+              <ValueCard value={value} style={{ minHeight: '230px', height: '100%' }} />
             </motion.div>
           ))}
         </div>
