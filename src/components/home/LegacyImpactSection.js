@@ -242,29 +242,6 @@ export default function LegacyImpactSection() {
               })}
             </div>
 
-            {/* Payment badges */}
-            <div>
-              <p style={{ ...inter, fontSize:'11px', color:'#9CA3AF', letterSpacing:'0.1em', textTransform:'uppercase', margin:'0 0 12px' }}>
-                Secure Global Giving
-              </p>
-              <div style={{ display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap' }}>
-                {[
-                  { src:'/images/home-static/visa.png',       alt:'Visa'       },
-                  { src:'/images/home-static/mastercard.png', alt:'Mastercard' },
-                  { src:'/images/home-static/keycard.png',    alt:'KeyCard'    },
-                  { src:'/images/home-static/3dsecure.png',   alt:'3D Secure'  },
-                ].map(p => (
-                  <div key={p.alt} className="legacy-payment-badge">
-                    <img src={p.src} alt={p.alt} style={{ height:'18px', objectFit:'contain' }} />
-                  </div>
-                ))}
-                <div className="legacy-payment-badge">
-                  <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#6F7181' }}>AMEX</span>
-                </div>
-              </div>
-            </div>
-
-
             {/* Slide-up panel */}
             <AnimatePresence>
               {panelOpen && (

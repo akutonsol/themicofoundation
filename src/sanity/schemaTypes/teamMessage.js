@@ -39,6 +39,13 @@ export default defineType({
       validation: Rule => Rule.required()
     },
     {
+      name: 'fullMessagePhoto',
+      title: 'Read Full Message Photo (optional)',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'A different photo shown in the "Read Full Message" slide-up panel. If empty, the Profile Photo is used.',
+    },
+    {
       name: 'quote',
       title: 'Short Quote',
       type: 'text',

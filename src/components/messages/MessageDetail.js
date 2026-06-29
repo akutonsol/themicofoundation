@@ -72,6 +72,8 @@ export default function MessageDetail({ slug }) {
             role:  messageData.role,
             name:  messageData.name,
             image: urlFor(messageData.photo).width(900).url(),
+            // Different photo for the Read Full Message panel (falls back to profile photo)
+            panelImage: urlFor(messageData.fullMessagePhoto || messageData.photo).width(900).url(),
             intro: messageData.quote,
             body:  messageData.fullMessage
               ? messageData.fullMessage.split("\n\n").filter(Boolean)
@@ -189,44 +191,28 @@ export default function MessageDetail({ slug }) {
             {title}
           </motion.h1>
 
-          {/* Full message wrapped around the floated image */}
+          {/* Message preview (no image) — ends at the historical-legacy line, then the button */}
           <motion.div
             initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, delay:0.1 }}
+            style={{ maxWidth:"920px" }}
           >
-            {/* Floated photo + name card */}
-            <div className="md-left" style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"28px" }}>
-              <div style={{ display:"flex", gap:"0" }}>
-                <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", flexShrink:0, alignSelf:"stretch" }} />
-                <div style={{ flex:1 }}>
-                  <div style={{ borderRadius:"0 20px 0 0", overflow:"hidden" }}>
-                    <img
-                      src={message.image || "/images/home/holness.jpg"}
-                      alt={message.name}
-                      style={{ width:"100%", height:"560px", objectFit:"cover", objectPosition:"top", display:"block" }}
-                    />
-                  </div>
-                  <div style={{ backgroundColor:"#040617", padding:"24px 28px", borderRadius:"0 0 20px 0" }}>
-                    <h3 style={{ ...inter, fontSize:"26px", fontWeight:700, color:"white", letterSpacing:"-0.3px", lineHeight:1.2, margin:"0 0 6px" }}>
-                      {message.name}
-                    </h3>
-                    <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:0, fontStyle:"italic" }}>
-                      {message.role} of The Mico Foundation
-                    </p>
-                  </div>
-                </div>
-              </div>
+            {/* Name / role */}
+            <div style={{ marginBottom:"28px" }}>
+              <p style={{ ...inter, fontSize:"22px", fontWeight:700, color:"#FFFFFF", letterSpacing:"-0.3px", margin:"0 0 4px" }}>
+                {message.name}
+              </p>
+              <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:0, fontStyle:"italic" }}>
+                {message.role} of The Mico Foundation
+              </p>
             </div>
 
-            {/* Message preview — ends at the historical-legacy line, then the button */}
             {previewBody.map((para, i) => (
               <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>
                 {para}
               </p>
             ))}
 
-            <div style={{ clear:"both" }} />
-
-            <div style={{ display:"flex", justifyContent:"center", marginTop:"44px" }}>
+            <div style={{ marginTop:"40px" }}>
               <button onClick={() => setShowPanel(true)} className="md-read-btn">
                 Read Full Message
                 <ArrowRight size={16} />
@@ -315,7 +301,7 @@ export default function MessageDetail({ slug }) {
                         <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", flexShrink:0, alignSelf:"stretch" }} />
                         <div style={{ flex:1 }}>
                           <div style={{ borderRadius:"0 20px 0 0", overflow:"hidden" }}>
-                            <img src={message.image || "/images/home/holness.jpg"} alt={message.name}
+                            <img src={message.panelImage || message.image || "/images/home/holness.jpg"} alt={message.name}
                               style={{ width:"100%", height:"500px", objectFit:"cover", objectPosition:"top", display:"block" }} />
                           </div>
                           <div style={{ backgroundColor:"#040617", padding:"22px 26px", borderRadius:"0 0 20px 0" }}>

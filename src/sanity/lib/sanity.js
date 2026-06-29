@@ -117,6 +117,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
     name,
     role,
     photo,
+    fullMessagePhoto,
     quote,
     fullMessage,
     "slug": slug.current,
