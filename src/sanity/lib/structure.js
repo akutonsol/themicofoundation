@@ -111,10 +111,10 @@ export const structure = (S) =>
             .items([
               S.listItem().title('Legacy Section Content').child(S.documentTypeList('trusteeLegacy').title('Legacy Section Content')),
               S.listItem().title('Lead Trustee Message').child(S.documentTypeList('trusteeLeader').title('Lead Trustee Message')),
-              S.listItem().title('Current Trustees (Board)').child(
+              S.listItem().title('Current Trustees').child(
                 S.documentList().title('Current Trustees')
                   .apiVersion('2024-01-01')
-                  .filter('_type == "teamMember" && type == "board"')
+                  .filter('_type == "teamMember" && type == "trustee"')
               ),
               S.listItem().title('Former Trustees').child(S.documentTypeList('formerTrustee').title('Former Trustees')),
             ])

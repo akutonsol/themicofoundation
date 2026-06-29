@@ -253,6 +253,18 @@ faqs: `*[_type == "faq" && isActive == true] | order(order asc) {
     photo,
     order
   }`,
+
+  trustees: `*[_type == "teamMember" && type == "trustee" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    role,
+    department,
+    email,
+    tenure,
+    bio,
+    photo,
+    order
+  }`,
  
   staffMembers: `*[_type == "teamMember" && type == "staff" && isActive == true] | order(order asc) {
     _id,

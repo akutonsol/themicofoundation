@@ -70,7 +70,7 @@ export default function TeamProfileFeature() {
   useEffect(() => {
     async function fetchBoardMembers() {
       try {
-        const data = await client.fetch(queries.boardMembers);
+        const data = await client.fetch(queries.trustees);
         if (data?.length > 0) {
           setTeam(data.map(m => ({
             name: m.name,

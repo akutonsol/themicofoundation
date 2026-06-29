@@ -24,6 +24,7 @@ export default defineType({
       options: {
         list: [
           { title: 'Board of Directors', value: 'board' },
+          { title: 'Current Trustee', value: 'trustee' },
           { title: 'Staff', value: 'staff' },
         ]
       },
