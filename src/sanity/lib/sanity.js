@@ -318,6 +318,13 @@ mission: `*[_type == "mission"][0]{
   heading, missionStatement, visionStatement, values
 }`,
 
+anniversaryPopup: `*[_type == "anniversaryPopup"][0]{
+  enabled, eyebrow, description, buttonText,
+  "logoUrl": logo.asset->url,
+  pageEyebrow, pageHeading, pageBody,
+  "pageImageUrl": pageImage.asset->url
+}`,
+
 resourceCategories: `*[_type == "resourceCategory" && isActive == true] | order(order asc) {
   _id, title, description,
   date,

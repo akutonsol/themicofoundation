@@ -194,7 +194,6 @@ export default function MessageDetail({ slug }) {
           {/* Message preview (no image) — ends at the historical-legacy line, then the button */}
           <motion.div
             initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, delay:0.1 }}
-            style={{ maxWidth:"920px" }}
           >
             {/* Name / role */}
             <div style={{ marginBottom:"28px" }}>
@@ -275,26 +274,10 @@ export default function MessageDetail({ slug }) {
                 <CloseIcon size={17} />
               </button>
 
-              <div style={{ flex:1, overflowY:"auto", padding:"clamp(40px,5vw,64px) clamp(24px,6vw,80px) 64px" }}>
+              <div style={{ flex:1, overflowY:"auto", padding:"clamp(48px,5vw,72px) clamp(24px,6vw,80px) 64px" }}>
                 <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
 
-                  {/* Header banner — subtly elevated on the dark panel */}
-                  <div style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"20px", padding:"clamp(28px,3vw,44px)", marginBottom:"40px" }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"14px" }}>
-                      <div style={{ width:"28px", height:"2px", backgroundColor:"#FFD900" }} />
-                      <span style={{ ...inter, fontSize:"11px", fontWeight:700, color:"#FFD900", letterSpacing:"0.2em", textTransform:"uppercase" }}>
-                        {title}
-                      </span>
-                    </div>
-                    <h2 style={{ ...inter, fontSize:"clamp(2rem,4vw,3.4rem)", fontWeight:800, color:"white", letterSpacing:"-1.5px", lineHeight:1.04, margin:"0 0 8px" }}>
-                      {message.name}
-                    </h2>
-                    <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.55)", margin:0, fontStyle:"italic" }}>
-                      {message.role} of The Mico Foundation
-                    </p>
-                  </div>
-
-                  {/* Full message — same wrapped layout as the main page */}
+                  {/* Full message — wrapped layout with the panel photo */}
                   <div>
                     <div className="md-left" style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"28px" }}>
                       <div style={{ display:"flex", gap:"0" }}>
