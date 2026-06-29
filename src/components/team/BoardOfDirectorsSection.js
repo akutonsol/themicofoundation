@@ -39,7 +39,7 @@ function BoardCard({ member, onOpen }) {
       </div>
       <div className="mt-3">
         <p className="text-[16px] leading-[1.35] text-[#8A8E9D] sm:text-[18px]" style={{ fontFamily: "'Inter', sans-serif" }}>{member.role}</p>
-        <h3 className="mt-1 text-[30px] font-semibold leading-[1.1] tracking-[-0.04em] text-[#040617] sm:text-[34px]" style={{ fontFamily: "'Inter', sans-serif" }}>{member.name}</h3>
+        <h3 className="mt-1 text-[19px] font-semibold leading-[1.2] tracking-[-0.02em] text-[#040617] sm:text-[21px]" style={{ fontFamily: "'Inter', sans-serif" }}>{member.name}</h3>
       </div>
     </motion.button>
   );

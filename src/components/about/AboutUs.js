@@ -67,7 +67,7 @@ export default function AboutUs() {
         <motion.h1
           initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.7 }}
-          className="text-center text-[120px] font-semibold leading-[0.82] tracking-[-0.11em] text-[#040617] sm:text-[180px] lg:text-[300px]"
+          className="text-center text-[64px] font-semibold leading-[0.9] tracking-[-0.06em] text-[#040617] sm:text-[100px] lg:text-[150px]"
           style={inter}
         >
           {content.heading}

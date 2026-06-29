@@ -35,7 +35,7 @@ const staticContent = {
   ctaTitle: 'Continue to Learn About Our History',
   ctaButtonText: 'Explore History',
   ctaButtonLink: '/history',
-  ctaBodyText: "For generations, The Mico College has been a beacon of excellence in education, preparing outstanding teachers for Jamaica and the wider Caribbean. Beyond education, Mico graduates have distinguished themselves across numerous professions, making significant contributions to national, regional, and international development.\n\nToday, Mico University College is well positioned to broaden its impact through the expansion of STEM and STEAM education, strategic partnerships in Artificial Intelligence (AI), and stronger collaboration with the public and private sectors. These initiatives will foster innovative programmes that benefit students, faculty, alumni, and the wider community.",
+  ctaBodyText: "",
 };
 
 function Block({ block, index }) {
@@ -138,6 +138,11 @@ export default function TrusteeLegacySection() {
         .scroll-hint { display: flex; align-items: center; gap: 12px; margin-top: 48px; font-family: 'Syne', sans-serif; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
         .scroll-line { width: 48px; height: 1px; background: rgba(255,255,255,0.2); }
 
+        .legacy-message { background: #05080F; padding: 0 clamp(24px,5vw,80px) clamp(60px,8vw,100px); }
+        .legacy-message-inner { max-width: 880px; margin: 0 auto; }
+        .legacy-message-p { font-family: 'Syne', sans-serif; font-size: clamp(17px,1.5vw,21px); line-height: 1.85; color: rgba(255,255,255,0.72); margin: 0 0 26px; }
+        .legacy-message-p:last-child { margin-bottom: 0; }
+
         .legacy-timeline { background: #FAFAF7; padding: clamp(80px,10vw,140px) clamp(24px,5vw,80px); position: relative; overflow: hidden; }
         .timeline-header { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; max-width: 1400px; margin: 0 auto 100px; }
         .timeline-header-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #8A8E9D; margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
@@ -226,6 +231,15 @@ export default function TrusteeLegacySection() {
             </div>
           </div>
         </motion.div>
+      </section>
+
+      {/* ── LEAD TRUSTEE MESSAGE (top section) ── */}
+      <section className="legacy-message">
+        <div className="legacy-message-inner">
+          {leader.message.map((para, i) => (
+            <p key={i} className="legacy-message-p">{para}</p>
+          ))}
+        </div>
       </section>
 
       {/* ── TIMELINE ── */}
