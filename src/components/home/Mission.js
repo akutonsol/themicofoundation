@@ -95,9 +95,10 @@ export default function Mission() {
           padding: clamp(56px, 7vw, 80px) clamp(24px, 4vw, 64px);
         }
         .mission-panel { background: #FAF7EF; border-radius: 28px; }
-        .mission-text-panel { padding: clamp(30px, 3.4vw, 52px); }
-        .mission-mv { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 4vw, 64px); margin-top: 30px; }
-        .mission-mv-block { border-left: 3px solid #FFD900; padding-left: 22px; }
+        .mission-split { display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px; overflow: hidden; box-shadow: 0 12px 36px rgba(10,13,18,0.10); }
+        .mission-half { padding: clamp(34px, 3.6vw, 60px); display: flex; flex-direction: column; justify-content: center; gap: 24px; }
+        .mission-half-black { background: #050608; }
+        .mission-half-gold  { background: #f3af19; }
         .core-values-heading { text-align: center; margin: clamp(14px,2vw,28px) 0 clamp(2px,0.6vw,8px); }
         .mission-top-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1.4vw, 22px); padding: clamp(18px, 1.8vw, 24px); }
         .mission-bottom-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 1.1vw, 18px); padding: clamp(18px, 1.8vw, 24px); }
@@ -105,7 +106,7 @@ export default function Mission() {
 
         /* ── TABLET / small laptop (769–1100px) ── */
         @media (max-width: 1100px) {
-          .mission-mv { grid-template-columns: 1fr; gap: 30px; }
+          .mission-split { grid-template-columns: 1fr; }
           .mission-bottom-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
 
@@ -135,49 +136,54 @@ export default function Mission() {
       ════════════════════════════════ */}
       <div className="mission-desktop">
 
-        {/* Mission & Vision text panel */}
+        {/* Mission (black) + Vision (gold) split panel */}
         <motion.div
-          className="mission-panel mission-text-panel"
+          className="mission-split"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFFFFF', border: '1px solid #ECEDF1', borderRadius: '100px', padding: '8px 18px', boxShadow: '0 2px 8px rgba(10,13,18,0.05)' }}>
-            <span style={{ display: 'inline-flex', gap: '4px' }}>
-              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1A8C4A' }} />
-              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#F5B700' }} />
-              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#040617' }} />
-            </span>
-            <span style={{ ...inter, fontSize: '13px', fontWeight: 700, color: '#040617', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-              Rooted in Jamaican Heritage
-            </span>
-          </div>
+          {/* LEFT — black: Mission + buttons */}
+          <div className="mission-half mission-half-black">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: '100px', padding: '8px 18px', width: 'fit-content' }}>
+              <span style={{ display: 'inline-flex', gap: '4px' }}>
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1A8C4A' }} />
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#F5B700' }} />
+                <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#FFFFFF' }} />
+              </span>
+              <span style={{ ...inter, fontSize: '13px', fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                Rooted in Jamaican Heritage
+              </span>
+            </div>
 
-          <div className="mission-mv">
-            <div className="mission-mv-block">
-              <h2 style={{ ...inter, fontSize: 'clamp(30px, 3vw, 44px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 16px' }}>
-                Our <span style={{ color: '#1A8C4A' }}>Mission</span>
+            <div>
+              <h2 style={{ ...inter, fontSize: 'clamp(30px, 3vw, 44px)', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 16px' }}>
+                Our <span style={{ color: '#5EDA71' }}>Mission</span>
               </h2>
-              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 400, color: '#5A5C6B', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
+              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 400, color: 'rgba(255,255,255,0.78)', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
                 {missionText}
               </p>
             </div>
-            <div className="mission-mv-block">
-              <h2 style={{ ...inter, fontSize: 'clamp(30px, 3vw, 44px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 16px' }}>
-                Our <span style={{ color: '#F5B700' }}>Vision</span>
-              </h2>
-              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 400, color: '#5A5C6B', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
-                {visionText}
-              </p>
+
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
+              <DonateButton text="Read Our Story" href="/about" />
+              <a href="/endowments" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(255,255,255,0.1)', color: '#FFFFFF', fontSize: '14px', fontWeight: 600, height: '46px', padding: '0 24px', borderRadius: '14px', textDecoration: 'none', whiteSpace: 'nowrap', border: '1px solid rgba(255,255,255,0.18)' }}>
+                Become Endowment
+              </a>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', marginTop: '30px' }}>
-            <DonateButton text="Read Our Story" href="/about" />
-            <a href="/endowments" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFF7CC', color: '#040617', fontSize: '14px', fontWeight: 600, height: '46px', padding: '0 24px', borderRadius: '14px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-              Become Endowment
-            </a>
+          {/* RIGHT — gold: Vision */}
+          <div className="mission-half mission-half-gold">
+            <div>
+              <h2 style={{ ...inter, fontSize: 'clamp(30px, 3vw, 44px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 16px' }}>
+                Our Vision
+              </h2>
+              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 400, color: 'rgba(4,6,23,0.82)', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
+                {visionText}
+              </p>
+            </div>
           </div>
         </motion.div>
 
@@ -262,17 +268,21 @@ export default function Mission() {
               </span>
             </div>
           </div>
-          <div style={{ borderLeft: '3px solid #FFD900', paddingLeft: '18px' }}>
-            <h2 style={{ ...inter, fontSize: '34px', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.15, margin: '0 0 12px' }}>
-              Our <span style={{ color: '#1A8C4A' }}>Mission</span>
+          {/* Mission — black */}
+          <div style={{ background: '#050608', borderRadius: '20px', padding: '28px 24px' }}>
+            <h2 style={{ ...inter, fontSize: '32px', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.5px', lineHeight: 1.15, margin: '0 0 12px' }}>
+              Our <span style={{ color: '#5EDA71' }}>Mission</span>
             </h2>
-            <p style={{ ...inter, fontSize: '19px', color: '#5A5C6B', lineHeight: 1.65, margin: '0 0 28px' }}>
+            <p style={{ ...inter, fontSize: '18px', color: 'rgba(255,255,255,0.78)', lineHeight: 1.65, margin: 0 }}>
               {missionText}
             </p>
-            <h2 style={{ ...inter, fontSize: '34px', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.15, margin: '0 0 12px' }}>
-              Our <span style={{ color: '#F5B700' }}>Vision</span>
+          </div>
+          {/* Vision — gold */}
+          <div style={{ background: '#f3af19', borderRadius: '20px', padding: '28px 24px' }}>
+            <h2 style={{ ...inter, fontSize: '32px', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.15, margin: '0 0 12px' }}>
+              Our Vision
             </h2>
-            <p style={{ ...inter, fontSize: '19px', color: '#5A5C6B', lineHeight: 1.65, margin: 0 }}>
+            <p style={{ ...inter, fontSize: '18px', color: 'rgba(4,6,23,0.82)', lineHeight: 1.65, margin: 0 }}>
               {visionText}
             </p>
           </div>
