@@ -54,6 +54,12 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'ctaEyebrow',
+      title: 'CTA Eyebrow',
+      type: 'string',
+      initialValue: 'Dive Deeper',
+    }),
+    defineField({
       name: 'ctaTitle',
       title: 'CTA Title',
       type: 'string',
@@ -70,6 +76,13 @@ export default defineType({
       title: 'CTA Button Link',
       type: 'string',
       initialValue: '/history',
+    }),
+    defineField({
+      name: 'ctaBodyText',
+      title: 'CTA Additional Text',
+      type: 'text',
+      rows: 8,
+      description: 'Text shown beneath the CTA. Separate paragraphs with a blank line.',
     }),
   ],
   preview: {

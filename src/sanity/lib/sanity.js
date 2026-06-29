@@ -278,7 +278,7 @@ faqs: `*[_type == "faq" && isActive == true] | order(order asc) {
 trusteeLegacy: `*[_type == "trusteeLegacy"][0]{
   heroEyebrow, heroTitleLine1, heroTitleHighlight,
   heroTitleLine3, heroSubtitle, timelineBlocks,
-  ctaTitle, ctaButtonText, ctaButtonLink
+  ctaEyebrow, ctaTitle, ctaButtonText, ctaButtonLink, ctaBodyText
 }`,
 
 trusteeLeader: `*[_type == "trusteeLeader"][0]{

@@ -31,9 +31,11 @@ const staticContent = {
   heroTitleHighlight: 'Centuries',
   heroTitleLine3: 'of Education',
   heroSubtitle: 'A continuing story of leadership, stewardship, and educational transformation that has shaped generations across the Caribbean.',
+  ctaEyebrow: 'Dive Deeper',
   ctaTitle: 'Continue to Learn About Our History',
   ctaButtonText: 'Explore History',
   ctaButtonLink: '/history',
+  ctaBodyText: "For generations, The Mico College has been a beacon of excellence in education, preparing outstanding teachers for Jamaica and the wider Caribbean. Beyond education, Mico graduates have distinguished themselves across numerous professions, making significant contributions to national, regional, and international development.\n\nToday, Mico University College is well positioned to broaden its impact through the expansion of STEM and STEAM education, strategic partnerships in Artificial Intelligence (AI), and stronger collaboration with the public and private sectors. These initiatives will foster innovative programmes that benefit students, faculty, alumni, and the wider community.",
 };
 
 function Block({ block, index }) {
@@ -77,9 +79,11 @@ export default function TrusteeLegacySection() {
             heroTitleHighlight: data.heroTitleHighlight || staticContent.heroTitleHighlight,
             heroTitleLine3: data.heroTitleLine3 || staticContent.heroTitleLine3,
             heroSubtitle: data.heroSubtitle || staticContent.heroSubtitle,
+            ctaEyebrow: data.ctaEyebrow || staticContent.ctaEyebrow,
             ctaTitle: data.ctaTitle || staticContent.ctaTitle,
             ctaButtonText: data.ctaButtonText || staticContent.ctaButtonText,
             ctaButtonLink: data.ctaButtonLink || staticContent.ctaButtonLink,
+            ctaBodyText: data.ctaBodyText || staticContent.ctaBodyText,
           });
           if (data.timelineBlocks?.length > 0) {
             setBlocks(data.timelineBlocks);
@@ -159,7 +163,10 @@ export default function TrusteeLegacySection() {
 
         .legacy-cta { background: #05080F; padding: clamp(60px,8vw,100px) clamp(24px,5vw,80px); position: relative; overflow: hidden; }
         .cta-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
-        .cta-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin: 0 0 20px; }
+        .cta-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #f3af19; margin: 0 0 20px; }
+        .cta-body { max-width: 1400px; margin: clamp(36px,5vw,52px) auto 0; }
+        .cta-body-p { font-family: 'Syne', sans-serif; font-size: clamp(17px,1.4vw,20px); line-height: 1.85; color: rgba(255,255,255,0.72); margin: 0 0 24px; }
+        .cta-body-p:last-child { margin-bottom: 0; }
         .cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(44px,6vw,88px); font-weight: 300; color: #FFFFFF; margin: 0; line-height: 0.92; letter-spacing: -0.03em; }
         .cta-title em { font-style: italic; color: #FFD900; }
         .cta-btn { display: inline-flex; align-items: center; gap: 16px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 18px 32px; border-radius: 100px; text-decoration: none; transition: background 0.2s, transform 0.2s; flex-shrink: 0; white-space: nowrap; }
@@ -255,7 +262,7 @@ export default function TrusteeLegacySection() {
       <section className="legacy-cta">
         <div className="cta-inner">
           <div>
-            <p className="cta-label">Dive Deeper</p>
+            <p className="cta-label">{content.ctaEyebrow}</p>
             <h2 className="cta-title">
               {content.ctaTitle}
             </h2>
@@ -267,6 +274,14 @@ export default function TrusteeLegacySection() {
             </svg>
           </a>
         </div>
+
+        {content.ctaBodyText && (
+          <div className="cta-body">
+            {content.ctaBodyText.split(/\n{2,}/).map((para, i) => (
+              <p key={i} className="cta-body-p">{para.trim()}</p>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );
