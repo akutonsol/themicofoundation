@@ -101,6 +101,15 @@ export default function WorkWithUsHero() {
         </motion.h1>
 
         <div className="mt-auto">
+          <motion.p
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-3 flex items-center gap-3 text-[12px] font-bold uppercase tracking-[0.2em] text-[#f3af19]"
+            style={inter}
+          >
+            <span className="inline-block h-[2px] w-7 bg-[#f3af19]" />
+            What We Do
+          </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
