@@ -138,11 +138,6 @@ export default function TrusteeLegacySection() {
         .scroll-hint { display: flex; align-items: center; gap: 12px; margin-top: 48px; font-family: 'Syne', sans-serif; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
         .scroll-line { width: 48px; height: 1px; background: rgba(255,255,255,0.2); }
 
-        .legacy-message { background: #05080F; padding: 0 clamp(24px,5vw,80px) clamp(60px,8vw,100px); }
-        .legacy-message-inner { max-width: 880px; margin: 0 auto; }
-        .legacy-message-p { font-family: 'Syne', sans-serif; font-size: clamp(17px,1.5vw,21px); line-height: 1.85; color: rgba(255,255,255,0.72); margin: 0 0 26px; }
-        .legacy-message-p:last-child { margin-bottom: 0; }
-
         .legacy-timeline { background: #FAFAF7; padding: clamp(80px,10vw,140px) clamp(24px,5vw,80px); position: relative; overflow: hidden; }
         .timeline-header { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; max-width: 1400px; margin: 0 auto 100px; }
         .timeline-header-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #8A8E9D; margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
@@ -231,15 +226,6 @@ export default function TrusteeLegacySection() {
             </div>
           </div>
         </motion.div>
-      </section>
-
-      {/* ── LEAD TRUSTEE MESSAGE (under the hero) ── */}
-      <section className="legacy-message">
-        <div className="legacy-message-inner">
-          {leader.message.map((para, i) => (
-            <p key={i} className="legacy-message-p">{para}</p>
-          ))}
-        </div>
       </section>
 
       {/* ── TIMELINE ── */}
