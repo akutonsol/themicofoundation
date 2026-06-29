@@ -14,6 +14,7 @@ export const structure = (S) =>
             .items([
               S.listItem().title('Hero').child(S.documentTypeList('hero').title('Hero')),
               S.listItem().title('Trusted By').child(S.documentTypeList('trustedBy').title('Trusted By')),
+              S.listItem().title('Mission & Vision').child(S.documentTypeList('mission').title('Mission & Vision')),
               S.listItem().title('Legacy Impact').child(S.documentTypeList('legacyImpact').title('Legacy Impact')),
               S.listItem().title('Projects').child(S.documentTypeList('project').title('Projects')),
               S.listItem().title('Community Impact').child(S.documentTypeList('communityImpact').title('Community Impact')),
@@ -30,6 +31,13 @@ export const structure = (S) =>
               S.listItem().title('Newsletter Subscribers').child(S.documentTypeList('newsletterSubscriber').title('Newsletter Subscribers')),
             ])
         ),
+
+      S.divider(),
+
+      // ── ANNIVERSARY POPUP ─────────────────────────
+      S.listItem()
+        .title('🎉 Anniversary Popup')
+        .child(S.documentTypeList('anniversaryPopup').title('Anniversary Popup')),
 
       S.divider(),
 
@@ -102,6 +110,7 @@ export const structure = (S) =>
             .title('Trustees')
             .items([
               S.listItem().title('Legacy Section Content').child(S.documentTypeList('trusteeLegacy').title('Legacy Section Content')),
+              S.listItem().title('Lead Trustee Message').child(S.documentTypeList('trusteeLeader').title('Lead Trustee Message')),
               S.listItem().title('Current Trustees (Board)').child(
                 S.documentList().title('Current Trustees')
                   .apiVersion('2024-01-01')
