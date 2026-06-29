@@ -1,9 +1,14 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import DonateButton from '@/components/ui/DonateButton'
+import { client, queries } from '@/sanity/lib/sanity'
 
 const imgArrow       = "https://www.figma.com/api/mcp/asset/fc8bbfd2-b326-4762-829b-7eaf0bb62093"
 const foundationLogo = "/images/home/the_mico_foundation.png"
+
+const DEFAULT_MISSION = "We manage and grow Mico Foundation's assets and infrastructure to support the university's needs, benefit students and staff, and preserve the legacy of the Lady Mico Trust."
+const DEFAULT_VISION  = "To be the leading trust institution advancing educational excellence and opportunity across Jamaica and the Caribbean, while safeguarding the enduring legacy of The Mico for generations to come."
 
 const values = [
   { iconKey: 'commitment',   accent: 'green', title: 'Commitment',        desc: "Loyal to our mission and dedicated to the Foundation's long-term goals." },
@@ -59,6 +64,20 @@ function ValueCard({ value, style = {} }) {
 }
 
 export default function Mission() {
+  const [missionText, setMissionText] = useState(DEFAULT_MISSION)
+  const [visionText,  setVisionText]  = useState(DEFAULT_VISION)
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await client.fetch(queries.mission)
+        if (data?.missionStatement) setMissionText(data.missionStatement)
+        if (data?.visionStatement)  setVisionText(data.visionStatement)
+      } catch (e) { /* keep defaults */ }
+    }
+    load()
+  }, [])
+
   return (
     <section style={{ backgroundColor: '#FFFDF9', overflow: 'hidden', position: 'relative' }}>
       <style>{`
@@ -75,21 +94,18 @@ export default function Mission() {
           margin: 0 auto;
           padding: clamp(56px, 7vw, 80px) clamp(24px, 4vw, 64px);
         }
-        .mission-top {
-          display: grid;
-          grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
-          gap: clamp(18px, 1.8vw, 26px);
-          align-items: start;
-        }
         .mission-panel { background: #FAF7EF; border-radius: 28px; }
-        .mission-text-panel { display: flex; flex-direction: column; justify-content: center; gap: 26px; padding: clamp(28px, 3vw, 44px); }
+        .mission-text-panel { padding: clamp(30px, 3.4vw, 52px); }
+        .mission-mv { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 4vw, 64px); margin-top: 30px; }
+        .mission-mv-block { border-left: 3px solid #FFD900; padding-left: 22px; }
+        .core-values-heading { text-align: center; margin: clamp(14px,2vw,28px) 0 clamp(2px,0.6vw,8px); }
         .mission-top-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1.4vw, 22px); padding: clamp(18px, 1.8vw, 24px); }
         .mission-bottom-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 1.1vw, 18px); padding: clamp(18px, 1.8vw, 24px); }
         .mission-mobile { display: none; }
 
         /* ── TABLET / small laptop (769–1100px) ── */
         @media (max-width: 1100px) {
-          .mission-top { grid-template-columns: 1fr; }
+          .mission-mv { grid-template-columns: 1fr; gap: 30px; }
           .mission-bottom-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         }
 
@@ -119,62 +135,79 @@ export default function Mission() {
       ════════════════════════════════ */}
       <div className="mission-desktop">
 
-        {/* TOP — text panel + first three value cards */}
-        <div className="mission-top">
+        {/* Mission & Vision text panel */}
+        <motion.div
+          className="mission-panel mission-text-panel"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFFFFF', border: '1px solid #ECEDF1', borderRadius: '100px', padding: '8px 18px', boxShadow: '0 2px 8px rgba(10,13,18,0.05)' }}>
+            <span style={{ display: 'inline-flex', gap: '4px' }}>
+              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1A8C4A' }} />
+              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#F5B700' }} />
+              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#040617' }} />
+            </span>
+            <span style={{ ...inter, fontSize: '13px', fontWeight: 700, color: '#040617', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              Rooted in Jamaican Heritage
+            </span>
+          </div>
 
-          {/* Left — text panel */}
-          <motion.div
-            className="mission-panel mission-text-panel"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', backgroundColor: '#FFFFFF', border: '1px solid #ECEDF1', borderRadius: '100px', padding: '8px 18px', boxShadow: '0 2px 8px rgba(10,13,18,0.05)', marginBottom: '20px' }}>
-                <span style={{ display: 'inline-flex', gap: '4px' }}>
-                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1A8C4A' }} />
-                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#F5B700' }} />
-                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#040617' }} />
-                </span>
-                <span style={{ ...inter, fontSize: '13px', fontWeight: 700, color: '#040617', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                  Rooted in Jamaican Heritage
-                </span>
-              </div>
-              <h2 style={{ ...inter, fontSize: 'clamp(40px, 4.6vw, 62px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.75px', lineHeight: 1.08, margin: 0 }}>
-                Our Mission <span style={{ color: '#1A8C4A' }}>&amp;</span> Values
+          <div className="mission-mv">
+            <div className="mission-mv-block">
+              <h2 style={{ ...inter, fontSize: 'clamp(30px, 3vw, 44px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 16px' }}>
+                Our <span style={{ color: '#1A8C4A' }}>Mission</span>
               </h2>
-            </div>
-            <div style={{ borderLeft: '1px solid #E5E6EB', paddingLeft: '16px' }}>
-              <p style={{ ...inter, fontSize: 'clamp(17px, 1.1vw, 19px)', fontWeight: 400, color: '#6F7181', letterSpacing: '0.2px', lineHeight: 1.55, margin: 0 }}>
-                We manage and grow Mico Foundation's assets and infrastructure to support the university's needs, benefit students and staff, and preserve the legacy of the Lady Mico Trust.
+              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 400, color: '#5A5C6B', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
+                {missionText}
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-              <DonateButton text="Read Our Story" href="/about" />
-              <a href="/endowments" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFF7CC', color: '#040617', fontSize: '14px', fontWeight: 600, height: '46px', padding: '0 24px', borderRadius: '14px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-                Become Endowment
-              </a>
+            <div className="mission-mv-block">
+              <h2 style={{ ...inter, fontSize: 'clamp(30px, 3vw, 44px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 16px' }}>
+                Our <span style={{ color: '#F5B700' }}>Vision</span>
+              </h2>
+              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 400, color: '#5A5C6B', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
+                {visionText}
+              </p>
             </div>
-          </motion.div>
-
-          {/* Right — first three value cards */}
-          <div className="mission-panel mission-top-cards">
-            {values.slice(0, 3).map((value, i) => (
-              <motion.div
-                key={value.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.07 }}
-              >
-                <ValueCard value={value} style={{ minHeight: '230px', height: '100%' }} />
-              </motion.div>
-            ))}
           </div>
+
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', marginTop: '30px' }}>
+            <DonateButton text="Read Our Story" href="/about" />
+            <a href="/endowments" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFF7CC', color: '#040617', fontSize: '14px', fontWeight: 600, height: '46px', padding: '0 24px', borderRadius: '14px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+              Become Endowment
+            </a>
+          </div>
+        </motion.div>
+
+        {/* Core Values heading */}
+        <motion.div className="core-values-heading"
+          initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+          <h2 style={{ ...inter, fontSize: 'clamp(34px, 4vw, 54px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 10px' }}>
+            Core <span style={{ color: '#1A8C4A' }}>Values</span>
+          </h2>
+          <p style={{ ...inter, fontSize: 'clamp(15px, 1vw, 18px)', color: '#6F7181', margin: '0 auto', maxWidth: '620px', lineHeight: 1.6 }}>
+            The principles that guide how we lead, serve, and steward The Mico&apos;s legacy.
+          </p>
+        </motion.div>
+
+        {/* First three value cards */}
+        <div className="mission-panel mission-top-cards">
+          {values.slice(0, 3).map((value, i) => (
+            <motion.div
+              key={value.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.07 }}
+            >
+              <ValueCard value={value} style={{ minHeight: '230px', height: '100%' }} />
+            </motion.div>
+          ))}
         </div>
 
-        {/* BOTTOM — value cards with the foundation logo in the middle */}
+        {/* Remaining value cards with the foundation logo in the middle */}
         <div className="mission-panel mission-bottom-cards">
           {/* Transparency, Innovation */}
           {[values[3], values[4]].map((value, i) => (
@@ -228,13 +261,19 @@ export default function Mission() {
                 Rooted in Jamaican Heritage
               </span>
             </div>
-            <h2 style={{ ...inter, fontSize: '56px', fontWeight: 700, color: '#040617', letterSpacing: '-0.75px', lineHeight: '62px', margin: 0 }}>
-              Our Mission <span style={{ color: '#1A8C4A' }}>&amp;</span> Values
-            </h2>
           </div>
-          <div style={{ borderLeft: '1px solid #E5E6EB', paddingLeft: '16px' }}>
-            <p style={{ ...inter, fontSize: '24px', color: '#6F7181', letterSpacing: '0.24px', lineHeight: '38px', margin: 0 }}>
-              We manage and grow Mico Foundation's assets and infrastructure to support the university's needs, benefit students and staff, and preserve the legacy of the Lady Mico Trust.
+          <div style={{ borderLeft: '3px solid #FFD900', paddingLeft: '18px' }}>
+            <h2 style={{ ...inter, fontSize: '34px', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.15, margin: '0 0 12px' }}>
+              Our <span style={{ color: '#1A8C4A' }}>Mission</span>
+            </h2>
+            <p style={{ ...inter, fontSize: '19px', color: '#5A5C6B', lineHeight: 1.65, margin: '0 0 28px' }}>
+              {missionText}
+            </p>
+            <h2 style={{ ...inter, fontSize: '34px', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.15, margin: '0 0 12px' }}>
+              Our <span style={{ color: '#F5B700' }}>Vision</span>
+            </h2>
+            <p style={{ ...inter, fontSize: '19px', color: '#5A5C6B', lineHeight: 1.65, margin: 0 }}>
+              {visionText}
             </p>
           </div>
           {/* Full-width stacked buttons — Figma 374:33738 */}
@@ -250,6 +289,16 @@ export default function Mission() {
             </a>
           </div>
         </motion.div>
+
+        {/* Core Values heading */}
+        <div style={{ textAlign: 'center', width: '100%' }}>
+          <h2 style={{ ...inter, fontSize: '38px', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', margin: '0 0 8px' }}>
+            Core <span style={{ color: '#1A8C4A' }}>Values</span>
+          </h2>
+          <p style={{ ...inter, fontSize: '16px', color: '#6F7181', margin: 0, lineHeight: 1.6 }}>
+            The principles that guide how we lead, serve, and steward The Mico&apos;s legacy.
+          </p>
+        </div>
 
         {/* Values — 2 horizontal scroll rows — Figma 376:33979 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>

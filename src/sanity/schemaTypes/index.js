@@ -1,4 +1,5 @@
 import hero from './hero'
+import mission from './mission'
 import trustedBy from './trustedBy'
 import legacyImpact from './legacyImpact'
 import project from './project'
@@ -58,6 +59,7 @@ export const schema = {
      aboutContent,
      siteStats,
      foundationVideo,
+     mission,
      ourMission,
      resourceCategory,
      workWithUs,

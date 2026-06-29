@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
-const imgLogo    = '/images/home/themicofoundation-logo.png'
+const imgLogo    = '/images/home/the_mico_foundation.png'   // same logo as the hero
 const imgChevron = '/images/home-static/nav-corner-right-up.png'
 const imgStar    = '/images/home-static/corner-2.svg'
 const imgSparkle = '/images/home-static/nav-sparkle.png'
 
+const GOLD = '#f3af19'
 const inter = { fontFamily: "'Inter', sans-serif" }
 
 const dropdownCols = [
@@ -23,18 +25,17 @@ const dropdownCols = [
     { label: 'Work With Us',    href: '/workwithus' },
   ],
   [
-    /* { label: 'History',    href: '/history' }, */
     { label: 'Contact Us', href: '/contact' },
   ],
 ]
 
 const navLinks = [
-  { label: 'Home',         href: '/',           active: true },
-  { label: 'About Us',     href: '/about',      dropdown: true },
-  { label: 'Endowments',   href: '/endowments' },
-  { label: 'Projects',     href: '/projects' },
-  { label: 'News & Events',href: '/news' },
-  { label: 'Pledge',       href: '/pledge' },
+  { label: 'Home',          href: '/' },
+  { label: 'About Us',      href: '/about', dropdown: true },
+  { label: 'Endowments',    href: '/endowments' },
+  { label: 'Projects',      href: '/projects' },
+  { label: 'News & Events', href: '/news' },
+  { label: 'Pledge',        href: '/pledge' },
 ]
 
 function DropdownItem({ label, href }) {
@@ -53,9 +54,10 @@ function DropdownItem({ label, href }) {
 }
 
 export default function Navbar() {
-  const [menuOpen,       setMenuOpen]       = useState(false)
-  const [dropdownOpen,   setDropdownOpen]   = useState(false)
-  const [mobileAboutOpen,setMobileAboutOpen]= useState(false)
+  const pathname = usePathname() || '/'
+  const [menuOpen,       setMenuOpen]        = useState(false)
+  const [dropdownOpen,   setDropdownOpen]    = useState(false)
+  const [mobileAboutOpen,setMobileAboutOpen] = useState(false)
 
   const dropdownRef = useRef(null)
   const timerRef    = useRef(null)
@@ -71,29 +73,45 @@ export default function Navbar() {
   const handleMouseEnter = () => { clearTimeout(timerRef.current); setDropdownOpen(true) }
   const handleMouseLeave = () => { timerRef.current = setTimeout(() => setDropdownOpen(false), 150) }
 
+  // Active when the path matches (exact for Home, prefix for the rest)
+  const isActive = href => (href === '/' ? pathname === '/' : pathname.startsWith(href))
+
   return (
     <>
       <style>{`
         .nav-link {
           font-family: 'Inter', sans-serif;
-          font-size: 17px;
-          font-weight: 500;
-          color: #6F7181;
+          font-size: 16px;
+          font-weight: 600;
+          color: rgba(255,255,255,0.82);
           text-decoration: none;
-          display: flex;
+          display: inline-flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
           white-space: nowrap;
-          transition: color 0.2s;
           background: none;
           border: none;
           cursor: pointer;
-          padding: 0;
+          padding: 6px 0;
           line-height: normal;
           letter-spacing: -0.1px;
+          position: relative;
+          transition: color 0.2s;
         }
-        .nav-link:hover  { color: #040617; }
-        .nav-link.active { font-weight: 700; color: #040617; }
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          left: 0; right: 0; bottom: -2px;
+          height: 3px; border-radius: 3px;
+          background: ${GOLD};
+          transform: scaleX(0);
+          transform-origin: center;
+          transition: transform 0.22s ease;
+        }
+        .nav-link:hover { color: ${GOLD}; }
+        .nav-link:hover::after { transform: scaleX(1); }
+        .nav-link.active { color: ${GOLD}; }
+        .nav-link.active::after { transform: scaleX(1); }
 
         .donate-btn {
           font-family: 'Inter', sans-serif;
@@ -101,9 +119,9 @@ export default function Navbar() {
           font-weight: 700;
           color: #040617;
           background-color: #FFF7CC;
-          border-radius: 14px;
-          height: 48px;
-          padding: 0 28px;
+          border-radius: 12px;
+          height: 44px;
+          padding: 0 24px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -123,7 +141,7 @@ export default function Navbar() {
           top: 100%;
           left: 0;
           right: 0;
-          background: rgba(255,253,249,0.97);
+          background: rgba(255,253,249,0.98);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
           border-bottom: 1px solid rgba(225,225,225,0.1);
@@ -133,7 +151,7 @@ export default function Navbar() {
         }
         .dropdown-panel.open   { opacity:1; transform:scaleY(1);    pointer-events:all;  }
         .dropdown-panel.closed { opacity:0; transform:scaleY(0.97); pointer-events:none; }
-        .dropdown-item:hover p { color: #FFD900 !important; }
+        .dropdown-item:hover p { color: ${GOLD} !important; }
 
         .hamburger {
           background: none; border: none; cursor: pointer;
@@ -147,35 +165,48 @@ export default function Navbar() {
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-        /* Logo — floats above and below the navbar bar */
+        /* Black pill bar holding the links + donate button */
+        .mico-bar {
+          flex: 1;
+          background: #050608;
+          border-radius: 16px;
+          height: 68px;
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          padding: 0 14px 0 36px;
+          box-shadow: 0 10px 30px rgba(4,6,23,0.18);
+        }
+
+        /* Logo — floats above and below the bar */
         .logo-float-wrapper {
           position: relative;
-          width: 140px;
+          width: 150px;
           flex-shrink: 0;
-          height: 105px;
+          height: 80px;
           display: flex;
-          align-items: flex-end;
+          align-items: center;
         }
         .logo-float {
           position: absolute;
-          bottom: -16px;
+          top: 50%;
           left: 0;
-          width: 140px;
-          height: 148px;
+          transform: translateY(-50%);
+          width: 150px;
+          height: 150px;
           object-fit: contain;
-          object-position: bottom center;
-          filter: drop-shadow(0 4px 20px rgba(0,0,0,0.15));
+          object-position: center;
           z-index: 60;
           transition: transform 0.25s ease;
         }
-        .logo-float:hover { transform: translateY(-4px); }
+        .logo-float:hover { transform: translateY(-50%) scale(1.04); }
 
         @media (max-width: 1200px) {
-          .desktop-nav, .desktop-donate { display: none !important; }
+          .desktop-nav, .desktop-donate, .mico-bar { display: none !important; }
           .mobile-btn { display: flex !important; }
           .navbar-inner { padding: 0 24px !important; height: 72px !important; }
-          .logo-float-wrapper { width: 100px; height: 72px; }
-          .logo-float { width: 100px; height: 96px; bottom: -12px; }
+          .logo-float-wrapper { width: 110px; height: 72px; }
+          .logo-float { width: 110px; height: 110px; }
         }
         @media (min-width: 1201px) {
           .mobile-btn { display: none !important; }
@@ -184,10 +215,8 @@ export default function Navbar() {
       `}</style>
 
       <nav ref={dropdownRef} style={{
-        backgroundColor: 'rgba(255,253,249,0.97)',
-        backdropFilter: 'blur(12.5px)',
-        WebkitBackdropFilter: 'blur(12.5px)',
-        borderBottom: '1px solid rgba(225,225,225,0.05)',
+        backgroundColor: '#FFFFFF',
+        borderBottom: '1px solid rgba(4,6,23,0.06)',
         position: 'sticky',
         top: 0,
         zIndex: 50,
@@ -197,54 +226,56 @@ export default function Navbar() {
         <div className="navbar-inner" style={{
           maxWidth: '1920px',
           margin: '0 auto',
-          padding: '0 90px',
-          height: '105px',
+          padding: '14px 48px',
+          minHeight: '96px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           position: 'relative',
-          gap: '48px',
+          gap: '28px',
           overflow: 'visible',
         }}>
 
-          {/* Floating logo */}
+          {/* Floating logo (same as hero) */}
           <a href="/" className="logo-float-wrapper" style={{ textDecoration:'none' }} aria-label="The Mico Foundation">
             <img src={imgLogo} alt="The Mico Foundation" className="logo-float" />
           </a>
 
-          {/* Desktop nav links */}
-          <div className="desktop-nav" style={{
-            flex: 1,
-            maxWidth: '900px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexShrink: 0,
-          }}>
-            {navLinks.map(link =>
-              link.dropdown ? (
-                <button key={link.label} type="button"
-                  className={`nav-link${link.active ? ' active' : ''}`}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  onClick={() => setDropdownOpen(!dropdownOpen)}>
-                  {link.label}
-                  <img src={imgChevron} alt="" style={{
-                    width: '12px', height: '12px',
-                    transform: dropdownOpen ? 'scaleY(1)' : 'scaleY(-1)',
-                    opacity: 0.7, flexShrink: 0, transition: 'transform 0.2s',
-                  }} />
-                </button>
-              ) : (
-                <a key={link.label} href={link.href}
-                  className={`nav-link${link.active ? ' active' : ''}`}>
-                  {link.label}
-                </a>
-              )
-            )}
-          </div>
+          {/* Black bar — desktop links + donate */}
+          <div className="mico-bar">
+            <div className="desktop-nav" style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '24px',
+            }}>
+              {navLinks.map(link =>
+                link.dropdown ? (
+                  <button key={link.label} type="button"
+                    className={`nav-link${isActive(link.href) ? ' active' : ''}`}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onClick={() => setDropdownOpen(!dropdownOpen)}>
+                    {link.label}
+                    <img src={imgChevron} alt="" style={{
+                      width: '12px', height: '12px',
+                      transform: dropdownOpen ? 'scaleY(1)' : 'scaleY(-1)',
+                      opacity: 0.7, flexShrink: 0, transition: 'transform 0.2s',
+                      filter: 'brightness(0) invert(1)',
+                    }} />
+                  </button>
+                ) : (
+                  <a key={link.label} href={link.href}
+                    className={`nav-link${isActive(link.href) ? ' active' : ''}`}>
+                    {link.label}
+                  </a>
+                )
+              )}
+            </div>
 
-          <a href="/donate" className="donate-btn desktop-donate">Donate Now</a>
+            <a href="/donate" className="donate-btn desktop-donate">Donate Now</a>
+          </div>
 
           <button type="button"
             className={`hamburger mobile-btn${menuOpen ? ' open' : ''}`}
@@ -293,7 +324,8 @@ export default function Navbar() {
                         ...inter, width:'100%', textAlign:'left',
                         display:'flex', alignItems:'center', justifyContent:'space-between',
                         padding:'16px 24px', background:'none', border:'none', cursor:'pointer',
-                        fontSize:'18px', fontWeight:500, color:'#6F7181',
+                        fontSize:'18px', fontWeight: isActive(link.href) ? 700 : 500,
+                        color: isActive(link.href) ? GOLD : '#6F7181',
                         borderBottom:'1px solid rgba(225,225,225,0.2)',
                       }}>
                       {link.label}
@@ -328,8 +360,8 @@ export default function Navbar() {
                     style={{
                       ...inter, display:'flex', alignItems:'center',
                       padding:'16px 24px', fontSize:'18px',
-                      fontWeight: link.active ? 700 : 500,
-                      color: link.active ? '#040617' : '#6F7181',
+                      fontWeight: isActive(link.href) ? 700 : 500,
+                      color: isActive(link.href) ? GOLD : '#6F7181',
                       textDecoration:'none',
                       borderBottom: i < navLinks.length - 1 ? '1px solid rgba(225,225,225,0.2)' : 'none',
                     }}>

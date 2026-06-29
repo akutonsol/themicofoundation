@@ -313,6 +313,10 @@ ourMission: `*[_type == "ourMission"][0]{
   eyebrow, title, subtitle, values, ctaText, ctaLink
 }`,
 
+mission: `*[_type == "mission"][0]{
+  heading, missionStatement, visionStatement, values
+}`,
+
 resourceCategories: `*[_type == "resourceCategory" && isActive == true] | order(order asc) {
   _id, title, description,
   date,

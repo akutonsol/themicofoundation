@@ -11,8 +11,8 @@ export default function TrusteesPage() {
       <Navbar />
       <main>
         <TrusteeLegacySection />
+         <TeamProfileFeature />
         <TrusteeLeader />
-        <TeamProfileFeature />
         <FormerTrusteesSection />
       </main>
       <Footer />

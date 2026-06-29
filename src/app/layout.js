@@ -1,4 +1,5 @@
 import './globals.css'
+import AnniversaryPopup from '@/components/shared/AnniversaryPopup'
 
 export const metadata = {
   title: 'Mico Foundation',
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
       </head>
       <body style={{ fontFamily: "'Inter', -apple-system, sans-serif" }} suppressHydrationWarning>
         {children}
+        <AnniversaryPopup />
       </body>
     </html>
   )
