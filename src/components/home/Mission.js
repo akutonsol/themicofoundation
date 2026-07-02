@@ -180,7 +180,7 @@ export default function Mission() {
               <h2 style={{ ...inter, fontSize: 'clamp(30px, 3vw, 44px)', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.1, margin: '0 0 16px' }}>
                 Our Vision
               </h2>
-              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 400, color: 'rgba(4,6,23,0.82)', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
+              <p style={{ ...inter, fontSize: 'clamp(17px, 1.15vw, 20px)', fontWeight: 600, color: '#040617', letterSpacing: '0.1px', lineHeight: 1.7, margin: 0 }}>
                 {visionText}
               </p>
             </div>
@@ -282,7 +282,7 @@ export default function Mission() {
             <h2 style={{ ...inter, fontSize: '32px', fontWeight: 700, color: '#040617', letterSpacing: '-0.5px', lineHeight: 1.15, margin: '0 0 12px' }}>
               Our Vision
             </h2>
-            <p style={{ ...inter, fontSize: '18px', color: 'rgba(4,6,23,0.82)', lineHeight: 1.65, margin: 0 }}>
+            <p style={{ ...inter, fontSize: '18px', fontWeight: 600, color: '#040617', lineHeight: 1.65, margin: 0 }}>
               {visionText}
             </p>
           </div>

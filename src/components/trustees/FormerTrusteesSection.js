@@ -83,7 +83,11 @@ export default function FormerTrusteesSection() {
         .ft-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin: clamp(36px,5vw,56px) 0 14px; }
         .ft-eyebrow span { font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#B8860B; }
         .ft-eyebrow .bar { width:32px; height:2px; background:#f3af19; }
-        .ft-title { text-align:center; font-family:'Inter',sans-serif; font-size: clamp(42px,6vw,72px); font-weight:800; letter-spacing:-0.04em; color:#040617; line-height:1; margin:0 0 clamp(40px,6vw,60px); }
+        .ft-title { text-align:center; font-family:'Inter',sans-serif; font-size: clamp(42px,6vw,72px); font-weight:800; letter-spacing:-0.04em; color:#040617; line-height:1; margin:0 0 clamp(24px,3.5vw,36px); }
+        .ft-reading { max-width: 860px; margin: 0 auto clamp(48px,7vw,72px); }
+        .ft-reading p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,19px); line-height:1.85; color:#4A4C5A; margin:0 0 20px; }
+        .ft-reading p:last-child { margin-bottom:0; }
+        .ft-reading p:first-child::first-letter { font-size: 3.4em; line-height:0.8; font-weight:800; float:left; margin:6px 12px 0 0; color:#B8860B; }
 
         .ft-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: clamp(20px,2.2vw,32px); align-items: start; }
         @media (max-width: 980px) { .ft-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
@@ -115,10 +119,14 @@ export default function FormerTrusteesSection() {
 
           <div className="ft-eyebrow">
             <span className="bar" />
-            <span>Honouring Those Who Came Before</span>
+            <span>The Lady Mico Trust</span>
             <span className="bar" />
           </div>
-          <h2 className="ft-title">Former Trustees</h2>
+          <h2 className="ft-title">An Historical Perspective</h2>
+          <div className="ft-reading">
+            <p>The bequest of Lady Jane Mico dates to 1670, when she left one thousand pounds in her will to ransom Christians held captive by the Barbary corsairs of North Africa. As the need for such ransoms faded, the fund lay dormant in the Court of Chancery for more than a century and a half, quietly accumulating interest.</p>
+            <p>In 1835, following the abolition of slavery throughout the British Empire, the accumulated sum was directed by Sir Thomas Fowell Buxton and his fellow reformers toward a new and enduring purpose — the education of the newly emancipated peoples of the West Indies. From that reimagined bequest sprang the Lady Mico Charity, and with it the teachers&rsquo; colleges and schools whose legacy The Mico Foundation carries forward today.</p>
+          </div>
         </motion.div>
 
         <div className="ft-grid">

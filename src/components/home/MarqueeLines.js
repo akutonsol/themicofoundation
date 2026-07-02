@@ -16,7 +16,7 @@ const REPEAT = 8
 const inter = { fontFamily: "'inter', sans-serif" }
 
 // ── Desktop strip — 32px text, 120px height, 24px gap ──
-function MarqueeStrip({ bg, rotation, direction, imgStar, speed = 60, fontSize = '32px', height = '120px', gap = '24px', padding = '24px 0' }) {
+function MarqueeStrip({ bg, rotation, direction, imgStar, speed = 60, fontSize = '32px', height = '120px', gap = '24px', padding = '24px 0', textColor = '#040617' }) {
   return (
     <div style={{
       transform: `rotate(${rotation}deg)`,
@@ -53,7 +53,7 @@ function MarqueeStrip({ bg, rotation, direction, imgStar, speed = 60, fontSize =
               ...inter,
               fontSize,
               fontWeight: 600,
-              color: '#040617',
+              color: textColor,
               letterSpacing: fontSize === '26px' ? '-0.26px' : '-0.32px',
               lineHeight: fontSize === '26px' ? '36px' : '46px',
               textTransform: 'capitalize',
@@ -107,7 +107,7 @@ export default function MarqueeLines() {
       <div className="marquee-desktop" style={{ position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         {/* Green strip — behind, -5.3deg, scrolls left */}
         <motion.div style={{ x: greenX, position: 'absolute', top: '20px', left: 0, right: 0, zIndex: 1 }}>
-          <MarqueeStrip bg="#5EDA71" rotation={-5.3} direction="left"  imgStar={imgStarGreen}  speed={55} />
+          <MarqueeStrip bg="#040617" rotation={-5.3} direction="left"  imgStar={imgStarGreen}  speed={55} textColor="#f3af19" />
         </motion.div>
         {/* Yellow strip — front, +4deg, scrolls right */}
         <motion.div style={{ x: yellowX, position: 'absolute', top: '80px', left: 0, right: 0, zIndex: 2 }}>
@@ -129,7 +129,7 @@ export default function MarqueeLines() {
         {/* Green strip — behind, -5.3deg */}
         <motion.div style={{ x: greenX, position: 'absolute', top: '10px', left: 0, right: 0, zIndex: 1 }}>
           <MarqueeStrip
-            bg="#5EDA71"
+            bg="#040617"
             rotation={-5.3}
             direction="left"
             imgStar={imgMobileStarGreen}
@@ -138,6 +138,7 @@ export default function MarqueeLines() {
             height="80px"
             gap="16px"
             padding="20px 0"
+            textColor="#f3af19"
           />
         </motion.div>
         {/* Yellow strip — front, +4deg */}

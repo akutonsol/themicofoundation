@@ -10,8 +10,9 @@ export default function TrusteesPage() {
       <Navbar />
       <main>
         <TrusteeLegacySection />
+         <FormerTrusteesSection />
         <TeamProfileFeature />
-        <FormerTrusteesSection />
+       
       </main>
       <Footer />
     </>

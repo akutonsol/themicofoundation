@@ -70,6 +70,13 @@ export default function FeaturedMessage() {
         .fm-desktop { display: flex; padding: 100px clamp(24px, 8vw, 165px); }
         .fm-mobile  { display: none; }
 
+        /* Creative colour splash behind the message text */
+        .fm-splash { position: absolute; inset: -40px -50px; z-index: -1; pointer-events: none; }
+        .fm-splash span { position: absolute; display: block; border-radius: 50%; filter: blur(34px); }
+        .fm-splash-a { top: 2%;  left: -8%;  width: 360px; height: 360px; background: radial-gradient(circle at 35% 35%, rgba(255,217,0,0.34), rgba(255,217,0,0) 66%); }
+        .fm-splash-b { bottom: 4%; right: -6%; width: 320px; height: 320px; background: radial-gradient(circle, rgba(26,140,74,0.20), rgba(26,140,74,0) 66%); }
+        .fm-splash-c { top: 40%; right: 20%; width: 240px; height: 240px; background: radial-gradient(circle, rgba(243,175,25,0.20), rgba(243,175,25,0) 68%); }
+
         @media (max-width: 1024px) {
           .fm-desktop { padding: 80px 48px; }
         }
@@ -183,8 +190,15 @@ export default function FeaturedMessage() {
         <motion.div
           initial={{ opacity:0, x:30 }} whileInView={{ opacity:1, x:0 }}
           viewport={{ once:true }} transition={{ duration:0.7, delay:0.12 }}
-          style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:'0' }}
+          style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:'0', position:'relative' }}
         >
+          {/* Creative background splash */}
+          <div className="fm-splash" aria-hidden>
+            <span className="fm-splash-a" />
+            <span className="fm-splash-b" />
+            <span className="fm-splash-c" />
+          </div>
+
           {/* Badge */}
           <div style={{ marginBottom:'28px' }}>
             <span style={{ ...inter, fontSize:'11px', fontWeight:700, color:'#040617', backgroundColor:'rgba(255,217,0,0.1)', border:'1px solid rgba(255,217,0,0.25)', padding:'6px 16px', borderRadius:'100px', letterSpacing:'0.14em', textTransform:'uppercase' }}>

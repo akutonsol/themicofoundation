@@ -1,14 +1,8 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
-
-const staticBlocks = [
-  { year: "1835", label: "Foundation", text: "The Lady Mico Charity was established by an Act of Parliament in England and Wales, with Sir Thomas Fowell Buxton as its first chairman. Under his leadership, the Charity rapidly expanded educational opportunities throughout the British colonies — establishing teachers' colleges and elementary schools across Mauritius, the Seychelles, and the West Indies." },
-  { year: "1966", label: "Survival", text: "Today, The Mico University College in Kingston, Jamaica remains the only surviving institution from that original educational movement — the longest sustained educational charity legacy in the West Indies. As the organization evolved into the Lady Mico Trust, its mission continued through sustained support for teacher training and educational advancement." },
-  { year: "2000", label: "Custodianship", text: "Professor The Honourable Errol Lawrence Miller, OJ, became the first and only citizen outside the United Kingdom to serve as Trustee of the Lady Mico Trust. In 2000, the Jamaican assets of the Trust were transferred to The Mico Foundation, which now serves as the chief custodian of its enduring mission, history, and institutional legacy." },
-];
 
 // Joe Bartley — Lead Trustee. Drop his photo at /public/images/trustees/joe-bartley.jpg
 // (falls back to a placeholder portrait until the file is added).
@@ -38,30 +32,10 @@ const staticContent = {
   ctaBodyText: "",
 };
 
-function Block({ block, index }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 85%", "start 30%"] });
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
-  const x = useTransform(scrollYProgress, [0, 0.5], [index % 2 === 0 ? -40 : 40, 0]);
-
-  return (
-    <motion.div ref={ref} style={{ opacity, x }} className="block-item">
-      <div className="year-col">
-        <span className="year-num">{block.year}</span>
-        <div className="year-line" />
-      </div>
-      <div className="content-col">
-        <span className="block-label">{block.label}</span>
-        <p className="block-text">{block.text}</p>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function TrusteeLegacySection() {
   const [content, setContent] = useState(staticContent);
-  const [blocks, setBlocks] = useState(staticBlocks);
   const [leader, setLeader] = useState(DEFAULT_LEADER);
+  const [showMsg, setShowMsg] = useState(false);
   const heroRef = useRef(null);
 
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -85,9 +59,6 @@ export default function TrusteeLegacySection() {
             ctaButtonLink: data.ctaButtonLink || staticContent.ctaButtonLink,
             ctaBodyText: data.ctaBodyText || staticContent.ctaBodyText,
           });
-          if (data.timelineBlocks?.length > 0) {
-            setBlocks(data.timelineBlocks);
-          }
         }
       } catch (error) {
         console.error('Error fetching trustee legacy content:', error);
@@ -123,11 +94,10 @@ export default function TrusteeLegacySection() {
         .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,217,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,217,0,0.04) 1px, transparent 1px); background-size: 72px 72px; }
         .hero-gradient { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,31,63,0.9) 0%, rgba(5,8,15,0.4) 60%, transparent 100%); }
         .hero-year-bg { position: absolute; left: -2%; top: 50%; transform: translateY(-50%); font-family: 'Cormorant Garamond', serif; font-size: clamp(200px, 28vw, 420px); font-weight: 300; color: rgba(255,217,0,0.035); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -0.05em; }
-        .hero-content { position: relative; z-index: 2; max-width: 1500px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(40px,5vw,80px); align-items: center; }
+        .hero-content { position: relative; z-index: 2; max-width: 1560px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 0.86fr 1.14fr; gap: clamp(40px,5vw,72px); align-items: center; }
         .hero-text { min-width: 0; }
         .hero-image-wrap { position: relative; width: 100%; }
-        .hero-image { width: 100%; height: clamp(440px, 66vh, 660px); object-fit: cover; object-position: top center; border-radius: 24px; display: block; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
-        .hero-image-frame { position: absolute; inset: 0; border-radius: 24px; border: 1px solid rgba(255,217,0,0.25); pointer-events: none; }
+        .hero-image { width: 100%; height: clamp(520px, 82vh, 840px); object-fit: cover; object-position: top center; border-radius: 24px; display: block; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
         .hero-image-cap { position: absolute; left: 20px; bottom: 20px; right: 20px; background: linear-gradient(to top, rgba(5,8,15,0.92), rgba(5,8,15,0)); border-radius: 0 0 24px 24px; padding: 40px 24px 22px; }
         .hero-image-cap .cap-role { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 6px; }
         .hero-image-cap .cap-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: #fff; margin: 0; line-height: 1.05; letter-spacing: -0.02em; }
@@ -135,31 +105,23 @@ export default function TrusteeLegacySection() {
         .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(64px, 10vw, 152px); font-weight: 300; line-height: 0.88; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
         .hero-title em { font-style: italic; color: #FFD900; }
         .hero-sub { font-family: 'Syne', sans-serif; font-size: clamp(15px, 1.4vw, 19px); font-weight: 400; color: rgba(255,255,255,0.4); margin: 32px 0 0; max-width: 560px; line-height: 1.65; letter-spacing: 0.01em; }
-        .scroll-hint { display: flex; align-items: center; gap: 12px; margin-top: 48px; font-family: 'Syne', sans-serif; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
-        .scroll-line { width: 48px; height: 1px; background: rgba(255,255,255,0.2); }
+        .read-msg-btn { display: inline-flex; align-items: center; gap: 12px; margin-top: 44px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 16px 28px; border-radius: 100px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+        .read-msg-btn:hover { background: #fff; transform: translateY(-2px); }
+        .read-msg-btn svg { width: 18px; height: 18px; transition: transform 0.2s; }
+        .read-msg-btn:hover svg { transform: translateX(3px); }
 
-        .legacy-message { background: #05080F; padding: 0 clamp(24px,5vw,80px) clamp(60px,8vw,100px); }
-        .legacy-message-inner { max-width: 880px; margin: 0 auto; }
-        .legacy-message-p { font-family: 'Syne', sans-serif; font-size: clamp(17px,1.5vw,21px); line-height: 1.85; color: rgba(255,255,255,0.72); margin: 0 0 26px; }
-        .legacy-message-p:last-child { margin-bottom: 0; }
-
-        .legacy-timeline { background: #FAFAF7; padding: clamp(80px,10vw,140px) clamp(24px,5vw,80px); position: relative; overflow: hidden; }
-        .timeline-header { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; max-width: 1400px; margin: 0 auto 100px; }
-        .timeline-header-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #8A8E9D; margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
-        .timeline-header-label::before { content: ''; display: block; width: 32px; height: 1px; background: #040617; }
-        .timeline-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 5vw, 72px); font-weight: 600; color: #040617; margin: 0; line-height: 1.05; letter-spacing: -0.03em; }
-        .timeline-header p { font-family: 'Syne', sans-serif; font-size: clamp(15px,1.4vw,18px); color: #7A7D8B; line-height: 1.7; margin: 0; font-weight: 400; }
-        .blocks-list { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; position: relative; }
-        .blocks-list::before { content: ''; position: absolute; left: 160px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, #E5E6EB 8%, #E5E6EB 92%, transparent); }
-        .block-item { display: grid; grid-template-columns: 180px 1fr; gap: 60px; padding: 56px 0; border-bottom: 1px solid rgba(229,230,235,0.5); align-items: start; }
-        .block-item:last-child { border-bottom: none; }
-        .year-col { display: flex; flex-direction: column; align-items: flex-end; padding-right: 40px; padding-top: 6px; position: relative; }
-        .year-num { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: #040617; line-height: 1; letter-spacing: -0.03em; }
-        .year-line { position: absolute; right: -1px; top: 16px; width: 12px; height: 1px; background: #FFD900; }
-        .year-line::before { content: ''; position: absolute; right: -4px; top: 50%; transform: translateY(-50%); width: 9px; height: 9px; border-radius: 50%; background: #FFD900; box-shadow: 0 0 0 3px rgba(255,217,0,0.15); }
-        .content-col { display: flex; flex-direction: column; gap: 20px; }
-        .block-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #000000; background: rgba(255,217,0,0.1); padding: 5px 12px; border-radius: 100px; width: fit-content; }
-        .block-text { font-family: 'Syne', sans-serif; font-size: clamp(16px,1.6vw,21px); line-height: 1.75; color: #3A3D4A; margin: 0; font-weight: 400; }
+        .msg-overlay { position: fixed; inset: 0; background: rgba(4,6,23,0.6); backdrop-filter: blur(4px); z-index: 3000; }
+        .msg-panel { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3001; max-height: 90vh; background: #05080F; border-radius: 28px 28px 0 0; box-shadow: 0 -30px 80px rgba(0,0,0,0.6); border-top: 1px solid rgba(255,217,0,0.2); overflow-y: auto; }
+        .msg-panel::before { content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 48px; height: 4px; border-radius: 100px; background: rgba(255,255,255,0.18); }
+        .msg-close { position: absolute; top: 20px; right: clamp(20px,4vw,48px); width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .msg-close:hover { background: rgba(255,255,255,0.1); }
+        .msg-close svg { width: 20px; height: 20px; }
+        .msg-panel-inner { max-width: 820px; margin: 0 auto; padding: clamp(48px,7vw,72px) clamp(24px,5vw,64px) clamp(56px,8vw,88px); }
+        .msg-eyebrow { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 14px; }
+        .msg-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px,5.5vw,68px); font-weight: 600; color: #fff; margin: 0 0 clamp(28px,4vw,40px); line-height: 1; letter-spacing: -0.03em; }
+        .msg-body { border-top: 1px solid rgba(255,255,255,0.08); padding-top: clamp(28px,4vw,40px); }
+        .msg-p { font-family: 'Syne', sans-serif; font-size: clamp(17px,1.5vw,20px); line-height: 1.85; color: rgba(255,255,255,0.74); margin: 0 0 24px; }
+        .msg-p:last-child { margin-bottom: 0; }
 
         .legacy-cta { background: #05080F; padding: clamp(60px,8vw,100px) clamp(24px,5vw,80px); position: relative; overflow: hidden; }
         .cta-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
@@ -181,17 +143,7 @@ export default function TrusteeLegacySection() {
           .hero-year-bg { display: none; }
         }
         @media (max-width: 900px) {
-          .timeline-header { grid-template-columns: 1fr; }
-          .blocks-list::before { left: 80px; }
-          .block-item { grid-template-columns: 100px 1fr; gap: 32px; }
-          .year-num { font-size: 36px; }
           .cta-inner { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 600px) {
-          .blocks-list::before { display: none; }
-          .block-item { grid-template-columns: 1fr; gap: 16px; }
-          .year-col { align-items: flex-start; padding-right: 0; }
-          .year-line { display: none; }
         }
       `}</style>
 
@@ -210,10 +162,12 @@ export default function TrusteeLegacySection() {
               {content.heroTitleLine3}
             </h1>
             <p className="hero-sub">{content.heroSubtitle}</p>
-            <div className="scroll-hint">
-              <div className="scroll-line" />
-              Scroll to explore
-            </div>
+            <button type="button" className="read-msg-btn" onClick={() => setShowMsg(true)}>
+              Read {leader.name.split(' ')[0]}'s Message
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden>
+                <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
           </div>
 
           {/* RIGHT — Lead Trustee portrait (CMS) */}
@@ -224,7 +178,6 @@ export default function TrusteeLegacySection() {
               alt={`${leader.name}, ${leader.role}`}
               onError={(e) => { if (e.currentTarget.src !== joeBartleyFallback) e.currentTarget.src = joeBartleyFallback; }}
             />
-            <div className="hero-image-frame" />
             <div className="hero-image-cap">
               <p className="cap-role">{leader.role}</p>
               <p className="cap-name">{leader.name}</p>
@@ -233,30 +186,41 @@ export default function TrusteeLegacySection() {
         </motion.div>
       </section>
 
-      {/* ── LEAD TRUSTEE MESSAGE (top section) ── */}
-      <section className="legacy-message">
-        <div className="legacy-message-inner">
-          {leader.message.map((para, i) => (
-            <p key={i} className="legacy-message-p">{para}</p>
-          ))}
-        </div>
-      </section>
-
-      {/* ── TIMELINE ── */}
-      <section className="legacy-timeline">
-        <div className="timeline-header">
-          <div>
-            <p className="timeline-header-label">Our History</p>
-            <h2>A Legacy<br />Built to Last</h2>
-          </div>
-
-        </div>
-        <div className="blocks-list">
-          {blocks.map((block, i) => (
-            <Block key={block.year} block={block} index={i} />
-          ))}
-        </div>
-      </section>
+      {/* ── LEAD TRUSTEE MESSAGE — slide-up panel ── */}
+      <AnimatePresence>
+        {showMsg && (
+          <>
+            <motion.div
+              className="msg-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setShowMsg(false)}
+            />
+            <motion.div
+              className="msg-panel"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 240 }}
+            >
+              <button type="button" className="msg-close" onClick={() => setShowMsg(false)} aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+              </button>
+              <div className="msg-panel-inner">
+                <p className="msg-eyebrow">A Message From Our {leader.role}</p>
+                <h2 className="msg-name">{leader.name}</h2>
+                <div className="msg-body">
+                  {leader.message.map((para, i) => (
+                    <p key={i} className="msg-p">{para}</p>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ── CTA ── */}
       <section className="legacy-cta">
