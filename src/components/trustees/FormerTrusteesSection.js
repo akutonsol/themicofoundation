@@ -78,13 +78,12 @@ export default function FormerTrusteesSection() {
         .ft-glow-b { position:absolute; bottom:-180px; left:-140px; width:480px; height:480px; border-radius:50%; background: radial-gradient(circle, rgba(4,6,23,0.05) 0%, rgba(4,6,23,0) 70%); pointer-events:none; }
         .ft-inner { position: relative; z-index: 1; max-width: 1480px; margin: 0 auto; }
 
-        .ft-quote { max-width: 980px; margin: 0 auto; text-align: center; font-family: 'Inter', sans-serif; font-size: clamp(20px,2.4vw,30px); font-weight: 500; line-height: 1.45; letter-spacing: -0.02em; color: #6F7181; font-style: italic; }
-        .ft-quote-author { text-align:center; font-family:'Inter',sans-serif; font-size: clamp(15px,1.3vw,18px); font-weight:700; color:#040617; margin: 18px 0 0; }
-        .ft-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin: clamp(36px,5vw,56px) 0 14px; }
+        .ft-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin: 0 0 14px; }
         .ft-eyebrow span { font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#B8860B; }
         .ft-eyebrow .bar { width:32px; height:2px; background:#f3af19; }
         .ft-title { text-align:center; font-family:'Inter',sans-serif; font-size: clamp(42px,6vw,72px); font-weight:800; letter-spacing:-0.04em; color:#040617; line-height:1; margin:0 0 clamp(24px,3.5vw,36px); }
-        .ft-reading { max-width: 860px; margin: 0 auto clamp(48px,7vw,72px); }
+        .ft-reading-block { margin-top: clamp(56px,7vw,88px); padding-top: clamp(48px,6vw,72px); border-top: 1px solid #ECEDF1; }
+        .ft-reading { max-width: 860px; margin: 0 auto; }
         .ft-reading p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,19px); line-height:1.85; color:#4A4C5A; margin:0 0 20px; }
         .ft-reading p:last-child { margin-bottom:0; }
         .ft-reading p:first-child::first-letter { font-size: 3.4em; line-height:0.8; font-weight:800; float:left; margin:6px 12px 0 0; color:#B8860B; }
@@ -112,11 +111,23 @@ export default function FormerTrusteesSection() {
         <motion.div
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
         >
-          <p className="ft-quote">
-            &ldquo;The longer I live, the more I am certain that the great difference between men — between the feeble and the powerful, the great and the insignificant — is energy, invincible determination.&rdquo;
-          </p>
-          <p className="ft-quote-author">— Sir Thomas Fowell Buxton</p>
+          <div className="ft-eyebrow">
+            <span className="bar" />
+            <span>Honouring Those Who Came Before</span>
+            <span className="bar" />
+          </div>
+          <h2 className="ft-title">Former Trustees</h2>
+        </motion.div>
 
+        <div className="ft-grid">
+          {trustees.map((trustee, i) => <TrusteeCard key={trustee.id} trustee={trustee} index={i} />)}
+        </div>
+
+        {/* ── The Lady Mico Trust — reading ── */}
+        <motion.div
+          className="ft-reading-block"
+          initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+        >
           <div className="ft-eyebrow">
             <span className="bar" />
             <span>The Lady Mico Trust</span>
@@ -128,10 +139,6 @@ export default function FormerTrusteesSection() {
             <p>In 1835, following the abolition of slavery throughout the British Empire, the accumulated sum was directed by Sir Thomas Fowell Buxton and his fellow reformers toward a new and enduring purpose — the education of the newly emancipated peoples of the West Indies. From that reimagined bequest sprang the Lady Mico Charity, and with it the teachers&rsquo; colleges and schools whose legacy The Mico Foundation carries forward today.</p>
           </div>
         </motion.div>
-
-        <div className="ft-grid">
-          {trustees.map((trustee, i) => <TrusteeCard key={trustee.id} trustee={trustee} index={i} />)}
-        </div>
       </div>
     </section>
   );

@@ -126,10 +126,11 @@ export default function MessageDetail({ slug }) {
   const isChairman   = (message.role || "").toLowerCase().includes("chairman");
   const title        = isChairman ? "Chairman Message" : "Message from the Foundation";
 
-  // Main page shows a preview ending at the "…historical legacy." line; the
-  // slide-up panel shows the complete message.
-  const legacyIdx    = message.body.findIndex(p => /historical legacy/i.test(p));
-  const previewBody  = legacyIdx >= 0 ? message.body.slice(0, legacyIdx + 1) : message.body.slice(0, 4);
+  // Main page shows most of the message; the last 3 paragraphs are held back
+  // and revealed only in the slide-up "Read Full Message" panel.
+  const hasMore      = message.body.length > 3;
+  const previewBody  = hasMore ? message.body.slice(0, message.body.length - 3) : message.body;
+  const panelBody    = message.body.slice(-3);
 
   return (
     <main style={{ backgroundColor:"#040617", position:"relative", overflow:"hidden" }}>
@@ -211,12 +212,14 @@ export default function MessageDetail({ slug }) {
               </p>
             ))}
 
-            <div style={{ marginTop:"40px" }}>
-              <button onClick={() => setShowPanel(true)} className="md-read-btn">
-                Read Full Message
-                <ArrowRight size={16} />
-              </button>
-            </div>
+            {hasMore && (
+              <div style={{ marginTop:"40px" }}>
+                <button onClick={() => setShowPanel(true)} className="md-read-btn">
+                  Read Full Message
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
 
@@ -299,7 +302,7 @@ export default function MessageDetail({ slug }) {
                       </div>
                     </div>
 
-                    {message.body.map((para, i) => (
+                    {panelBody.map((para, i) => (
                       <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>{para}</p>
                     ))}
 

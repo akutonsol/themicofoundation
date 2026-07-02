@@ -71,11 +71,11 @@ export default function FeaturedMessage() {
         .fm-mobile  { display: none; }
 
         /* Creative colour splash behind the message text */
-        .fm-splash { position: absolute; inset: -40px -50px; z-index: -1; pointer-events: none; }
-        .fm-splash span { position: absolute; display: block; border-radius: 50%; filter: blur(34px); }
-        .fm-splash-a { top: 2%;  left: -8%;  width: 360px; height: 360px; background: radial-gradient(circle at 35% 35%, rgba(255,217,0,0.34), rgba(255,217,0,0) 66%); }
-        .fm-splash-b { bottom: 4%; right: -6%; width: 320px; height: 320px; background: radial-gradient(circle, rgba(26,140,74,0.20), rgba(26,140,74,0) 66%); }
-        .fm-splash-c { top: 40%; right: 20%; width: 240px; height: 240px; background: radial-gradient(circle, rgba(243,175,25,0.20), rgba(243,175,25,0) 68%); }
+        .fm-splash { position: absolute; inset: -80px -70px; z-index: -1; pointer-events: none; }
+        .fm-splash span { position: absolute; display: block; border-radius: 50%; filter: blur(40px); }
+        .fm-splash-a { top: -4%;  left: -12%;  width: 480px; height: 480px; background: radial-gradient(circle at 35% 35%, rgba(255,217,0,0.72), rgba(255,217,0,0) 68%); }
+        .fm-splash-b { bottom: -6%; right: -10%; width: 420px; height: 420px; background: radial-gradient(circle, rgba(26,140,74,0.40), rgba(26,140,74,0) 68%); }
+        .fm-splash-c { top: 34%; right: 14%; width: 340px; height: 340px; background: radial-gradient(circle, rgba(243,175,25,0.52), rgba(243,175,25,0) 70%); }
 
         @media (max-width: 1024px) {
           .fm-desktop { padding: 80px 48px; }
@@ -190,7 +190,7 @@ export default function FeaturedMessage() {
         <motion.div
           initial={{ opacity:0, x:30 }} whileInView={{ opacity:1, x:0 }}
           viewport={{ once:true }} transition={{ duration:0.7, delay:0.12 }}
-          style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:'0', position:'relative' }}
+          style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:'0', position:'relative', isolation:'isolate' }}
         >
           {/* Creative background splash */}
           <div className="fm-splash" aria-hidden>

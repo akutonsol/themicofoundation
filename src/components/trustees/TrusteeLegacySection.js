@@ -123,27 +123,11 @@ export default function TrusteeLegacySection() {
         .msg-p { font-family: 'Syne', sans-serif; font-size: clamp(17px,1.5vw,20px); line-height: 1.85; color: rgba(255,255,255,0.74); margin: 0 0 24px; }
         .msg-p:last-child { margin-bottom: 0; }
 
-        .legacy-cta { background: #05080F; padding: clamp(60px,8vw,100px) clamp(24px,5vw,80px); position: relative; overflow: hidden; }
-        .cta-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
-        .cta-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #f3af19; margin: 0 0 20px; }
-        .cta-body { max-width: 1400px; margin: clamp(36px,5vw,52px) auto 0; }
-        .cta-body-p { font-family: 'Syne', sans-serif; font-size: clamp(17px,1.4vw,20px); line-height: 1.85; color: rgba(255,255,255,0.72); margin: 0 0 24px; }
-        .cta-body-p:last-child { margin-bottom: 0; }
-        .cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(44px,6vw,88px); font-weight: 300; color: #FFFFFF; margin: 0; line-height: 0.92; letter-spacing: -0.03em; }
-        .cta-title em { font-style: italic; color: #FFD900; }
-        .cta-btn { display: inline-flex; align-items: center; gap: 16px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 18px 32px; border-radius: 100px; text-decoration: none; transition: background 0.2s, transform 0.2s; flex-shrink: 0; white-space: nowrap; }
-        .cta-btn:hover { background: #fff; transform: translateY(-2px); }
-        .cta-arrow { width: 20px; height: 20px; transition: transform 0.2s; }
-        .cta-btn:hover .cta-arrow { transform: translate(2px, -2px); }
-
         @media (max-width: 980px) {
           .legacy-hero { height: auto; min-height: 0; align-items: stretch; padding-top: clamp(100px,14vw,140px); padding-bottom: clamp(60px,8vw,80px); }
           .hero-content { grid-template-columns: 1fr; gap: 40px; }
           .hero-image { height: clamp(360px, 70vw, 520px); }
           .hero-year-bg { display: none; }
-        }
-        @media (max-width: 900px) {
-          .cta-inner { grid-template-columns: 1fr; }
         }
       `}</style>
 
@@ -221,32 +205,6 @@ export default function TrusteeLegacySection() {
           </>
         )}
       </AnimatePresence>
-
-      {/* ── CTA ── */}
-      <section className="legacy-cta">
-        <div className="cta-inner">
-          <div>
-            <p className="cta-label">{content.ctaEyebrow}</p>
-            <h2 className="cta-title">
-              {content.ctaTitle}
-            </h2>
-          </div>
-          <a href={content.ctaButtonLink} className="cta-btn">
-            {content.ctaButtonText}
-            <svg className="cta-arrow" viewBox="0 0 20 20" fill="none">
-              <path d="M4 16L16 4M16 4H7M16 4v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </a>
-        </div>
-
-        {content.ctaBodyText && (
-          <div className="cta-body">
-            {content.ctaBodyText.split(/\n{2,}/).map((para, i) => (
-              <p key={i} className="cta-body-p">{para.trim()}</p>
-            ))}
-          </div>
-        )}
-      </section>
     </>
   );
 }
