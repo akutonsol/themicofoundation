@@ -1,71 +1,92 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
-const CARD_W = 457;
-const PANEL_W = 477;
-const CARD_H = 941;
-const GAP = 15;
 
 const staticTeam = [
-  { name: "Kelly Markus", role: "CVO & Owner", email: "kmarkus@hunterspoint.co", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1000&q=80", bio: "Kelly most recently served as the VP of Experiential Marketing at Refinery29. She grew top and bottom line revenue over $16M in Y1 and exceeded financial goals to $24M in Y2." },
-  { name: "Edward Chiquitucto", role: "Design Director", email: "edward@micofoundation.org", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80", bio: "Edward brings creative direction, visual storytelling, and brand experience across design-led campaigns and institutional projects." },
-  { name: "Carin Murphy", role: "Managing Director", email: "carin@micofoundation.org", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=1000&q=80", bio: "Carin leads strategy, partnerships, operations, and stakeholder alignment across foundation initiatives." },
-  { name: "Mars Khan", role: "Associate Producer", email: "mars@micofoundation.org", image: "https://images.unsplash.com/photo-1619895862022-09114b41f16f?auto=format&fit=crop&w=1000&q=80", bio: "Mars supports production, coordination, community engagement, and project execution across major initiatives." },
-  { name: "Jasmine Clarke", role: "Program Coordinator", email: "jasmine@micofoundation.org", image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80", bio: "Jasmine supports education programs, donor coordination, community outreach, and special project development." },
+  { name: "Mr. Charles Benson", role: "Trustee", email: "", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80", bio: "Charles brings decades of governance and stewardship experience to the Board of Trustees." },
+  { name: "Kelly Markus", role: "Trustee", email: "kmarkus@hunterspoint.co", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1000&q=80", bio: "Kelly most recently served as the VP of Experiential Marketing at Refinery29, growing revenue significantly across two years." },
+  { name: "Carin Murphy", role: "Trustee", email: "carin@micofoundation.org", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=1000&q=80", bio: "Carin leads strategy, partnerships, operations, and stakeholder alignment across foundation initiatives." },
+  { name: "Edward Chiquitucto", role: "Trustee", email: "edward@micofoundation.org", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1000&q=80", bio: "Edward brings creative direction, visual storytelling, and brand experience across design-led campaigns and institutional projects." },
+  { name: "Mars Khan", role: "Trustee", email: "mars@micofoundation.org", image: "https://images.unsplash.com/photo-1619895862022-09114b41f16f?auto=format&fit=crop&w=1000&q=80", bio: "Mars supports production, coordination, community engagement, and project execution across major initiatives." },
 ];
 
-function ProfilePanel({ member }) {
+function TrusteeCard({ member, index, onOpen }) {
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={member.name}
-        initial={{ opacity: 0, width: 0, x: -20 }}
-        animate={{ opacity: 1, width: PANEL_W, x: 0 }}
-        exit={{ opacity: 0, width: 0, x: -20 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        style={{ height: CARD_H, background: "#FFFDF9", color: "#040617", position: "relative", padding: "47px 45px 44px", overflow: "hidden", flexShrink: 0, border: "1px solid rgba(255,217,0,0.45)" }}
-      >
-        <h2 style={{ ...inter, margin: 0, fontSize: "40px", lineHeight: "0.95", letterSpacing: "-0.075em", fontWeight: 900, color: "#040617" }}>{member.name}</h2>
-        <p style={{ ...inter, margin: "26px 0 62px", fontSize: "18px", lineHeight: "1.2", fontWeight: 500, color: "#6F7181" }}>{member.role}</p>
-        <div style={{ height: "620px", overflowY: "auto", paddingRight: "28px" }}>
-          <p style={{ ...inter, margin: 0, fontSize: "19px", lineHeight: "1.6", fontWeight: 400, color: "#040617" }}>{member.bio}</p>
-        </div>
-        <p style={{ ...inter, position: "absolute", left: "45px", bottom: "47px", margin: 0, fontSize: "13px", fontWeight: 500, color: "#6F7181" }}>{member.email}</p>
-      </motion.div>
+    <motion.button
+      type="button"
+      onClick={() => onOpen(member)}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.45, delay: index * 0.06 }}
+      className="ct-card"
+    >
+      <div className="ct-img-wrap">
+        <img src={member.image} alt={member.name} className="ct-img" />
+        <span className="ct-view">View profile →</span>
+      </div>
+      <div className="ct-meta">
+        <h3 className="ct-name" style={inter}>{member.name}</h3>
+        <p className="ct-role" style={inter}>{member.role}</p>
+      </div>
+    </motion.button>
+  );
+}
+
+function ProfileModal({ member, onClose }) {
+  useEffect(() => {
+    const onKey = e => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [onClose]);
+
+  return (
+    <AnimatePresence>
+      {member && (
+        <>
+          <motion.div className="ct-overlay"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
+            onClick={onClose}
+          />
+          <div className="ct-modal-wrap" onClick={onClose}>
+            <motion.div className="ct-modal"
+              initial={{ opacity: 0, y: 30, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.98 }}
+              transition={{ type: "spring", damping: 26, stiffness: 260 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <button type="button" className="ct-close" onClick={onClose} aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+              </button>
+              <div className="ct-modal-img">
+                <img src={member.image} alt={member.name} />
+              </div>
+              <div className="ct-modal-body">
+                <p className="ct-modal-eyebrow" style={inter}>Board of Trustees</p>
+                <h2 className="ct-modal-name" style={inter}>{member.name}</h2>
+                <p className="ct-modal-role" style={inter}>{member.role}</p>
+                <div className="ct-modal-divider" />
+                <p className="ct-modal-bio" style={inter}>{member.bio}</p>
+                {member.email && (
+                  <a href={`mailto:${member.email}`} className="ct-modal-email" style={inter}>{member.email}</a>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
     </AnimatePresence>
   );
 }
 
-function TeamImageCard({ member, isActive, onClick }) {
-  return (
-    <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.25 }}
-      style={{ width: CARD_W, height: CARD_H, overflow: "hidden", position: "relative", flexShrink: 0, background: "#000d1f" }}
-    >
-      <img src={member.image} alt={member.name} style={{ width: CARD_W, height: CARD_H, objectFit: "cover", objectPosition: "center", display: "block", filter: isActive ? "brightness(0.7) saturate(0.8)" : "brightness(0.75) saturate(0.85)" }} />
-      {!isActive && (
-        <>
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,15,40,0.75), rgba(0,15,40,0.08) 62%)" }} />
-          <motion.button type="button" onClick={(e) => { e.stopPropagation(); onClick(); }}
-            whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
-            style={{ ...inter, position: "absolute", left: "24px", bottom: "28px", display: "inline-flex", alignItems: "center", gap: "10px", background: "#FFD900", border: "none", color: "#040617", fontSize: "13px", fontWeight: 800, padding: "10px 18px", borderRadius: "999px", cursor: "pointer", boxShadow: "0 12px 28px rgba(0,0,0,0.35)", letterSpacing: "-0.01em" }}
-          >
-            Profile <span style={{ fontSize: "15px", lineHeight: 1 }}>→</span>
-          </motion.button>
-        </>
-      )}
-    </motion.div>
-  );
-}
-
 export default function TeamProfileFeature() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [hovering, setHovering] = useState(false);
   const [team, setTeam] = useState(staticTeam);
-  const carouselRef = useRef(null);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     async function fetchBoardMembers() {
@@ -77,7 +98,7 @@ export default function TeamProfileFeature() {
             role: m.role,
             email: m.email || '',
             bio: m.bio || '',
-            image: m.photo ? urlFor(m.photo).width(1000).url() : staticTeam[0].image,
+            image: m.photo ? urlFor(m.photo).width(800).url() : staticTeam[0].image,
           })));
         }
       } catch (error) {
@@ -87,41 +108,75 @@ export default function TeamProfileFeature() {
     fetchBoardMembers();
   }, []);
 
-  const maxDrag = -1 * ((CARD_W + GAP) * team.length + PANEL_W + GAP * team.length - 1200);
-
   return (
-    <section
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      style={{ width: "100%", height: "971px", background: "#001f3f", overflow: "hidden", border: "2px solid #001f3f", position: "relative", padding: `${GAP}px` }}
-    >
-      <AnimatePresence>
-        {hovering && (
-          <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: 0.96 }} transition={{ duration: 0.25 }}
-            style={{ ...inter, position: "absolute", top: "28px", left: "50%", transform: "translateX(-50%)", zIndex: 20, background: "#FFD900", color: "#040617", padding: "12px 18px", borderRadius: "999px", fontSize: "14px", fontWeight: 800, boxShadow: "0 18px 45px rgba(0,0,0,0.35)", pointerEvents: "none" }}
-          >
-            Drag to see more
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <motion.div
-        ref={carouselRef}
-        drag="x" dragElastic={0.06} dragMomentum
-        dragConstraints={{ left: maxDrag, right: 0 }}
-        whileTap={{ cursor: "grabbing" }}
-        style={{ display: "flex", gap: `${GAP}px`, height: CARD_H, width: "max-content", cursor: "grab" }}
-      >
-        {team.map((member, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <div key={member.name} style={{ display: "flex", gap: `${GAP}px`, height: CARD_H, flexShrink: 0 }}>
-              <TeamImageCard member={member} isActive={isActive} onClick={() => setActiveIndex(index)} />
-              {isActive && <ProfilePanel member={member} />}
-            </div>
-          );
-        })}
-      </motion.div>
+    <section className="ct-section">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        .ct-section { position: relative; overflow: hidden; background: #05121F; padding: clamp(64px,8vw,110px) clamp(24px,5vw,80px); }
+        .ct-section::before { content:''; position:absolute; top:-180px; right:-140px; width:520px; height:520px; border-radius:50%; background: radial-gradient(circle, rgba(255,217,0,0.10) 0%, rgba(255,217,0,0) 70%); pointer-events:none; }
+        .ct-inner { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; }
+
+        .ct-head { max-width: 720px; margin: 0 0 clamp(40px,5vw,60px); }
+        .ct-eyebrow { display:inline-flex; align-items:center; gap:12px; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#FFD900; margin:0 0 18px; }
+        .ct-eyebrow .bar { width:32px; height:2px; background:#FFD900; }
+        .ct-title { font-family:'Inter',sans-serif; font-size: clamp(38px,5vw,64px); font-weight:800; letter-spacing:-0.04em; line-height:1; color:#fff; margin:0; }
+        .ct-sub { font-family:'Inter',sans-serif; font-size: clamp(15px,1.3vw,18px); line-height:1.65; color:rgba(255,255,255,0.55); margin: 18px 0 0; }
+
+        .ct-grid { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: clamp(16px,1.8vw,26px); }
+        @media (max-width: 1100px) { .ct-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+        @media (max-width: 760px)  { .ct-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+        .ct-card { display:flex; flex-direction:column; text-align:left; padding:0; background:none; border:none; cursor:pointer; }
+        .ct-img-wrap { position:relative; width:100%; aspect-ratio: 4/5; border-radius:18px; overflow:hidden; background:#0d1b2e; border:1px solid rgba(255,255,255,0.08); }
+        .ct-img { width:100%; height:100%; object-fit:cover; object-position: top center; transition: transform .5s ease, filter .4s ease; filter: grayscale(0.15); }
+        .ct-card:hover .ct-img { transform: scale(1.05); filter: grayscale(0); }
+        .ct-img-wrap::after { content:''; position:absolute; inset:0; border-radius:18px; box-shadow: inset 0 0 0 0 rgba(255,217,0,0); transition: box-shadow .3s ease; pointer-events:none; }
+        .ct-card:hover .ct-img-wrap::after { box-shadow: inset 0 0 0 2px rgba(255,217,0,0.85); }
+        .ct-view { position:absolute; left:0; right:0; bottom:0; padding:34px 16px 14px; font-family:'Inter',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.02em; color:#FFD900; background:linear-gradient(to top, rgba(4,6,23,0.9), rgba(4,6,23,0)); opacity:0; transform: translateY(8px); transition: opacity .3s ease, transform .3s ease; }
+        .ct-card:hover .ct-view { opacity:1; transform: translateY(0); }
+        .ct-meta { padding: 16px 4px 0; }
+        .ct-name { font-family:'Inter',sans-serif; font-size:19px; font-weight:700; letter-spacing:-0.02em; line-height:1.2; color:#fff; margin:0; }
+        .ct-role { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; color:rgba(255,255,255,0.5); margin:5px 0 0; }
+
+        .ct-overlay { position:fixed; inset:0; background:rgba(3,6,15,0.72); backdrop-filter:blur(5px); z-index:4000; }
+        .ct-modal-wrap { position:fixed; inset:0; z-index:4001; display:flex; align-items:center; justify-content:center; padding: clamp(16px,4vw,48px); }
+        .ct-modal { position:relative; width:100%; max-width:880px; max-height:88vh; overflow:hidden; background:#0A1728; border:1px solid rgba(255,217,0,0.22); border-radius:24px; display:grid; grid-template-columns: 0.9fr 1.1fr; box-shadow:0 40px 100px rgba(0,0,0,0.6); }
+        .ct-modal-img { background:#0d1b2e; }
+        .ct-modal-img img { width:100%; height:100%; object-fit:cover; object-position: top center; display:block; }
+        .ct-modal-body { padding: clamp(32px,4vw,48px); overflow-y:auto; }
+        .ct-modal-eyebrow { font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#FFD900; margin:0 0 12px; }
+        .ct-modal-name { font-size: clamp(28px,3.4vw,40px); font-weight:800; letter-spacing:-0.03em; line-height:1.02; color:#fff; margin:0; }
+        .ct-modal-role { font-size:16px; font-weight:500; color:rgba(255,255,255,0.55); margin:10px 0 0; }
+        .ct-modal-divider { height:1px; background:rgba(255,255,255,0.1); margin: clamp(22px,3vw,30px) 0; }
+        .ct-modal-bio { font-size: clamp(15px,1.3vw,17px); line-height:1.75; color:rgba(255,255,255,0.72); margin:0; }
+        .ct-modal-email { display:inline-block; margin-top:26px; font-size:14px; font-weight:600; color:#FFD900; text-decoration:none; border-bottom:1px solid rgba(255,217,0,0.4); padding-bottom:2px; }
+        .ct-close { position:absolute; top:16px; right:16px; z-index:2; width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,0.18); background:rgba(10,23,40,0.7); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background .2s; }
+        .ct-close:hover { background:rgba(255,255,255,0.14); }
+        .ct-close svg { width:20px; height:20px; }
+        @media (max-width: 720px) {
+          .ct-modal { grid-template-columns: 1fr; max-height:90vh; overflow-y:auto; }
+          .ct-modal-img { aspect-ratio: 3/2; }
+        }
+      `}</style>
+
+      <div className="ct-inner">
+        <motion.header className="ct-head"
+          initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+        >
+          <span className="ct-eyebrow"><span className="bar" /> Board of Trustees</span>
+          <h2 className="ct-title">Current Trustees</h2>
+          <p className="ct-sub">The stewards entrusted with safeguarding the mission, legacy, and future of The Mico Foundation.</p>
+        </motion.header>
+
+        <div className="ct-grid">
+          {team.map((member, i) => (
+            <TrusteeCard key={member.name} member={member} index={i} onOpen={setSelected} />
+          ))}
+        </div>
+      </div>
+
+      <ProfileModal member={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
