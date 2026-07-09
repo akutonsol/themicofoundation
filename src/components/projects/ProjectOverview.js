@@ -35,7 +35,8 @@ export default function ProjectOverview() {
     fetchProjects();
   }, []);
 
-  const heroImg = projects[0]?.image || FALLBACKS[0];
+  // Static hero photo for now — swap this path (or wire to a CMS field) later.
+  const heroImg = "/images/home/banner1.png";
 
   // Build a 5-cell collage from current projects, padded with fallbacks.
   const collage = Array.from({ length: 5 }).map((_, i) => {
