@@ -33,7 +33,7 @@ const navLinks = [
   { label: 'Home',          href: '/' },
   { label: 'About Us',      href: '/about', dropdown: true },
   { label: 'Endowments',    href: '/endowments' },
-  { label: 'Projects',      href: '/projects' },
+  { label: 'Projects',      href: '/project-overview' },
   { label: 'News & Events', href: '/news' },
   { label: 'Pledge',        href: '/pledge' },
 ]
