@@ -66,6 +66,16 @@ export default function LegacyImpactSection() {
     { value: "Global", label: "Donor and alumni support network" },
   ]
 
+  // The 1981 entry is featured as its own founding block (heading + detail)
+  // rather than a compact stat; the rest stay in the stats row.
+  const isFounding    = s => String(s.value).trim() === '1981'
+  const foundingStat  = stats.find(isFounding)
+  const foundingTitle = 'The Mico Foundation, a Limited Liability Company — Not for Profit'
+  const foundingDetail = 'Established to support the developmental goals of the Mico University College.'
+  const rowStats = stats
+    .map((s, i) => ({ ...s, _i: i }))
+    .filter(s => !isFounding(s))
+
   const heroImageUrl = legacyData?.heroImage
     ? urlFor(legacyData.heroImage).width(1400).url()
     : '/images/home/holness.jpg'
@@ -121,6 +131,35 @@ export default function LegacyImpactSection() {
         .legacy-stat-link:hover { transform: translateY(-3px); }
         .legacy-stat-link:hover .legacy-stat-val { color: #FFD900 !important; }
         .legacy-stat-link:hover p { color: #040617 !important; }
+
+        .legacy-founding {
+          display: flex; align-items: flex-start; gap: 24px;
+          background: rgba(255,217,0,0.08);
+          border: 1px solid rgba(255,217,0,0.35);
+          border-left: 4px solid #FFD900;
+          border-radius: 16px;
+          padding: 24px 28px;
+          margin-bottom: 36px;
+        }
+        .legacy-founding-year {
+          font-family: 'Inter', sans-serif;
+          font-size: clamp(2.4rem, 3.4vw, 3.4rem);
+          font-weight: 900; letter-spacing: -2px; line-height: 1;
+          color: #040617; flex-shrink: 0;
+        }
+        .legacy-founding-title {
+          font-family: 'Inter', sans-serif;
+          font-size: 17px; font-weight: 800; letter-spacing: -0.3px;
+          line-height: 1.3; color: #040617; margin: 0 0 8px;
+        }
+        .legacy-founding-detail {
+          font-family: 'Inter', sans-serif;
+          font-size: 15px; font-weight: 400; line-height: 1.55;
+          color: #4A4A4A; margin: 0;
+        }
+        @media (max-width: 768px) {
+          .legacy-founding { flex-direction: column; gap: 12px; padding: 22px 22px; }
+        }
 
         .legacy-jamaica-green-a {
           position: absolute; pointer-events: none;
@@ -222,13 +261,24 @@ export default function LegacyImpactSection() {
             {/* Divider */}
             <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
 
-            {/* Stats row - unchanged */}
+            {/* Founding highlight — 1981 */}
+            {foundingStat && (
+              <div className="legacy-founding">
+                <span className="legacy-founding-year">{foundingStat.value}</span>
+                <div>
+                  <h3 className="legacy-founding-title">{foundingTitle}</h3>
+                  <p className="legacy-founding-detail">{foundingDetail}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Stats row */}
             <div style={{ display:'flex', gap:'0', marginBottom:'44px', paddingTop:'16px', paddingBottom:'16px', borderTop:'1px solid #E5E6EB', borderBottom:'1px solid #E5E6EB' }}>
-              {stats.map((stat, i) => {
-                const link = STAT_LINKS[i] || { href:'/', external:false }
+              {rowStats.map((stat, i) => {
+                const link = STAT_LINKS[stat._i] || { href:'/', external:false }
                 const inner = (
-                  <div style={{ paddingRight:'48px', borderRight: i < stats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '48px' : '0' }}>
-                    <p className="legacy-stat-val" style={{ ...inter, fontSize:'clamp(2rem,2.8vw,3rem)', fontWeight:900, color:'#040617', margin:'0 0 6px', letterSpacing:'-2px', transition:'color 0.2s', transition:'color 0.2s' }}>
+                  <div style={{ paddingRight:'48px', borderRight: i < rowStats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '48px' : '0' }}>
+                    <p className="legacy-stat-val" style={{ ...inter, fontSize:'clamp(2rem,2.8vw,3rem)', fontWeight:900, color:'#040617', margin:'0 0 6px', letterSpacing:'-2px', transition:'color 0.2s' }}>
                       {stat.value}
                     </p>
                     <p style={{ ...inter, fontSize:'14px', color:'#6F7181', margin:0, lineHeight:1.4, transition:'color 0.2s' }}>
@@ -237,8 +287,8 @@ export default function LegacyImpactSection() {
                   </div>
                 )
                 return link.external
-                  ? <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" className="legacy-stat-link">{inner}</a>
-                  : <Link key={i} href={link.href} className="legacy-stat-link">{inner}</Link>
+                  ? <a key={stat._i} href={link.href} target="_blank" rel="noopener noreferrer" className="legacy-stat-link">{inner}</a>
+                  : <Link key={stat._i} href={link.href} className="legacy-stat-link">{inner}</Link>
               })}
             </div>
 
