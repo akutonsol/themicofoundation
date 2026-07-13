@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
@@ -87,6 +87,31 @@ function ProfileModal({ member, onClose }) {
 export default function TeamProfileFeature() {
   const [team, setTeam] = useState(staticTeam);
   const [selected, setSelected] = useState(null);
+  const trackRef = useRef(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  const updateEdges = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setAtStart(el.scrollLeft <= 2);
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+  };
+
+  useEffect(() => {
+    updateEdges();
+    const el = trackRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateEdges, { passive: true });
+    window.addEventListener("resize", updateEdges);
+    return () => { el.removeEventListener("scroll", updateEdges); window.removeEventListener("resize", updateEdges); };
+  }, [team]);
+
+  const slide = dir => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: "smooth" });
+  };
 
   useEffect(() => {
     async function fetchBoardMembers() {
@@ -117,17 +142,26 @@ export default function TeamProfileFeature() {
         .ct-section::before { content:''; position:absolute; top:-180px; right:-140px; width:520px; height:520px; border-radius:50%; background: radial-gradient(circle, rgba(255,217,0,0.10) 0%, rgba(255,217,0,0) 70%); pointer-events:none; }
         .ct-inner { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; }
 
-        .ct-head { max-width: 720px; margin: 0 0 clamp(40px,5vw,60px); }
+        .ct-head-row { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin: 0 0 clamp(36px,5vw,52px); }
+        .ct-head { max-width: 720px; }
         .ct-eyebrow { display:inline-flex; align-items:center; gap:12px; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#FFD900; margin:0 0 18px; }
         .ct-eyebrow .bar { width:32px; height:2px; background:#FFD900; }
         .ct-title { font-family:'Inter',sans-serif; font-size: clamp(38px,5vw,64px); font-weight:800; letter-spacing:-0.04em; line-height:1; color:#fff; margin:0; }
         .ct-sub { font-family:'Inter',sans-serif; font-size: clamp(15px,1.3vw,18px); line-height:1.65; color:rgba(255,255,255,0.55); margin: 18px 0 0; }
 
-        .ct-grid { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: clamp(16px,1.8vw,26px); }
-        @media (max-width: 1100px) { .ct-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-        @media (max-width: 760px)  { .ct-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+        .ct-nav { display:flex; gap:12px; flex-shrink:0; }
+        .ct-arrow { width:52px; height:52px; border-radius:50%; border:1px solid rgba(255,217,0,0.5); background:transparent; color:#FFD900; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background .2s, color .2s, opacity .2s, border-color .2s; }
+        .ct-arrow:hover { background:#FFD900; color:#05121F; }
+        .ct-arrow:disabled { opacity:0.3; cursor:default; border-color:rgba(255,255,255,0.2); color:rgba(255,255,255,0.4); background:transparent; }
+        .ct-arrow svg { width:22px; height:22px; }
 
-        .ct-card { display:flex; flex-direction:column; text-align:left; padding:0; background:none; border:none; cursor:pointer; }
+        .ct-track { --ct-gap: clamp(16px,1.8vw,26px); display:flex; gap:var(--ct-gap); overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding-bottom:4px; -ms-overflow-style:none; scrollbar-width:none; }
+        .ct-track::-webkit-scrollbar { display:none; }
+
+        .ct-card { flex:0 0 calc((100% - 3 * var(--ct-gap)) / 4); scroll-snap-align:start; display:flex; flex-direction:column; text-align:left; padding:0; background:none; border:none; cursor:pointer; }
+        @media (max-width: 1100px) { .ct-card { flex-basis: calc((100% - 2 * var(--ct-gap)) / 3); } }
+        @media (max-width: 760px)  { .ct-card { flex-basis: calc((100% - 1 * var(--ct-gap)) / 2); } }
+        @media (max-width: 520px)  { .ct-card { flex-basis: 80%; } }
         .ct-img-wrap { position:relative; width:100%; aspect-ratio: 4/5; border-radius:18px; overflow:hidden; background:#0d1b2e; border:1px solid rgba(255,255,255,0.08); }
         .ct-img { width:100%; height:100%; object-fit:cover; object-position: top center; transition: transform .5s ease, filter .4s ease; filter: grayscale(0.15); }
         .ct-card:hover .ct-img { transform: scale(1.05); filter: grayscale(0); }
@@ -161,15 +195,26 @@ export default function TeamProfileFeature() {
       `}</style>
 
       <div className="ct-inner">
-        <motion.header className="ct-head"
-          initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-        >
-          <span className="ct-eyebrow"><span className="bar" /> Board of Trustees</span>
-          <h2 className="ct-title">Current Trustees</h2>
-          <p className="ct-sub">The stewards entrusted with safeguarding the mission, legacy, and future of The Mico Foundation.</p>
-        </motion.header>
+        <div className="ct-head-row">
+          <motion.header className="ct-head"
+            initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          >
+            <span className="ct-eyebrow"><span className="bar" /> Board of Trustees</span>
+            <h2 className="ct-title">Current Trustees</h2>
+            <p className="ct-sub">The stewards entrusted with safeguarding the mission, legacy, and future of The Mico Foundation.</p>
+          </motion.header>
 
-        <div className="ct-grid">
+          <div className="ct-nav">
+            <button type="button" className="ct-arrow" onClick={() => slide(-1)} disabled={atStart} aria-label="Previous">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+            <button type="button" className="ct-arrow" onClick={() => slide(1)} disabled={atEnd} aria-label="Next">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="ct-track" ref={trackRef}>
           {team.map((member, i) => (
             <TrusteeCard key={member.name} member={member} index={i} onOpen={setSelected} />
           ))}
