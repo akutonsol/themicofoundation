@@ -200,7 +200,7 @@ export default function TeamProfileFeature() {
             initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
           >
             <span className="ct-eyebrow"><span className="bar" /> Board of Trustees</span>
-            <h2 className="ct-title">Current Trustees</h2>
+            <h2 className="ct-title">Lady Mico Trustees</h2>
             <p className="ct-sub">The stewards entrusted with safeguarding the mission, legacy, and future of The Mico Foundation.</p>
           </motion.header>
 

@@ -38,7 +38,6 @@ function TrusteeCard({ trustee, index }) {
         <img src={trustee.image} alt={decode(trustee.name)} className="ft-img" />
       </div>
       <div className="ft-body">
-        <span className="ft-years">{trustee.years}</span>
         <h3 className="ft-name" style={inter}>{decode(trustee.name)}</h3>
         <div className="ft-divider" />
         <p className="ft-bio" style={inter}>{decode(trustee.description)}</p>
@@ -113,10 +112,10 @@ export default function FormerTrusteesSection() {
         >
           <div className="ft-eyebrow">
             <span className="bar" />
-            <span>Honouring Those Who Came Before</span>
+            <span>The Lady Mico Trust</span>
             <span className="bar" />
           </div>
-          <h2 className="ft-title">Former Trustees</h2>
+          <h2 className="ft-title">An Historical Perspective</h2>
         </motion.div>
 
         <div className="ft-grid">
@@ -128,12 +127,6 @@ export default function FormerTrusteesSection() {
           className="ft-reading-block"
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
         >
-          <div className="ft-eyebrow">
-            <span className="bar" />
-            <span>The Lady Mico Trust</span>
-            <span className="bar" />
-          </div>
-          <h2 className="ft-title">An Historical Perspective</h2>
           <div className="ft-reading">
             <p>The bequest of Lady Jane Mico dates to 1670, when she left one thousand pounds in her will to ransom Christians held captive by the Barbary corsairs of North Africa. As the need for such ransoms faded, the fund lay dormant in the Court of Chancery for more than a century and a half, quietly accumulating interest.</p>
             <p>In 1835, following the abolition of slavery throughout the British Empire, the accumulated sum was directed by Sir Thomas Fowell Buxton and his fellow reformers toward a new and enduring purpose — the education of the newly emancipated peoples of the West Indies. From that reimagined bequest sprang the Lady Mico Charity, and with it the teachers&rsquo; colleges and schools whose legacy The Mico Foundation carries forward today.</p>

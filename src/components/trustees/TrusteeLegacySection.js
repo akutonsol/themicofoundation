@@ -102,7 +102,7 @@ export default function TrusteeLegacySection() {
         .hero-image-cap .cap-role { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 6px; }
         .hero-image-cap .cap-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: #fff; margin: 0; line-height: 1.05; letter-spacing: -0.02em; }
         .hero-eyebrow { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #FFD900; margin: 0 0 28px; }
-        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(64px, 10vw, 152px); font-weight: 300; line-height: 0.88; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
+        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 6.5vw, 100px); font-weight: 300; line-height: 0.92; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
         .hero-title em { font-style: italic; color: #FFD900; }
         .hero-sub { font-family: 'Syne', sans-serif; font-size: clamp(15px, 1.4vw, 19px); font-weight: 400; color: rgba(255,255,255,0.4); margin: 32px 0 0; max-width: 560px; line-height: 1.65; letter-spacing: 0.01em; }
         .read-msg-btn { display: inline-flex; align-items: center; gap: 12px; margin-top: 44px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 16px 28px; border-radius: 100px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; }
@@ -116,7 +116,7 @@ export default function TrusteeLegacySection() {
         .msg-close { position: absolute; top: 20px; right: clamp(20px,4vw,48px); width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
         .msg-close:hover { background: rgba(255,255,255,0.1); }
         .msg-close svg { width: 20px; height: 20px; }
-        .msg-panel-inner { max-width: 820px; margin: 0 auto; padding: clamp(48px,7vw,72px) clamp(24px,5vw,64px) clamp(56px,8vw,88px); }
+        .msg-panel-inner { max-width: 820px; margin: 0 auto; padding: clamp(48px,7vw,72px) clamp(24px,5vw,64px) clamp(56px,8vw,88px); text-align: right; }
         .msg-eyebrow { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 14px; }
         .msg-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px,5.5vw,68px); font-weight: 600; color: #fff; margin: 0 0 clamp(28px,4vw,40px); line-height: 1; letter-spacing: -0.03em; }
         .msg-body { border-top: 1px solid rgba(255,255,255,0.08); padding-top: clamp(28px,4vw,40px); }
