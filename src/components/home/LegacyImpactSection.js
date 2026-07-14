@@ -66,15 +66,9 @@ export default function LegacyImpactSection() {
     { value: "Global", label: "Donor and alumni support network" },
   ]
 
-  // The 1981 entry is featured as its own founding block (heading + detail)
-  // rather than a compact stat; the rest stay in the stats row.
-  const isFounding    = s => String(s.value).trim() === '1981'
-  const foundingStat  = stats.find(isFounding)
+  // Founding note (heading + detail) shown above the full 3-stat row.
   const foundingTitle = 'The Mico Foundation, a Limited Liability Company — Not for Profit'
   const foundingDetail = 'Established to support the developmental goals of the Mico University College.'
-  const rowStats = stats
-    .map((s, i) => ({ ...s, _i: i }))
-    .filter(s => !isFounding(s))
 
   const heroImageUrl = legacyData?.heroImage
     ? urlFor(legacyData.heroImage).width(1400).url()
@@ -261,23 +255,20 @@ export default function LegacyImpactSection() {
             {/* Divider */}
             <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
 
-            {/* Founding highlight — 1981 */}
-            {foundingStat && (
-              <div className="legacy-founding">
-                <span className="legacy-founding-year">{foundingStat.value}</span>
-                <div>
-                  <h3 className="legacy-founding-title">{foundingTitle}</h3>
-                  <p className="legacy-founding-detail">{foundingDetail}</p>
-                </div>
+            {/* Founding note — heading + detail */}
+            <div className="legacy-founding">
+              <div>
+                <h3 className="legacy-founding-title">{foundingTitle}</h3>
+                <p className="legacy-founding-detail">{foundingDetail}</p>
               </div>
-            )}
+            </div>
 
             {/* Stats row */}
             <div style={{ display:'flex', gap:'0', marginBottom:'44px', paddingTop:'16px', paddingBottom:'16px', borderTop:'1px solid #E5E6EB', borderBottom:'1px solid #E5E6EB' }}>
-              {rowStats.map((stat, i) => {
-                const link = STAT_LINKS[stat._i] || { href:'/', external:false }
+              {stats.map((stat, i) => {
+                const link = STAT_LINKS[i] || { href:'/', external:false }
                 const inner = (
-                  <div style={{ paddingRight:'48px', borderRight: i < rowStats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '48px' : '0' }}>
+                  <div style={{ paddingRight:'48px', borderRight: i < stats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '48px' : '0' }}>
                     <p className="legacy-stat-val" style={{ ...inter, fontSize:'clamp(2rem,2.8vw,3rem)', fontWeight:900, color:'#040617', margin:'0 0 6px', letterSpacing:'-2px', transition:'color 0.2s' }}>
                       {stat.value}
                     </p>
@@ -287,8 +278,8 @@ export default function LegacyImpactSection() {
                   </div>
                 )
                 return link.external
-                  ? <a key={stat._i} href={link.href} target="_blank" rel="noopener noreferrer" className="legacy-stat-link">{inner}</a>
-                  : <Link key={stat._i} href={link.href} className="legacy-stat-link">{inner}</Link>
+                  ? <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" className="legacy-stat-link">{inner}</a>
+                  : <Link key={i} href={link.href} className="legacy-stat-link">{inner}</Link>
               })}
             </div>
 
