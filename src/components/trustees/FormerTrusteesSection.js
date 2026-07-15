@@ -46,8 +46,15 @@ function TrusteeCard({ trustee, index }) {
   );
 }
 
+const DEFAULT_READING = [
+  "The bequest of Lady Jane Mico dates to 1670, when she left one thousand pounds in her will to ransom Christians held captive by the Barbary corsairs of North Africa. As the need for such ransoms faded, the fund lay dormant in the Court of Chancery for more than a century and a half, quietly accumulating interest.",
+  "In 1835, following the abolition of slavery throughout the British Empire, the accumulated sum was directed by Sir Thomas Fowell Buxton and his fellow reformers toward a new and enduring purpose — the education of the newly emancipated peoples of the West Indies. From that reimagined bequest sprang the Lady Mico Charity, and with it the teachers’ colleges and schools whose legacy The Mico Foundation carries forward today.",
+];
+
 export default function FormerTrusteesSection() {
   const [trustees, setTrustees] = useState(staticFormerTrustees);
+  const [reading, setReading] = useState(DEFAULT_READING);
+  const [readingImage, setReadingImage] = useState(null);
 
   useEffect(() => {
     async function fetchTrustees() {
@@ -66,7 +73,20 @@ export default function FormerTrusteesSection() {
         console.error('Error fetching former trustees:', error);
       }
     }
+    async function fetchPerspective() {
+      try {
+        const d = await client.fetch(queries.historicalPerspective);
+        if (d?.reading) {
+          const paras = d.reading.split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
+          if (paras.length) setReading(paras);
+        }
+        if (d?.image) setReadingImage(urlFor(d.image).width(1200).url());
+      } catch (error) {
+        console.error('Error fetching historical perspective:', error);
+      }
+    }
     fetchTrustees();
+    fetchPerspective();
   }, []);
 
   return (
@@ -86,6 +106,8 @@ export default function FormerTrusteesSection() {
         .ft-reading p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,19px); line-height:1.85; color:#4A4C5A; margin:0 0 20px; }
         .ft-reading p:last-child { margin-bottom:0; }
         .ft-reading p:first-child::first-letter { font-size: 3.4em; line-height:0.8; font-weight:800; float:left; margin:6px 12px 0 0; color:#B8860B; }
+        .ft-reading-img { clear:both; margin: clamp(32px,5vw,52px) auto 0; text-align:center; }
+        .ft-reading-img img { display:block; width:100%; max-width:100%; height:auto; border-radius:16px; margin:0 auto; box-shadow:0 20px 50px rgba(10,13,18,0.12); }
 
         .ft-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: clamp(20px,2.2vw,32px); align-items: start; }
         @media (max-width: 980px) { .ft-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
@@ -128,8 +150,12 @@ export default function FormerTrusteesSection() {
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
         >
           <div className="ft-reading">
-            <p>The bequest of Lady Jane Mico dates to 1670, when she left one thousand pounds in her will to ransom Christians held captive by the Barbary corsairs of North Africa. As the need for such ransoms faded, the fund lay dormant in the Court of Chancery for more than a century and a half, quietly accumulating interest.</p>
-            <p>In 1835, following the abolition of slavery throughout the British Empire, the accumulated sum was directed by Sir Thomas Fowell Buxton and his fellow reformers toward a new and enduring purpose — the education of the newly emancipated peoples of the West Indies. From that reimagined bequest sprang the Lady Mico Charity, and with it the teachers&rsquo; colleges and schools whose legacy The Mico Foundation carries forward today.</p>
+            {reading.map((para, i) => <p key={i}>{para}</p>)}
+            {readingImage && (
+              <div className="ft-reading-img">
+                <img src={readingImage} alt="The Lady Mico Trust" />
+              </div>
+            )}
           </div>
         </motion.div>
       </div>

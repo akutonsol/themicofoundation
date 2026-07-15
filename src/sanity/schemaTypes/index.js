@@ -35,6 +35,7 @@ import endowmentSubmission from './endowmentSubmission'
 import pledgeSubmission from './pledgeSubmission'
 import endowmentproject from './endowmentproject'
 import projectInitiative from './projectInitiative'
+import historicalPerspective from './historicalPerspective'
 
 export const schema = {
   types: [
@@ -74,6 +75,7 @@ export const schema = {
      endowmentSubmission,
      pledgeSubmission,
      endowmentproject,
-     projectInitiative
+     projectInitiative,
+     historicalPerspective
   ],
 }
