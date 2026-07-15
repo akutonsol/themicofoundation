@@ -99,6 +99,22 @@ export default function ContactUs() {
     <section style={{ position: "relative", overflow: "hidden", background: "#FAF9F6", padding: "48px 0 80px" }}>
       <div className="contact-wrapper" style={{ position: "relative", zIndex: 1, maxWidth: "1720px", margin: "0 auto", padding: "0 48px" }}>
 
+        {/* Foundation note — sits above the title */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.6 }}
+          style={{ display: "flex", alignItems: "flex-start", gap: 20, background: "rgba(255,217,0,0.08)", border: "1px solid rgba(255,217,0,0.35)", borderLeft: "4px solid #FFD900", borderRadius: 16, padding: "24px 28px", marginBottom: 40 }}
+        >
+          <div>
+            <h2 style={{ ...inter, fontSize: 20, fontWeight: 800, letterSpacing: "-0.3px", lineHeight: 1.3, color: "#040617", margin: "0 0 8px" }}>
+              The Mico Foundation, a Limited Liability Company — Not for Profit
+            </h2>
+            <p style={{ ...inter, fontSize: 16, fontWeight: 400, lineHeight: 1.55, color: "#4A4A4A", margin: 0 }}>
+              Established to support the developmental goals of the Mico University College.
+            </p>
+          </div>
+        </motion.div>
+
         {/* Header row */}
         <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 0.72fr", gap: 40, marginBottom: 56, alignItems: "start" }}>
           <motion.h1
@@ -129,22 +145,6 @@ export default function ContactUs() {
             </p>
           </motion.div>
         </div>
-
-        {/* Foundation note — sits directly above the form */}
-        <motion.div
-          initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6 }}
-          style={{ display: "flex", alignItems: "flex-start", gap: 20, background: "rgba(255,217,0,0.08)", border: "1px solid rgba(255,217,0,0.35)", borderLeft: "4px solid #FFD900", borderRadius: 16, padding: "24px 28px", marginBottom: 36 }}
-        >
-          <div>
-            <h2 style={{ ...inter, fontSize: 20, fontWeight: 800, letterSpacing: "-0.3px", lineHeight: 1.3, color: "#040617", margin: "0 0 8px" }}>
-              The Mico Foundation, a Limited Liability Company — Not for Profit
-            </h2>
-            <p style={{ ...inter, fontSize: 16, fontWeight: 400, lineHeight: 1.55, color: "#4A4A4A", margin: 0 }}>
-              Established to support the developmental goals of the Mico University College.
-            </p>
-          </div>
-        </motion.div>
 
         {/* Form + Map row */}
         <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 28, alignItems: "start" }}>
