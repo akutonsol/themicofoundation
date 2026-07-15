@@ -90,10 +90,15 @@ export default function ProjectOverview() {
         .po { background: #FFFDF9; }
 
         /* ── HERO ── */
-        .po-hero { background: #050608; }
+        .po-hero { position: relative; background: #050608; }
         .po-hero-img { width: 100%; font-size: 0; line-height: 0; }
         .po-hero-img img { width: 100%; height: auto; display: block; object-fit: contain; }
-        .po-hero-inner { max-width: 1440px; margin: 0 auto; width: 100%; padding: clamp(40px,5vw,68px) clamp(24px,5vw,80px); }
+        .po-hero-overlay { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(100deg, rgba(5,6,8,0.94) 0%, rgba(5,6,8,0.80) 28%, rgba(5,6,8,0.38) 52%, rgba(5,6,8,0) 76%); }
+        .po-hero-inner { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 2; width: 100%; max-width: 1440px; padding: 0 clamp(24px,5vw,80px); }
+        @media (max-width: 760px) {
+          .po-hero-overlay { display: none; }
+          .po-hero-inner { position: static; transform: none; left: auto; top: auto; margin: 0 auto; padding: clamp(32px,7vw,48px) clamp(24px,5vw,40px); }
+        }
         .po-eyebrow { display:inline-flex; align-items:center; gap:12px; font-family:'Inter',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.24em; text-transform:uppercase; color:${GOLD}; margin:0 0 22px; }
         .po-hero-title { font-family:'Inter',sans-serif; font-size: clamp(40px,6vw,74px); font-weight:800; letter-spacing:-0.035em; line-height:1.02; color:#fff; margin:0; max-width:720px; }
         .po-hero-rule { width:88px; height:4px; border-radius:4px; background:${GOLD}; margin: clamp(24px,3vw,34px) 0; }
@@ -163,6 +168,7 @@ export default function ProjectOverview() {
       {/* ── HERO ── */}
       <div className="po-hero">
         <div className="po-hero-img"><img src={heroImg} alt="Mico Foundation projects" /></div>
+        <div className="po-hero-overlay" />
         <div className="po-hero-inner">
           <p className="po-eyebrow">{content.heroEyebrow}</p>
           <h1 className="po-hero-title">{content.heroTitle}</h1>
