@@ -66,10 +66,6 @@ export default function LegacyImpactSection() {
     { value: "Global", label: "Donor and alumni support network" },
   ]
 
-  // Founding note (heading + detail) shown above the full 3-stat row.
-  const foundingTitle = 'The Mico Foundation, a Limited Liability Company — Not for Profit'
-  const foundingDetail = 'Established to support the developmental goals of the Mico University College.'
-
   const heroImageUrl = legacyData?.heroImage
     ? urlFor(legacyData.heroImage).width(1400).url()
     : '/images/home/holness.jpg'
@@ -125,35 +121,6 @@ export default function LegacyImpactSection() {
         .legacy-stat-link:hover { transform: translateY(-3px); }
         .legacy-stat-link:hover .legacy-stat-val { color: #FFD900 !important; }
         .legacy-stat-link:hover p { color: #040617 !important; }
-
-        .legacy-founding {
-          display: flex; align-items: flex-start; gap: 24px;
-          background: rgba(255,217,0,0.08);
-          border: 1px solid rgba(255,217,0,0.35);
-          border-left: 4px solid #FFD900;
-          border-radius: 16px;
-          padding: 24px 28px;
-          margin-bottom: 36px;
-        }
-        .legacy-founding-year {
-          font-family: 'Inter', sans-serif;
-          font-size: clamp(2.4rem, 3.4vw, 3.4rem);
-          font-weight: 900; letter-spacing: -2px; line-height: 1;
-          color: #040617; flex-shrink: 0;
-        }
-        .legacy-founding-title {
-          font-family: 'Inter', sans-serif;
-          font-size: 17px; font-weight: 800; letter-spacing: -0.3px;
-          line-height: 1.3; color: #040617; margin: 0 0 8px;
-        }
-        .legacy-founding-detail {
-          font-family: 'Inter', sans-serif;
-          font-size: 15px; font-weight: 400; line-height: 1.55;
-          color: #4A4A4A; margin: 0;
-        }
-        @media (max-width: 768px) {
-          .legacy-founding { flex-direction: column; gap: 12px; padding: 22px 22px; }
-        }
 
         .legacy-jamaica-green-a {
           position: absolute; pointer-events: none;
@@ -254,14 +221,6 @@ export default function LegacyImpactSection() {
 
             {/* Divider */}
             <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
-
-            {/* Founding note — heading + detail */}
-            <div className="legacy-founding">
-              <div>
-                <h3 className="legacy-founding-title">{foundingTitle}</h3>
-                <p className="legacy-founding-detail">{foundingDetail}</p>
-              </div>
-            </div>
 
             {/* Stats row */}
             <div style={{ display:'flex', gap:'0', marginBottom:'44px', paddingTop:'16px', paddingBottom:'16px', borderTop:'1px solid #E5E6EB', borderBottom:'1px solid #E5E6EB' }}>
