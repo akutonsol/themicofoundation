@@ -1,7 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { client, urlFor, queries } from "@/sanity/lib/sanity";
+import { urlFor } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
 
@@ -15,7 +12,6 @@ const FALLBACKS = [
 ];
 
 const DEFAULTS = {
-  heroImage: null,
   heroEyebrow: "Our Work",
   heroTitle: "Projects That Create Lasting Impact",
   heroSubtitle: "Through community programs, outreach initiatives, and meaningful partnerships, the Mico Foundation is committed to building brighter futures.",
@@ -31,50 +27,25 @@ const DEFAULTS = {
   ctaButtonLink: "/projects",
 };
 
-export default function ProjectOverview() {
-  const [projects, setProjects] = useState([]);
-  const [content, setContent] = useState(DEFAULTS);
+// Data is fetched on the server (in page.js) and passed as props, so the
+// correct hero image is present on first paint — no fallback flash.
+export default function ProjectOverview({ overview, projects = [] }) {
+  const content = { ...DEFAULTS };
+  if (overview) {
+    Object.keys(DEFAULTS).forEach(k => { if (overview[k]) content[k] = overview[k]; });
+  }
 
-  useEffect(() => {
-    async function fetchProjects() {
-      try {
-        const data = await client.fetch(queries.projects);
-        if (data?.length > 0) {
-          setProjects(data.map(p => ({
-            title: p.title,
-            slug: p.slug,
-            image: p.image ? urlFor(p.image).width(1000).url() : null,
-          })));
-        }
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    }
-    async function fetchContent() {
-      try {
-        const d = await client.fetch(queries.projectOverview);
-        if (d) {
-          setContent(prev => {
-            const merged = { ...prev };
-            Object.keys(DEFAULTS).forEach(k => { if (d[k]) merged[k] = d[k]; });
-            merged.heroImage = d.heroImage || null;
-            return merged;
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching project overview content:", error);
-      }
-    }
-    fetchProjects();
-    fetchContent();
-  }, []);
-
-  const heroImg = content.heroImage ? urlFor(content.heroImage).width(1800).url() : FALLBACKS[0];
+  const heroImg = overview?.heroImage ? urlFor(overview.heroImage).width(1800).url() : FALLBACKS[0];
   const introParas = (content.introBody || "").split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
 
   // Build a 5-cell collage from current projects, padded with fallbacks.
+  const proj = (projects || []).map(p => ({
+    title: p.title,
+    slug: p.slug,
+    image: p.image ? urlFor(p.image).width(1000).url() : null,
+  }));
   const collage = Array.from({ length: 5 }).map((_, i) => {
-    const p = projects[i];
+    const p = proj[i];
     return {
       img: p?.image || FALLBACKS[i % FALLBACKS.length],
       slug: p?.slug || null,
