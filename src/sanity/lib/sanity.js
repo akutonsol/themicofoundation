@@ -62,6 +62,13 @@ export const queries = {
     }
   }`,
 
+  projectOverview: `*[_type == "projectOverview"][0]{
+    heroImage, heroEyebrow, heroTitle, heroSubtitle,
+    introEyebrow, introTitle, introBody,
+    actionEyebrow, actionTitle,
+    ctaEyebrow, ctaTitle, ctaSubtitle, ctaButtonText, ctaButtonLink
+  }`,
+
   projects: `*[_type == "project"] | order(order asc){
     _id,
     title,

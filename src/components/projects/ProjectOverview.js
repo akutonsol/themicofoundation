@@ -14,8 +14,26 @@ const FALLBACKS = [
   "/images/home/project1.png",
 ];
 
+const DEFAULTS = {
+  heroImage: null,
+  heroEyebrow: "Our Work",
+  heroTitle: "Projects That Create Lasting Impact",
+  heroSubtitle: "Through community programs, outreach initiatives, and meaningful partnerships, the Mico Foundation is committed to building brighter futures.",
+  introEyebrow: "Current Initiatives",
+  introTitle: "Supporting communities through purpose-driven projects",
+  introBody: "Our projects are designed to meet real needs within the communities we serve. From education and youth development to outreach, wellness, and local support, each initiative reflects our mission to uplift, empower, and create opportunity.\n\nExplore our current projects and see how the Mico Foundation is making a difference one initiative at a time.",
+  actionEyebrow: "In Action",
+  actionTitle: "A look at our current projects",
+  ctaEyebrow: "Explore More",
+  ctaTitle: "View all of our foundation projects",
+  ctaSubtitle: "Learn more about the initiatives currently making an impact through the Mico Foundation.",
+  ctaButtonText: "View Our Projects",
+  ctaButtonLink: "/projects",
+};
+
 export default function ProjectOverview() {
   const [projects, setProjects] = useState([]);
+  const [content, setContent] = useState(DEFAULTS);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -32,11 +50,27 @@ export default function ProjectOverview() {
         console.error("Error fetching projects:", error);
       }
     }
+    async function fetchContent() {
+      try {
+        const d = await client.fetch(queries.projectOverview);
+        if (d) {
+          setContent(prev => {
+            const merged = { ...prev };
+            Object.keys(DEFAULTS).forEach(k => { if (d[k]) merged[k] = d[k]; });
+            merged.heroImage = d.heroImage || null;
+            return merged;
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching project overview content:", error);
+      }
+    }
     fetchProjects();
+    fetchContent();
   }, []);
 
-  // Static hero photo for now — swap this path (or wire to a CMS field) later.
-  const heroImg = "/images/home/banner1.png";
+  const heroImg = content.heroImage ? urlFor(content.heroImage).width(1800).url() : FALLBACKS[0];
+  const introParas = (content.introBody || "").split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
 
   // Build a 5-cell collage from current projects, padded with fallbacks.
   const collage = Array.from({ length: 5 }).map((_, i) => {
@@ -132,13 +166,10 @@ export default function ProjectOverview() {
         <div className="po-hero-img"><img src={heroImg} alt="Mico Foundation projects" /></div>
         <div className="po-hero-overlay" />
         <div className="po-hero-inner">
-          <p className="po-eyebrow">Our Work</p>
-          <h1 className="po-hero-title">Projects That Create Lasting Impact</h1>
+          <p className="po-eyebrow">{content.heroEyebrow}</p>
+          <h1 className="po-hero-title">{content.heroTitle}</h1>
           <div className="po-hero-rule" />
-          <p className="po-hero-sub">
-            Through community programs, outreach initiatives, and meaningful partnerships,
-            the Mico Foundation is committed to building brighter futures.
-          </p>
+          <p className="po-hero-sub">{content.heroSubtitle}</p>
         </div>
       </div>
 
@@ -146,22 +177,14 @@ export default function ProjectOverview() {
       <div className="po-intro">
         <div className="po-intro-inner">
           <div>
-            <p className="po-intro-eyebrow">Current Initiatives</p>
+            <p className="po-intro-eyebrow">{content.introEyebrow}</p>
             <h2 className="po-intro-title">
-              Supporting communities through purpose-driven projects<span className="dot">.</span>
+              {content.introTitle}<span className="dot">.</span>
             </h2>
           </div>
           <div className="po-intro-divider" />
           <div className="po-intro-body">
-            <p>
-              Our projects are designed to meet real needs within the communities we serve. From
-              education and youth development to outreach, wellness, and local support, each initiative
-              reflects our mission to uplift, empower, and create opportunity.
-            </p>
-            <p>
-              Explore our current projects and see how the Mico Foundation is making a difference
-              one initiative at a time.
-            </p>
+            {introParas.map((para, i) => <p key={i}>{para}</p>)}
           </div>
         </div>
       </div>
@@ -170,8 +193,8 @@ export default function ProjectOverview() {
       <div className="po-action">
         <div className="po-action-inner">
           <div className="po-action-head">
-            <span className="po-action-eyebrow">In Action</span>
-            <h2 className="po-action-title">A look at our current projects</h2>
+            <span className="po-action-eyebrow">{content.actionEyebrow}</span>
+            <h2 className="po-action-title">{content.actionTitle}</h2>
             <div className="po-action-rule" />
           </div>
 
@@ -209,13 +232,11 @@ export default function ProjectOverview() {
             </svg>
           </div>
           <div className="po-cta-body">
-            <p className="po-cta-eyebrow">Explore More</p>
-            <h2 className="po-cta-title">View all of our foundation projects</h2>
-            <p className="po-cta-sub">
-              Learn more about the initiatives currently making an impact through the Mico Foundation.
-            </p>
-            <a href="/projects" className="po-cta-btn">
-              View Our Projects
+            <p className="po-cta-eyebrow">{content.ctaEyebrow}</p>
+            <h2 className="po-cta-title">{content.ctaTitle}</h2>
+            <p className="po-cta-sub">{content.ctaSubtitle}</p>
+            <a href={content.ctaButtonLink} className="po-cta-btn">
+              {content.ctaButtonText}
               <svg viewBox="0 0 20 20" fill="none">
                 <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

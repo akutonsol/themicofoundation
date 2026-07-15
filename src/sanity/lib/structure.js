@@ -141,6 +141,7 @@ export const structure = (S) =>
                   .filter('_type == "project" && (status == "completed" || status == "complete")')
               ),
               S.listItem().title('All Projects').child(S.documentTypeList('project').title('All Projects')),
+              S.listItem().title('Project Overview Page').child(S.documentTypeList('projectOverview').title('Project Overview Page')),
               S.listItem().title('Project Initiatives (Accordion)').child(S.documentTypeList('projectInitiative').title('Project Initiatives')),
             ])
         ),
