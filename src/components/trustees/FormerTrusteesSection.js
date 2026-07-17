@@ -128,9 +128,9 @@ export default function FormerTrusteesSection() {
         .ft-card { display:flex; flex-direction:column; background:#fff; border:1px solid #ECEDF1; border-radius:22px; overflow:hidden; box-shadow:0 2px 10px rgba(10,13,18,0.05); transition: transform .28s ease, box-shadow .28s ease; }
         .ft-card:hover { transform: translateY(-6px); box-shadow: 0 28px 56px rgba(10,13,18,0.14); }
         .ft-bar { height:5px; width:100%; background:#f3af19; }
-        .ft-img-wrap { width:100%; height: clamp(300px,30vw,360px); overflow:hidden; background:#0d1326; }
-        .ft-img { width:100%; height:100%; object-fit:cover; object-position: top center; transition: transform .4s ease; }
-        .ft-card:hover .ft-img { transform: scale(1.04); }
+        .ft-img-wrap { width:100%; height: clamp(320px,32vw,380px); overflow:hidden; background: linear-gradient(160deg, #EFE9DC 0%, #E4DCC9 100%); display:flex; align-items:center; justify-content:center; }
+        .ft-img { width:100%; height:100%; object-fit:contain; object-position: center; transition: transform .4s ease; }
+        .ft-card:hover .ft-img { transform: scale(1.03); }
         .ft-body { padding: clamp(24px,2vw,30px); display:flex; flex-direction:column; gap:14px; }
         .ft-years { width:fit-content; background:#FFF7CC; color:#8A6D00; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:6px 14px; border-radius:100px; }
         .ft-name { font-family:'Inter',sans-serif; font-size:22px; font-weight:700; line-height:1.2; letter-spacing:-0.02em; color:#040617; margin:0; }
