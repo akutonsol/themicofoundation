@@ -62,8 +62,7 @@ export default function EndowmentLegacy() {
             Object.keys(DEFAULTS).forEach(k => { if (d[k]) merged[k] = d[k] })
             return merged
           })
-          // Using a wide splash image for now — ignore the CMS image temporarily.
-          // if (d.legacyImage) setHeroImg(urlFor(d.legacyImage).width(1400).url())
+          if (d.legacyImage) setHeroImg(urlFor(d.legacyImage).width(1700).url())
         }
       } catch (error) {
         console.error('Error fetching endowment legacy content:', error)
@@ -86,10 +85,10 @@ export default function EndowmentLegacy() {
         .el-hero-media { position: absolute; inset: 0; z-index: 0; }
         .el-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
         /* two stacked gradients: a warm gold wash on the left, and the dark blend fading to reveal the image on the right */
-        /* even warm-dark panel (black with a subtle gold undertone) that fades smoothly to reveal the image */
+        /* bold gold → black gradient panel that blends into the image */
         .el-hero-scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
-          linear-gradient(160deg, rgba(243,175,25,0.09) 0%, rgba(243,175,25,0) 42%),
-          linear-gradient(100deg, #12100A 0%, #12100A 32%, rgba(18,16,10,0.86) 44%, rgba(18,16,10,0.46) 56%, rgba(18,16,10,0.12) 66%, rgba(18,16,10,0) 74%); }
+          linear-gradient(125deg, rgba(243,175,25,0.55) 0%, rgba(243,175,25,0.18) 20%, rgba(243,175,25,0) 40%),
+          linear-gradient(100deg, #0A0805 0%, #16100A 24%, #1c1409 36%, rgba(22,15,8,0.72) 48%, rgba(22,15,8,0.3) 60%, rgba(22,15,8,0.06) 69%, rgba(22,15,8,0) 77%); }
         .el-hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1440px; margin: 0 auto; padding: clamp(48px,6vw,88px) clamp(28px,5vw,80px); }
         .el-hero-text { max-width: 620px; }
         .el-eyebrow { font-family:'Inter',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.28em; text-transform:uppercase; color:${GOLD}; margin:0 0 8px; }
@@ -106,24 +105,24 @@ export default function EndowmentLegacy() {
         }
 
         /* ── CARDS ── */
-        .el-cards-wrap { max-width: 1240px; margin: 0 auto; padding: clamp(44px,5vw,68px) clamp(24px,4vw,48px) clamp(48px,5.5vw,76px); text-align: center; }
-        .el-ornament { display:flex; align-items:center; justify-content:center; gap:16px; color:${GOLD}; margin:0 0 22px; }
+        .el-cards-wrap { max-width: 1440px; margin: 0 auto; padding: clamp(52px,6vw,84px) clamp(28px,5vw,80px) clamp(60px,7vw,96px); text-align: center; }
+        .el-ornament { display:flex; align-items:center; justify-content:center; gap:16px; color:${GOLD}; margin:0 0 24px; }
         .el-ornament::before, .el-ornament::after { content:''; width:clamp(50px,10vw,120px); height:1px; background: linear-gradient(90deg, transparent, rgba(199,154,42,0.6)); }
         .el-ornament::after { background: linear-gradient(90deg, rgba(199,154,42,0.6), transparent); }
         .el-ornament span { font-size:14px; transform: rotate(45deg); display:inline-block; width:12px; height:12px; border:1.5px solid ${GOLD}; }
-        .el-cards-heading { font-family:'Cormorant Garamond', serif; font-size: clamp(32px,4vw,52px); font-weight:600; letter-spacing:-0.01em; color:#12130F; margin:0 0 clamp(30px,3.5vw,44px); }
+        .el-cards-heading { font-family:'Inter', sans-serif; font-size: clamp(34px,4.4vw,60px); font-weight:800; letter-spacing:-0.03em; color:#12130F; margin:0 0 clamp(36px,4.5vw,56px); }
 
-        .el-cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px,1.4vw,20px); }
+        .el-cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(18px,1.8vw,28px); }
         @media (max-width: 900px) { .el-cards { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 520px) { .el-cards { grid-template-columns: 1fr; } }
 
-        .el-card { position:relative; background:#FCF9F0; border:1px solid #E3D8BE; border-radius:12px; min-height: clamp(190px,16vw,224px); padding: clamp(30px,2.6vw,40px) clamp(14px,1.2vw,20px); display:flex; flex-direction:column; align-items:center; justify-content:center; transition: transform .25s ease, box-shadow .25s ease; }
-        .el-card::before { content:''; position:absolute; inset:7px; border:1px solid #EADFC6; border-radius:8px; pointer-events:none; }
-        .el-card:hover { transform: translateY(-5px); box-shadow: 0 22px 48px rgba(20,19,15,0.13); }
-        .el-card-icon { width: clamp(48px,4.4vw,60px); height: clamp(48px,4.4vw,60px); color:#1c1c1a; margin-bottom:20px; }
+        .el-card { position:relative; background:#FCF9F0; border:2px solid #CBB577; border-radius:14px; min-height: clamp(240px,20vw,290px); padding: clamp(42px,3.6vw,58px) clamp(18px,1.6vw,28px); display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow: 0 8px 26px rgba(20,19,15,0.06); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+        .el-card::before { content:''; position:absolute; inset:9px; border:1px solid #DCC98F; border-radius:9px; pointer-events:none; }
+        .el-card:hover { transform: translateY(-6px); border-color:${GOLD}; box-shadow: 0 28px 60px rgba(20,19,15,0.16); }
+        .el-card-icon { width: clamp(58px,5.2vw,76px); height: clamp(58px,5.2vw,76px); color:#141210; margin-bottom:24px; }
         .el-card-icon svg { width:100%; height:100%; }
-        .el-card-label { font-family:'Cormorant Garamond', serif; font-size: clamp(19px,1.5vw,23px); font-weight:600; color:#12130F; margin:0; line-height:1.2; white-space:nowrap; }
-        .el-card-rule { width:38px; height:2px; background:${GOLD}; border-radius:2px; margin-top:14px; }
+        .el-card-label { font-family:'Inter', sans-serif; font-size: clamp(21px,1.8vw,27px); font-weight:700; letter-spacing:-0.02em; color:#12130F; margin:0; line-height:1.2; white-space:nowrap; }
+        .el-card-rule { width:44px; height:3px; background:${GOLD}; border-radius:3px; margin-top:18px; }
         @media (max-width: 520px) { .el-card-label { white-space:normal; } }
       `}</style>
 
