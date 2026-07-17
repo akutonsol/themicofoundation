@@ -65,7 +65,7 @@ function AccordionItem({ project, isOpen, onToggle, isHovered, onHover, onLeave 
             className="pointer-events-none absolute right-0 top-1/2 hidden -translate-y-1/2 lg:block"
             style={{ width: "360px", right: "40px" }}
           >
-            <div className="relative aspect-[1.15/1] overflow-hidden rounded-[14px] border border-[#FFD900]/25 shadow-2xl">
+            <div className="relative aspect-[1.15/1] overflow-hidden rounded-[14px] border border-[#FFD900]/25" style={{ boxShadow: 'var(--shadow-dark-3)' }}>
               <img src={project.image} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
             </div>

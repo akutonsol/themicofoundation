@@ -37,7 +37,7 @@ function DetailModal({ project, onClose }) {
       <motion.div initial={{ scale: 0.94, y: 24, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.94, y: 24, opacity: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} onClick={e => e.stopPropagation()}
         className="proj-modal-card"
-        style={{ width: '100%', maxWidth: '1100px', maxHeight: '90vh', overflowY: 'auto', background: '#0A1628', borderRadius: '28px', border: '1px solid rgba(255,255,255,0.08)', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+        style={{ width: '100%', maxWidth: '1100px', maxHeight: '90vh', overflowY: 'auto', background: '#0A1628', borderRadius: '28px', border: '1px solid rgba(255,255,255,0.08)', boxShadow: 'var(--shadow-dark-4)', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
         <div className="proj-modal-img" style={{ position: 'relative', minHeight: '520px', background: '#0d1b2e' }}>
           {project.image && <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', inset: 0 }} />}
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent 60%, #0A1628)' }} />
@@ -163,7 +163,7 @@ export default function FoundationProjectsDeck() {
               <motion.div key={activeProject.id}
                 initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.98 }}
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                style={{ borderRadius: '28px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', background: '#0A1628', boxShadow: `0 40px 100px rgba(0,0,0,0.5), 0 0 60px ${activeProject.accent}20` }}>
+                style={{ borderRadius: '28px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', background: '#0A1628', boxShadow: `var(--shadow-dark-4), 0 0 60px ${activeProject.accent}20` }}>
                 <div style={{ position: 'relative', height: '380px', background: '#0d1b2e' }}>
                   {activeProject.image && <img src={activeProject.image} alt={activeProject.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />}
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, #0A1628 100%)' }} />

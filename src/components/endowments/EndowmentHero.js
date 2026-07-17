@@ -140,10 +140,10 @@ export default function EndowmentsHero() {
 
         {/* Corner photos */}
         {[
-          { className: 'photo-corner', style: { position: 'absolute', left: '4%', top: '20px', width: '220px', height: '360px', borderRadius: '18px', overflow: 'hidden' }, src: content.photos[0] },
-          { className: 'photo-corner', style: { position: 'absolute', right: '7%', top: '40px', width: '220px', height: '275px', borderRadius: '18px', overflow: 'hidden' }, src: content.photos[1] },
-          { className: 'photo-corner', style: { position: 'absolute', left: 0, bottom: '70px', width: '220px', height: '175px', borderRadius: '18px', overflow: 'hidden' }, src: content.photos[2] },
-          { className: 'photo-corner', style: { position: 'absolute', right: 0, bottom: '70px', width: '340px', height: '275px', borderRadius: '18px', overflow: 'hidden' }, src: content.photos[3] },
+          { className: 'photo-corner', style: { position: 'absolute', left: '4%', top: '20px', width: '220px', height: '360px', borderRadius: '18px', overflow: 'hidden', boxShadow: 'var(--shadow-3)' }, src: content.photos[0] },
+          { className: 'photo-corner', style: { position: 'absolute', right: '7%', top: '40px', width: '220px', height: '275px', borderRadius: '18px', overflow: 'hidden', boxShadow: 'var(--shadow-3)' }, src: content.photos[1] },
+          { className: 'photo-corner', style: { position: 'absolute', left: 0, bottom: '70px', width: '220px', height: '175px', borderRadius: '18px', overflow: 'hidden', boxShadow: 'var(--shadow-3)' }, src: content.photos[2] },
+          { className: 'photo-corner', style: { position: 'absolute', right: 0, bottom: '70px', width: '340px', height: '275px', borderRadius: '18px', overflow: 'hidden', boxShadow: 'var(--shadow-3)' }, src: content.photos[3] },
         ].map((photo, i) => (
           <motion.div key={i} className={photo.className} style={photo.style}
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 + i * 0.05 }}>

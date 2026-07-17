@@ -65,6 +65,15 @@ body {
   --shadow-4: 0 22px 48px rgba(20,19,15,0.12), 0 8px 18px rgba(20,19,15,0.06);
   --shadow-5: 0 34px 80px rgba(4,6,23,0.28);
 
+  /* dark-surface elevation — deeper shadows + optional gold glow */
+  --shadow-dark-2: 0 8px 24px rgba(0,0,0,0.35);
+  --shadow-dark-3: 0 18px 44px rgba(0,0,0,0.45);
+  --shadow-dark-4: 0 30px 70px rgba(0,0,0,0.55);
+  --glow-gold-soft: 0 20px 54px rgba(243,175,25,0.14);
+  --glow-gold-ring: 0 0 0 1px rgba(243,175,25,0.30), 0 22px 56px rgba(243,175,25,0.16);
+  --border-on-dark: rgba(255,255,255,0.10);
+  --border-on-dark-strong: rgba(255,255,255,0.18);
+
   /* motion — calm, confident easing */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
@@ -154,5 +163,11 @@ select:focus-visible,
 .u-hairline { border: 1px solid var(--hairline); }
 .u-lift { transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); }
 .u-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-4); }
+.u-elev-dark-2 { box-shadow: var(--shadow-dark-2); }
+.u-elev-dark-3 { box-shadow: var(--shadow-dark-3); }
+.u-elev-dark-4 { box-shadow: var(--shadow-dark-4); }
+.u-glow-gold { box-shadow: var(--shadow-dark-3), var(--glow-gold-soft); }
+.u-lift-dark { transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); }
+.u-lift-dark:hover { transform: translateY(-5px); box-shadow: var(--shadow-dark-4), var(--glow-gold-soft); }
 
  

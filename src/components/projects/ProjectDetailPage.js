@@ -161,7 +161,7 @@ export default function ProjectDetailPage({ slug }) {
         .pd-back svg { transition:transform 0.2s; }
         .pd-back:hover svg { transform:translateX(-3px); }
         .pd-item:hover { background:rgba(255,217,0,0.06) !important; border-color:rgba(255,217,0,0.2) !important; }
-        .pd-next:hover { background:rgba(255,217,0,0.05) !important; }
+        .pd-next:hover { background:rgba(255,217,0,0.05) !important; transform:translateY(-5px); box-shadow:var(--shadow-dark-4), var(--glow-gold-soft); }
         .pd-next:hover .pd-next-arrow { background:#FFD900 !important; }
 
         .pd-watch-btn { display:inline-flex; align-items:center; gap:12px; margin-top:32px; padding:11px 22px 11px 11px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:100px; color:#fff; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; letter-spacing:0.02em; cursor:pointer; transition:background 0.25s, border-color 0.25s, transform 0.2s; }
@@ -210,7 +210,7 @@ export default function ProjectDetailPage({ slug }) {
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                style={{ width: "100%", height: "100%", borderRadius: "14px", display: "block", boxShadow: "0 30px 80px rgba(0,0,0,0.55)" }}
+                style={{ width: "100%", height: "100%", borderRadius: "14px", display: "block", boxShadow: "var(--shadow-dark-4)" }}
               />
             </motion.div>
           </motion.div>
@@ -335,7 +335,7 @@ export default function ProjectDetailPage({ slug }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "12px" }}>
             {project.donationItems.map((item, i) => (
               <motion.div key={i} className="pd-item" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.07 }}
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "18px", padding: "28px 24px", display: "flex", gap: "18px", alignItems: "flex-start", transition: "background 0.2s, border-color 0.2s", cursor: "default" }}>
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "18px", padding: "28px 24px", display: "flex", gap: "18px", alignItems: "flex-start", boxShadow: "var(--shadow-dark-3)", transition: "background 0.2s, border-color 0.2s", cursor: "default" }}>
                 <span style={{ fontFamily: "'Playfair Display',serif", fontSize: "13px", fontWeight: 700, color: "rgba(255,217,0,0.5)", minWidth: "28px", marginTop: "2px" }}>0{i + 1}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ width: "28px", height: "2px", background: "#FFD900", borderRadius: "1px", marginBottom: "14px", opacity: 0.6 }} />
@@ -364,7 +364,7 @@ export default function ProjectDetailPage({ slug }) {
       {nextProject && (
         <section style={{ background: "#05060F", padding: "clamp(48px,6vw,80px) clamp(24px,5vw,80px)", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
           <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", justifyContent: "flex-end" }}>
-            <Link href={`/projectdetail/${nextProject.slug}`} className="pd-next" style={{ display: "flex", alignItems: "center", gap: "28px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "28px 36px", textDecoration: "none", transition: "background 0.25s" }}>
+            <Link href={`/projectdetail/${nextProject.slug}`} className="pd-next" style={{ display: "flex", alignItems: "center", gap: "28px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "28px 36px", textDecoration: "none", boxShadow: "var(--shadow-dark-3)", transition: "background 0.25s, transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized)" }}>
               <div>
                 <p style={{ fontFamily: "'Inter',sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.14em", margin: "0 0 8px" }}>Next Project</p>
                 <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.8vw,36px)", color: "#FFFFFF", margin: 0, lineHeight: 1.05, fontWeight: 700 }}>{nextProject.title}</p>

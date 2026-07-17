@@ -51,7 +51,7 @@ function Lightbox({ project, activeImageIndex, onClose, onNext, onPrev }) {
       onClick={onClose}>
       <motion.div initial={{ scale: 0.96, y: 18, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.96, opacity: 0 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        style={{ width: '100%', maxWidth: '1400px', background: '#0A1628', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ width: '100%', maxWidth: '1400px', background: '#0A1628', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', boxShadow: 'var(--shadow-dark-4)' }}
         onClick={e => e.stopPropagation()}>
         <div style={{ position: 'relative', aspectRatio: '16/9', width: '100%', background: '#0d1b2e' }}>
           {image?.url && <img src={image.url} alt={image.alt || project.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />}
@@ -78,6 +78,7 @@ function ProjectImage({ image, index, className = "", onOpen, accent }) {
   return (
     <motion.button type="button" variants={imageVariants} onClick={() => onOpen(index)}
       className={`group relative overflow-hidden rounded-[10px] bg-[#0d1b2e] text-left ${className}`}
+      style={{ boxShadow: 'var(--shadow-dark-2)' }}
       whileHover={{ y: -3 }} transition={{ duration: 0.22 }}>
       <div className="relative h-full w-full">
         {image?.url && <img src={image.url} alt={image.alt || ''} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.5s ease' }} />}

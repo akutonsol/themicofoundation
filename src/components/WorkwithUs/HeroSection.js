@@ -128,7 +128,8 @@ export default function WorkWithUsHero() {
                   initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.55, delay: 0.08 * index }}
                   whileHover={{ y: -8, scale: 1.015 }}
-                  className="relative overflow-hidden rounded-[18px] border border-white/45 bg-white/10 p-5 shadow-[0_20px_70px_rgba(0,0,0,0.25)] backdrop-blur-[14px]"
+                  className="relative overflow-hidden rounded-[18px] border border-white/45 bg-white/10 p-5 backdrop-blur-[14px]"
+                  style={{ boxShadow: "var(--shadow-dark-3)" }}
                 >
                   <div className="pointer-events-none absolute inset-0 opacity-[0.2]">
                     <div className="grid h-full w-full grid-cols-6 grid-rows-4">

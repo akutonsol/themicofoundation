@@ -156,7 +156,7 @@ export default function FoundationVideo() {
           initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }} transition={{ duration: 0.7 }}
           className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#0a0d1f]"
-          style={{ height: "760px" }}
+          style={{ height: "760px", boxShadow: "var(--shadow-dark-4)" }}
         >
           {/* Static dark background with subtle gradient */}
           <div className="absolute inset-0" style={{

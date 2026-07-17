@@ -163,9 +163,9 @@ export default function LeadershipSpotlight() {
             ].map((card, i) => (
               <motion.a key={i} href={card.href}
                 initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay: i * 0.15 }}
-                style={{ display:'flex', flexDirection:'column', gap:'16px', padding:'36px', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'24px', textDecoration:'none', background:'rgba(255,255,255,0.03)', transition:'border-color 0.25s, background 0.25s' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(255,217,0,0.4)'; e.currentTarget.style.background='rgba(255,217,0,0.04)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.08)'; e.currentTarget.style.background='rgba(255,255,255,0.03)'; }}>
+                style={{ display:'flex', flexDirection:'column', gap:'16px', padding:'36px', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'24px', textDecoration:'none', background:'rgba(255,255,255,0.03)', boxShadow:'var(--shadow-dark-3)', transition:'border-color 0.25s, background 0.25s, transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized)' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(255,217,0,0.4)'; e.currentTarget.style.background='rgba(255,217,0,0.04)'; e.currentTarget.style.transform='translateY(-5px)'; e.currentTarget.style.boxShadow='var(--shadow-dark-4), var(--glow-gold-soft)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.08)'; e.currentTarget.style.background='rgba(255,255,255,0.03)'; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='var(--shadow-dark-3)'; }}>
                 <div style={{ width:'56px', height:'56px', borderRadius:'16px', backgroundColor:'rgba(255,217,0,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                   {i === 0 ? (
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -249,7 +249,7 @@ export default function LeadershipSpotlight() {
               { title:'Executive Team',    href:'/team',     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#FFD900" strokeWidth="2" strokeLinecap="round"/><circle cx="9" cy="7" r="4" stroke="#FFD900" strokeWidth="2"/></svg> },
             ].map((item, i) => (
               <a key={i} href={item.href}
-                style={{ display:'flex', alignItems:'center', gap:'14px', padding:'20px', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'16px', textDecoration:'none', background:'rgba(255,255,255,0.03)' }}>
+                style={{ display:'flex', alignItems:'center', gap:'14px', padding:'20px', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'16px', textDecoration:'none', background:'rgba(255,255,255,0.03)', boxShadow:'var(--shadow-dark-2)' }}>
                 <div style={{ width:'44px', height:'44px', borderRadius:'12px', backgroundColor:'rgba(255,217,0,0.1)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                   {item.icon}
                 </div>

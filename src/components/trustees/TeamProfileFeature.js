@@ -162,7 +162,8 @@ export default function TeamProfileFeature() {
         @media (max-width: 1100px) { .ct-card { flex-basis: calc((100% - 2 * var(--ct-gap)) / 3); } }
         @media (max-width: 760px)  { .ct-card { flex-basis: calc((100% - 1 * var(--ct-gap)) / 2); } }
         @media (max-width: 520px)  { .ct-card { flex-basis: 80%; } }
-        .ct-img-wrap { position:relative; width:100%; aspect-ratio: 4/5; border-radius:18px; overflow:hidden; background:#0d1b2e; border:1px solid rgba(255,255,255,0.08); }
+        .ct-img-wrap { position:relative; width:100%; aspect-ratio: 4/5; border-radius:18px; overflow:hidden; background:#0d1b2e; border:1px solid rgba(255,255,255,0.08); box-shadow: var(--shadow-dark-2); transition: box-shadow var(--dur-base) var(--ease-emphasized); }
+        .ct-card:hover .ct-img-wrap { box-shadow: var(--shadow-dark-4), var(--glow-gold-soft); }
         .ct-img { width:100%; height:100%; object-fit:cover; object-position: top center; transition: transform .5s ease, filter .4s ease; filter: grayscale(0.15); }
         .ct-card:hover .ct-img { transform: scale(1.05); filter: grayscale(0); }
         .ct-img-wrap::after { content:''; position:absolute; inset:0; border-radius:18px; box-shadow: inset 0 0 0 0 rgba(255,217,0,0); transition: box-shadow .3s ease; pointer-events:none; }

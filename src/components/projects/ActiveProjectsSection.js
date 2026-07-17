@@ -114,7 +114,7 @@ function DetailModal({ project, onClose }) {
         exit={{ scale: 0.94, y: 24, opacity: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         onClick={e => e.stopPropagation()}
-        style={{ width: '100%', maxWidth: '1100px', background: '#0A1628', borderRadius: '28px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', display: 'grid', gridTemplateColumns: '1fr 1fr' }}
+        style={{ width: '100%', maxWidth: '1100px', background: '#0A1628', borderRadius: '28px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', boxShadow: 'var(--shadow-dark-4)', display: 'grid', gridTemplateColumns: '1fr 1fr' }}
       >
         {/* Image */}
         <div style={{ position: 'relative', minHeight: '560px' }}>
@@ -225,7 +225,7 @@ export default function FoundationProjectsDeck() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.98 }}
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                style={{ borderRadius: '28px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', background: '#0A1628', boxShadow: `0 40px 100px rgba(0,0,0,0.5), 0 0 60px ${activeProject.accent}20` }}
+                style={{ borderRadius: '28px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', background: '#0A1628', boxShadow: `var(--shadow-dark-4), 0 0 60px ${activeProject.accent}20` }}
               >
                 {/* Image */}
                 <div style={{ position: 'relative', height: '380px' }}>
