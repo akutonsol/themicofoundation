@@ -30,4 +30,129 @@ body {
   width: 100%;
 }
 
+/* ============================================================
+   PREMIUM DESIGN FOUNDATION  (Helix-inspired, brand-neutral → Mico)
+   Three tiers: primitive → semantic → brand. Non-structural: these
+   are tokens + base polish only. Components opt in over time.
+   ============================================================ */
+:root {
+  /* ── Tier 3 · Mico brand palette (raw values) ── */
+  --mico-gold:        #f3af19;   /* nav / accent gold */
+  --mico-gold-bright: #FFD900;   /* brand yellow */
+  --mico-gold-deep:   #B8860B;
+  --mico-ink:         #040617;   /* near-black navy */
+  --mico-ink-2:       #05080F;
+  --mico-cream:       #FFFDF9;
+  --mico-parchment:   #F6F0E2;
+  --mico-line:        #E5E6EB;
+
+  /* ── Tier 1 · primitives (brand-agnostic) ── */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-pill: 100px;
+
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-5: 24px;  --space-6: 32px;  --space-7: 48px;  --space-8: 64px;
+  --space-9: 96px;  --space-10: 128px;
+
+  /* elevation — soft, warm-tinted shadows for a premium feel */
+  --shadow-1: 0 1px 2px rgba(20,19,15,0.04), 0 1px 3px rgba(20,19,15,0.06);
+  --shadow-2: 0 4px 10px rgba(20,19,15,0.05), 0 2px 6px rgba(20,19,15,0.05);
+  --shadow-3: 0 10px 24px rgba(20,19,15,0.08), 0 4px 10px rgba(20,19,15,0.05);
+  --shadow-4: 0 22px 48px rgba(20,19,15,0.12), 0 8px 18px rgba(20,19,15,0.06);
+  --shadow-5: 0 34px 80px rgba(4,6,23,0.28);
+
+  /* motion — calm, confident easing */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 0.18s;
+  --dur-base: 0.28s;
+  --dur-slow: 0.5s;
+
+  /* ── Tier 2 · semantic contract (what components should consume) ── */
+  --surface:        var(--mico-cream);
+  --surface-raised: #ffffff;
+  --surface-warm:   var(--mico-parchment);
+  --surface-ink:    var(--mico-ink);
+
+  --ink:        var(--mico-ink);
+  --ink-muted:  #4A4C5A;
+  --ink-subtle: #6F7181;
+  --on-ink:     rgba(255,255,255,0.82);
+
+  --accent:          var(--mico-gold);
+  --accent-bright:   var(--mico-gold-bright);
+  --accent-contrast: var(--mico-ink);
+
+  --border:        var(--mico-line);
+  --border-strong: #D8CDB4;
+  --hairline:      rgba(4,6,23,0.08);
+  --focus-ring:    var(--mico-gold);
+}
+
+/* ── Base polish (safe, non-layout; inline styles still win) ── */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+body {
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+/* balanced, premium text wrapping where the browser supports it */
+h1, h2, h3, h4 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+/* gold selection */
+::selection { background: rgba(243,175,25,0.30); color: var(--mico-ink); }
+
+/* refined keyboard focus for interactive elements */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* subtle, on-brand scrollbar */
+* { scrollbar-color: rgba(4,6,23,0.35) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(4,6,23,0.28);
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(4,6,23,0.45); background-clip: padding-box; }
+
+/* honour reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Opt-in premium utilities (components can add these; nothing changes until used) ── */
+.u-elev-1 { box-shadow: var(--shadow-1); }
+.u-elev-2 { box-shadow: var(--shadow-2); }
+.u-elev-3 { box-shadow: var(--shadow-3); }
+.u-elev-4 { box-shadow: var(--shadow-4); }
+.u-hairline { border: 1px solid var(--hairline); }
+.u-lift { transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); }
+.u-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-4); }
+
  
