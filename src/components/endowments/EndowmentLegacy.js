@@ -5,7 +5,9 @@ import { motion } from 'framer-motion'
 import { client, urlFor, queries } from '@/sanity/lib/sanity'
 
 const GOLD = '#f3af19'
-const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80'
+// Wide splash image for the banner (used for now — the CMS image is ignored
+// below because a tall portrait crops badly here; re-enable when a wide one is set).
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1700&q=80'
 
 const DEFAULTS = {
   legacyEyebrow: 'Endowments',
@@ -60,7 +62,8 @@ export default function EndowmentLegacy() {
             Object.keys(DEFAULTS).forEach(k => { if (d[k]) merged[k] = d[k] })
             return merged
           })
-          if (d.legacyImage) setHeroImg(urlFor(d.legacyImage).width(1400).url())
+          // Using a wide splash image for now — ignore the CMS image temporarily.
+          // if (d.legacyImage) setHeroImg(urlFor(d.legacyImage).width(1400).url())
         }
       } catch (error) {
         console.error('Error fetching endowment legacy content:', error)
@@ -83,9 +86,10 @@ export default function EndowmentLegacy() {
         .el-hero-media { position: absolute; inset: 0; z-index: 0; }
         .el-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
         /* two stacked gradients: a warm gold wash on the left, and the dark blend fading to reveal the image on the right */
+        /* even warm-dark panel (black with a subtle gold undertone) that fades smoothly to reveal the image */
         .el-hero-scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
-          radial-gradient(110% 130% at -8% 45%, rgba(243,175,25,0.22) 0%, rgba(243,175,25,0.05) 22%, rgba(243,175,25,0) 40%),
-          linear-gradient(100deg, #08080A 0%, #0A0A0C 16%, rgba(12,11,8,0.82) 28%, rgba(14,12,8,0.5) 40%, rgba(16,13,8,0.14) 54%, rgba(16,13,8,0) 64%); }
+          linear-gradient(160deg, rgba(243,175,25,0.09) 0%, rgba(243,175,25,0) 42%),
+          linear-gradient(100deg, #12100A 0%, #12100A 32%, rgba(18,16,10,0.86) 44%, rgba(18,16,10,0.46) 56%, rgba(18,16,10,0.12) 66%, rgba(18,16,10,0) 74%); }
         .el-hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1440px; margin: 0 auto; padding: clamp(48px,6vw,88px) clamp(28px,5vw,80px); }
         .el-hero-text { max-width: 620px; }
         .el-eyebrow { font-family:'Inter',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.28em; text-transform:uppercase; color:${GOLD}; margin:0 0 8px; }
@@ -102,24 +106,25 @@ export default function EndowmentLegacy() {
         }
 
         /* ── CARDS ── */
-        .el-cards-wrap { max-width: 1440px; margin: 0 auto; padding: clamp(56px,7vw,96px) clamp(24px,5vw,80px) clamp(64px,8vw,110px); text-align: center; }
-        .el-ornament { display:flex; align-items:center; justify-content:center; gap:16px; color:${GOLD}; margin:0 0 26px; }
-        .el-ornament::before, .el-ornament::after { content:''; width:clamp(60px,12vw,150px); height:1px; background: linear-gradient(90deg, transparent, rgba(199,154,42,0.6)); }
+        .el-cards-wrap { max-width: 1240px; margin: 0 auto; padding: clamp(44px,5vw,68px) clamp(24px,4vw,48px) clamp(48px,5.5vw,76px); text-align: center; }
+        .el-ornament { display:flex; align-items:center; justify-content:center; gap:16px; color:${GOLD}; margin:0 0 22px; }
+        .el-ornament::before, .el-ornament::after { content:''; width:clamp(50px,10vw,120px); height:1px; background: linear-gradient(90deg, transparent, rgba(199,154,42,0.6)); }
         .el-ornament::after { background: linear-gradient(90deg, rgba(199,154,42,0.6), transparent); }
         .el-ornament span { font-size:14px; transform: rotate(45deg); display:inline-block; width:12px; height:12px; border:1.5px solid ${GOLD}; }
-        .el-cards-heading { font-family:'Cormorant Garamond', serif; font-size: clamp(34px,4.4vw,58px); font-weight:600; letter-spacing:-0.01em; color:#12130F; margin:0 0 clamp(40px,5vw,60px); }
+        .el-cards-heading { font-family:'Cormorant Garamond', serif; font-size: clamp(32px,4vw,52px); font-weight:600; letter-spacing:-0.01em; color:#12130F; margin:0 0 clamp(30px,3.5vw,44px); }
 
-        .el-cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(20px,2.2vw,34px); }
+        .el-cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px,1.4vw,20px); }
         @media (max-width: 900px) { .el-cards { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 520px) { .el-cards { grid-template-columns: 1fr; } }
 
-        .el-card { position:relative; background:#FCF9F0; border:1px solid #E3D8BE; border-radius:14px; min-height: clamp(230px,22vw,300px); padding: clamp(44px,4vw,64px) clamp(22px,2vw,34px); display:flex; flex-direction:column; align-items:center; justify-content:center; transition: transform .25s ease, box-shadow .25s ease; }
-        .el-card::before { content:''; position:absolute; inset:8px; border:1px solid #EADFC6; border-radius:9px; pointer-events:none; }
-        .el-card:hover { transform: translateY(-6px); box-shadow: 0 26px 56px rgba(20,19,15,0.14); }
-        .el-card-icon { width: clamp(58px,5.4vw,78px); height: clamp(58px,5.4vw,78px); color:#1c1c1a; margin-bottom:26px; }
+        .el-card { position:relative; background:#FCF9F0; border:1px solid #E3D8BE; border-radius:12px; min-height: clamp(190px,16vw,224px); padding: clamp(30px,2.6vw,40px) clamp(14px,1.2vw,20px); display:flex; flex-direction:column; align-items:center; justify-content:center; transition: transform .25s ease, box-shadow .25s ease; }
+        .el-card::before { content:''; position:absolute; inset:7px; border:1px solid #EADFC6; border-radius:8px; pointer-events:none; }
+        .el-card:hover { transform: translateY(-5px); box-shadow: 0 22px 48px rgba(20,19,15,0.13); }
+        .el-card-icon { width: clamp(48px,4.4vw,60px); height: clamp(48px,4.4vw,60px); color:#1c1c1a; margin-bottom:20px; }
         .el-card-icon svg { width:100%; height:100%; }
-        .el-card-label { font-family:'Cormorant Garamond', serif; font-size: clamp(23px,2vw,29px); font-weight:600; color:#12130F; margin:0; line-height:1.2; }
-        .el-card-rule { width:40px; height:2px; background:${GOLD}; border-radius:2px; margin-top:18px; }
+        .el-card-label { font-family:'Cormorant Garamond', serif; font-size: clamp(19px,1.5vw,23px); font-weight:600; color:#12130F; margin:0; line-height:1.2; white-space:nowrap; }
+        .el-card-rule { width:38px; height:2px; background:${GOLD}; border-radius:2px; margin-top:14px; }
+        @media (max-width: 520px) { .el-card-label { white-space:normal; } }
       `}</style>
 
       {/* ── HERO ── */}
