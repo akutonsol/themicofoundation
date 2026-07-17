@@ -38,21 +38,6 @@ export default function ProjectOverview({ overview, projects = [] }) {
   const heroImg = overview?.heroImage ? urlFor(overview.heroImage).width(1800).url() : FALLBACKS[0];
   const introParas = (content.introBody || "").split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
 
-  // Build a 5-cell collage from current projects, padded with fallbacks.
-  const proj = (projects || []).map(p => ({
-    title: p.title,
-    slug: p.slug,
-    image: p.image ? urlFor(p.image).width(1000).url() : null,
-  }));
-  const collage = Array.from({ length: 5 }).map((_, i) => {
-    const p = proj[i];
-    return {
-      img: p?.image || FALLBACKS[i % FALLBACKS.length],
-      slug: p?.slug || null,
-      title: p?.title || "",
-    };
-  });
-
   return (
     <section className="po">
       <style>{`
@@ -82,7 +67,7 @@ export default function ProjectOverview({ overview, projects = [] }) {
         .po-intro-title { font-family:'Inter',sans-serif; font-size: clamp(30px,3.6vw,48px); font-weight:800; letter-spacing:-0.035em; line-height:1.08; color:#0A0A0A; margin:0; }
         .po-intro-title .dot { color:${GOLD}; }
         .po-intro-divider { background:#DEDBCF; width:1px; height:100%; }
-        .po-intro-body p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,18px); line-height:1.75; color:#4A4A4A; margin:0 0 22px; }
+        .po-intro-body p { font-family:'Inter',sans-serif; font-size: clamp(18px,1.7vw,23px); line-height:1.7; color:#4A4A4A; margin:0 0 24px; }
         .po-intro-body p:last-child { margin-bottom:0; }
         @media (max-width: 900px) {
           .po-intro-inner { grid-template-columns: 1fr; gap: 32px; }
@@ -160,39 +145,6 @@ export default function ProjectOverview({ overview, projects = [] }) {
           <div className="po-intro-divider" />
           <div className="po-intro-body">
             {introParas.map((para, i) => <p key={i}>{para}</p>)}
-          </div>
-        </div>
-      </div>
-
-      {/* ── IN ACTION collage ── */}
-      <div className="po-action">
-        <div className="po-action-inner">
-          <div className="po-action-head">
-            <span className="po-action-eyebrow">{content.actionEyebrow}</span>
-            <h2 className="po-action-title">{content.actionTitle}</h2>
-            <div className="po-action-rule" />
-          </div>
-
-          <div className="po-collage">
-            {collage.map((cell, i) => {
-              const Tag = cell.slug ? "a" : "div";
-              const props = cell.slug ? { href: `/projectdetail/${cell.slug}` } : {};
-              return (
-                <Tag
-                  key={i}
-                  className={`po-cell${i === 0 ? " tall" : ""}${cell.slug ? " link" : ""}`}
-                  {...props}
-                >
-                  <img src={cell.img} alt={cell.title || "Foundation project"} />
-                  {cell.slug && (
-                    <div className="po-cell-label">
-                      <p className="po-cell-name">{cell.title}</p>
-                      <p className="po-cell-view">View project →</p>
-                    </div>
-                  )}
-                </Tag>
-              );
-            })}
           </div>
         </div>
       </div>

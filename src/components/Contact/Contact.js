@@ -106,10 +106,10 @@ export default function ContactUs() {
           style={{ display: "flex", alignItems: "flex-start", gap: 20, background: "rgba(255,217,0,0.08)", border: "1px solid rgba(255,217,0,0.35)", borderLeft: "4px solid #FFD900", borderRadius: 16, padding: "24px 28px", marginBottom: 40 }}
         >
           <div>
-            <h2 style={{ ...inter, fontSize: 20, fontWeight: 800, letterSpacing: "-0.3px", lineHeight: 1.3, color: "#040617", margin: "0 0 8px" }}>
+            <h2 style={{ ...inter, fontSize: "clamp(26px, 3vw, 34px)", fontWeight: 800, letterSpacing: "-0.4px", lineHeight: 1.22, color: "#040617", margin: "0 0 12px" }}>
               The Mico Foundation, a Limited Liability Company — Not for Profit
             </h2>
-            <p style={{ ...inter, fontSize: 16, fontWeight: 400, lineHeight: 1.55, color: "#4A4A4A", margin: 0 }}>
+            <p style={{ ...inter, fontSize: "clamp(17px, 1.5vw, 20px)", fontWeight: 400, lineHeight: 1.6, color: "#4A4A4A", margin: 0 }}>
               Established to support the developmental goals of the Mico University College.
             </p>
           </div>
@@ -121,7 +121,7 @@ export default function ContactUs() {
             className="contact-title"
             initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65 }}
-            style={{ ...inter, fontSize: 60, fontWeight: 600, lineHeight: 0.98, letterSpacing: "-0.05em", color: "#040617", margin: 0 }}
+            style={{ ...inter, fontSize: 42, fontWeight: 600, lineHeight: 1.0, letterSpacing: "-0.04em", color: "#040617", margin: 0 }}
           >
             {settings.heading}
           </motion.h1>
@@ -208,7 +208,7 @@ export default function ContactUs() {
         @media (max-width: 1024px) {
           .contact-wrapper { padding: 0 24px !important; }
           .contact-grid { grid-template-columns: 1fr !important; }
-          .contact-title { font-size: 46px !important; }
+          .contact-title { font-size: 34px !important; }
         }
       `}</style>
     </section>

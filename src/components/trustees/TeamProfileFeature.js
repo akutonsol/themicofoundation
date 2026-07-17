@@ -201,7 +201,7 @@ export default function TeamProfileFeature() {
           >
             <span className="ct-eyebrow"><span className="bar" /> Board of Trustees</span>
             <h2 className="ct-title">Lady Mico Trustees</h2>
-            <p className="ct-sub">The stewards entrusted with safeguarding the mission, legacy, and future of The Mico Foundation.</p>
+            <p className="ct-sub">The stewards entrusted with safeguarding the mission, legacy, and future of The Mico.</p>
           </motion.header>
 
           <div className="ct-nav">

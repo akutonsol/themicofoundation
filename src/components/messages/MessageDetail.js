@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
@@ -45,19 +45,10 @@ const staticMessages = [
   },
 ];
 
-function CloseIcon({ size = 20 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
 export default function MessageDetail({ slug }) {
   const [message,     setMessage]     = useState(null);
   const [allMessages, setAllMessages] = useState([]);
   const [loading,     setLoading]     = useState(true);
-  const [showPanel,   setShowPanel]   = useState(false);
 
   useEffect(() => {
     async function fetchMessage() {
@@ -98,16 +89,6 @@ export default function MessageDetail({ slug }) {
     }
   }, [slug]);
 
-  // Full-message panel: close on Escape, lock background scroll while open
-  useEffect(() => {
-    if (!showPanel) return;
-    const onKey = e => { if (e.key === "Escape") setShowPanel(false); };
-    window.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
-  }, [showPanel]);
-
   if (loading) return (
     <section style={{ backgroundColor:"#040617", minHeight:"60vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
       <p style={{ ...inter, fontSize:"20px", color:"rgba(255,255,255,0.6)" }}>Loading message...</p>
@@ -125,12 +106,6 @@ export default function MessageDetail({ slug }) {
   const nextMessage  = currentIndex < allMessages.length - 1 ? allMessages[currentIndex + 1] : null;
   const isChairman   = (message.role || "").toLowerCase().includes("chairman");
   const title        = isChairman ? "Chairman Message" : "Message from the Foundation";
-
-  // Main page shows most of the message; the last 3 paragraphs are held back
-  // and revealed only in the slide-up "Read Full Message" panel.
-  const hasMore      = message.body.length > 3;
-  const previewBody  = hasMore ? message.body.slice(0, message.body.length - 3) : message.body;
-  const panelBody    = message.body.slice(-3);
 
   return (
     <main style={{ backgroundColor:"#040617", position:"relative", overflow:"hidden" }}>
@@ -192,34 +167,37 @@ export default function MessageDetail({ slug }) {
             {title}
           </motion.h1>
 
-          {/* Message preview (no image) — ends at the historical-legacy line, then the button */}
+          {/* Full message — image floated left, text wraps around and flows to the end */}
           <motion.div
             initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, delay:0.1 }}
           >
-            {/* Name / role */}
-            <div style={{ marginBottom:"28px" }}>
-              <p style={{ ...inter, fontSize:"22px", fontWeight:700, color:"#FFFFFF", letterSpacing:"-0.3px", margin:"0 0 4px" }}>
-                {message.name}
-              </p>
-              <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:0, fontStyle:"italic" }}>
-                {message.role} of The Mico Foundation
-              </p>
+            <div className="md-left" style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"28px" }}>
+              <div style={{ display:"flex", gap:"0" }}>
+                <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", flexShrink:0, alignSelf:"stretch" }} />
+                <div style={{ flex:1 }}>
+                  <div style={{ borderRadius:"0 20px 0 0", overflow:"hidden" }}>
+                    <img src={message.panelImage || message.image || "/images/home/holness.jpg"} alt={message.name}
+                      style={{ width:"100%", height:"500px", objectFit:"cover", objectPosition:"top", display:"block" }} />
+                  </div>
+                  <div style={{ backgroundColor:"#040617", padding:"22px 26px", borderRadius:"0 0 20px 0" }}>
+                    <h3 style={{ ...inter, fontSize:"24px", fontWeight:700, color:"white", letterSpacing:"-0.3px", lineHeight:1.2, margin:"0 0 6px" }}>
+                      {message.name}
+                    </h3>
+                    <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:0, fontStyle:"italic" }}>
+                      {message.role} of The Mico Foundation
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {previewBody.map((para, i) => (
+            {message.body.map((para, i) => (
               <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>
                 {para}
               </p>
             ))}
 
-            {hasMore && (
-              <div style={{ marginTop:"40px" }}>
-                <button onClick={() => setShowPanel(true)} className="md-read-btn">
-                  Read Full Message
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-            )}
+            <div style={{ clear:"both" }} />
           </motion.div>
         </div>
 
@@ -254,66 +232,6 @@ export default function MessageDetail({ slug }) {
         </div>
       </div>
 
-      {/* ── SLIDE-UP FULL MESSAGE PANEL ── */}
-      <AnimatePresence>
-        {showPanel && (
-          <>
-            <motion.div
-              key="md-backdrop"
-              initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-              onClick={() => setShowPanel(false)}
-              style={{ position:"fixed", inset:0, backgroundColor:"rgba(4,6,23,0.6)", zIndex:9998, backdropFilter:"blur(4px)", cursor:"pointer" }}
-            />
-            <motion.div
-              key="md-panel"
-              initial={{ y:"100%" }} animate={{ y:0 }} exit={{ y:"100%" }}
-              transition={{ type:"spring", damping:28, stiffness:260 }}
-              style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:9999, backgroundColor:"#040617", borderRadius:"28px 28px 0 0", height:"92vh", display:"flex", flexDirection:"column", boxShadow:"0 -32px 80px rgba(0,0,0,0.5)" }}
-            >
-              <button
-                onClick={() => setShowPanel(false)}
-                style={{ position:"absolute", top:"20px", right:"24px", zIndex:10, width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.85)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}
-              >
-                <CloseIcon size={17} />
-              </button>
-
-              <div style={{ flex:1, overflowY:"auto", padding:"clamp(48px,5vw,72px) clamp(24px,6vw,80px) 64px" }}>
-                <div style={{ maxWidth:"1200px", margin:"0 auto" }}>
-
-                  {/* Full message — wrapped layout with the panel photo */}
-                  <div>
-                    <div className="md-left" style={{ float:"left", width:"400px", marginRight:"48px", marginBottom:"28px" }}>
-                      <div style={{ display:"flex", gap:"0" }}>
-                        <div style={{ width:"4px", borderRadius:"4px", backgroundColor:"#FFD900", flexShrink:0, alignSelf:"stretch" }} />
-                        <div style={{ flex:1 }}>
-                          <div style={{ borderRadius:"0 20px 0 0", overflow:"hidden" }}>
-                            <img src={message.panelImage || message.image || "/images/home/holness.jpg"} alt={message.name}
-                              style={{ width:"100%", height:"500px", objectFit:"cover", objectPosition:"top", display:"block" }} />
-                          </div>
-                          <div style={{ backgroundColor:"#040617", padding:"22px 26px", borderRadius:"0 0 20px 0" }}>
-                            <h3 style={{ ...inter, fontSize:"24px", fontWeight:700, color:"white", letterSpacing:"-0.3px", lineHeight:1.2, margin:"0 0 6px" }}>
-                              {message.name}
-                            </h3>
-                            <p style={{ ...inter, fontSize:"14px", color:"rgba(255,255,255,0.5)", margin:0, fontStyle:"italic" }}>
-                              {message.role} of The Mico Foundation
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {panelBody.map((para, i) => (
-                      <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>{para}</p>
-                    ))}
-
-                    <div style={{ clear:"both" }} />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
     </main>
   );
