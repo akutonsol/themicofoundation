@@ -376,7 +376,9 @@ contactSettings: `*[_type == "contactSettings"][0]{
 endowment: `*[_type == "endowment"][0]{
   heroHeading, heroCtaText, heroCtaLink, stats,
   photoTopLeft, photoTopRight, photoBottomLeft, photoBottomRight,
-  typesHeading, typesIntro, endowmentTypes
+  typesHeading, typesIntro, endowmentTypes,
+  legacyEyebrow, legacyTitle, legacySubtitle, legacyCtaText, legacyCtaLink,
+  legacyImage, legacyCardsHeading, legacyCards
 }`,
 
   siteSettings: `*[_type == "siteSettings"][0]`

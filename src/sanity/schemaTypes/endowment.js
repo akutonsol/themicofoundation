@@ -68,6 +68,83 @@ export default defineType({
       options: { hotspot: true },
     },
 
+    // ── LEGACY HERO (top banner) ──
+    {
+      name: 'legacyEyebrow',
+      title: 'Legacy — Eyebrow',
+      type: 'string',
+      initialValue: 'Endowments',
+    },
+    {
+      name: 'legacyTitle',
+      title: 'Legacy — Title',
+      type: 'string',
+      initialValue: 'Create a lasting legacy through education.',
+    },
+    {
+      name: 'legacySubtitle',
+      title: 'Legacy — Subtitle',
+      type: 'text',
+      rows: 3,
+      initialValue: 'Your endowment empowers generations of Jamaican educators and students to learn, lead, and transform our communities.',
+    },
+    {
+      name: 'legacyCtaText',
+      title: 'Legacy — Button Text',
+      type: 'string',
+      initialValue: 'Explore Endowment Options',
+    },
+    {
+      name: 'legacyCtaLink',
+      title: 'Legacy — Button Link',
+      type: 'string',
+      initialValue: '#endowment-form',
+    },
+    {
+      name: 'legacyImage',
+      title: 'Legacy — Hero Image (right side)',
+      type: 'image',
+      options: { hotspot: true },
+    },
+    {
+      name: 'legacyCardsHeading',
+      title: 'Legacy — Cards Heading',
+      type: 'string',
+      initialValue: 'A legacy shaped by you',
+    },
+    {
+      name: 'legacyCards',
+      title: 'Legacy — Cards',
+      type: 'array',
+      of: [{
+        type: 'object',
+        fields: [
+          { name: 'label', title: 'Label', type: 'string' },
+          {
+            name: 'icon',
+            title: 'Icon',
+            type: 'string',
+            options: {
+              list: [
+                { title: 'Family (people)', value: 'family' },
+                { title: 'Research (book)', value: 'research' },
+                { title: 'Individual (person)', value: 'individual' },
+                { title: 'Corporate (building)', value: 'corporate' },
+              ],
+            },
+            initialValue: 'family',
+          },
+        ],
+        preview: { select: { title: 'label', subtitle: 'icon' } },
+      }],
+      initialValue: [
+        { label: 'Family Endowments', icon: 'family' },
+        { label: 'Research Endowments', icon: 'research' },
+        { label: 'Individual Endowments', icon: 'individual' },
+        { label: 'Corporate Endowments', icon: 'corporate' },
+      ],
+    },
+
     // ── TYPES SECTION ──
     {
       name: 'typesHeading',
