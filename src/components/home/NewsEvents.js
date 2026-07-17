@@ -138,7 +138,7 @@ export default function NewsEvents() {
           <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
             style={{ display:'flex', flexDirection:'column', gap:'24px' }}>
             <div style={{ display:'flex', flexDirection:'column', gap:'12px', height:'642px' }}>
-              <div style={{ flex:1, position:'relative', borderRadius:'12px', overflow:'hidden', minHeight:0 }}>
+              <div style={{ flex:1, position:'relative', borderRadius:'12px', overflow:'hidden', minHeight:0, boxShadow:'var(--shadow-3)' }}>
                 <img src={featured.image} alt={featured.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                 <div style={{ position:'absolute', top:'32px', left:0 }}><Badge type={featured.badge} /></div>
               </div>
@@ -178,7 +178,7 @@ export default function NewsEvents() {
             style={{ display:'flex', flexDirection:'column', gap:'24px' }}>
             {sideArticles.map(article => (
               <a key={article.id} href={getItemHref(article)} className="article-row">
-                <div style={{ width:'242px', flexShrink:0, borderRadius:'8px', overflow:'hidden', position:'relative', alignSelf:'stretch' }}>
+                <div style={{ width:'242px', flexShrink:0, borderRadius:'8px', overflow:'hidden', position:'relative', alignSelf:'stretch', boxShadow:'var(--shadow-2)' }}>
                   <img src={article.image} alt={article.title} style={{ width:'100%', height:'100%', objectFit:'cover', minHeight:'160px' }} />
                   <div style={{ position:'absolute', bottom:'16px', left:0 }}><Badge type={article.badge} /></div>
                 </div>
@@ -207,7 +207,7 @@ export default function NewsEvents() {
           {/* Featured mobile */}
           <div style={{ display:'flex', flexDirection:'column', gap:'24px', width:'100%' }}>
             <div style={{ display:'flex', flexDirection:'column', gap:'12px', height:'642px', width:'100%' }}>
-              <div style={{ flex:1, position:'relative', borderRadius:'12px', overflow:'hidden', minHeight:0 }}>
+              <div style={{ flex:1, position:'relative', borderRadius:'12px', overflow:'hidden', minHeight:0, boxShadow:'var(--shadow-3)' }}>
                 <img src={featured.image} alt={featured.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                 <div style={{ position:'absolute', top:'33px', left:0 }}>
                   <Badge type={featured.badge} starSrc={imgStar} />

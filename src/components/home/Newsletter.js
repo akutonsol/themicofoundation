@@ -68,7 +68,7 @@ export default function Newsletter() {
           width: 100%; outline: none; box-sizing: border-box; transition: border-color 0.2s;
         }
         .nl-input::placeholder { color: #6F7181; }
-        .nl-input:focus  { border-color: #FFD900; }
+        .nl-input:focus  { border-color: #f3af19; box-shadow: 0 0 0 3px rgba(243,175,25,0.15); }
         .nl-input.error  { border-color: #EF4444; }
         .nl-sub:hover    { background: #e6c200 !important; }
         .nl-sub:active   { transform: scale(0.98); }
@@ -87,7 +87,7 @@ export default function Newsletter() {
       <motion.div
         initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
         viewport={{ once:true }} transition={{ duration:0.6, delay:0.1 }}
-        style={{ backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'20px', padding:'24px', position:'relative', overflow:'hidden' }}
+        style={{ backgroundColor:'#FFFDF9', border:'1px solid rgba(4,6,23,0.07)', borderRadius:'20px', padding:'28px', position:'relative', overflow:'hidden', boxShadow:'var(--shadow-3)' }}
       >
         <img src={imgSparkle} alt="" style={{ position:'absolute', top:'13px', left:'17px', width:'100%', height:'109px', objectFit:'cover', pointerEvents:'none', opacity:0.2, zIndex:0 }} />
 

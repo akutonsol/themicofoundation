@@ -44,8 +44,9 @@ export default function FAQ() {
     <section className="relative overflow-hidden bg-[#FFFDF9] px-4 py-10 md:px-[clamp(24px, 8vw, 165px)] md:pt-[40px] md:pb-[80px]">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-        .faq-row { cursor: pointer; transition: background 0.2s; }
-        .faq-row:hover { background: rgba(255,217,0,0.04); }
+        .faq-row { cursor: pointer; transition: background 0.2s var(--ease-standard), padding-left 0.25s var(--ease-standard); border-radius: 12px; }
+        .faq-row:hover { background: rgba(243,175,25,0.06); padding-left: 14px; }
+        .faq-card { box-shadow: var(--shadow-3); border-color: rgba(4,6,23,0.07) !important; }
       `}</style>
 
       {/* Decorative ? */}
@@ -55,7 +56,7 @@ export default function FAQ() {
 
       {/* Main card */}
       <motion.div
-        className="relative z-0 flex flex-col items-center gap-[30px] rounded-[32px] md:rounded-[40px] border-2 border-[#E5E6EB] bg-[#FFFDF9] p-6 md:p-16"
+        className="faq-card relative z-0 flex flex-col items-center gap-[30px] rounded-[32px] md:rounded-[40px] border-2 border-[#E5E6EB] bg-[#FFFDF9] p-6 md:p-16"
         initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }} transition={{ duration: 0.6 }}
       >

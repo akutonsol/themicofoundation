@@ -81,8 +81,8 @@ export default function WaysToDonate() {
         .wtd-desktop { display: block; padding: 80px clamp(24px, 8vw, 165px); }
         .wtd-mobile  { display: none; }
         .wtd-grid    { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
-        .wtd-card    { display: flex; flex-direction: column; border: 1px solid #E5E6EB; border-radius: 24px; overflow: hidden; background: #FFFDF9; transition: transform 0.25s, box-shadow 0.25s; }
-        .wtd-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(4,6,23,0.10); }
+        .wtd-card    { display: flex; flex-direction: column; border: 1px solid rgba(4,6,23,0.07); border-radius: 24px; overflow: hidden; background: #FFFDF9; box-shadow: var(--shadow-2); transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); }
+        .wtd-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-4); }
         .wtd-btn     { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 16px; padding: 14px 24px; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; transition: opacity 0.2s; }
         .wtd-btn:hover { opacity: 0.88; }
         @media (max-width: 1024px) { .wtd-grid { grid-template-columns: 1fr; } }
