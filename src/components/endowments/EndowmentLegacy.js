@@ -81,9 +81,9 @@ export default function EndowmentLegacy() {
         .el { background: #F6F0E2; }
 
         /* ── HERO BAND — full-width image with a gold/black gradient scrim ── */
-        .el-hero { position: relative; min-height: clamp(460px, 58vh, 640px); overflow: hidden; background: #0A0A0C; display: flex; align-items: center; }
+        .el-hero { position: relative; min-height: clamp(460px, 58vh, 640px); overflow: hidden; background: #0A0906; display: flex; align-items: center; }
         .el-hero-media { position: absolute; inset: 0; z-index: 0; }
-        .el-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+        .el-hero-media img { width: 100%; height: 100%; object-fit: contain; object-position: right center; display: block; }
         /* two stacked gradients: a warm gold wash on the left, and the dark blend fading to reveal the image on the right */
         /* marquee black overlay (same structure as the reference green) + a gold wash on the left */
         .el-hero-scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
@@ -112,8 +112,8 @@ export default function EndowmentLegacy() {
         .el-ornament span { font-size:14px; transform: rotate(45deg); display:inline-block; width:12px; height:12px; border:1.5px solid ${GOLD}; }
         .el-cards-heading { font-family:'Inter', sans-serif; font-size: clamp(34px,4.4vw,60px); font-weight:800; letter-spacing:-0.03em; color:#12130F; margin:0 0 clamp(36px,4.5vw,56px); }
 
-        .el-cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(18px,1.8vw,28px); }
-        @media (max-width: 900px) { .el-cards { grid-template-columns: repeat(2, 1fr); } }
+        .el-cards { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: clamp(18px,1.8vw,28px); }
+        @media (max-width: 900px) { .el-cards { grid-template-columns: repeat(2, minmax(0,1fr)); } }
         @media (max-width: 520px) { .el-cards { grid-template-columns: 1fr; } }
 
         .el-card { position:relative; background:#FCF9F0; border:2px solid #CBB577; border-radius:14px; min-height: clamp(240px,20vw,290px); padding: clamp(42px,3.6vw,58px) clamp(18px,1.6vw,28px); display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow: 0 8px 26px rgba(20,19,15,0.06); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
