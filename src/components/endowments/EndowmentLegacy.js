@@ -78,25 +78,27 @@ export default function EndowmentLegacy() {
 
         .el { background: #F6F0E2; }
 
-        /* ── HERO BAND ── */
-        .el-hero { position: relative; display: grid; grid-template-columns: 1fr 1fr; min-height: clamp(440px, 54vh, 600px); overflow: hidden; background: linear-gradient(120deg, #0B0B0D 0%, #17130A 46%, #2a1f07 100%); }
-        .el-hero-text { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; padding: clamp(48px,6vw,84px) clamp(28px,5vw,80px); max-width: 720px; }
+        /* ── HERO BAND — full-width image with a gold/black gradient scrim ── */
+        .el-hero { position: relative; min-height: clamp(460px, 58vh, 640px); overflow: hidden; background: #0A0A0C; display: flex; align-items: center; }
+        .el-hero-media { position: absolute; inset: 0; z-index: 0; }
+        .el-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+        /* two stacked gradients: a warm gold wash on the left, and the dark blend fading to reveal the image on the right */
+        .el-hero-scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
+          radial-gradient(120% 130% at -5% 45%, rgba(243,175,25,0.22) 0%, rgba(243,175,25,0.05) 26%, rgba(243,175,25,0) 44%),
+          linear-gradient(100deg, #08080A 0%, #0C0B08 30%, #100D08 42%, rgba(16,13,8,0.62) 52%, rgba(16,13,8,0.22) 64%, rgba(16,13,8,0) 76%); }
+        .el-hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1440px; margin: 0 auto; padding: clamp(48px,6vw,88px) clamp(28px,5vw,80px); }
+        .el-hero-text { max-width: 620px; }
         .el-eyebrow { font-family:'Inter',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.28em; text-transform:uppercase; color:${GOLD}; margin:0 0 8px; }
         .el-eyebrow-rule { width:56px; height:3px; background:${GOLD}; border-radius:3px; margin:0 0 26px; }
-        .el-title { font-family:'Cormorant Garamond', serif; font-size: clamp(40px,5.2vw,72px); font-weight:600; line-height:1.02; letter-spacing:-0.01em; color:#fff; margin:0 0 22px; }
-        .el-sub { font-family:'Inter',sans-serif; font-size: clamp(16px,1.4vw,18px); line-height:1.65; color:rgba(255,255,255,0.72); margin:0 0 clamp(28px,4vw,40px); max-width:520px; }
+        .el-title { font-family:'Cormorant Garamond', serif; font-size: clamp(42px,5.4vw,76px); font-weight:600; line-height:1.02; letter-spacing:-0.01em; color:#fff; margin:0 0 22px; }
+        .el-sub { font-family:'Inter',sans-serif; font-size: clamp(16px,1.4vw,18px); line-height:1.65; color:rgba(255,255,255,0.74); margin:0 0 clamp(28px,4vw,40px); max-width:500px; }
         .el-cta { display:inline-flex; align-items:center; justify-content:center; align-self:flex-start; background:${GOLD}; color:#141210; font-family:'Inter',sans-serif; font-size:16px; font-weight:700; padding:18px 40px; border-radius:6px; text-decoration:none; transition: background .2s, transform .2s; box-shadow:0 14px 34px rgba(243,175,25,0.28); }
         .el-cta:hover { background:#FFD900; transform: translateY(-2px); }
 
-        .el-hero-img { position: relative; }
-        .el-hero-img img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
-        .el-hero-img::before { content:''; position:absolute; inset:0; z-index:1; background: linear-gradient(90deg, rgba(11,11,13,0.96) 0%, rgba(20,16,8,0.35) 26%, rgba(20,16,8,0) 52%); pointer-events:none; }
-
-        @media (max-width: 860px) {
-          .el-hero { grid-template-columns: 1fr; }
-          .el-hero-img { min-height: 300px; order: 2; }
-          .el-hero-img img { position: static; height: 300px; }
-          .el-hero-img::before { background: linear-gradient(0deg, rgba(11,11,13,0.5), rgba(11,11,13,0)); }
+        @media (max-width: 760px) {
+          .el-hero { min-height: clamp(520px, 88vw, 640px); align-items: flex-end; }
+          .el-hero-media img { object-position: center top; }
+          .el-hero-scrim { background: linear-gradient(180deg, rgba(8,8,10,0.35) 0%, rgba(8,8,10,0.55) 40%, rgba(8,8,10,0.92) 100%); }
         }
 
         /* ── CARDS ── */
@@ -107,32 +109,33 @@ export default function EndowmentLegacy() {
         .el-ornament span { font-size:14px; transform: rotate(45deg); display:inline-block; width:12px; height:12px; border:1.5px solid ${GOLD}; }
         .el-cards-heading { font-family:'Cormorant Garamond', serif; font-size: clamp(34px,4.4vw,58px); font-weight:600; letter-spacing:-0.01em; color:#12130F; margin:0 0 clamp(40px,5vw,60px); }
 
-        .el-cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(18px,2vw,28px); }
+        .el-cards { display:grid; grid-template-columns: repeat(4, 1fr); gap: clamp(20px,2.2vw,34px); }
         @media (max-width: 900px) { .el-cards { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 520px) { .el-cards { grid-template-columns: 1fr; } }
 
-        .el-card { position:relative; background:#FCF9F0; border:1px solid #E3D8BE; border-radius:12px; padding: clamp(30px,3vw,44px) 20px; display:flex; flex-direction:column; align-items:center; transition: transform .25s ease, box-shadow .25s ease; }
-        .el-card::before { content:''; position:absolute; inset:6px; border:1px solid #ECE2C9; border-radius:8px; pointer-events:none; }
-        .el-card:hover { transform: translateY(-5px); box-shadow: 0 22px 48px rgba(20,19,15,0.12); }
-        .el-card-icon { width: clamp(48px,5vw,60px); height: clamp(48px,5vw,60px); color:#1c1c1a; margin-bottom:20px; }
+        .el-card { position:relative; background:#FCF9F0; border:1px solid #E3D8BE; border-radius:14px; min-height: clamp(230px,22vw,300px); padding: clamp(44px,4vw,64px) clamp(22px,2vw,34px); display:flex; flex-direction:column; align-items:center; justify-content:center; transition: transform .25s ease, box-shadow .25s ease; }
+        .el-card::before { content:''; position:absolute; inset:8px; border:1px solid #EADFC6; border-radius:9px; pointer-events:none; }
+        .el-card:hover { transform: translateY(-6px); box-shadow: 0 26px 56px rgba(20,19,15,0.14); }
+        .el-card-icon { width: clamp(58px,5.4vw,78px); height: clamp(58px,5.4vw,78px); color:#1c1c1a; margin-bottom:26px; }
         .el-card-icon svg { width:100%; height:100%; }
-        .el-card-label { font-family:'Cormorant Garamond', serif; font-size: clamp(20px,1.8vw,25px); font-weight:600; color:#12130F; margin:0; line-height:1.2; }
-        .el-card-rule { width:34px; height:2px; background:${GOLD}; border-radius:2px; margin-top:14px; }
+        .el-card-label { font-family:'Cormorant Garamond', serif; font-size: clamp(23px,2vw,29px); font-weight:600; color:#12130F; margin:0; line-height:1.2; }
+        .el-card-rule { width:40px; height:2px; background:${GOLD}; border-radius:2px; margin-top:18px; }
       `}</style>
 
       {/* ── HERO ── */}
       <div className="el-hero">
-        <motion.div className="el-hero-text"
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-        >
-          <p className="el-eyebrow">{content.legacyEyebrow}</p>
-          <div className="el-eyebrow-rule" />
-          <h1 className="el-title">{content.legacyTitle}</h1>
-          <p className="el-sub">{content.legacySubtitle}</p>
-          <a href={content.legacyCtaLink} className="el-cta">{content.legacyCtaText}</a>
-        </motion.div>
-        <div className="el-hero-img">
-          <img src={heroImg} alt="Mico endowments" />
+        <div className="el-hero-media"><img src={heroImg} alt="Mico endowments" /></div>
+        <div className="el-hero-scrim" />
+        <div className="el-hero-inner">
+          <motion.div className="el-hero-text"
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          >
+            <p className="el-eyebrow">{content.legacyEyebrow}</p>
+            <div className="el-eyebrow-rule" />
+            <h1 className="el-title">{content.legacyTitle}</h1>
+            <p className="el-sub">{content.legacySubtitle}</p>
+            <a href={content.legacyCtaLink} className="el-cta">{content.legacyCtaText}</a>
+          </motion.div>
         </div>
       </div>
 
