@@ -83,7 +83,7 @@ export default function EndowmentLegacy() {
         /* ── HERO BAND — full-width image with a gold/black gradient scrim ── */
         .el-hero { position: relative; min-height: clamp(460px, 58vh, 640px); overflow: hidden; background: #0A0906; display: flex; align-items: center; }
         .el-hero-media { position: absolute; inset: 0; z-index: 0; }
-        .el-hero-media img { width: 100%; height: 100%; object-fit: contain; object-position: right center; display: block; }
+        .el-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
         /* two stacked gradients: a warm gold wash on the left, and the dark blend fading to reveal the image on the right */
         /* marquee black overlay (same structure as the reference green) + a gold wash on the left */
         .el-hero-scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
