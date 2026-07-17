@@ -47,7 +47,7 @@ function ValueIcon({ name, size = 26 }) {
 function ValueCard({ value, style = {} }) {
   const a = ACCENTS[value.accent] || ACCENTS.gold
   return (
-    <div className="value-card" style={{ position: 'relative', backgroundColor: '#FFFFFF', border: '1px solid #ECEDF1', borderRadius: '22px', padding: '30px 28px', display: 'flex', flexDirection: 'column', gap: '20px', overflow: 'hidden', minHeight: '250px', boxShadow: '0 2px 6px rgba(10,13,18,0.05)', transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease', ...style }}>
+    <div className="value-card" style={{ position: 'relative', backgroundColor: '#FFFFFF', border: '1px solid rgba(4,6,23,0.07)', borderRadius: '22px', padding: '30px 28px', display: 'flex', flexDirection: 'column', gap: '20px', overflow: 'hidden', minHeight: '250px', boxShadow: 'var(--shadow-2)', transition: 'transform var(--dur-base) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard), border-color var(--dur-base) var(--ease-standard)', ...style }}>
       {/* Jamaican accent bar */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '5px', background: a.bar }} />
       {/* Soft accent glow */}
@@ -95,7 +95,7 @@ export default function Mission() {
           padding: clamp(56px, 7vw, 80px) clamp(24px, 4vw, 64px);
         }
         .mission-panel { background: #FAF7EF; border-radius: 28px; }
-        .mission-split { display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px; overflow: hidden; box-shadow: 0 12px 36px rgba(10,13,18,0.10); }
+        .mission-split { display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-3); }
         .mission-half { padding: clamp(34px, 3.6vw, 60px); display: flex; flex-direction: column; justify-content: center; gap: 24px; }
         .mission-half-black { background: #050608; }
         .mission-half-gold  { background: #f3af19; }
@@ -112,8 +112,8 @@ export default function Mission() {
 
         /* ── Premium value-card hover ── */
         .value-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 18px 40px rgba(10,13,18,0.10);
+          transform: translateY(-5px);
+          box-shadow: var(--shadow-4);
           border-color: rgba(255,217,0,0.6);
         }
         .value-card:hover .value-icon-badge { transform: scale(1.06); }
@@ -228,7 +228,7 @@ export default function Mission() {
           {/* Foundation logo card — centre */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.16 }}
-            style={{ background: 'linear-gradient(160deg, #040617 0%, #11152e 100%)', border: '1px solid #040617', borderRadius: '22px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '230px', height: '100%', boxShadow: '0 12px 30px rgba(4,6,23,0.18)' }}
+            style={{ background: 'linear-gradient(160deg, #040617 0%, #11152e 100%)', border: '1px solid #040617', borderRadius: '22px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '230px', height: '100%', boxShadow: 'var(--shadow-3)' }}
           >
             <img src={foundationLogo} alt="The Mico Foundation" style={{ width: '86%', objectFit: 'contain' }} />
           </motion.div>
@@ -257,7 +257,7 @@ export default function Mission() {
           style={{ display: 'flex', flexDirection: 'column', gap: '32px', width: '100%' }}
         >
           <div style={{ textAlign: 'center' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', backgroundColor: '#FFFFFF', border: '1px solid #ECEDF1', borderRadius: '100px', padding: '8px 16px', boxShadow: '0 2px 8px rgba(10,13,18,0.05)', marginBottom: '18px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', backgroundColor: '#FFFFFF', border: '1px solid rgba(4,6,23,0.07)', borderRadius: '100px', padding: '8px 16px', boxShadow: 'var(--shadow-1)', marginBottom: '18px' }}>
               <span style={{ display: 'inline-flex', gap: '4px' }}>
                 <span style={{ width: '9px', height: '9px', borderRadius: '50%', backgroundColor: '#1A8C4A' }} />
                 <span style={{ width: '9px', height: '9px', borderRadius: '50%', backgroundColor: '#F5B700' }} />

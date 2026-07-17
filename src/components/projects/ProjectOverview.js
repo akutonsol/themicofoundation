@@ -83,13 +83,14 @@ export default function ProjectOverview({ overview, projects = [] }) {
         .po-action-rule { width:70px; height:4px; border-radius:4px; background:${GOLD}; margin:20px auto 0; }
 
         .po-collage { display:grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(0, 1fr); gap: clamp(12px,1.6vw,20px); height: clamp(560px, 60vw, 760px); }
-        .po-cell { position:relative; overflow:hidden; border-radius:18px; background:#0d0d0d; display:block; text-decoration:none; }
+        .po-cell { position:relative; overflow:hidden; border-radius:18px; background:#0d0d0d; display:block; text-decoration:none; box-shadow: var(--shadow-2); transition: box-shadow var(--dur-base) var(--ease-emphasized); }
         .po-cell.tall { grid-row: span 2; }
         .po-cell img { width:100%; height:100%; object-fit:cover; object-position:center; transition: transform .55s ease; }
         .po-cell.link { cursor:pointer; }
         .po-cell.link:hover img { transform: scale(1.06); }
         .po-cell::after { content:''; position:absolute; inset:0; border-radius:18px; box-shadow: inset 0 0 0 0 ${GOLD}; transition: box-shadow .3s ease; pointer-events:none; }
         .po-cell.link:hover::after { box-shadow: inset 0 0 0 3px ${GOLD}; }
+        .po-cell.link:hover { box-shadow: var(--shadow-4); }
         .po-cell-label { position:absolute; left:0; right:0; bottom:0; z-index:2; padding: clamp(24px,3vw,36px) 18px 16px; opacity:0; transform: translateY(10px); transition: opacity .3s ease, transform .3s ease; background:linear-gradient(to top, rgba(5,6,8,0.92), rgba(5,6,8,0)); }
         .po-cell.link:hover .po-cell-label { opacity:1; transform: translateY(0); }
         .po-cell-name { font-family:'Inter',sans-serif; font-size:15px; font-weight:700; color:#fff; margin:0; line-height:1.25; }

@@ -129,7 +129,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-[2000px] flex-wrap items-center justify-center gap-10 px-6 lg:px-10">
           <a
             href="/donate"
-            className="inline-flex items-center justify-center gap-3 rounded-[18px] bg-[#FFD900] px-8 py-5 text-[17px] font-semibold text-[#040617] transition hover:scale-[1.02] shadow-lg"
+            className="inline-flex items-center justify-center gap-3 rounded-[18px] bg-[#FFD900] px-8 py-5 text-[17px] font-semibold text-[#040617] transition hover:scale-[1.02] shadow-[var(--shadow-3)]"
             style={inter}
           >
             Donate Now
@@ -275,7 +275,7 @@ export default function Footer() {
       {/* SCROLL TO TOP */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-8 right-8 z-[1000] flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD900] text-[#040617] shadow-xl transition hover:-translate-y-1"
+        className="fixed bottom-8 right-8 z-[1000] flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD900] text-[#040617] shadow-[var(--shadow-4)] transition hover:-translate-y-1"
       >
         <span className="text-[26px]">^</span>
       </button>

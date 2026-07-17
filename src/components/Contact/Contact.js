@@ -16,19 +16,24 @@ const staticSettings = {
 };
 
 function Field({ label, placeholder, textarea = false, value, onChange, error }) {
+  const [focused, setFocused] = useState(false);
   const base = {
     ...inter, width: "100%", borderRadius: 8,
-    border: `1px solid ${error ? '#EF4444' : '#D9DDE6'}`,
+    border: `1px solid ${error ? '#EF4444' : focused ? '#f3af19' : 'rgba(4,6,23,0.07)'}`,
     background: "#FFFDF9", fontSize: 16, color: "#040617", outline: "none",
+    boxShadow: focused && !error ? "0 0 0 3px rgba(243,175,25,0.15)" : "none",
+    transition: "border-color var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard)",
   };
   return (
     <div>
       <label style={{ ...inter, display: "block", marginBottom: 8, fontSize: 16, color: "#414651" }}>{label}</label>
       {textarea ? (
         <textarea rows={6} placeholder={placeholder} value={value} onChange={onChange}
+          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           style={{ ...base, height: 170, resize: "none", padding: "16px" }} />
       ) : (
         <input type="text" placeholder={placeholder} value={value} onChange={onChange}
+          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           style={{ ...base, height: 48, padding: "0 16px" }} />
       )}
       {error && <span style={{ ...inter, fontSize: 13, color: '#EF4444', marginTop: 4, display: 'block' }}>{error}</span>}
@@ -129,7 +134,7 @@ export default function ContactUs() {
           <motion.div
             initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08 }}
-            style={{ justifySelf: "end", maxWidth: 460, borderLeft: "1px solid #E5E6EB", paddingLeft: 32 }}
+            style={{ justifySelf: "end", maxWidth: 460, borderLeft: "1px solid rgba(4,6,23,0.07)", paddingLeft: 32 }}
           >
             <p style={{ ...inter, display: "flex", alignItems: "center", gap: 16, fontSize: 21, color: "#7A7D8B", margin: "0 0 14px" }}>
               <MapPin size={24} color="#040617" />
@@ -190,7 +195,7 @@ export default function ContactUs() {
           <motion.div
             initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.16 }}
-            style={{ height: 500, borderRadius: 18, overflow: "hidden", background: "#000" }}
+            style={{ height: 500, borderRadius: 18, overflow: "hidden", background: "#000", boxShadow: "var(--shadow-3)" }}
           >
             <iframe
               title="The Mico Foundation Map"

@@ -32,7 +32,7 @@ function StaffCard({ member, onOpen }) {
       whileHover={{ y: -4 }}
       className="group text-left"
     >
-      <div className="relative overflow-hidden rounded-[20px] border border-[#E5E6EB] bg-[#FFFDF9]">
+      <div className="relative overflow-hidden rounded-[20px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] shadow-[var(--shadow-2)] transition-shadow duration-300 group-hover:shadow-[var(--shadow-4)]">
         <div className="pointer-events-none absolute right-3 top-3 opacity-20"><Sparkle /></div>
         <div className="aspect-[0.84/1] overflow-hidden">
           <img src={member.image} alt={member.name} className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.03]" />
@@ -81,7 +81,7 @@ export default function StaffSection() {
           <h1 className="text-[56px] font-semibold leading-[0.95] tracking-[-0.06em] text-[#040617] sm:text-[78px] lg:text-[88px]" style={{ fontFamily: "'Inter', sans-serif" }}>
             Staff
           </h1>
-          <div className="lg:border-l lg:border-[#E5E6EB] lg:pl-6">
+          <div className="lg:border-l lg:border-[rgba(4,6,23,0.07)] lg:pl-6">
             <p className="max-w-[520px] text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
               The Mico Foundation is run by a 5-member team led by Secretary Manager Burchell Duhaney, committed to delivering impactful, values-driven work.
             </p>

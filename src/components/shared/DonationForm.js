@@ -231,7 +231,7 @@ const SELECT_STYLE = {
   WebkitAppearance:"none",
   MozAppearance:"none",
   backgroundColor:"#FFFDF9",
-  border:"1px solid #E5E6EB",
+  border:"1px solid rgba(4,6,23,0.07)",
   borderRadius:"8px",
   padding:"10px 40px 10px 14px",
   fontSize:"16px",
@@ -295,7 +295,7 @@ function StepIndicator({ currentStep, mobile }) {
 
 function ProjectCard({ projects, currentProject, onPrev, onNext, mobile }) {
   if (!projects || projects.length === 0) return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",padding:"24px",textAlign:"center"}}>
+    <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",padding:"24px",textAlign:"center"}}>
       <p style={{...inter,fontSize:"20px",color:"#6F7181"}}>No active projects available</p>
     </div>
   );
@@ -349,7 +349,7 @@ function ProjectCard({ projects, currentProject, onPrev, onNext, mobile }) {
   );
 
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",padding:"16px",display:"flex",flexDirection:"column",gap:"32px",position:"relative",overflow:"hidden"}}>
+    <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",padding:"16px",display:"flex",flexDirection:"column",gap:"32px",position:"relative",overflow:"hidden",boxShadow:"var(--shadow-2)"}}>
       <img src={imgSparkle} alt="" style={{position:"absolute",top:"132px",left:"50%",transform:"translateX(-50%)",width:"523px",pointerEvents:"none",opacity:0.3}}/>
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",position:"relative",zIndex:1}}>
         <div>
@@ -403,7 +403,7 @@ function ProjectCard({ projects, currentProject, onPrev, onNext, mobile }) {
 function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, error, onNext, mobile }) {
   const amounts = tab === "monthly" ? AMOUNTS_MONTHLY : AMOUNTS_ONCE;
   if (mobile) return (
-    <div style={{width:"100%",backgroundColor:"#FFFDF9",borderRadius:"16px",overflow:"hidden",border:"1px solid #E5E6EB",display:"flex",flexDirection:"column"}}>
+    <div style={{width:"100%",backgroundColor:"#FFFDF9",borderRadius:"16px",overflow:"hidden",border:"1px solid rgba(4,6,23,0.07)",display:"flex",flexDirection:"column",boxShadow:"var(--shadow-2)"}}>
       <div style={{display:"flex",borderBottom:"1px solid #E5E6EB"}}>
         <button onClick={() => { setTab("once"); setSelected("$50"); }}
           style={{flex:1,padding:"10px",...inter,fontSize:"24px",lineHeight:"38px",color:"#040617",background:"none",border:"none",borderBottom:tab==="once"?"2px solid #FFD900":"2px solid transparent",cursor:"pointer",opacity:tab==="once"?1:0.8}}>
@@ -451,7 +451,7 @@ function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, err
     </div>
   );
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden",display:"flex",flexDirection:"column",position:"relative"}}>
+    <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",overflow:"hidden",display:"flex",flexDirection:"column",position:"relative",boxShadow:"var(--shadow-2)"}}>
       <img src={imgSparkle} alt="" style={{position:"absolute",top:"105px",left:"138px",width:"523px",pointerEvents:"none",opacity:0.2,zIndex:0}}/>
       <div style={{display:"flex",borderBottom:"1px solid #E5E6EB",position:"relative",zIndex:1}}>
         <button className={tab==="once"?"tab-btn active":"tab-btn"} onClick={() => { setTab("once"); setSelected("$50"); }}>Donate Once</button>
@@ -543,7 +543,7 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
   };
 
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden"}}>
+    <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",overflow:"hidden",boxShadow:"var(--shadow-2)"}}>
       <div style={{borderBottom:"1px solid #E5E6EB",padding:"20px 24px",textAlign:"center"}}>
         <h3 style={{...inter,fontSize:mobile?"28px":"40px",fontWeight:500,color:"#040617",margin:0}}>Personal Info</h3>
       </div>
@@ -590,7 +590,7 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
           )}
         </div>
         <div style={{display:"flex",gap:"16px",flexDirection:mobile?"column":"row"}}>
-          <button onClick={onBack} style={{...inter,background:"none",border:"1px solid #E5E6EB",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Go Back</button>
+          <button onClick={onBack} style={{...inter,background:"none",border:"1px solid rgba(4,6,23,0.07)",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Go Back</button>
           <button onClick={onNext} style={{...inter,background:"#FFD900",border:"none",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Continue to Donate Method</button>
         </div>
       </div>
@@ -679,7 +679,7 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
 
   if (isProcessing) return (
     <motion.div initial={{opacity:0}} animate={{opacity:1}}
-      style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",padding:"60px 32px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:"20px"}}>
+      style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",padding:"60px 32px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:"20px"}}>
       <div style={{width:"60px",height:"60px",border:"4px solid #FFD900",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 1s linear infinite"}}/>
       <p style={{...inter,fontSize:"20px",color:"#040617",fontWeight:600}}>Processing your donation...</p>
       <p style={{...inter,fontSize:"16px",color:"#6F7181"}}>Please do not close this window.</p>
@@ -687,7 +687,7 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
   );
 
   return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"20px",overflow:"hidden"}}>
+    <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",overflow:"hidden",boxShadow:"var(--shadow-2)"}}>
       <div style={{display:"flex",borderBottom:"1px solid #E5E6EB"}}>
         {[["card","Card"],["paypal","PayPal"],["inperson","In Person"]].map(([m,label]) => (
           <button key={m} onClick={() => setTab(m)}
@@ -707,7 +707,7 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
           <div style={{display:"flex",flexDirection:"column",gap:"24px"}}>
             <div>
               <label style={{...inter,fontSize:"16px",color:"#414651",letterSpacing:"0.16px",lineHeight:"24px",display:"block",marginBottom:"6px"}}>Credit Card Number</label>
-              <div style={{backgroundColor:"#FFFDF9",border:"1px solid #E5E6EB",borderRadius:"8px",padding:"10px 14px",boxShadow:"0px 1px 2px rgba(10,13,18,0.05)",display:"flex",alignItems:"center",gap:"10px"}}>
+              <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"8px",padding:"10px 14px",boxShadow:"0px 1px 2px rgba(10,13,18,0.05)",display:"flex",alignItems:"center",gap:"10px"}}>
                 <input type="text" placeholder="1234 5678 9012 3456" value={cardNumber} onChange={handleCardNumber} maxLength={19}
                   style={{...inter,flex:1,border:"none",outline:"none",backgroundColor:"transparent",fontSize:"16px",color:"#040617",letterSpacing:"0.12em"}}/>
                 {cardType && <div style={{flexShrink:0}}><CardTypeIcon type={cardType}/></div>}

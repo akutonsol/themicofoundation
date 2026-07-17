@@ -78,7 +78,7 @@ export default function TrusteeLeader() {
         .leader-photo-wrap { position: relative; }
         .leader-accent-bar { position: absolute; left: -4px; top: 0; bottom: 0; width: 4px; border-radius: 4px; background: #FFD900; }
         .leader-photo { width: 100%; height: 560px; object-fit: cover; object-position: top center; border-radius: 0 20px 0 0; display: block; }
-        .leader-photo-frame { border-radius: 0 20px 0 20px; overflow: hidden; box-shadow: 0 30px 70px rgba(4,6,23,0.16); }
+        .leader-photo-frame { border-radius: 0 20px 0 20px; overflow: hidden; box-shadow: var(--shadow-4); }
         .leader-name-plate { background: #05080F; padding: 24px 28px; border-radius: 0 0 20px 0; }
         .leader-name-plate h3 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; color: #fff; margin: 0 0 4px; letter-spacing: -0.02em; }
         .leader-name-plate p { font-family: 'Syne', sans-serif; font-size: 13px; color: rgba(255,255,255,0.55); margin: 0; font-style: italic; }
@@ -89,7 +89,7 @@ export default function TrusteeLeader() {
         .leader-heading em { font-style: italic; color: #1A8C4A; }
         .leader-quote-mark { font-family: 'Cormorant Garamond', serif; font-size: 100px; line-height: 0.4; color: rgba(255,217,0,0.4); height: 40px; display: block; }
         .leader-msg p { font-family: 'Syne', sans-serif; font-size: clamp(16px,1.5vw,19px); line-height: 1.85; color: #3A3D4A; margin: 0 0 22px; font-weight: 400; }
-        .leader-divider { height: 1px; background: #E5E6EB; margin: 32px 0; }
+        .leader-divider { height: 1px; background: rgba(4,6,23,0.07); margin: 32px 0; }
         .leader-sign-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #9CA3AF; margin: 0 0 8px; }
         .leader-sign { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 36px; color: #040617; margin: 0; letter-spacing: -0.5px; }
 

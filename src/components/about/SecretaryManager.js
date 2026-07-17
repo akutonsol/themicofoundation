@@ -73,7 +73,7 @@ export default function SecretaryManager() {
               viewport={{ once: true }} transition={{ duration: 0.55, delay: index * 0.08 }}
               className="max-w-[280px]"
             >
-              <div className="overflow-hidden rounded-[18px] border border-[#D9DDE6] bg-white">
+              <div className="overflow-hidden rounded-[18px] border border-[rgba(4,6,23,0.07)] bg-white" style={{ boxShadow: "var(--shadow-2)" }}>
                 <img src={person.image} alt={person.name} className="h-[300px] w-full object-cover object-top" />
               </div>
               <p className="mt-4 text-[18px] leading-[1.2] text-[#7A7D8B]" style={inter}>{person.years}</p>

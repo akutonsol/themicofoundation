@@ -32,7 +32,7 @@ export default function TeamProfileModal({ member, isOpen, onClose }) {
           onClick={onClose}
         >
           <motion.div
-            className="relative w-full max-w-[980px] overflow-hidden rounded-[28px] bg-[#FFFDF9] shadow-2xl"
+            className="relative w-full max-w-[980px] overflow-hidden rounded-[28px] bg-[#FFFDF9] shadow-[var(--shadow-5)]"
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}

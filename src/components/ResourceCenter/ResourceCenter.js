@@ -97,7 +97,7 @@ function CategoryCard({ pub, index }) {
       className="pub-card"
       initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }}
-      style={{ backgroundColor: '#FFFDF9', border: '1px solid #E5E6EB', borderRadius: '26px', padding: '24px', display: 'flex', gap: '30px', alignItems: 'center', position: 'relative', overflow: 'hidden' }}
+      style={{ backgroundColor: '#FFFDF9', border: '1px solid rgba(4,6,23,0.07)', borderRadius: '26px', padding: '24px', display: 'flex', gap: '30px', alignItems: 'center', position: 'relative', overflow: 'hidden' }}
     >
       <img src={imgSparkle} alt="" style={{ position: 'absolute', right: '-100px', top: '-116px', width: '523px', pointerEvents: 'none', opacity: 0.25, zIndex: 0 }} />
       <PubThumb pub={pub} />
@@ -196,13 +196,13 @@ export default function ResourceCenter() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
-        .pub-card { transition: all 0.2s ease; }
-        .pub-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .pub-card { transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); box-shadow: var(--shadow-2); }
+        .pub-card:hover { box-shadow: var(--shadow-4); transform: translateY(-5px); }
         .rc-padding { padding: 80px clamp(24px, 8vw, 165px); }
         .resource-top-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 80px; align-items: start; }
         .resource-filter-grid { display: grid; grid-template-columns: 1.05fr 1.05fr 1.05fr 240px; gap: 16px; align-items: end; }
         .rc-dropdown { position: relative; }
-        .rc-dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #FFFDF9; border: 1px solid #E5E6EB; border-radius: 8px; z-index: 50; box-shadow: 0 4px 16px rgba(0,0,0,0.08); overflow: hidden; }
+        .rc-dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #FFFDF9; border: 1px solid rgba(4,6,23,0.07); border-radius: 8px; z-index: 50; box-shadow: var(--shadow-3); overflow: hidden; }
         .rc-dropdown-item { padding: 10px 14px; font-family: 'Inter', sans-serif; font-size: 15px; color: #040617; cursor: pointer; transition: background 0.15s; }
         .rc-dropdown-item:hover { background: #FFF7CC; }
         @media (max-width: 1024px) {
@@ -241,7 +241,7 @@ export default function ResourceCenter() {
             <h2 style={{ ...inter, fontSize: '32px', fontWeight: 600, color: '#040617', margin: '0 0 22px', letterSpacing: '-0.04em' }}>Search Filter</h2>
             <div className="resource-filter-grid">
               <Field label="Report Name (Optional)">
-                <div style={{ height: '48px', border: '1px solid #E5E6EB', borderRadius: '8px', backgroundColor: '#FFFDF9', display: 'flex', alignItems: 'center', padding: '0 14px', gap: '10px' }}>
+                <div style={{ height: '48px', border: '1px solid rgba(4,6,23,0.07)', borderRadius: '8px', backgroundColor: '#FFFDF9', display: 'flex', alignItems: 'center', padding: '0 14px', gap: '10px' }}>
                   <Search size={22} color="#7A7D8B" />
                   <input
                     placeholder="Start typing..."
@@ -256,7 +256,7 @@ export default function ResourceCenter() {
                 <div className="rc-dropdown">
                   <div
                     onClick={() => { setTypeOpen(!typeOpen); setSortOpen(false) }}
-                    style={{ height: '48px', border: '1px solid #E5E6EB', borderRadius: '8px', backgroundColor: '#FFFDF9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', cursor: 'pointer' }}
+                    style={{ height: '48px', border: '1px solid rgba(4,6,23,0.07)', borderRadius: '8px', backgroundColor: '#FFFDF9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', cursor: 'pointer' }}
                   >
                     <span style={{ ...inter, fontSize: '16px', color: typeFilter === 'all' ? '#7A7D8B' : '#040617' }}>
                       {typeFilter === 'all' ? 'All Types' : categories.find(c => c.id === typeFilter)?.title || 'All Types'}
@@ -277,7 +277,7 @@ export default function ResourceCenter() {
                 <div className="rc-dropdown">
                   <div
                     onClick={() => { setSortOpen(!sortOpen); setTypeOpen(false) }}
-                    style={{ height: '48px', border: '1px solid #E5E6EB', borderRadius: '8px', backgroundColor: '#FFFDF9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', cursor: 'pointer' }}
+                    style={{ height: '48px', border: '1px solid rgba(4,6,23,0.07)', borderRadius: '8px', backgroundColor: '#FFFDF9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', cursor: 'pointer' }}
                   >
                     <span style={{ ...inter, fontSize: '16px', color: '#040617' }}>
                       {sort === 'newest' ? 'Newest to Oldest' : 'Oldest to Newest'}

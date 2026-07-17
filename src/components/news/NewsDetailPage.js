@@ -146,7 +146,7 @@ export default function NewsDetailPage({ slug }) {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.55 }}
-          className="mt-14 overflow-hidden rounded-[32px]"
+          className="mt-14 overflow-hidden rounded-[32px] shadow-[var(--shadow-3)]"
         >
           <img src={article.image} alt={article.title} className="h-[320px] w-full object-cover sm:h-[520px] lg:h-[720px]" />
         </motion.div>
@@ -173,7 +173,7 @@ export default function NewsDetailPage({ slug }) {
           <div className="mt-24 grid gap-8 border-t border-black/10 pt-10 lg:grid-cols-2">
             <Link
               href={`/newsdetail/${prevArticle.slug}`}
-              className="group rounded-[28px] border border-black/10 bg-white p-8 transition hover:border-black/20"
+              className="group rounded-[28px] border border-black/10 bg-white p-8 shadow-[var(--shadow-2)] transition-[transform,box-shadow,border-color] duration-[var(--dur-base)] ease-[var(--ease-emphasized)] hover:-translate-y-[5px] hover:border-black/20 hover:shadow-[var(--shadow-4)]"
             >
               <div className="flex items-start gap-5">
                 <div className="flex h-[68px] w-[68px] items-center justify-center rounded-[18px] bg-[#ECECF1] transition group-hover:bg-[#FFD900]">
@@ -190,7 +190,7 @@ export default function NewsDetailPage({ slug }) {
 
             <Link
               href={`/newsdetail/${nextArticle.slug}`}
-              className="group rounded-[28px] border border-black/10 bg-white p-8 transition hover:border-black/20"
+              className="group rounded-[28px] border border-black/10 bg-white p-8 shadow-[var(--shadow-2)] transition-[transform,box-shadow,border-color] duration-[var(--dur-base)] ease-[var(--ease-emphasized)] hover:-translate-y-[5px] hover:border-black/20 hover:shadow-[var(--shadow-4)]"
             >
               <div className="flex items-start justify-between gap-5">
                 <div>

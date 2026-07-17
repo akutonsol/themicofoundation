@@ -77,7 +77,7 @@ export default function LegacyImpactSection() {
   )
 
   return (
-    <section style={{ position:'relative', overflow:'hidden', backgroundColor:'#FAF9F6', paddingTop:'100px', paddingBottom:'100px', borderTop:'1px solid #E5E6EB', borderBottom:'1px solid #E5E6EB' }}>
+    <section style={{ position:'relative', overflow:'hidden', backgroundColor:'#FAF9F6', paddingTop:'100px', paddingBottom:'100px', borderTop:'1px solid rgba(4,6,23,0.07)', borderBottom:'1px solid rgba(4,6,23,0.07)' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -110,7 +110,7 @@ export default function LegacyImpactSection() {
           display: inline-flex; align-items: center; gap: 10px;
           color: #040617; font-size: 15px; font-weight: 600;
           text-decoration: none;
-          border: 1px solid #E5E6EB;
+          border: 1px solid rgba(4,6,23,0.07);
           padding: 15px 28px; border-radius: 14px;
           transition: border-color 0.2s, background 0.2s;
           font-family: 'Inter', sans-serif;
@@ -147,7 +147,7 @@ export default function LegacyImpactSection() {
         }
         .legacy-payment-badge {
           display: inline-flex; align-items: center; justify-content: center;
-          background: white; border: 1px solid #E5E6EB;
+          background: white; border: 1px solid rgba(4,6,23,0.07);
           border-radius: 8px; padding: 6px 14px; height: 36px;
         }
       `}</style>
@@ -206,7 +206,7 @@ export default function LegacyImpactSection() {
             </h2>
 
             {/* Divider */}
-            <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
+            <div style={{ height:'1px', backgroundColor:'rgba(4,6,23,0.07)', marginBottom:'28px' }} />
 
             {/* CTA buttons */}
             <div style={{ display:'flex', alignItems:'center', gap:'14px', marginBottom:'36px', flexWrap:'wrap' }}>
@@ -220,14 +220,14 @@ export default function LegacyImpactSection() {
             </div>
 
             {/* Divider */}
-            <div style={{ height:'1px', backgroundColor:'#E5E6EB', marginBottom:'28px' }} />
+            <div style={{ height:'1px', backgroundColor:'rgba(4,6,23,0.07)', marginBottom:'28px' }} />
 
             {/* Stats row */}
-            <div style={{ display:'flex', gap:'0', marginBottom:'44px', paddingTop:'16px', paddingBottom:'16px', borderTop:'1px solid #E5E6EB', borderBottom:'1px solid #E5E6EB' }}>
+            <div style={{ display:'flex', gap:'0', marginBottom:'44px', paddingTop:'16px', paddingBottom:'16px', borderTop:'1px solid rgba(4,6,23,0.07)', borderBottom:'1px solid rgba(4,6,23,0.07)' }}>
               {stats.map((stat, i) => {
                 const link = STAT_LINKS[i] || { href:'/', external:false }
                 const inner = (
-                  <div style={{ paddingRight:'48px', borderRight: i < stats.length - 1 ? '1px solid #E5E6EB' : 'none', paddingLeft: i > 0 ? '48px' : '0' }}>
+                  <div style={{ paddingRight:'48px', borderRight: i < stats.length - 1 ? '1px solid rgba(4,6,23,0.07)' : 'none', paddingLeft: i > 0 ? '48px' : '0' }}>
                     <p className="legacy-stat-val" style={{ ...inter, fontSize:'clamp(2rem,2.8vw,3rem)', fontWeight:900, color:'#040617', margin:'0 0 6px', letterSpacing:'-2px', transition:'color 0.2s' }}>
                       {stat.value}
                     </p>

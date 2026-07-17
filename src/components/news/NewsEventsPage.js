@@ -50,7 +50,7 @@ function BackgroundGrid() {
 function ToggleTabs({ activeTab, setActiveTab }) {
   return (
     <div className="mb-12 flex justify-center">
-      <div className="inline-flex rounded-[22px] border border-[#E5E6EB] bg-[#FFFDF9] p-1">
+      <div className="inline-flex rounded-[22px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] p-1 shadow-[var(--shadow-2)]">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -75,7 +75,7 @@ function NewsCard({ item }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.4 }}
-      className="mb-10 rounded-[28px] border border-[#E5E6EB] bg-[#FFFDF9] p-4"
+      className="mb-10 rounded-[28px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] p-4 shadow-[var(--shadow-3)]"
     >
       <div className="grid gap-4 lg:grid-cols-[420px_1fr]">
         <div className="overflow-hidden rounded-[18px]">
@@ -131,7 +131,7 @@ function EventLayout({ item, badge, badgeColor, badgeTextColor, children }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.4 }}
-      className="mb-10 rounded-[28px] border border-[#E5E6EB] bg-[#FFFDF9] p-4"
+      className="mb-10 rounded-[28px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] p-4 shadow-[var(--shadow-3)]"
     >
       <div className="grid gap-4 lg:grid-cols-[58%_42%]">
         <div className="overflow-hidden rounded-[18px]">

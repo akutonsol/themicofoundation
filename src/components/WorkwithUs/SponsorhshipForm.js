@@ -16,7 +16,7 @@ function Field({ label, type = "text", textarea = false, value, onChange, error 
           rows={5}
           value={value}
           onChange={onChange}
-          className="resize-none rounded-[8px] border border-[#E5E6EB] bg-[#FFFDF9] px-4 py-3 text-[16px] text-[#040617] outline-none transition focus:border-[#FFD900]"
+          className="resize-none rounded-[8px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] px-4 py-3 text-[16px] text-[#040617] outline-none transition focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
           style={{ ...inter, borderColor: error ? '#EF4444' : undefined }}
         />
       ) : (
@@ -25,7 +25,7 @@ function Field({ label, type = "text", textarea = false, value, onChange, error 
           placeholder="Start Typing..."
           value={value}
           onChange={onChange}
-          className="rounded-[8px] border border-[#E5E6EB] bg-[#FFFDF9] px-4 py-3 text-[16px] text-[#040617] outline-none transition focus:border-[#FFD900]"
+          className="rounded-[8px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] px-4 py-3 text-[16px] text-[#040617] outline-none transition focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
           style={{ ...inter, borderColor: error ? '#EF4444' : undefined }}
         />
       )}
@@ -117,7 +117,7 @@ export default function SponsorshipForm() {
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}
-          className="relative overflow-hidden rounded-[22px] border border-[#E5E6EB] bg-[#FFFDF9] p-6 sm:p-8"
+          className="relative overflow-hidden rounded-[22px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] p-6 sm:p-8 shadow-[var(--shadow-3)]"
         >
           <div className="pointer-events-none absolute inset-0 opacity-[0.16]">
             <div className="grid h-full w-full grid-cols-7 grid-rows-8">

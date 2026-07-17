@@ -276,7 +276,7 @@ function MagazineCard({ magazine, onClick }) {
       transition={{ duration:0.4 }}
       style={{ background:"none", border:"none", cursor:"pointer", textAlign:"left", padding:0 }}
     >
-      <div style={{ position:"relative", borderRadius:"16px", overflow:"hidden", border:"1px solid #E5E6EB", boxShadow:"0 8px 32px rgba(0,0,0,0.08)" }}>
+      <div style={{ position:"relative", borderRadius:"16px", overflow:"hidden", border:"1px solid rgba(4,6,23,0.07)", boxShadow:"var(--shadow-3)" }}>
         <img
           src={magazine.coverUrl}
           alt={magazine.title}

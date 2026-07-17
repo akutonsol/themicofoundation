@@ -27,13 +27,15 @@ const staticProject = {
 };
 
 function Field({ label, required, placeholder, type = "text", value, onChange, error }) {
+  const [focused, setFocused] = useState(false);
   return (
     <div>
       <label style={{ ...inter, display: "block", marginBottom: 8, fontSize: 15, fontWeight: 600, color: "#040617" }}>
         {label} {required && <span style={{ color: "#E11D48" }}>*</span>}
       </label>
       <input type={type} placeholder={placeholder} value={value} onChange={onChange}
-        style={{ ...inter, width: "100%", height: 54, border: `1px solid ${error ? '#EF4444' : '#E5E6EB'}`, borderRadius: 12, background: "#FFFDF9", padding: "0 16px", fontSize: 16, color: "#040617", outline: "none" }} />
+        onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+        style={{ ...inter, width: "100%", height: 54, border: `1px solid ${error ? '#EF4444' : focused ? '#f3af19' : 'rgba(4,6,23,0.07)'}`, borderRadius: 12, background: "#FFFDF9", padding: "0 16px", fontSize: 16, color: "#040617", outline: "none", boxShadow: focused && !error ? "0 0 0 3px rgba(243,175,25,0.15)" : "none", transition: "border-color var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard)" }} />
       {error && <span style={{ ...inter, fontSize: 13, color: '#EF4444', marginTop: 4, display: 'block' }}>{error}</span>}
     </div>
   );
@@ -195,7 +197,7 @@ export default function PledgePage() {
 
           {/* RIGHT — Form */}
           <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.1 }}
-            style={{ background: "#FFFFFF", border: "1px solid #E5E6EB", borderRadius: 30, padding: 38, boxShadow: "0 20px 80px rgba(0,0,0,0.04)" }}>
+            style={{ background: "#FFFFFF", border: "1px solid rgba(4,6,23,0.07)", borderRadius: 30, padding: 38, boxShadow: "var(--shadow-3)" }}>
 
             <h2 style={{ ...inter, fontSize: 38, fontWeight: 700, letterSpacing: "-0.05em", color: "#040617", margin: "0 0 8px" }}>Pledge Form</h2>
             <p style={{ ...inter, fontSize: 17, color: "#6F7181", margin: "0 0 30px" }}>Choose your pledge amount, donation method, and banking location.</p>
@@ -278,7 +280,7 @@ export default function PledgePage() {
                       const active = method === item.id;
                       return (
                         <button key={item.id} type="button" onClick={() => setMethod(item.id)}
-                          style={{ ...inter, minHeight: 96, border: `1px solid ${active ? "#FFD900" : "#E5E6EB"}`, borderRadius: 16, background: active ? "#FFF7CC" : "#FFFDF9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#040617", fontWeight: 700, textAlign: "center" }}>
+                          style={{ ...inter, minHeight: 96, border: `1px solid ${active ? "#FFD900" : "rgba(4,6,23,0.07)"}`, borderRadius: 16, background: active ? "#FFF7CC" : "#FFFDF9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#040617", fontWeight: 700, textAlign: "center", boxShadow: active ? "none" : "var(--shadow-2)", transition: "border-color var(--dur-base) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard)" }}>
                           <Icon size={26} />
                           <span style={{ fontSize: 12 }}>{item.label}</span>
                         </button>

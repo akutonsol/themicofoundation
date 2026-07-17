@@ -107,7 +107,7 @@ function ChatBubble({ message, index, activeIndex }) {
           <p className="m-0 mt-1 text-[13px] font-medium text-[#24180A]/50" style={inter}>{isTyping ? "Typing..." : message.label}</p>
         </div>
       </div>
-      <div className={`relative max-w-[620px] rounded-[30px] border p-8 shadow-sm ${isLeft ? "rounded-tl-[6px] border-[#24180A]/15 bg-white text-[#24180A]" : "rounded-tr-[6px] border-[#24180A]/20 bg-[#FFD900] text-[#24180A]"}`}>
+      <div className={`relative max-w-[620px] rounded-[30px] border p-8 shadow-[var(--shadow-2)] ${isLeft ? "rounded-tl-[6px] border-[#24180A]/15 bg-white text-[#24180A]" : "rounded-tr-[6px] border-[#24180A]/20 bg-[#FFD900] text-[#24180A]"}`}>
         <p className="m-0 min-h-[132px] text-[28px] font-semibold leading-[1.25] tracking-[-0.04em] sm:text-[34px]" style={inter}>
           <TypewriterText text={message.text} active={isTyping} />
         </p>

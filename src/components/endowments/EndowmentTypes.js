@@ -18,7 +18,7 @@ const staticIntro = `An endowment is a long-term gift that helps fund scholarshi
 function TypeCard({ type, index }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="rounded-[16px] border-2 border-[#D6C288] bg-[#FFFDF9] p-6">
+      className="rounded-[16px] border-2 border-[#D6C288] bg-[#FFFDF9] p-6 shadow-[var(--shadow-2)]">
       <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full border border-[#D6C288] text-[22px] text-[#040617]">{type.icon}</div>
       <h3 className="text-[26px] font-bold leading-[1.15] tracking-[-0.04em] text-[#040617]" style={inter}>{type.title}</h3>
       <p className="mt-3 text-[16px] leading-[1.5] tracking-[0.01em] text-[#6F7181]" style={inter}>{type.desc}</p>

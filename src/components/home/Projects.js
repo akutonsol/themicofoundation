@@ -195,7 +195,7 @@ export default function Projects() {
               </div>
 
               {/* Right — photo */}
-              <div style={{ flex:1, position:'relative', borderRadius:'35px', overflow:'hidden', height:'952px', flexShrink:0 }}>
+              <div style={{ flex:1, position:'relative', borderRadius:'35px', overflow:'hidden', height:'952px', flexShrink:0, boxShadow:'var(--shadow-3)' }}>
                 <img src={p.photo} alt={p.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(0deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 50%),linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 55%)' }} />
                 <div style={{ position:'absolute', top:'32px', left:'32px', display:'flex', alignItems:'center', gap:'8px' }}>
@@ -275,7 +275,7 @@ export default function Projects() {
             </div>
 
             {/* Photo */}
-            <div style={{ width:'100%', height:'476px', borderRadius:'20px', overflow:'hidden', position:'relative' }}>
+            <div style={{ width:'100%', height:'476px', borderRadius:'20px', overflow:'hidden', position:'relative', boxShadow:'var(--shadow-3)' }}>
               <img src={p.photo} alt={p.title} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
               <div style={{ position:'absolute', inset:0, background:'linear-gradient(0deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 50%),linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 55.56%)' }} />
               <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', display:'flex', alignItems:'center', gap:'8px', whiteSpace:'nowrap' }}>

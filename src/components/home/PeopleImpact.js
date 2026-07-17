@@ -189,7 +189,7 @@ export default function PeopleImpact() {
               animate={{ opacity:1, y:0 }} 
               exit={{ opacity:0, y:-10 }}
               transition={{ duration:0.4 }}
-              style={{ position:'absolute', left:'-89px', bottom:'100px', backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'12px', padding:'12px 32px', display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', zIndex:3 }}>
+              style={{ position:'absolute', left:'-89px', bottom:'100px', backgroundColor:'#FFFDF9', border:'1px solid rgba(4,6,23,0.07)', borderRadius:'12px', padding:'12px 32px', display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', zIndex:3, boxShadow:'var(--shadow-2)' }}>
               <p style={{ ...inter, fontSize:'32px', fontWeight:600, color:'#040617', letterSpacing:'-0.32px', lineHeight:'46px', margin:0, textTransform:'capitalize', whiteSpace:'nowrap' }}>{person.name}</p>
               <img src={imgLine} alt="" style={{ width:'100%', height:'2px', objectFit:'cover' }} />
               <p style={{ ...inter, fontSize:'24px', color:'#6F7181', letterSpacing:'0.24px', lineHeight:'38px', margin:0, textAlign:'center', whiteSpace:'nowrap' }}>{person.role}</p>
@@ -228,7 +228,7 @@ export default function PeopleImpact() {
               animate={{ opacity:1, y:0 }} 
               exit={{ opacity:0, y:-10 }}
               transition={{ duration:0.4 }}
-              style={{ position:'absolute', bottom:'60px', left:'50%', transform:'translateX(-50%)', backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'12px', padding:'8px 24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', zIndex:3, whiteSpace:'nowrap' }}>
+              style={{ position:'absolute', bottom:'60px', left:'50%', transform:'translateX(-50%)', backgroundColor:'#FFFDF9', border:'1px solid rgba(4,6,23,0.07)', borderRadius:'12px', padding:'8px 24px', display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', zIndex:3, whiteSpace:'nowrap', boxShadow:'var(--shadow-2)' }}>
               <p style={{ ...inter, fontSize:'26px', fontWeight:600, color:'#040617', letterSpacing:'-0.26px', lineHeight:'36px', margin:0, textTransform:'capitalize' }}>
                 {person.name}
               </p>

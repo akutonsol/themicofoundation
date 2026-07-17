@@ -109,13 +109,13 @@ export default function FormerTrusteesSection() {
         .ft-eyebrow span { font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#B8860B; }
         .ft-eyebrow .bar { width:32px; height:2px; background:#f3af19; }
         .ft-title { text-align:center; font-family:'Inter',sans-serif; font-size: clamp(42px,6vw,72px); font-weight:800; letter-spacing:-0.04em; color:#040617; line-height:1; margin:0 0 clamp(24px,3.5vw,36px); }
-        .ft-reading-block { margin-top: clamp(56px,7vw,88px); padding-top: clamp(48px,6vw,72px); border-top: 1px solid #ECEDF1; }
+        .ft-reading-block { margin-top: clamp(56px,7vw,88px); padding-top: clamp(48px,6vw,72px); border-top: 1px solid rgba(4,6,23,0.07); }
         .ft-reading { max-width: 860px; margin: 0 auto; }
         .ft-reading p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,19px); line-height:1.85; color:#4A4C5A; margin:0 0 20px; }
         .ft-reading p:last-child { margin-bottom:0; }
         .ft-reading p:first-child::first-letter { font-size: 3.4em; line-height:0.8; font-weight:800; float:left; margin:6px 12px 0 0; color:#B8860B; }
         .ft-reading-cols { clear:both; max-width:820px; margin: clamp(32px,5vw,52px) auto 0; display:grid; grid-template-columns:1fr 1fr; gap: clamp(20px,3vw,36px); align-items:start; }
-        .ft-rc-imgwrap { border-radius:16px; overflow:hidden; box-shadow:0 18px 44px rgba(10,13,18,0.12); }
+        .ft-rc-imgwrap { border-radius:16px; overflow:hidden; box-shadow: var(--shadow-3); }
         .ft-rc-imgwrap img { display:block; width:100%; height:auto; }
         .ft-rc-narrative { margin-top:18px; }
         .ft-rc-narrative p { font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; color:#4A4C5A; margin:0 0 14px; }
@@ -125,8 +125,8 @@ export default function FormerTrusteesSection() {
         .ft-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: clamp(20px,2.2vw,32px); align-items: start; }
         @media (max-width: 980px) { .ft-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
 
-        .ft-card { display:flex; flex-direction:column; background:#fff; border:1px solid #ECEDF1; border-radius:22px; overflow:hidden; box-shadow:0 2px 10px rgba(10,13,18,0.05); transition: transform .28s ease, box-shadow .28s ease; }
-        .ft-card:hover { transform: translateY(-6px); box-shadow: 0 28px 56px rgba(10,13,18,0.14); }
+        .ft-card { display:flex; flex-direction:column; background:#fff; border:1px solid rgba(4,6,23,0.07); border-radius:22px; overflow:hidden; box-shadow: var(--shadow-2); transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); }
+        .ft-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-4); }
         .ft-bar { height:5px; width:100%; background:#f3af19; }
         .ft-img-wrap { width:100%; height: clamp(320px,32vw,380px); overflow:hidden; background: linear-gradient(160deg, #EFE9DC 0%, #E4DCC9 100%); display:flex; align-items:center; justify-content:center; }
         .ft-img { width:100%; height:100%; object-fit:contain; object-position: center; transition: transform .4s ease; }
@@ -134,7 +134,7 @@ export default function FormerTrusteesSection() {
         .ft-body { padding: clamp(24px,2vw,30px); display:flex; flex-direction:column; gap:14px; }
         .ft-years { width:fit-content; background:#FFF7CC; color:#8A6D00; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:6px 14px; border-radius:100px; }
         .ft-name { font-family:'Inter',sans-serif; font-size:22px; font-weight:700; line-height:1.2; letter-spacing:-0.02em; color:#040617; margin:0; }
-        .ft-divider { height:1px; width:100%; background:#ECEDF1; }
+        .ft-divider { height:1px; width:100%; background:rgba(4,6,23,0.07); }
         .ft-bio { font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; color:#5A5C6B; margin:0; }
       `}</style>
 

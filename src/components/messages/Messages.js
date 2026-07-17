@@ -138,7 +138,7 @@ export default function Messages() {
               onClick={() => goToDetail(people[getIndex(-1)])}
               style={{ width:'360px', display:'flex', flexDirection:'column', gap:'16px', cursor:'pointer', flexShrink:0 }}
             >
-              <div style={{ width:'360px', height:'422px', borderRadius:'20px', overflow:'hidden', border:'1px solid #E5E6EB', position:'relative' }}>
+              <div style={{ width:'360px', height:'422px', borderRadius:'20px', overflow:'hidden', border:'1px solid rgba(4,6,23,0.07)', boxShadow:'var(--shadow-2)', position:'relative' }}>
                 <img src={people[getIndex(-1)].photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }} />
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.6) 100%)' }} />
               </div>
@@ -156,7 +156,7 @@ export default function Messages() {
                 onClick={() => goToDetail(people[safeCurrent])}
                 style={{ width:'510px', display:'flex', flexDirection:'column', gap:'16px', flexShrink:0, cursor:'pointer' }}
               >
-                <div style={{ width:'510px', height:'501px', borderRadius:'20px', overflow:'hidden', border:'1px solid #E5E6EB', position:'relative' }}>
+                <div style={{ width:'510px', height:'501px', borderRadius:'20px', overflow:'hidden', border:'1px solid rgba(4,6,23,0.07)', boxShadow:'var(--shadow-3)', position:'relative' }}>
                   <img src={people[safeCurrent].photo} alt="" style={{ width:'100%', height:'108%', objectFit:'cover', objectPosition:'top' }} />
                 </div>
                 <div>
@@ -173,7 +173,7 @@ export default function Messages() {
               onClick={() => goToDetail(people[getIndex(1)])}
               style={{ width:'360px', display:'flex', flexDirection:'column', gap:'16px', cursor:'pointer', flexShrink:0 }}
             >
-              <div style={{ width:'360px', height:'422px', borderRadius:'20px', overflow:'hidden', border:'1px solid #E5E6EB', position:'relative' }}>
+              <div style={{ width:'360px', height:'422px', borderRadius:'20px', overflow:'hidden', border:'1px solid rgba(4,6,23,0.07)', boxShadow:'var(--shadow-2)', position:'relative' }}>
                 <img src={people[getIndex(1)].photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }} />
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.6) 100%)' }} />
               </div>
@@ -230,7 +230,7 @@ export default function Messages() {
               onClick={() => goToDetail(people[safeCurrent])}
               style={{ display:'flex', flexDirection:'column', gap:'16px', width:'100%', cursor:'pointer' }}
             >
-              <div style={{ width:'100%', aspectRatio:'342/401', borderRadius:'20px', overflow:'hidden', border:'1px solid #E5E6EB', position:'relative' }}>
+              <div style={{ width:'100%', aspectRatio:'342/401', borderRadius:'20px', overflow:'hidden', border:'1px solid rgba(4,6,23,0.07)', boxShadow:'var(--shadow-2)', position:'relative' }}>
                 <img src={people[safeCurrent].photo} alt="" style={{ width:'100%', height:'108%', objectFit:'cover', objectPosition:'top' }} />
               </div>
               <div>

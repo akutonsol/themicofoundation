@@ -115,7 +115,7 @@ export default function HeroHeading() {
               <div
                 style={{
                   height: "48px",
-                  border: "1px solid #E5E6EB",
+                  border: "1px solid rgba(4,6,23,0.07)",
                   borderRadius: "8px",
                   backgroundColor: "#FFFDF9",
                   display: "flex",
@@ -144,7 +144,7 @@ export default function HeroHeading() {
               <div
                 style={{
                   height: "48px",
-                  border: "1px solid #E5E6EB",
+                  border: "1px solid rgba(4,6,23,0.07)",
                   borderRadius: "8px",
                   backgroundColor: "#FFFDF9",
                   display: "flex",
@@ -164,7 +164,7 @@ export default function HeroHeading() {
               <div
                 style={{
                   height: "48px",
-                  border: "1px solid #E5E6EB",
+                  border: "1px solid rgba(4,6,23,0.07)",
                   borderRadius: "8px",
                   backgroundColor: "#FFFDF9",
                   display: "flex",

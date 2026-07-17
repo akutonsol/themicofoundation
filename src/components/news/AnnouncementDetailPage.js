@@ -200,7 +200,7 @@ export default function AnnouncementDetailPage({ slug }) {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.55, delay: 0.1 }}
-            className="mt-12 overflow-hidden rounded-[32px]"
+            className="mt-12 overflow-hidden rounded-[32px] shadow-[var(--shadow-3)]"
           >
             <img
               src={announcement.image}
@@ -233,7 +233,7 @@ export default function AnnouncementDetailPage({ slug }) {
           {/* Sidebar */}
           <div className="space-y-5">
             {/* Quick Info Card */}
-            <div className="rounded-[28px] border border-[#E5E6EB] bg-white p-7">
+            <div className="rounded-[28px] border border-[rgba(4,6,23,0.07)] bg-white p-7 shadow-[var(--shadow-2)]">
               <h3
                 className="text-[22px] font-semibold tracking-[-0.04em] text-[#040617]"
                 style={inter}
@@ -283,7 +283,7 @@ export default function AnnouncementDetailPage({ slug }) {
             </div>
 
             {/* CTA Card */}
-            <div className="rounded-[28px] bg-[#FFD900] p-7">
+            <div className="rounded-[28px] bg-[#FFD900] p-7 shadow-[var(--shadow-2)]">
               <h3
                 className="text-[26px] font-semibold leading-[1.1] tracking-[-0.05em] text-black"
                 style={inter}
@@ -310,7 +310,7 @@ export default function AnnouncementDetailPage({ slug }) {
             {/* Previous */}
             <Link
               href={`/announcement/${prevAnnouncement.slug}`}
-              className="group rounded-[28px] border border-black/10 bg-white p-8 transition hover:border-black/20"
+              className="group rounded-[28px] border border-black/10 bg-white p-8 shadow-[var(--shadow-2)] transition-[transform,box-shadow,border-color] duration-[var(--dur-base)] ease-[var(--ease-emphasized)] hover:-translate-y-[5px] hover:border-black/20 hover:shadow-[var(--shadow-4)]"
             >
               <div className="flex items-start gap-5">
                 <div className="flex h-[68px] w-[68px] shrink-0 items-center justify-center rounded-[18px] bg-[#ECECF1] transition group-hover:bg-[#FFD900]">
@@ -333,7 +333,7 @@ export default function AnnouncementDetailPage({ slug }) {
             {/* Next */}
             <Link
               href={`/announcement/${nextAnnouncement.slug}`}
-              className="group rounded-[28px] border border-black/10 bg-white p-8 transition hover:border-black/20"
+              className="group rounded-[28px] border border-black/10 bg-white p-8 shadow-[var(--shadow-2)] transition-[transform,box-shadow,border-color] duration-[var(--dur-base)] ease-[var(--ease-emphasized)] hover:-translate-y-[5px] hover:border-black/20 hover:shadow-[var(--shadow-4)]"
             >
               <div className="flex items-start justify-between gap-5">
                 <div>

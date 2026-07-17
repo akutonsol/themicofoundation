@@ -112,8 +112,8 @@ export default function Publications() {
     <section style={{ backgroundColor: '#FFFDF9', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=inter:wght@400;600;800&family=inter:wght@400&display=swap');
-        .pub-card { transition: all 0.2s ease; }
-        .pub-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .pub-card { transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); }
+        .pub-card:hover { box-shadow: var(--shadow-4); transform: translateY(-5px); }
 
         /* ── DESKTOP ── */
         .pub-desktop { display: block; padding: 80px clamp(24px, 8vw, 165px); }
@@ -148,7 +148,7 @@ export default function Publications() {
             <motion.div key={pub.id} className="pub-card"
               initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
               viewport={{ once:true }} transition={{ duration:0.5, delay:i*0.08 }}
-              style={{ backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'26px', padding:'24px', display:'flex', gap:'30px', alignItems:'center', position:'relative', overflow:'hidden' }}>
+              style={{ backgroundColor:'#FFFDF9', border:'1px solid rgba(4,6,23,0.07)', borderRadius:'26px', padding:'24px', display:'flex', gap:'30px', alignItems:'center', position:'relative', overflow:'hidden', boxShadow:'var(--shadow-2)' }}>
               <img src={imgSparkle} alt="" style={{ position:'absolute', right:'-100px', top:'-116px', width:'523px', pointerEvents:'none', opacity:0.25, zIndex:0 }} />
               <PubThumb pub={pub} />
               <div style={{ flex:1, display:'flex', flexDirection:'column', gap:'64px', position:'relative', zIndex:1 }}>
@@ -157,7 +157,7 @@ export default function Publications() {
                     <p style={{ ...inter, fontSize:'20px', color:'#6F7181', letterSpacing:'0.2px', lineHeight:'30px', margin:0 }}>{pub.date}</p>
                     <p style={{ ...inter, fontSize:'26px', fontWeight:600, color:'#040617', letterSpacing:'-0.26px', lineHeight:'36px', margin:0, textTransform:'capitalize' }}>{pub.title}</p>
                   </div>
-                  <div style={{ borderLeft:'1px solid #E5E6EB', paddingLeft:'16px' }}>
+                  <div style={{ borderLeft:'1px solid rgba(4,6,23,0.07)', paddingLeft:'16px' }}>
                     <p style={{ ...inter, fontSize:'20px', color:'#6F7181', letterSpacing:'0.2px', lineHeight:'30px', margin:0 }}>{pub.desc}</p>
                   </div>
                 </div>
@@ -200,7 +200,7 @@ export default function Publications() {
             <motion.div key={pub.id} className="pub-card"
               initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
               viewport={{ once:true }} transition={{ duration:0.5, delay:i*0.08 }}
-              style={{ backgroundColor:'#FFFDF9', border:'1px solid #E5E6EB', borderRadius:'20px', padding:'24px', display:'flex', flexDirection:'column', gap:'30px', position:'relative', overflow:'hidden' }}>
+              style={{ backgroundColor:'#FFFDF9', border:'1px solid rgba(4,6,23,0.07)', borderRadius:'20px', padding:'24px', display:'flex', flexDirection:'column', gap:'30px', position:'relative', overflow:'hidden', boxShadow:'var(--shadow-2)' }}>
 
               {/* Sparkle bg */}
               <img src={imgMobileSparkle} alt="" style={{ position:'absolute', left:'384px', top:'-116px', width:'523px', pointerEvents:'none', opacity:0.25, zIndex:0 }} />
@@ -215,7 +215,7 @@ export default function Publications() {
                     <p style={{ ...inter, fontSize:'20px', color:'#6F7181', letterSpacing:'0.2px', lineHeight:'30px', margin:0 }}>{pub.date}</p>
                     <p style={{ ...inter, fontSize:'26px', fontWeight:600, color:'#040617', letterSpacing:'-0.26px', lineHeight:'36px', margin:0, textTransform:'capitalize' }}>{pub.title}</p>
                   </div>
-                  <div style={{ borderLeft:'1px solid #E5E6EB', paddingLeft:'8px' }}>
+                  <div style={{ borderLeft:'1px solid rgba(4,6,23,0.07)', paddingLeft:'8px' }}>
                     <p style={{ ...inter, fontSize:'20px', color:'#6F7181', letterSpacing:'0.2px', lineHeight:'30px', margin:0 }}>{pub.desc}</p>
                   </div>
                 </div>
