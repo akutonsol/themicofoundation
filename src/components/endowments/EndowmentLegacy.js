@@ -85,10 +85,10 @@ export default function EndowmentLegacy() {
         .el-hero-media { position: absolute; inset: 0; z-index: 0; }
         .el-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
         /* two stacked gradients: a warm gold wash on the left, and the dark blend fading to reveal the image on the right */
-        /* bold gold → black gradient panel that blends into the image */
+        /* marquee black overlay (same structure as the reference green) + a gold wash on the left */
         .el-hero-scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
-          linear-gradient(125deg, rgba(243,175,25,0.55) 0%, rgba(243,175,25,0.18) 20%, rgba(243,175,25,0) 40%),
-          linear-gradient(100deg, #0A0805 0%, #16100A 24%, #1c1409 36%, rgba(22,15,8,0.72) 48%, rgba(22,15,8,0.3) 60%, rgba(22,15,8,0.06) 69%, rgba(22,15,8,0) 77%); }
+          linear-gradient(90deg, rgba(243,175,25,0.40) 0%, rgba(243,175,25,0.12) 30%, rgba(243,175,25,0) 55%),
+          linear-gradient(90deg, rgba(4,6,23,0.92) 0%, rgba(4,6,23,0.78) 40%, rgba(4,6,23,0.38) 68%, rgba(4,6,23,0.10) 100%); }
         .el-hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1440px; margin: 0 auto; padding: clamp(48px,6vw,88px) clamp(28px,5vw,80px); }
         .el-hero-text { max-width: 620px; }
         .el-eyebrow { font-family:'Inter',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.28em; text-transform:uppercase; color:${GOLD}; margin:0 0 8px; }
