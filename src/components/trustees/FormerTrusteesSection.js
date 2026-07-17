@@ -54,7 +54,9 @@ const DEFAULT_READING = [
 export default function FormerTrusteesSection() {
   const [trustees, setTrustees] = useState(staticFormerTrustees);
   const [reading, setReading] = useState(DEFAULT_READING);
-  const [readingImage, setReadingImage] = useState(null);
+  const [leftImg, setLeftImg] = useState(null);
+  const [rightImg, setRightImg] = useState(null);
+  const [rightNarrative, setRightNarrative] = useState([]);
 
   useEffect(() => {
     async function fetchTrustees() {
@@ -80,7 +82,13 @@ export default function FormerTrusteesSection() {
           const paras = d.reading.split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
           if (paras.length) setReading(paras);
         }
-        if (d?.image) setReadingImage(urlFor(d.image).width(1200).url());
+        // Left image falls back to the legacy single "image" field.
+        const left = d?.leftImage || d?.image;
+        if (left) setLeftImg(urlFor(left).width(800).url());
+        if (d?.rightImage) setRightImg(urlFor(d.rightImage).width(800).url());
+        if (d?.rightNarrative) {
+          setRightNarrative(d.rightNarrative.split(/\n{2,}/).map(s => s.trim()).filter(Boolean));
+        }
       } catch (error) {
         console.error('Error fetching historical perspective:', error);
       }
@@ -106,8 +114,13 @@ export default function FormerTrusteesSection() {
         .ft-reading p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,19px); line-height:1.85; color:#4A4C5A; margin:0 0 20px; }
         .ft-reading p:last-child { margin-bottom:0; }
         .ft-reading p:first-child::first-letter { font-size: 3.4em; line-height:0.8; font-weight:800; float:left; margin:6px 12px 0 0; color:#B8860B; }
-        .ft-reading-img { clear:both; margin: clamp(32px,5vw,52px) auto 0; text-align:center; }
-        .ft-reading-img img { display:block; width:100%; max-width:100%; height:auto; border-radius:16px; margin:0 auto; box-shadow:0 20px 50px rgba(10,13,18,0.12); }
+        .ft-reading-cols { clear:both; max-width:820px; margin: clamp(32px,5vw,52px) auto 0; display:grid; grid-template-columns:1fr 1fr; gap: clamp(20px,3vw,36px); align-items:start; }
+        .ft-rc-imgwrap { border-radius:16px; overflow:hidden; box-shadow:0 18px 44px rgba(10,13,18,0.12); }
+        .ft-rc-imgwrap img { display:block; width:100%; height:auto; }
+        .ft-rc-narrative { margin-top:18px; }
+        .ft-rc-narrative p { font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; color:#4A4C5A; margin:0 0 14px; }
+        .ft-rc-narrative p:last-child { margin-bottom:0; }
+        @media (max-width:640px) { .ft-reading-cols { grid-template-columns:1fr; max-width:420px; } }
 
         .ft-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: clamp(20px,2.2vw,32px); align-items: start; }
         @media (max-width: 980px) { .ft-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
@@ -151,12 +164,30 @@ export default function FormerTrusteesSection() {
         >
           <div className="ft-reading">
             {reading.map((para, i) => <p key={i}>{para}</p>)}
-            {readingImage && (
-              <div className="ft-reading-img">
-                <img src={readingImage} alt="The Lady Mico Trust" />
-              </div>
-            )}
           </div>
+          {(leftImg || rightImg || rightNarrative.length > 0) && (
+            <div className="ft-reading-cols">
+              <div className="ft-rc-col">
+                {leftImg && (
+                  <div className="ft-rc-imgwrap">
+                    <img src={leftImg} alt="The Lady Mico Trust" />
+                  </div>
+                )}
+              </div>
+              <div className="ft-rc-col">
+                {rightImg && (
+                  <div className="ft-rc-imgwrap">
+                    <img src={rightImg} alt="The Lady Mico Trust" />
+                  </div>
+                )}
+                {rightNarrative.length > 0 && (
+                  <div className="ft-rc-narrative">
+                    {rightNarrative.map((para, i) => <p key={i}>{para}</p>)}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

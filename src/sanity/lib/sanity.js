@@ -305,7 +305,7 @@ trusteeLeader: `*[_type == "trusteeLeader"][0]{
   name, role, org, message, portrait
 }`,
 
-historicalPerspective: `*[_type == "historicalPerspective"][0]{ reading, image }`,
+historicalPerspective: `*[_type == "historicalPerspective"][0]{ reading, image, leftImage, rightImage, rightNarrative }`,
 
 chairmen: `*[_type == "historicalPerson" && type == "chairman" && isActive == true] | order(order asc) {
     _id,
