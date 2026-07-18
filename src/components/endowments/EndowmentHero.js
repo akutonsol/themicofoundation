@@ -154,7 +154,7 @@ export default function EndowmentsHero() {
         {/* Center content */}
         <div style={{ position: 'relative', zIndex: 10, maxWidth: '940px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '800px', textAlign: 'center', padding: '0 20px' }}>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            style={{ ...sora, fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 600, color: '#040617', lineHeight: 1.3, letterSpacing: '-0.02em', margin: '0 0 80px', maxWidth: '900px' }}>
+            style={{ ...sora, fontSize: 'clamp(34px, 5vw, 64px)', fontWeight: 700, color: '#040617', lineHeight: 1.05, letterSpacing: '-0.03em', margin: '0 0 80px', maxWidth: '900px' }}>
             {content.heroHeading}
           </motion.h1>
 

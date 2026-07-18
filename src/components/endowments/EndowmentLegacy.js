@@ -110,7 +110,7 @@ export default function EndowmentLegacy({ variant = 'both' }) {
         .el-ornament::before, .el-ornament::after { content:''; width:clamp(50px,10vw,120px); height:1px; background: linear-gradient(90deg, transparent, rgba(199,154,42,0.6)); }
         .el-ornament::after { background: linear-gradient(90deg, rgba(199,154,42,0.6), transparent); }
         .el-ornament span { font-size:14px; transform: rotate(45deg); display:inline-block; width:12px; height:12px; border:1.5px solid ${GOLD}; }
-        .el-cards-heading { font-family:'Inter', sans-serif; font-size: clamp(34px,4.4vw,60px); font-weight:800; letter-spacing:-0.03em; color:#12130F; margin:0 0 clamp(36px,4.5vw,56px); }
+        .el-cards-heading { font-family:'Inter', sans-serif; font-size: clamp(22px,2.4vw,34px); font-weight:700; letter-spacing:-0.02em; color:#12130F; max-width:820px; margin:0 auto clamp(28px,3.5vw,44px); line-height:1.2; }
 
         .el-cards { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: clamp(18px,1.8vw,28px); }
         @media (max-width: 900px) { .el-cards { grid-template-columns: repeat(2, minmax(0,1fr)); } }
