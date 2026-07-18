@@ -192,7 +192,7 @@ export default function MessageDetail({ slug }) {
             </div>
 
             {message.body.map((para, i) => (
-              <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.9", margin:"0 0 24px" }}>
+              <p key={i} style={{ ...inter, fontSize:"19px", color:"rgba(255,255,255,0.72)", lineHeight:"1.7", margin:"0 0 20px" }}>
                 {para}
               </p>
             ))}

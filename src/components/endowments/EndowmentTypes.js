@@ -108,10 +108,10 @@ export default function EndowmentTypes() {
           {/* Sticky form */}
           <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}
             className="sticky top-[120px] rounded-[20px] p-8"
-            style={{ background: 'linear-gradient(160deg, #0C0B0D 0%, #17130A 55%, #241a06 100%)', border: '1px solid rgba(243,175,25,0.38)', boxShadow: '0 30px 70px rgba(20,16,6,0.35)' }}>
-            <span style={{ ...inter, display: 'inline-block', fontSize: 12, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#f3af19', marginBottom: 12 }}>Get Involved</span>
-            <h2 className="text-[28px] font-bold leading-[1.2] tracking-[-0.03em]" style={{ ...inter, color: '#fff' }}>Endowment Commitment</h2>
-            <p className="mt-4 text-[16px] leading-[1.6] tracking-[0.01em]" style={{ ...inter, color: 'rgba(255,255,255,0.72)' }}>
+            style={{ background: '#FFFDF9', border: '2px solid #040617', boxShadow: 'inset 0 0 0 5px #FFFDF9, inset 0 0 0 6px #f3af19, var(--shadow-3)' }}>
+            <span style={{ ...inter, display: 'inline-block', fontSize: 12, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: 12 }}>Get Involved</span>
+            <h2 className="text-[28px] font-bold leading-[1.2] tracking-[-0.03em]" style={{ ...inter, color: '#040617' }}>Endowment Commitment</h2>
+            <p className="mt-4 text-[16px] leading-[1.6] tracking-[0.01em]" style={{ ...inter, color: '#6F7181' }}>
               Fill out this form to show your interest in supporting The Mico Foundation through an endowment or sponsorship. Once submitted, a member of our team will contact you via email to discuss the next steps.
             </p>
 
@@ -121,34 +121,34 @@ export default function EndowmentTypes() {
                 <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#f3af19', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="#141210" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </div>
-                <h4 className="text-[22px] font-bold" style={{ ...inter, color: '#fff' }}>Commitment Received!</h4>
-                <p className="text-[16px]" style={{ ...inter, color: 'rgba(255,255,255,0.7)' }}>We'll be in touch shortly to discuss next steps.</p>
+                <h4 className="text-[22px] font-bold" style={{ ...inter, color: '#040617' }}>Commitment Received!</h4>
+                <p className="text-[16px]" style={{ ...inter, color: '#6F7181' }}>We'll be in touch shortly to discuss next steps.</p>
               </motion.div>
             ) : (
               <>
-                <p className="mt-5 text-[18px] font-bold" style={{ ...inter, color: '#fff' }}>Fill out the form to confirm your commitment.</p>
+                <p className="mt-5 text-[18px] font-bold" style={{ ...inter, color: '#040617' }}>Fill out the form to confirm your commitment.</p>
                 <div className="mt-7 flex flex-col gap-5">
                   <div>
-                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: 'rgba(255,255,255,0.85)' }}>Name</label>
+                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Name</label>
                     <input type="text" placeholder="Josh..." value={form.name} onChange={update('name')}
-                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-white/40"
-                      style={{ ...inter, background: 'rgba(255,255,255,0.06)', color: '#fff', borderColor: errors.name ? '#EF4444' : 'rgba(255,255,255,0.18)' }} />
-                    {errors.name && <span style={{ ...inter, fontSize: 13, color: '#F9A8A8' }}>{errors.name}</span>}
+                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                      style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: errors.name ? '#EF4444' : 'rgba(4,6,23,0.18)' }} />
+                    {errors.name && <span style={{ ...inter, fontSize: 13, color: '#EF4444' }}>{errors.name}</span>}
                   </div>
                   <div>
-                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: 'rgba(255,255,255,0.85)' }}>Email</label>
+                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Email</label>
                     <input type="email" placeholder="youremail@mail.com" value={form.email} onChange={update('email')}
-                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-white/40"
-                      style={{ ...inter, background: 'rgba(255,255,255,0.06)', color: '#fff', borderColor: errors.email ? '#EF4444' : 'rgba(255,255,255,0.18)' }} />
-                    {errors.email && <span style={{ ...inter, fontSize: 13, color: '#F9A8A8' }}>{errors.email}</span>}
+                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                      style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: errors.email ? '#EF4444' : 'rgba(4,6,23,0.18)' }} />
+                    {errors.email && <span style={{ ...inter, fontSize: 13, color: '#EF4444' }}>{errors.email}</span>}
                   </div>
                   <div>
-                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: 'rgba(255,255,255,0.85)' }}>Endowment Type</label>
+                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Endowment Type</label>
                     <input type="text" placeholder="Family, Corporate, Individual..." value={form.endowmentType} onChange={update('endowmentType')}
-                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-white/40"
-                      style={{ ...inter, background: 'rgba(255,255,255,0.06)', color: '#fff', borderColor: 'rgba(255,255,255,0.18)' }} />
+                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                      style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: 'rgba(4,6,23,0.18)' }} />
                   </div>
-                  {errors.submit && <p style={{ ...inter, fontSize: 14, color: '#F9A8A8' }}>{errors.submit}</p>}
+                  {errors.submit && <p style={{ ...inter, fontSize: 14, color: '#EF4444' }}>{errors.submit}</p>}
                   <button type="button" onClick={handleSubmit} disabled={loading}
                     className="mt-1 h-[56px] w-full rounded-[14px] text-[16px] font-bold text-[#141210]"
                     style={{ ...inter, background: loading ? 'rgba(255,255,255,0.2)' : 'linear-gradient(180deg, #FFD54A 0%, #f3af19 100%)', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, boxShadow: '0 12px 30px rgba(243,175,25,0.32)' }}>

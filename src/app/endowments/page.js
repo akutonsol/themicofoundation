@@ -9,10 +9,11 @@ export default function EndowmentPage() {
   return (
     <main>
       <Navbar />
-      <EndowmentLegacy />   {/* ← new top section */}
+      <EndowmentLegacy variant="hero" />   {/* hero band */}
+      <EndowmentHero />   {/* "Join our community" stats — moved up under the hero */}
       <EndowmentTypes />
-      <MarqueeLines />   {/* ← same component, same design */}
-      <EndowmentHero />   {/* ← moved to the bottom */}
+      <MarqueeLines />
+      <EndowmentLegacy variant="cards" />   {/* "A legacy shaped by you" — moved to the bottom */}
       <Footer />
     </main>
   );

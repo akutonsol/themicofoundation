@@ -48,7 +48,7 @@ const ICONS = {
   ),
 }
 
-export default function EndowmentLegacy() {
+export default function EndowmentLegacy({ variant = 'hero' }) {
   const [content, setContent] = useState(DEFAULTS)
   const [heroImg, setHeroImg] = useState(FALLBACK_IMG)
 
@@ -127,6 +127,7 @@ export default function EndowmentLegacy() {
       `}</style>
 
       {/* ── HERO ── */}
+      {variant !== 'cards' && (
       <div className="el-hero">
         <div className="el-hero-media"><img src={heroImg} alt="Mico endowments" /></div>
         <div className="el-hero-scrim" />
@@ -142,8 +143,10 @@ export default function EndowmentLegacy() {
           </motion.div>
         </div>
       </div>
+      )}
 
       {/* ── CARDS ── */}
+      {variant !== 'hero' && (
       <div className="el-cards-wrap">
         <div className="el-ornament"><span /></div>
         <motion.h2 className="el-cards-heading"
@@ -163,6 +166,7 @@ export default function EndowmentLegacy() {
           ))}
         </div>
       </div>
+      )}
     </section>
   )
 }
