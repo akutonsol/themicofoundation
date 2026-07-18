@@ -61,7 +61,7 @@ function StatBlock({ stat, started, index }) {
 export default function EndowmentsHero() {
   const [countersStarted, setCountersStarted] = useState(false)
   const [content, setContent] = useState({
-    heroHeading: 'Join our community of active Endowments and change education with other awesome people',
+    heroHeading: 'A legacy shaped by you',
     heroCtaText: 'Fill Endowment Form',
     heroCtaLink: '#endowment-form',
     stats: staticStats,

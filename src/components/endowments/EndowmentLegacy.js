@@ -15,7 +15,7 @@ const DEFAULTS = {
   legacySubtitle: 'Your endowment empowers generations of Jamaican educators and students to learn, lead, and transform our communities.',
   legacyCtaText: 'Explore Endowment Options',
   legacyCtaLink: '#endowment-form',
-  legacyCardsHeading: 'A legacy shaped by you',
+  legacyCardsHeading: 'Join our community of active Endowments and change education with other awesome people',
   legacyCards: [
     { label: 'Family Endowments', icon: 'family' },
     { label: 'Research Endowments', icon: 'research' },
@@ -48,7 +48,7 @@ const ICONS = {
   ),
 }
 
-export default function EndowmentLegacy({ variant = 'hero' }) {
+export default function EndowmentLegacy({ variant = 'both' }) {
   const [content, setContent] = useState(DEFAULTS)
   const [heroImg, setHeroImg] = useState(FALLBACK_IMG)
 
