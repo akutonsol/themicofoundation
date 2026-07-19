@@ -381,5 +381,10 @@ endowment: `*[_type == "endowment"][0]{
   legacyImage, legacyCardsHeading, legacyCards
 }`,
 
-  siteSettings: `*[_type == "siteSettings"][0]`
+  siteSettings: `*[_type == "siteSettings"][0]`,
+
+  healthChecks: `*[_type == "healthCheck"] | order(runAt desc)[0...40]{
+    _id, runAt, status, durationMs, source, summary,
+    checks[]{ name, category, ok, critical, ms, detail }
+  }`,
 }

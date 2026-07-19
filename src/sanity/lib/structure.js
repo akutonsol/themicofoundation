@@ -261,6 +261,7 @@ export const structure = (S) =>
             .items([
               S.listItem().title('Testimonials').child(S.documentTypeList('testimonial').title('Testimonials')),
               S.listItem().title('Site Statistics').child(S.documentTypeList('siteStats').title('Site Statistics')),
+              S.listItem().title('🩺 Health Check Runs').child(S.documentTypeList('healthCheck').title('Health Check Runs').defaultOrdering([{ field: 'runAt', direction: 'desc' }])),
             ])
         ),
     ])
