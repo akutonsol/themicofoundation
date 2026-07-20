@@ -15,6 +15,13 @@ const staticTypes = [
 
 const staticIntro = `An endowment is a long-term gift that helps fund scholarships, programs, and campus improvements at The Mico University College.\n\nBy filling out this form, you're pledging your support to invest in education for future generations. Your name, your family, or your business can be remembered as part of this legacy. Your donation will be securely managed by The Mico Foundation and used exactly as you choose.`
 
+const ENDOWMENT_OPTIONS = [
+  'General Endowment Grant',
+  'Legacy Endowment Grant',
+  'Leadership Legacy Endowment Grant',
+  'Corporate Endowment Grant',
+]
+
 function TypeCard({ type, index }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }}
@@ -30,7 +37,7 @@ export default function EndowmentTypes() {
   const [types, setTypes] = useState(staticTypes)
   const [heading, setHeading] = useState('Support the Future with an Endowment')
   const [intro, setIntro] = useState(staticIntro)
-  const [form, setForm] = useState({ name: '', email: '', endowmentType: '' })
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', endowmentType: '' })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -58,7 +65,7 @@ export default function EndowmentTypes() {
 
   const validate = () => {
     const e = {}
-    if (!form.name.trim()) e.name = 'Required'
+    if (!form.firstName.trim()) e.firstName = 'Required'
     if (!form.email.trim()) e.email = 'Required'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Invalid email'
     setErrors(e)
@@ -99,6 +106,9 @@ export default function EndowmentTypes() {
             </motion.div>
 
             <div>
+              <p className="mb-6 max-w-[900px] text-[20px] font-semibold leading-[1.5] tracking-[-0.01em] text-[#040617] sm:text-[24px]" style={inter}>
+                Through your generosity, you create a permanent source of support that enables the University College to nurture talent, embrace new opportunities, and respond to emerging needs.
+              </p>
               <h3 className="mb-6 text-[22px] font-bold tracking-[-0.03em] text-[#040617]" style={inter}>Endowments Funds Go Towards</h3>
               <div className="grid gap-6 sm:grid-cols-2">
                 {types.map((type, i) => <TypeCard key={type.id} type={type} index={i} />)}
@@ -113,7 +123,7 @@ export default function EndowmentTypes() {
             <span style={{ ...inter, display: 'inline-block', fontSize: 12, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: 12 }}>Get Involved</span>
             <h2 className="text-[28px] font-bold leading-[1.2] tracking-[-0.03em]" style={{ ...inter, color: '#040617' }}>Endowment Commitment</h2>
             <p className="mt-4 text-[16px] leading-[1.6] tracking-[0.01em]" style={{ ...inter, color: '#6F7181' }}>
-              Fill out this form to show your interest in supporting The Mico Foundation through an endowment or sponsorship. Once submitted, a member of our team will contact you via email to discuss the next steps.
+              Thank you for your interest in supporting the Mico University College through your endowment. Please complete this form to indicate your interest. Once your submission is received a member of our team will contact you for the next step.
             </p>
 
             {submitted ? (
@@ -127,14 +137,22 @@ export default function EndowmentTypes() {
               </motion.div>
             ) : (
               <>
-                <p className="mt-5 text-[18px] font-bold" style={{ ...inter, color: '#040617' }}>Fill out the form to confirm your commitment.</p>
+                <p className="mt-5 text-[18px] font-bold" style={{ ...inter, color: '#040617' }}>Complete this form to confirm your commitment.</p>
                 <div className="mt-7 flex flex-col gap-5">
-                  <div>
-                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Name</label>
-                    <input type="text" placeholder="Josh..." value={form.name} onChange={update('name')}
-                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
-                      style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: errors.name ? '#EF4444' : 'rgba(4,6,23,0.18)' }} />
-                    {errors.name && <span style={{ ...inter, fontSize: 13, color: '#EF4444' }}>{errors.name}</span>}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>First Name</label>
+                      <input type="text" placeholder="First name" value={form.firstName} onChange={update('firstName')}
+                        className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                        style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: errors.firstName ? '#EF4444' : 'rgba(4,6,23,0.18)' }} />
+                      {errors.firstName && <span style={{ ...inter, fontSize: 13, color: '#EF4444' }}>{errors.firstName}</span>}
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Last Name</label>
+                      <input type="text" placeholder="Last name" value={form.lastName} onChange={update('lastName')}
+                        className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                        style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: 'rgba(4,6,23,0.18)' }} />
+                    </div>
                   </div>
                   <div>
                     <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Email</label>
@@ -145,9 +163,12 @@ export default function EndowmentTypes() {
                   </div>
                   <div>
                     <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Endowment Type</label>
-                    <input type="text" placeholder="Family, Corporate, Individual..." value={form.endowmentType} onChange={update('endowmentType')}
-                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
-                      style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: 'rgba(4,6,23,0.18)' }} />
+                    <select value={form.endowmentType} onChange={update('endowmentType')}
+                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                      style={{ ...inter, background: '#FFFDF9', color: form.endowmentType ? '#040617' : '#9CA3AF', borderColor: 'rgba(4,6,23,0.18)' }}>
+                      <option value="" disabled>Select an endowment type…</option>
+                      {ENDOWMENT_OPTIONS.map(opt => <option key={opt} value={opt} style={{ color: '#040617' }}>{opt}</option>)}
+                    </select>
                   </div>
                   {errors.submit && <p style={{ ...inter, fontSize: 14, color: '#EF4444' }}>{errors.submit}</p>}
                   <button type="button" onClick={handleSubmit} disabled={loading}

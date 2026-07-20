@@ -11,17 +11,25 @@ const client = createClient({
 
 export async function POST(request) {
   try {
-    const { name, email, endowmentType } = await request.json()
+    const body = await request.json()
+    const firstName = (body.firstName || '').trim()
+    const lastName = (body.lastName || '').trim()
+    const email = (body.email || '').trim()
+    const endowmentType = (body.endowmentType || '').trim()
+    // Backward compatible: accept a single `name` too.
+    const fullName = [firstName, lastName].filter(Boolean).join(' ') || (body.name || '').trim()
 
-    if (!name?.trim() || !email?.trim()) {
+    if (!fullName || !email) {
       return NextResponse.json({ error: 'Name and email are required' }, { status: 400 })
     }
 
     await client.create({
       _type: 'endowmentSubmission',
-      name: name.trim(),
-      email: email.trim(),
-      endowmentType: endowmentType?.trim() || '',
+      firstName,
+      lastName,
+      name: fullName,
+      email,
+      endowmentType,
       submittedAt: new Date().toISOString(),
     })
 

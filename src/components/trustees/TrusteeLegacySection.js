@@ -105,7 +105,7 @@ export default function TrusteeLegacySection() {
         .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 6.5vw, 100px); font-weight: 300; line-height: 0.92; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
         .hero-title em { font-style: italic; color: #FFD900; }
         .hero-sub { font-family: 'Syne', sans-serif; font-size: clamp(15px, 1.4vw, 19px); font-weight: 400; color: rgba(255,255,255,0.4); margin: 32px 0 0; max-width: 560px; line-height: 1.65; letter-spacing: 0.01em; }
-        .read-msg-btn { display: inline-flex; align-items: center; gap: 12px; margin-top: 44px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 16px 28px; border-radius: 100px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+        .read-msg-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 16px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 13px 24px; border-radius: 100px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; }
         .read-msg-btn:hover { background: #fff; transform: translateY(-2px); }
         .read-msg-btn svg { width: 18px; height: 18px; transition: transform 0.2s; }
         .read-msg-btn:hover svg { transform: translateX(3px); }
@@ -146,12 +146,6 @@ export default function TrusteeLegacySection() {
               {content.heroTitleLine3}
             </h1>
             <p className="hero-sub">{content.heroSubtitle}</p>
-            <button type="button" className="read-msg-btn" onClick={() => setShowMsg(true)}>
-              Read {leader.name.split(' ')[0]}'s Message
-              <svg viewBox="0 0 20 20" fill="none" aria-hidden>
-                <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
           </div>
 
           {/* RIGHT — Lead Trustee portrait (CMS) */}
@@ -165,6 +159,12 @@ export default function TrusteeLegacySection() {
             <div className="hero-image-cap">
               <p className="cap-role">{leader.role}</p>
               <p className="cap-name">{leader.name}</p>
+              <button type="button" className="read-msg-btn" onClick={() => setShowMsg(true)}>
+                Chairman&rsquo;s Message
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden>
+                  <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
             </div>
           </div>
         </motion.div>
