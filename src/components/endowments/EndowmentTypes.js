@@ -42,8 +42,9 @@ export default function EndowmentTypes() {
         if (data) {
           if (data.typesHeading) setHeading(data.typesHeading)
           if (data.typesIntro) setIntro(data.typesIntro)
-          if (data.endowmentTypes?.length > 0) {
-            setTypes(data.endowmentTypes.map((t, i) => ({ id: i, title: t.title, desc: t.desc, icon: t.icon || '✦' })))
+          const valid = (data.endowmentTypes || []).filter(t => t?.title?.trim())
+          if (valid.length > 0) {
+            setTypes(valid.map((t, i) => ({ id: i, title: t.title, desc: t.desc, icon: t.icon || '✦' })))
           }
         }
       } catch (error) {
