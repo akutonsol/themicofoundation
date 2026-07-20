@@ -106,7 +106,7 @@ export default function EndowmentTypes() {
             </motion.div>
 
             <div>
-              <p className="mb-6 max-w-[900px] text-[20px] font-semibold leading-[1.5] tracking-[-0.01em] text-[#040617] sm:text-[24px]" style={inter}>
+              <p className="mb-10 max-w-[1100px] text-[30px] font-extrabold leading-[1.15] tracking-[-0.03em] text-[#040617] sm:text-[42px] lg:text-[52px]" style={inter}>
                 Through your generosity, you create a permanent source of support that enables the University College to nurture talent, embrace new opportunities, and respond to emerging needs.
               </p>
               <h3 className="mb-6 text-[22px] font-bold tracking-[-0.03em] text-[#040617]" style={inter}>Endowments Funds Go Towards</h3>
