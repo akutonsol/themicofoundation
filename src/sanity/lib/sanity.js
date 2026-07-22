@@ -302,7 +302,7 @@ trusteeLegacy: `*[_type == "trusteeLegacy"][0]{
 
 trusteeLeader: `*[_type == "trusteeLeader"][0]{
   eyebrow, headingBefore, headingHighlight, headingAfter,
-  name, role, org, message, portrait
+  name, role, org, message, profile, portrait
 }`,
 
 historicalPerspective: `*[_type == "historicalPerspective"][0]{ reading, image, leftImage, rightImage, rightNarrative }`,
@@ -378,7 +378,7 @@ endowment: `*[_type == "endowment"][0]{
   photoTopLeft, photoTopRight, photoBottomLeft, photoBottomRight,
   typesHeading, typesIntro, endowmentTypes,
   legacyEyebrow, legacyTitle, legacySubtitle, legacyCtaText, legacyCtaLink,
-  legacyImage, legacyCardsHeading, legacyCards
+  legacyImage, legacyCardsHeading, legacyCards, legacyTaxTitle, legacyTaxBody
 }`,
 
   siteSettings: `*[_type == "siteSettings"][0]`,

@@ -93,7 +93,7 @@ export default function EndowmentTypes() {
     <section id="endowment-form" className="bg-[#FFFDF9] px-6 py-24 sm:px-10 lg:px-20">
       <div className="mx-auto max-w-[1590px]">
         <motion.h1 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="mb-20 max-w-[1350px] text-[78px] font-extrabold leading-[0.92] tracking-[-0.07em] text-[#040617] sm:text-[110px] lg:text-[140px]" style={inter}>
+          className="mb-16 max-w-[1100px] text-[40px] font-extrabold leading-[0.98] tracking-[-0.05em] text-[#040617] sm:text-[56px] lg:text-[72px]" style={inter}>
           {heading}
         </motion.h1>
 
@@ -106,10 +106,10 @@ export default function EndowmentTypes() {
             </motion.div>
 
             <div>
-              <p className="mb-10 max-w-[1100px] text-[30px] font-extrabold leading-[1.15] tracking-[-0.03em] text-[#040617] sm:text-[42px] lg:text-[52px]" style={inter}>
+              <p className="mb-10 max-w-[980px] text-[22px] font-extrabold leading-[1.25] tracking-[-0.02em] text-[#040617] sm:text-[30px] lg:text-[36px]" style={inter}>
                 Through your generosity, you create a permanent source of support that enables the University College to nurture talent, embrace new opportunities, and respond to emerging needs.
               </p>
-              <h3 className="mb-6 text-[22px] font-bold tracking-[-0.03em] text-[#040617]" style={inter}>Endowments Funds Go Towards</h3>
+              <h3 className="mb-6 text-[22px] font-bold tracking-[-0.03em] text-[#040617]" style={inter}>Your Endowments Funds Go Towards</h3>
               <div className="grid gap-6 sm:grid-cols-2">
                 {types.map((type, i) => <TypeCard key={type.id} type={type} index={i} />)}
               </div>

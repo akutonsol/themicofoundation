@@ -17,6 +17,10 @@ const DEFAULT_LEADER = {
     "For generations, The Mico College has been a beacon of excellence in education, preparing outstanding teachers for Jamaica and the wider Caribbean. Beyond education, Mico graduates have distinguished themselves across numerous professions, making significant contributions to national, regional, and international development.",
     "Today, Mico University College is well positioned to broaden its impact through the expansion of STEM and STEAM education, strategic partnerships in Artificial Intelligence (AI), and stronger collaboration with the public and private sectors. These initiatives will foster innovative programmes that benefit students, faculty, alumni, and the wider community.",
   ],
+  profile: [
+    "Joe Bartley serves as Lead Trustee of The Mico Foundation, bringing decades of leadership and a deep commitment to educational advancement across Jamaica and the Caribbean.",
+    "His stewardship focuses on safeguarding the mission, legacy, and long-term sustainability of The Mico University College.",
+  ],
 };
 
 const staticContent = {
@@ -36,6 +40,7 @@ export default function TrusteeLegacySection() {
   const [content, setContent] = useState(staticContent);
   const [leader, setLeader] = useState(DEFAULT_LEADER);
   const [showMsg, setShowMsg] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const heroRef = useRef(null);
 
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -75,6 +80,9 @@ export default function TrusteeLegacySection() {
             message: d.message
               ? d.message.split(/\n{2,}/).map(s => s.trim()).filter(Boolean)
               : DEFAULT_LEADER.message,
+            profile: d.profile
+              ? d.profile.split(/\n{2,}/).map(s => s.trim()).filter(Boolean)
+              : DEFAULT_LEADER.profile,
           });
         }
       } catch (error) {
@@ -105,10 +113,13 @@ export default function TrusteeLegacySection() {
         .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 6.5vw, 100px); font-weight: 300; line-height: 0.92; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
         .hero-title em { font-style: italic; color: #FFD900; }
         .hero-sub { font-family: 'Syne', sans-serif; font-size: clamp(15px, 1.4vw, 19px); font-weight: 400; color: rgba(255,255,255,0.4); margin: 32px 0 0; max-width: 560px; line-height: 1.65; letter-spacing: 0.01em; }
-        .read-msg-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 16px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 13px 24px; border-radius: 100px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+        .cap-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .read-msg-btn { display: inline-flex; align-items: center; gap: 9px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.01em; padding: 12px 22px; border-radius: 100px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s, color 0.2s; }
         .read-msg-btn:hover { background: #fff; transform: translateY(-2px); }
-        .read-msg-btn svg { width: 18px; height: 18px; transition: transform 0.2s; }
+        .read-msg-btn svg { width: 16px; height: 16px; transition: transform 0.2s; }
         .read-msg-btn:hover svg { transform: translateX(3px); }
+        .read-msg-btn.secondary { background: transparent; color: #FFD900; border: 1px solid rgba(255,217,0,0.55); }
+        .read-msg-btn.secondary:hover { background: #FFD900; color: #040617; transform: translateY(-2px); }
 
         .msg-overlay { position: fixed; inset: 0; background: rgba(4,6,23,0.6); backdrop-filter: blur(4px); z-index: 3000; }
         .msg-panel { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3001; max-height: 90vh; background: #05080F; border-radius: 28px 28px 0 0; box-shadow: 0 -30px 80px rgba(0,0,0,0.6); border-top: 1px solid rgba(255,217,0,0.2); overflow-y: auto; }
@@ -159,12 +170,20 @@ export default function TrusteeLegacySection() {
             <div className="hero-image-cap">
               <p className="cap-role">{leader.role}</p>
               <p className="cap-name">{leader.name}</p>
-              <button type="button" className="read-msg-btn" onClick={() => setShowMsg(true)}>
-                Chairman&rsquo;s Message
-                <svg viewBox="0 0 20 20" fill="none" aria-hidden>
-                  <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
+              <div className="cap-btns">
+                <button type="button" className="read-msg-btn" onClick={() => setShowMsg(true)}>
+                  Chairman&rsquo;s Message
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                <button type="button" className="read-msg-btn secondary" onClick={() => setShowProfile(true)}>
+                  Profile
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -197,6 +216,42 @@ export default function TrusteeLegacySection() {
                 <h2 className="msg-name">{leader.name}</h2>
                 <div className="msg-body">
                   {leader.message.map((para, i) => (
+                    <p key={i} className="msg-p">{para}</p>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ── LEAD TRUSTEE PROFILE — slide-up panel ── */}
+      <AnimatePresence>
+        {showProfile && (
+          <>
+            <motion.div
+              className="msg-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setShowProfile(false)}
+            />
+            <motion.div
+              className="msg-panel"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 240 }}
+            >
+              <button type="button" className="msg-close" onClick={() => setShowProfile(false)} aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+              </button>
+              <div className="msg-panel-inner">
+                <p className="msg-eyebrow">Profile · {leader.role}</p>
+                <h2 className="msg-name">{leader.name}</h2>
+                <div className="msg-body">
+                  {leader.profile.map((para, i) => (
                     <p key={i} className="msg-p">{para}</p>
                   ))}
                 </div>

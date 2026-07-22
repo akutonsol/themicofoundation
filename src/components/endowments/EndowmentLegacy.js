@@ -21,6 +21,8 @@ const DEFAULTS = {
   legacySubtitle: 'Your endowment empowers generations of Jamaican educators and students to learn, lead, and transform our communities.',
   legacyCtaText: 'Explore Endowment Options',
   legacyCtaLink: '#endowment-form',
+  legacyTaxTitle: 'Tax Benefits',
+  legacyTaxBody: "All financial contributions to The Mico Foundation's Endowment Programme are tax-deductible in accordance with the applicable laws of Jamaica.",
   legacyCardsHeading: 'Join a community of active endowments united by a shared vision to strengthen and transform The Mico University College community and shape the future of education together.',
   legacyCards: [
     { label: 'General Endowment Grant', icon: 'family', description: 'An unrestricted gift that supports the Foundation’s greatest priorities across The Mico University College — funding scholarships, programmes, and campus needs wherever the impact is greatest.' },
@@ -127,7 +129,7 @@ export default function EndowmentLegacy({ variant = 'both' }) {
         .el-ornament::before, .el-ornament::after { content:''; width:clamp(50px,10vw,120px); height:1px; background: linear-gradient(90deg, transparent, rgba(199,154,42,0.6)); }
         .el-ornament::after { background: linear-gradient(90deg, rgba(199,154,42,0.6), transparent); }
         .el-ornament span { font-size:14px; transform: rotate(45deg); display:inline-block; width:12px; height:12px; border:1.5px solid ${GOLD}; }
-        .el-cards-heading { font-family:'Inter', sans-serif; font-size: clamp(28px,3.2vw,46px); font-weight:800; letter-spacing:-0.02em; color:#12130F; max-width:1200px; margin:0 auto clamp(34px,4vw,52px); line-height:1.16; }
+        .el-cards-heading { font-family:'Inter', sans-serif; font-size: clamp(22px,2.4vw,34px); font-weight:700; letter-spacing:-0.02em; color:#12130F; max-width:1100px; margin:0 auto clamp(30px,3.5vw,46px); line-height:1.2; }
 
         .el-cards { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: clamp(18px,1.8vw,26px); }
         @media (max-width: 900px) { .el-cards { grid-template-columns: repeat(2, minmax(0,1fr)); } }
@@ -150,7 +152,10 @@ export default function EndowmentLegacy({ variant = 'both' }) {
         .elm-head-icon svg { width:100%; height:100%; }
         .elm-head h3 { font-family:'Inter',sans-serif; font-size: clamp(24px,3vw,32px); font-weight:800; letter-spacing:-0.02em; line-height:1.1; margin:0; }
         .elm-body { padding: clamp(26px,3vw,36px) clamp(26px,3vw,40px) clamp(30px,3.5vw,40px); }
-        .elm-body p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.4vw,18px); line-height:1.75; color:#3A3D4A; margin:0 0 26px; }
+        .elm-desc { font-family:'Inter',sans-serif; font-size: clamp(15px,1.3vw,17px); line-height:1.75; color:#3A3D4A; margin:0 0 22px; }
+        .elm-tax { border-top:1px solid rgba(4,6,23,0.09); padding-top:16px; margin:0 0 26px; }
+        .elm-tax-title { font-family:'Inter',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.01em; color:#040617; margin:0 0 5px; }
+        .elm-tax-body { font-family:'Inter',sans-serif; font-size:13px; line-height:1.6; color:#6F7181; margin:0; }
         .elm-cta { display:inline-flex; align-items:center; gap:10px; background:#040617; color:#FFD900; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; padding:14px 26px; border-radius:100px; text-decoration:none; transition: background .2s, transform .2s; }
         .elm-cta:hover { background:#12162b; transform: translateY(-2px); }
         .elm-close { position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:50%; border:none; background:rgba(255,255,255,0.85); color:#141210; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; }
@@ -218,7 +223,13 @@ export default function EndowmentLegacy({ variant = 'both' }) {
                   <h3>{active.label}</h3>
                 </div>
                 <div className="elm-body">
-                  <p>{active.description || 'Details for this endowment type will be available soon.'}</p>
+                  <p className="elm-desc">{active.description || 'Details for this endowment type will be available soon.'}</p>
+                  {(content.legacyTaxBody || content.legacyTaxTitle) && (
+                    <div className="elm-tax">
+                      {content.legacyTaxTitle && <p className="elm-tax-title">{content.legacyTaxTitle}</p>}
+                      {content.legacyTaxBody && <p className="elm-tax-body">{content.legacyTaxBody}</p>}
+                    </div>
+                  )}
                   <a href="#endowment-form" className="elm-cta" onClick={() => setActive(null)}>
                     Start this endowment
                     <svg viewBox="0 0 20 20" width="16" height="16" fill="none"><path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>

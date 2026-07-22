@@ -107,6 +107,19 @@ export default defineType({
       options: { hotspot: true },
     },
     {
+      name: 'legacyTaxTitle',
+      title: 'Legacy — Card Popover: Tax Note Title',
+      type: 'string',
+      initialValue: 'Tax Benefits',
+    },
+    {
+      name: 'legacyTaxBody',
+      title: 'Legacy — Card Popover: Tax Note (disclaimer under each description)',
+      type: 'text',
+      rows: 3,
+      initialValue: "All financial contributions to The Mico Foundation's Endowment Programme are tax-deductible in accordance with the applicable laws of Jamaica.",
+    },
+    {
       name: 'legacyCardsHeading',
       title: 'Legacy — Cards Heading',
       type: 'text',
