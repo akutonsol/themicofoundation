@@ -27,8 +27,32 @@ export default defineType({
       title: 'Hero Rotating Images (6 images)',
       type: 'array',
       of: [{ type: 'image' }],
-      description: 'Upload exactly 6 images that will rotate in the hero section',
-      validation: Rule => Rule.required().length(6).error('Upload exactly 6 images')
+      description: 'Fallback pool used by any hero section left empty below. Upload up to 6 images.',
+      validation: Rule => Rule.max(6).warning('Up to 6 images')
+    },
+    {
+      name: 'heroLeftImages',
+      title: 'Hero — Left Section Photos',
+      type: 'array',
+      of: [{ type: 'image' }],
+      options: { layout: 'grid' },
+      description: 'Photos for the LEFT card (with the “Total Money Donated” stat). Add one, or several to rotate. Leave empty to use the shared rotating images.',
+    },
+    {
+      name: 'heroRightImages',
+      title: 'Hero — Right Section Photos',
+      type: 'array',
+      of: [{ type: 'image' }],
+      options: { layout: 'grid' },
+      description: 'Photos for the RIGHT card (with the “Completed Projects” stat). Add one, or several to rotate. Leave empty to use the shared rotating images.',
+    },
+    {
+      name: 'heroBottomImages',
+      title: 'Hero — Bottom Section Photos (current-target card)',
+      type: 'array',
+      of: [{ type: 'image' }],
+      options: { layout: 'grid' },
+      description: 'Photos for the BOTTOM centre card (the “Current target” progress card, under the video). The video area itself is unchanged. Leave empty to use the shared rotating images.',
     },
     {
       name: 'videoId',

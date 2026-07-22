@@ -87,7 +87,7 @@ export default function StaffSection() {
             </p>
           </div>
         </div>
-        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-x-5 gap-y-10 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
           {members.map(member => <StaffCard key={member.id} member={member} onOpen={setSelectedMember} />)}
         </div>
       </section>

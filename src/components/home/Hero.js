@@ -181,6 +181,15 @@ export default function Hero() {
 
   const mobileImages = { top: allImages[4], bottom: allImages[5] }
 
+  // Per-section CMS photos — each hero section can be isolated with its own
+  // photo(s). If a section is left empty in the CMS, it falls back to the
+  // shared rotating pool. Multiple photos in a section rotate independently.
+  const toUrls = arr => (arr?.map(img => urlFor(img).width(1000).url()) || [])
+  const leftImages   = toUrls(heroData?.heroLeftImages)
+  const rightImages  = toUrls(heroData?.heroRightImages)
+  const bottomImages = toUrls(heroData?.heroBottomImages)
+  const sectionPick = (arr, fallback) => (arr.length ? arr[currentImageIndex % arr.length] : fallback)
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex(prev => (prev + 1) % allImages.length)
@@ -221,6 +230,10 @@ export default function Hero() {
   }
 
   const getImageForPosition = offset => allImages[(currentImageIndex + offset) % allImages.length]
+
+  const leftImg   = sectionPick(leftImages,   getImageForPosition(0))
+  const rightImg  = sectionPick(rightImages,  getImageForPosition(2))
+  const bottomImg = sectionPick(bottomImages, getImageForPosition(3))
 
   if (loading) return (
     <section style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', backgroundColor:'#FFFDF9' }}>
@@ -386,8 +399,8 @@ export default function Hero() {
               {/* Left */}
               <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
                 <AnimatePresence mode="wait">
-                  <motion.div key={`left-${currentImageIndex}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
-                    <Image src={getImageForPosition(0)} alt="Hero" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
+                  <motion.div key={`left-${leftImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
+                    <Image src={leftImg} alt="Hero" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
                   </motion.div>
                 </AnimatePresence>
                 <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(-0.95deg,rgba(0,0,0,0.6) 0.68%,rgba(0,0,0,0) 23.88%),linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 35.42%)', zIndex:1 }} />
@@ -428,8 +441,8 @@ export default function Hero() {
                 {/* Buxton card */}
                 <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'271px' }}>
                   <AnimatePresence mode="wait">
-                    <motion.div key={`buxton-${currentImageIndex}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
-                      <Image src={getImageForPosition(3)} alt={currentTargetName} fill style={{ objectFit:'cover' }} sizes="33vw" />
+                    <motion.div key={`buxton-${bottomImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
+                      <Image src={bottomImg} alt={currentTargetName} fill style={{ objectFit:'cover' }} sizes="33vw" />
                     </motion.div>
                   </AnimatePresence>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)', zIndex:1 }} />
@@ -456,8 +469,8 @@ export default function Hero() {
               {/* Right */}
               <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
                 <AnimatePresence mode="wait">
-                  <motion.div key={`right-${currentImageIndex}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
-                    <Image src={getImageForPosition(2)} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
+                  <motion.div key={`right-${rightImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
+                    <Image src={rightImg} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
                   </motion.div>
                 </AnimatePresence>
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 29.7%)', zIndex:1 }} />
@@ -519,7 +532,7 @@ export default function Hero() {
 
           {/* Bottom photo */}
           <div style={{ width:'100%', height:'271px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
-            <Image src={mobileImages.bottom} alt="Campus" fill style={{ objectFit:'cover' }} sizes="100vw" />
+            <Image src={bottomImg} alt="Campus" fill style={{ objectFit:'cover' }} sizes="100vw" />
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)' }} />
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', textAlign:'center', width:'262px' }}>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'24px', color:'#d1d1d1', lineHeight:'38px', margin:0 }}>Current target</p>
