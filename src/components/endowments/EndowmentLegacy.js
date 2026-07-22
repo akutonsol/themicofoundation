@@ -154,8 +154,8 @@ export default function EndowmentLegacy({ variant = 'both' }) {
         .elm-body { padding: clamp(26px,3vw,36px) clamp(26px,3vw,40px) clamp(30px,3.5vw,40px); }
         .elm-desc { font-family:'Inter',sans-serif; font-size: clamp(15px,1.3vw,17px); line-height:1.75; color:#3A3D4A; margin:0 0 22px; }
         .elm-tax { border-top:1px solid rgba(4,6,23,0.09); padding-top:16px; margin:0 0 26px; }
-        .elm-tax-title { font-family:'Inter',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.01em; color:#040617; margin:0 0 5px; }
-        .elm-tax-body { font-family:'Inter',sans-serif; font-size:13px; line-height:1.6; color:#6F7181; margin:0; }
+        .elm-tax-title { font-family:'Inter',sans-serif; font-size:15px; font-weight:800; letter-spacing:0.01em; color:#040617; margin:0 0 5px; }
+        .elm-tax-body { font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; color:#3A3D4A; margin:0; }
         .elm-cta { display:inline-flex; align-items:center; gap:10px; background:#040617; color:#FFD900; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; padding:14px 26px; border-radius:100px; text-decoration:none; transition: background .2s, transform .2s; }
         .elm-cta:hover { background:#12162b; transform: translateY(-2px); }
         .elm-close { position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:50%; border:none; background:rgba(255,255,255,0.85); color:#141210; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; }
