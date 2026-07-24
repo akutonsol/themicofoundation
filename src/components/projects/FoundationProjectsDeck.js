@@ -8,6 +8,18 @@ import { client } from "@/sanity/lib/sanity";
 const inter = { fontFamily: "'Inter', sans-serif" };
 const ACCENTS = ["#FFD900", "#5EDA71", "#60A5FA", "#F97316", "#E879F9", "#FB7185"];
 
+// Split a description so the card shows the opening and the modal continues it.
+function splitReading(text, previewChars = 220) {
+  const t = (text || '').trim();
+  const paras = t.split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
+  if (paras.length > 1) return { preview: paras[0], continuation: paras.slice(1).join('\n\n') };
+  if (t.length <= previewChars) return { preview: t, continuation: '' };
+  let cut = t.lastIndexOf('. ', previewChars);
+  if (cut < previewChars * 0.5) cut = t.lastIndexOf(' ', previewChars);
+  if (cut < 0) cut = previewChars;
+  return { preview: t.slice(0, cut + 1).trim(), continuation: t.slice(cut + 1).trim() };
+}
+
 function ProjectRow({ project, index, isActive, onClick }) {
   return (
     <motion.button type="button" onClick={onClick}
@@ -52,14 +64,14 @@ function DetailModal({ project, onClose }) {
             </button>
             <p style={{ ...inter, fontSize: '12px', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.14em', textTransform: 'uppercase', margin: '0 0 16px' }}>{project.num}</p>
             <h2 style={{ ...inter, fontSize: '42px', fontWeight: 700, color: '#FFFFFF', lineHeight: 0.95, letterSpacing: '-0.04em', margin: '0 0 24px' }}>{project.title}</h2>
-            <p style={{ ...inter, fontSize: '17px', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)', margin: 0 }}>{project.fullDescription}</p>
+            <p style={{ ...inter, fontSize: '17px', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)', margin: 0 }}>{project.restDesc || project.previewDesc}</p>
           </div>
           <div style={{ display: 'flex', gap: '12px', marginTop: '40px' }}>
-            <a href="/endowments" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', border: `1px solid ${project.accent}`, color: project.accent, fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none' }}>
-              Endowments <ArrowUpRight size={14} />
+            <a href={project.href} style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', border: `1px solid ${project.accent}`, color: project.accent, fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none' }}>
+              Learn More <ArrowUpRight size={14} />
             </a>
-            <a href="/donate" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', background: project.accent, color: '#040617', fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none' }}>
-              Donate Now <ArrowUpRight size={14} />
+            <a href="/pledge" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', background: project.accent, color: '#040617', fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none' }}>
+              Pledge Now <ArrowUpRight size={14} />
             </a>
           </div>
         </div>
@@ -84,17 +96,20 @@ export default function FoundationProjectsDeck() {
           }
         `);
         if (data?.length > 0) {
-          setProjects(data.map((p, i) => ({
-            id: p._id,
-            num: String(i + 1).padStart(2, '0'),
-            category: p.label || 'Active Project',
-            title: p.title,
-            description: p.description || '',
-            fullDescription: p.description || '',
-            image: p.image || null,
-            accent: ACCENTS[i % ACCENTS.length],
-            href: `/projectdetail/${p.slug}`,
-          })));
+          setProjects(data.map((p, i) => {
+            const { preview, continuation } = splitReading(p.description || '');
+            return {
+              id: p._id,
+              num: String(i + 1).padStart(2, '0'),
+              category: p.label || 'Active Project',
+              title: p.title,
+              previewDesc: preview,
+              restDesc: continuation,
+              image: p.image || null,
+              accent: ACCENTS[i % ACCENTS.length],
+              href: `/projectdetail/${p.slug}`,
+            };
+          }));
         }
       } catch (err) {
         console.error('Error fetching active projects:', err);
@@ -178,7 +193,7 @@ export default function FoundationProjectsDeck() {
                 </div>
                 <div style={{ padding: '32px 36px 36px' }}>
                   <h3 style={{ ...inter, fontSize: 'clamp(28px,3vw,42px)', fontWeight: 700, color: '#FFFFFF', lineHeight: 1, letterSpacing: '-0.04em', margin: '0 0 16px' }}>{activeProject.title}</h3>
-                  <p style={{ ...inter, fontSize: '17px', lineHeight: 1.65, color: 'rgba(255,255,255,0.55)', margin: '0 0 32px' }}>{activeProject.description}</p>
+                  <p style={{ ...inter, fontSize: '17px', lineHeight: 1.65, color: 'rgba(255,255,255,0.55)', margin: '0 0 32px' }}>{activeProject.previewDesc}{activeProject.restDesc ? '…' : ''}</p>
                   <div style={{ display: 'flex', gap: '6px', marginBottom: '28px' }}>
                     {projects.map((_, i) => (
                       <button key={i} onClick={() => setActive(i)} style={{ height: '4px', width: i === active ? '32px' : '8px', borderRadius: '100px', background: i === active ? activeProject.accent : 'rgba(255,255,255,0.15)', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease' }} />
@@ -191,11 +206,6 @@ export default function FoundationProjectsDeck() {
                       onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
                       View Details <ArrowUpRight size={14} />
                     </button>
-                    <a href={activeProject.href} style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: 600, letterSpacing: '0.04em', textDecoration: 'none', transition: 'all 0.2s' }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; e.currentTarget.style.color = '#fff' }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)' }}>
-                      Learn More
-                    </a>
                   </div>
                 </div>
               </motion.div>

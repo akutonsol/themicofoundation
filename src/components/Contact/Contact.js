@@ -108,9 +108,9 @@ export default function ContactUs() {
         <motion.div
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.6 }}
-          style={{ display: "flex", alignItems: "flex-start", gap: 20, background: "rgba(255,217,0,0.08)", border: "1px solid rgba(255,217,0,0.35)", borderLeft: "4px solid #FFD900", borderRadius: 16, padding: "24px 28px", marginBottom: 40 }}
+          style={{ background: "rgba(255,217,0,0.08)", border: "1px solid rgba(255,217,0,0.35)", borderTop: "4px solid #FFD900", borderRadius: 16, padding: "28px 28px", marginBottom: 40, textAlign: "center" }}
         >
-          <div>
+          <div style={{ maxWidth: 820, margin: "0 auto" }}>
             <h2 style={{ ...inter, fontSize: "clamp(26px, 3vw, 34px)", fontWeight: 800, letterSpacing: "-0.4px", lineHeight: 1.22, color: "#040617", margin: "0 0 12px" }}>
               The Mico Foundation, a Limited Liability Company — Not for Profit
             </h2>

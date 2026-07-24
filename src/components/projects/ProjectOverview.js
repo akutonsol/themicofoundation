@@ -62,17 +62,14 @@ export default function ProjectOverview({ overview, projects = [] }) {
 
         /* ── CURRENT INITIATIVES ── */
         .po-intro { background:#F5F3EC; padding: clamp(60px,8vw,110px) clamp(24px,5vw,80px); }
-        .po-intro-inner { max-width:1440px; margin:0 auto; display:grid; grid-template-columns: 1fr 1px 1fr; gap: clamp(32px,5vw,72px); align-items:start; }
-        .po-intro-eyebrow { font-family:'Inter',sans-serif; font-size:12px; font-weight:800; letter-spacing:0.2em; text-transform:uppercase; color:#B8860B; margin:0 0 20px; }
-        .po-intro-title { font-family:'Inter',sans-serif; font-size: clamp(30px,3.6vw,48px); font-weight:800; letter-spacing:-0.035em; line-height:1.08; color:#0A0A0A; margin:0; }
+        .po-intro-inner { max-width:940px; margin:0 auto; text-align:center; }
+        .po-intro-eyebrow { font-family:'Inter',sans-serif; font-size:12px; font-weight:800; letter-spacing:0.2em; text-transform:uppercase; color:#B8860B; margin:0 0 18px; }
+        .po-intro-title { font-family:'Inter',sans-serif; font-size: clamp(30px,3.6vw,48px); font-weight:800; letter-spacing:-0.035em; line-height:1.1; color:#0A0A0A; margin:0; }
         .po-intro-title .dot { color:${GOLD}; }
-        .po-intro-divider { background:#DEDBCF; width:1px; height:100%; }
-        .po-intro-body p { font-family:'Inter',sans-serif; font-size: clamp(18px,1.7vw,23px); line-height:1.7; color:#4A4A4A; margin:0 0 24px; }
+        .po-intro-divider { width:64px; height:3px; border-radius:3px; background:${GOLD}; margin: clamp(24px,3vw,32px) auto; }
+        .po-intro-body { max-width:760px; margin:0 auto; }
+        .po-intro-body p { font-family:'Inter',sans-serif; font-size: clamp(17px,1.5vw,20px); line-height:1.75; color:#4A4A4A; margin:0 0 20px; }
         .po-intro-body p:last-child { margin-bottom:0; }
-        @media (max-width: 900px) {
-          .po-intro-inner { grid-template-columns: 1fr; gap: 32px; }
-          .po-intro-divider { display:none; }
-        }
 
         /* ── IN ACTION collage ── */
         .po-action { background:#FFFDF9; padding: clamp(60px,8vw,110px) clamp(24px,5vw,80px); }
