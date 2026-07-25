@@ -110,8 +110,8 @@ export default function ContactUs() {
           viewport={{ once: true }} transition={{ duration: 0.6 }}
           style={{ background: "rgba(255,217,0,0.08)", border: "1px solid rgba(255,217,0,0.35)", borderTop: "4px solid #FFD900", borderRadius: 16, padding: "28px 28px", marginBottom: 40, textAlign: "center" }}
         >
-          <div style={{ maxWidth: 820, margin: "0 auto" }}>
-            <h2 style={{ ...inter, fontSize: "clamp(32px, 4vw, 50px)", fontWeight: 800, letterSpacing: "-0.5px", lineHeight: 1.16, color: "#040617", margin: "0 0 12px" }}>
+          <div style={{ maxWidth: 1320, margin: "0 auto" }}>
+            <h2 style={{ ...inter, fontSize: "clamp(32px, 4vw, 50px)", fontWeight: 800, letterSpacing: "-0.5px", lineHeight: 1.16, color: "#040617", margin: "0 0 12px", textWrap: "balance" }}>
               The Mico Foundation, a Limited Liability Company — Not for Profit
             </h2>
             <p style={{ ...inter, fontSize: "clamp(17px, 1.5vw, 20px)", fontWeight: 400, lineHeight: 1.6, color: "#4A4A4A", margin: 0 }}>
