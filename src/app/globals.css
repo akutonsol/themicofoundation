@@ -170,4 +170,9 @@ select:focus-visible,
 .u-lift-dark { transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-emphasized); }
 .u-lift-dark:hover { transform: translateY(-5px); box-shadow: var(--shadow-dark-4), var(--glow-gold-soft); }
 
+/* Consistent premium rhythm between stacked page sections (Helix spacing scale) */
+.home-stack > * + * { margin-top: clamp(48px, 6vw, 104px); }
+/* the marquee ribbon sits closer to its neighbours */
+.home-stack > .no-gap, .home-stack > .no-gap + * { margin-top: clamp(24px, 3vw, 48px); }
+
  

@@ -21,28 +21,25 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      <Hero />
-   
+      <div className="home-stack">
+        <Hero />
         <FeaturedMessage />
         <Mission />
-<LegacyImpactSection />
-      <Projects />
-    
-      {/*}   <Messages />  */}
-      <Community />
-      <MarqueeLines />
-     
-       <WaysToDonate />
-       {/*}    <DonationForm showTitle={false} compact={true} /> */}
-     {/*}   <DonationForm /> >*/}
-      <PeopleImpact />
-       
-      <NewsEvents />
-     {/*}    <Publications />  >*/}
-      <Newsletter />
-      
-      <FAQ />
+        <LegacyImpactSection />
+        <Projects />
+        {/*   <Messages />  */}
+        <Community />
+        <div className="no-gap"><MarqueeLines /></div>
+        <WaysToDonate />
+        {/*    <DonationForm showTitle={false} compact={true} /> */}
+        {/*   <DonationForm />  */}
+        <PeopleImpact />
+        <NewsEvents />
+        {/*    <Publications />  */}
+        <Newsletter />
+        <FAQ />
         <TrustedBy />
+      </div>
       <Footer />
     </main>
   )

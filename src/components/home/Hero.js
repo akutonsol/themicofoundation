@@ -156,7 +156,7 @@ export default function Hero() {
   const totalMoneyDonatedText = heroData?.totalMoneyDonatedText  || 'Total money donated.'
   const completedProjects     = heroData?.completedProjects      || '45+'
   const completedProjectsText = heroData?.completedProjectsText  || 'Completed Projects.'
-  const currentTargetName     = heroData?.currentTargetName      || 'Bruxton College'
+  const currentTargetName     = heroData?.currentTargetName      || 'Buxton Project'
   const targetAmount          = heroData?.targetAmount           || 10000000
   const amountDonated         = heroData?.amountDonated          || 6500000
 
@@ -447,21 +447,7 @@ export default function Hero() {
                   </AnimatePresence>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)', zIndex:1 }} />
                   <div style={{ position:'absolute', top:'24px', left:'24px', zIndex:2 }}>
-                    <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'24px', color:'#d1d1d1', lineHeight:'38px', margin:0 }}>Current target</p>
                     <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#fff', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{currentTargetName}</p>
-                  </div>
-                  <div style={{ position:'absolute', bottom:'20px', left:'24px', right:'24px', zIndex:2 }}>
-                    <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'24px', color:'#5EDA71', textAlign:'center', margin:'0 0 8px' }}>{percentage}%</p>
-                    <div style={{ display:'flex', gap:'4px' }}>
-                      {Array.from({length:TOTAL}).map((_,i) => (
-                        <div key={i} style={{ flex:1, height:'20px', borderRadius:'20px', backgroundColor:i<FILLED?'#5EDA71':'#d9d9d9', opacity:i<FILLED?1:0.4 }} />
-                      ))}
-                    </div>
-                    <div style={{ display:'flex', justifyContent:'space-between', marginTop:'6px' }}>
-                      <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'16px', color:'rgba(255,255,255,0.6)' }}>$0</span>
-                      <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'16px', color:'#5EDA71' }}>{formatCurrency(amountDonated)}</span>
-                      <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'16px', color:'rgba(255,255,255,0.6)' }}>{formatCurrency(targetAmount)}</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -535,22 +521,7 @@ export default function Hero() {
             <Image src={bottomImg} alt="Campus" fill style={{ objectFit:'cover' }} sizes="100vw" />
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)' }} />
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', textAlign:'center', width:'262px' }}>
-              <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'24px', color:'#d1d1d1', lineHeight:'38px', margin:0 }}>Current target</p>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'white', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{currentTargetName}</p>
-            </div>
-            <div style={{ position:'absolute', left:'12px', right:'12px', bottom:'12px' }}>
-              <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'20px', color:'#5EDA71', margin:'0 0 4px', textAlign:'right', paddingRight:'30%' }}>{percentage}%</p>
-              <div style={{ display:'flex', gap:'3px', height:'16px' }}>
-                {Array.from({length:32}).map((_,i) => {
-                  const mobileFilled = Math.round((percentage / 100) * 32)
-                  return <div key={i} style={{ flex:1, height:'100%', borderRadius:'20px', backgroundColor:i<mobileFilled?'#5EDA71':'#d9d9d9', opacity:i<mobileFilled?1:0.5 }} />
-                })}
-              </div>
-              <div style={{ display:'flex', justifyContent:'space-between', marginTop:'4px' }}>
-                <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'14px', color:'rgba(255,255,255,0.6)' }}>$0</span>
-                <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'14px', color:'#5EDA71' }}>{formatCurrency(amountDonated)}</span>
-                <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'14px', color:'rgba(255,255,255,0.6)' }}>{formatCurrency(targetAmount)}</span>
-              </div>
             </div>
           </div>
 

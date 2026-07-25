@@ -95,7 +95,7 @@ export default function Mission() {
           padding: clamp(56px, 7vw, 80px) clamp(24px, 4vw, 64px);
         }
         .mission-panel { background: #FAF7EF; border-radius: 28px; }
-        .mission-split { display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-3); }
+        .mission-split { display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px; overflow: hidden; }
         .mission-half { padding: clamp(34px, 3.6vw, 60px); display: flex; flex-direction: column; justify-content: center; gap: 24px; }
         .mission-half-black { background: #050608; }
         .mission-half-gold  { background: #f3af19; }
