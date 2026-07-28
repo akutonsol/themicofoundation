@@ -84,9 +84,19 @@ function ProfileModal({ member, onClose }) {
   );
 }
 
+const DEFAULT_CHAIR = {
+  name: 'Joe Bartley',
+  role: 'Lead Trustee',
+  profile: [
+    "Joe Bartley serves as Lead Trustee of The Mico Foundation, bringing decades of leadership and a deep commitment to educational advancement across Jamaica and the Caribbean.",
+    "His stewardship focuses on safeguarding the mission, legacy, and long-term sustainability of The Mico University College.",
+  ],
+};
+
 export default function TeamProfileFeature() {
   const [team, setTeam] = useState(staticTeam);
   const [selected, setSelected] = useState(null);
+  const [chair, setChair] = useState(DEFAULT_CHAIR);
 
   useEffect(() => {
     async function fetchBoardMembers() {
@@ -105,7 +115,24 @@ export default function TeamProfileFeature() {
         console.error('Error fetching board members:', error);
       }
     }
+    async function fetchChair() {
+      try {
+        const d = await client.fetch(queries.trusteeLeader);
+        if (d) {
+          setChair({
+            name: d.name || DEFAULT_CHAIR.name,
+            role: d.role || DEFAULT_CHAIR.role,
+            profile: d.profile
+              ? d.profile.split(/\n{2,}/).map(s => s.trim()).filter(Boolean)
+              : DEFAULT_CHAIR.profile,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching chair profile:', error);
+      }
+    }
     fetchBoardMembers();
+    fetchChair();
   }, []);
 
   return (
@@ -117,8 +144,15 @@ export default function TeamProfileFeature() {
         .ct-section::before { content:''; position:absolute; top:-180px; right:-140px; width:520px; height:520px; border-radius:50%; background: radial-gradient(circle, rgba(255,217,0,0.10) 0%, rgba(255,217,0,0) 70%); pointer-events:none; }
         .ct-inner { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; }
 
-        .ct-head-row { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin: 0 0 clamp(36px,5vw,52px); }
+        .ct-head-row { display:grid; grid-template-columns: 1fr 1fr; align-items:start; gap: clamp(28px,4vw,64px); margin: 0 0 clamp(36px,5vw,52px); }
+        @media (max-width: 900px) { .ct-head-row { grid-template-columns: 1fr; } }
         .ct-head { max-width: 720px; }
+        .ct-chair { border-left: 1px solid rgba(255,255,255,0.12); padding-left: clamp(24px,3vw,40px); }
+        @media (max-width: 900px) { .ct-chair { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 28px; } }
+        .ct-chair-eyebrow { font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#FFD900; margin:0 0 6px; }
+        .ct-chair-name { font-family:'Inter',sans-serif; font-size: clamp(24px,2.4vw,32px); font-weight:800; letter-spacing:-0.02em; color:#fff; margin:0 0 16px; line-height:1.05; }
+        .ct-chair-body p { font-family:'Inter',sans-serif; font-size:15px; line-height:1.75; color:rgba(255,255,255,0.6); margin:0 0 12px; }
+        .ct-chair-body p:last-child { margin-bottom:0; }
         .ct-eyebrow { display:inline-flex; align-items:center; gap:12px; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#FFD900; margin:0 0 18px; }
         .ct-eyebrow .bar { width:32px; height:2px; background:#FFD900; }
         .ct-title { font-family:'Inter',sans-serif; font-size: clamp(38px,5vw,64px); font-weight:800; letter-spacing:-0.04em; line-height:1; color:#fff; margin:0; }
@@ -171,6 +205,16 @@ export default function TeamProfileFeature() {
             <h2 className="ct-title">Lady Mico Trustees</h2>
             <p className="ct-sub">The stewards entrusted with safeguarding the mission, legacy, and future of The Mico.</p>
           </motion.header>
+
+          <motion.div className="ct-chair"
+            initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <p className="ct-chair-eyebrow">{chair.role}</p>
+            <h3 className="ct-chair-name">{chair.name}</h3>
+            <div className="ct-chair-body">
+              {chair.profile.map((para, i) => <p key={i}>{para}</p>)}
+            </div>
+          </motion.div>
         </div>
 
         <div className="ct-grid">

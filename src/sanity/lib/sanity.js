@@ -86,6 +86,8 @@ export const queries = {
     targetAmount,
     amountDonated,
     buttonText,
+    furtherDetailsImage,
+    furtherDetailsBlocks,
     order
   }`,
 

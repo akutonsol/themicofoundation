@@ -145,7 +145,7 @@ export default function FoundationProjectsDeck() {
               </h2>
             </div>
             <p style={{ ...inter, fontSize: 'clamp(16px,1.6vw,20px)', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, maxWidth: '420px', margin: 0 }}>
-              Transformational initiatives supporting education, restoration, and community development.
+              Transformational initiatives supporting education, restoration, and infrastructure development.
             </p>
           </div>
 

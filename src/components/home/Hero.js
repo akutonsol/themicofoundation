@@ -349,7 +349,7 @@ export default function Hero() {
         <div style={{ maxWidth:'1920px', margin:'0 auto', position:'relative', zIndex:2 }}>
           <motion.div
             initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}
-            style={{ textAlign:'center', padding:'80px clamp(24px, 8vw, 165px) 0', position:'relative', zIndex:3 }}
+            style={{ textAlign:'center', padding:'clamp(28px,4vh,52px) clamp(24px, 8vw, 165px) 0', position:'relative', zIndex:3 }}
           >
             <h1 style={{
               fontFamily:    "'Inter', sans-serif",
@@ -377,27 +377,16 @@ export default function Hero() {
             }}>
               {subheadline}
             </p>
-            <motion.div
-              initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5, delay:0.2 }}
-              style={{ display:'flex', justifyContent:'center', marginBottom:'0' }}
-            >
-              <Image
-                src={staticAssets.logo}
-                alt="The Mico Foundation"
-                width={420} height={330}
-                style={{ objectFit:'contain', height:'330px', width:'auto' }}
-              />
-            </motion.div>
           </motion.div>
 
           <motion.div
             initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.3 }}
-            style={{ padding:'0 clamp(24px, 8vw, 165px)', marginTop:'-140px', position:'relative', zIndex:1 }}
+            style={{ padding:'0 clamp(24px, 8vw, 165px)', marginTop:'clamp(20px,3vh,36px)', position:'relative', zIndex:1 }}
           >
             <div className="hero-grid">
 
               {/* Left */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(360px,52vh,560px)' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`left-${leftImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                     <Image src={leftImg} alt="Hero" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
@@ -415,8 +404,8 @@ export default function Hero() {
               </div>
 
               {/* Center */}
-              <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'clamp(56px,10vh,120px)' }}>
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(190px,28vh,300px)' }}>
                   <div className="video-background">
                     {bgVideoUrl
                       ? <NativeBackgroundVideo src={bgVideoUrl} playerKey="desktop" onReady={registerPlayer} />
@@ -439,7 +428,7 @@ export default function Hero() {
                 </div>
 
                 {/* Buxton card */}
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'271px' }}>
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(150px,22vh,240px)' }}>
                   <AnimatePresence mode="wait">
                     <motion.div key={`buxton-${bottomImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                       <Image src={bottomImg} alt={currentTargetName} fill style={{ objectFit:'cover' }} sizes="33vw" />
@@ -453,7 +442,7 @@ export default function Hero() {
               </div>
 
               {/* Right */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(360px,52vh,560px)' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`right-${rightImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                     <Image src={rightImg} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
@@ -487,7 +476,6 @@ export default function Hero() {
               {subheadline}
             </p>
           </div>
-          <Image src={staticAssets.logo} alt="The Mico Foundation" width={270} height={210} style={{ objectFit:'contain', height:'210px', width:'auto' }} />
         </motion.div>
 
         <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.2 }}

@@ -19,17 +19,17 @@ const staticProjects = [
     slug: "buxton-college", status: "active", label: "Active Project",
     title: "Buxton College", location: "Jamaica, Buxton",
     mediaUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=2200&q=80",
-    progress: 65, raised: "$14M", goal: "$20M", raisedRaw: 14000000, goalRaw: 20000000,
+    progress: 65, raised: "US$14M", goal: "US$20M", raisedRaw: 14000000, goalRaw: 20000000,
     description: ["The Buxton College Project is a cornerstone initiative by the Mico Foundation, dedicated to preserving and restoring one of Jamaica's most iconic historical landmarks.", "This project aims to fully restore the Buxton Building's structure, renew its learning facilities, and repurpose the space into a vibrant, modern center for academic development.", "With the support of donors, alumni, and community partners, we are working to ensure that Buxton College continues to inspire and serve students and educators for decades to come."],
     donationItems: ["Deteriorating Roof & Ceiling", "Decaying Columns", "Rotten Doors & Windows", "Aged & Peeling Paint", "Modernize and Beautify the Building"],
   },
 ];
 
 function formatCurrency(amount) {
-  if (!amount) return "$0";
-  if (amount >= 1000000) return `$${Math.round(amount / 1000000)}M`;
-  if (amount >= 1000) return `$${Math.round(amount / 1000)}K`;
-  return `$${amount}`;
+  if (!amount) return "US$0";
+  if (amount >= 1000000) return `US$${Math.round(amount / 1000000)}M`;
+  if (amount >= 1000) return `US$${Math.round(amount / 1000)}K`;
+  return `US$${amount}`;
 }
 
 function useCountUp(target, duration = 1800) {
@@ -75,6 +75,7 @@ export default function ProjectDetailPage({ slug }) {
   const [nextProject, setNextProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showVideo, setShowVideo] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const { scrollYProgress } = useScroll();
   const imgScale = useTransform(scrollYProgress, [0, 0.25], [1.08, 1]);
   const imgOpacity = useTransform(scrollYProgress, [0, 0.3], [0.5, 0.25]);
@@ -102,6 +103,8 @@ export default function ProjectDetailPage({ slug }) {
               goalRaw: found.targetAmount,
               description: found.description ? found.description.split("\n\n").filter(Boolean) : [],
               donationItems: found.completedItems || [],
+              furtherImage: found.furtherDetailsImage ? urlFor(found.furtherDetailsImage).width(1200).url() : null,
+              furtherBlocks: (found.furtherDetailsBlocks || []).filter(b => b?.title || b?.body),
             });
             const active = all.filter(p => p.status === "active");
             const idx = active.findIndex(p => p.slug === slug);
@@ -141,6 +144,18 @@ export default function ProjectDetailPage({ slug }) {
     };
   }, [showVideo]);
 
+  useEffect(() => {
+    if (!showDetails) return;
+    const onKey = e => { if (e.key === "Escape") setShowDetails(false); };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [showDetails]);
+
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#05060F", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <style>{`@keyframes spin2{to{transform:rotate(360deg)}}`}</style>
@@ -164,11 +179,17 @@ export default function ProjectDetailPage({ slug }) {
         .pd-next:hover { background:rgba(255,217,0,0.05) !important; transform:translateY(-5px); box-shadow:var(--shadow-dark-4), var(--glow-gold-soft); }
         .pd-next:hover .pd-next-arrow { background:#FFD900 !important; }
 
-        .pd-watch-btn { display:inline-flex; align-items:center; gap:12px; margin-top:32px; padding:11px 22px 11px 11px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:100px; color:#fff; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; letter-spacing:0.02em; cursor:pointer; transition:background 0.25s, border-color 0.25s, transform 0.2s; }
+        .pd-watch-btn { display:inline-flex; align-items:center; gap:12px; padding:11px 22px 11px 11px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:100px; color:#fff; font-family:'Inter',sans-serif; font-size:14px; font-weight:600; letter-spacing:0.02em; cursor:pointer; transition:background 0.25s, border-color 0.25s, transform 0.2s; }
         .pd-watch-btn:hover { background:rgba(255,217,0,0.12); border-color:rgba(255,217,0,0.4); transform:translateY(-2px); }
         .pd-watch-icon { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:#FFD900; flex-shrink:0; transition:transform 0.2s; }
         .pd-watch-btn:hover .pd-watch-icon { transform:scale(1.08); }
+        .pd-details-btn { display:inline-flex; align-items:center; gap:12px; padding:11px 22px 11px 11px; background:#FFD900; border:1px solid #FFD900; border-radius:100px; color:#040617; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.02em; cursor:pointer; transition:background 0.25s, transform 0.2s, box-shadow 0.25s; }
+        .pd-details-btn:hover { background:#ffe24d; transform:translateY(-2px); box-shadow:var(--glow-gold-soft); }
+        .pd-details-icon { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:rgba(4,6,23,0.12); flex-shrink:0; }
         .pd-lb-close:hover { background:rgba(255,255,255,0.2) !important; }
+
+        .pd-dm-modal { display:grid; grid-template-columns:0.95fr 1.05fr; }
+        @media (max-width:820px) { .pd-dm-modal { grid-template-columns:1fr; } .pd-dm-img { min-height:240px !important; } }
 
         .pd-hero { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; position:relative; }
         .pd-used-head { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:clamp(48px,6vw,80px); }
@@ -217,6 +238,50 @@ export default function ProjectDetailPage({ slug }) {
         )}
       </AnimatePresence>
 
+      {/* ── FURTHER DETAILS POPUP ── */}
+      <AnimatePresence>
+        {showDetails && project.furtherBlocks?.length > 0 && (
+          <motion.div
+            key="pd-details"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
+            onClick={() => setShowDetails(false)}
+            style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(4,6,15,0.9)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(16px,4vw,44px)" }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 22 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: 16 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              onClick={e => e.stopPropagation()}
+              className="pd-dm-modal"
+              style={{ position: "relative", width: "100%", maxWidth: "1080px", maxHeight: "88vh", overflow: "hidden", background: "#0A1020", borderRadius: "24px", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "var(--shadow-dark-4)" }}
+            >
+              <button
+                onClick={() => setShowDetails(false)}
+                className="pd-lb-close"
+                aria-label="Close"
+                style={{ position: "absolute", top: "16px", right: "16px", zIndex: 3, width: "40px", height: "40px", borderRadius: "50%", background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "background 0.2s" }}
+              >
+                <X size={20} />
+              </button>
+              <div className="pd-dm-img" style={{ position: "relative", minHeight: "100%", background: "#0d1b2e" }}>
+                {project.furtherImage
+                  ? <img src={project.furtherImage} alt={project.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  : project.mediaUrl && <img src={project.mediaUrl} alt={project.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />}
+              </div>
+              <div style={{ padding: "clamp(32px,3.5vw,48px)", overflowY: "auto", maxHeight: "88vh" }}>
+                {project.furtherBlocks.map((b, i) => (
+                  <div key={i} style={{ marginBottom: i < project.furtherBlocks.length - 1 ? "28px" : 0 }}>
+                    {b.title && <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(18px,1.8vw,22px)", fontWeight: 700, letterSpacing: "-0.01em", color: "#FFD900", lineHeight: 1.25, margin: "0 0 10px" }}>{b.title}</h3>}
+                    {b.body && b.body.split(/\n{2,}/).map((para, j) => (
+                      <p key={j} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px" }}>{para.trim()}</p>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── HERO: SPLIT LAYOUT ── */}
       <section className="pd-hero">
 
@@ -225,9 +290,9 @@ export default function ProjectDetailPage({ slug }) {
 
           {/* Top nav */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Link href="/" className="pd-back">
+            <Link href="/projects" className="pd-back">
               <ArrowLeft size={14} />
-              Back
+              Back to Projects
             </Link>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,217,0,0.1)", border: "1px solid rgba(255,217,0,0.2)", borderRadius: "100px", padding: "5px 14px" }}>
               <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#FFD900" }} />
@@ -251,19 +316,32 @@ export default function ProjectDetailPage({ slug }) {
             <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
               style={{ height: "2px", background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "36px", transformOrigin: "left" }} />
 
-            {/* Watch Video CTA — only when the CMS has a video link */}
-            {videoId && (
-              <motion.button
-                type="button"
-                onClick={() => setShowVideo(true)}
-                className="pd-watch-btn"
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}
-                aria-label="Watch project video"
-              >
-                <span className="pd-watch-icon"><Play size={15} fill="#040617" color="#040617" /></span>
-                <span>Watch the Video</span>
-              </motion.button>
-            )}
+            {/* Watch Video + Further Details CTAs */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "32px" }}>
+              {videoId && (
+                <motion.button
+                  type="button"
+                  onClick={() => setShowVideo(true)}
+                  className="pd-watch-btn"
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}
+                  aria-label="Watch project video"
+                >
+                  <span className="pd-watch-icon"><Play size={15} fill="#040617" color="#040617" /></span>
+                  <span>Watch the Video</span>
+                </motion.button>
+              )}
+              {project.furtherBlocks?.length > 0 && (
+                <motion.button
+                  type="button"
+                  onClick={() => setShowDetails(true)}
+                  className="pd-details-btn"
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.58 }}
+                >
+                  <span className="pd-details-icon"><ArrowRight size={15} color="#040617" /></span>
+                  <span>Further Details</span>
+                </motion.button>
+              )}
+            </div>
           </div>
 
           {/* Progress + stats */}
@@ -348,8 +426,8 @@ export default function ProjectDetailPage({ slug }) {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1px", background: "rgba(255,255,255,0.04)", borderRadius: "20px", overflow: "hidden", marginTop: "48px" }}>
             {[
-              { label: "Fundraising Goal", value: project.goalRaw || 20000000, prefix: "$", suffix: "" },
-              { label: "Total Raised", value: project.raisedRaw || 14000000, prefix: "$", suffix: "" },
+              { label: "Fundraising Goal", value: project.goalRaw || 20000000, prefix: "US$", suffix: "" },
+              { label: "Total Raised", value: project.raisedRaw || 14000000, prefix: "US$", suffix: "" },
               { label: "Percent Funded", value: project.progress, prefix: "", suffix: "%" },
             ].map((s, i) => (
               <div key={i} style={{ padding: "32px 24px", background: i === 1 ? "rgba(255,217,0,0.06)" : "#08090F", borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>

@@ -112,6 +112,27 @@ export default defineType({
       hidden: true,
       initialValue: '#1A1600'
     },
+    {
+      name: 'furtherDetailsImage',
+      title: 'Further Details — Image (left column of the popup)',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Optional. When Further Details blocks are added below, a "Further Details" button appears on this project\'s detail page and opens a popup showing this image alongside the blocks.',
+    },
+    {
+      name: 'furtherDetailsBlocks',
+      title: 'Further Details — Content Blocks (right column of the popup)',
+      type: 'array',
+      of: [{
+        type: 'object',
+        fields: [
+          { name: 'title', title: 'Title', type: 'string' },
+          { name: 'body', title: 'Description', type: 'text', rows: 6 },
+        ],
+        preview: { select: { title: 'title', subtitle: 'body' } },
+      }],
+      description: 'Each block has a title and a description. Adding one or more blocks enables the "Further Details" button on this project.',
+    },
 {
   name: 'gallery',
   title: 'Photo Gallery',

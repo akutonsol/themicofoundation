@@ -40,7 +40,6 @@ export default function TrusteeLegacySection() {
   const [content, setContent] = useState(staticContent);
   const [leader, setLeader] = useState(DEFAULT_LEADER);
   const [showMsg, setShowMsg] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const heroRef = useRef(null);
 
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -106,9 +105,9 @@ export default function TrusteeLegacySection() {
         .hero-text { min-width: 0; }
         .hero-image-wrap { position: relative; width: 100%; }
         .hero-image { width: 100%; height: clamp(520px, 82vh, 840px); object-fit: cover; object-position: top center; border-radius: 24px; display: block; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
-        .hero-image-cap { position: absolute; left: 20px; bottom: 20px; right: 20px; background: linear-gradient(to top, rgba(5,8,15,0.92), rgba(5,8,15,0)); border-radius: 0 0 24px 24px; padding: 40px 24px 22px; }
-        .hero-image-cap .cap-role { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 6px; }
-        .hero-image-cap .cap-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: #fff; margin: 0; line-height: 1.05; letter-spacing: -0.02em; }
+        .hero-image-cap { position: absolute; left: 16px; bottom: 16px; right: 16px; background: linear-gradient(to top, rgba(5,8,15,0.92) 30%, rgba(5,8,15,0)); border-radius: 0 0 24px 24px; padding: 22px 22px 16px; }
+        .hero-image-cap .cap-role { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 4px; }
+        .hero-image-cap .cap-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: #fff; margin: 0; line-height: 1.05; letter-spacing: -0.02em; }
         .hero-eyebrow { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #FFD900; margin: 0 0 28px; }
         .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 6.5vw, 100px); font-weight: 300; line-height: 0.92; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
         .hero-title em { font-style: italic; color: #FFD900; }
@@ -177,12 +176,6 @@ export default function TrusteeLegacySection() {
                     <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
-                <button type="button" className="read-msg-btn secondary" onClick={() => setShowProfile(true)}>
-                  Profile
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden>
-                    <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
@@ -216,42 +209,6 @@ export default function TrusteeLegacySection() {
                 <h2 className="msg-name">{leader.name}</h2>
                 <div className="msg-body">
                   {leader.message.map((para, i) => (
-                    <p key={i} className="msg-p">{para}</p>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* ── LEAD TRUSTEE PROFILE — slide-up panel ── */}
-      <AnimatePresence>
-        {showProfile && (
-          <>
-            <motion.div
-              className="msg-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setShowProfile(false)}
-            />
-            <motion.div
-              className="msg-panel"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 240 }}
-            >
-              <button type="button" className="msg-close" onClick={() => setShowProfile(false)} aria-label="Close">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
-              </button>
-              <div className="msg-panel-inner">
-                <p className="msg-eyebrow">Profile · {leader.role}</p>
-                <h2 className="msg-name">{leader.name}</h2>
-                <div className="msg-body">
-                  {leader.profile.map((para, i) => (
                     <p key={i} className="msg-p">{para}</p>
                   ))}
                 </div>
