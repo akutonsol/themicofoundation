@@ -404,7 +404,7 @@ export default function Hero() {
               </div>
 
               {/* Center */}
-              <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'0' }}>
                 <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
                   <div className="video-background">
                     {bgVideoUrl
