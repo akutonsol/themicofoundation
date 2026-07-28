@@ -386,7 +386,7 @@ export default function Hero() {
             <div className="hero-grid">
 
               {/* Left */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(320px,46vh,500px)' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`left-${leftImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                     <Image src={leftImg} alt="Hero" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
@@ -404,8 +404,8 @@ export default function Hero() {
               </div>
 
               {/* Center */}
-              <div style={{ display:'flex', flexDirection:'column', gap:'18px', marginTop:'clamp(24px,4.5vh,58px)' }}>
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(160px,24vh,258px)' }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'139px' }}>
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'344px' }}>
                   <div className="video-background">
                     {bgVideoUrl
                       ? <NativeBackgroundVideo src={bgVideoUrl} playerKey="desktop" onReady={registerPlayer} />
@@ -428,7 +428,7 @@ export default function Hero() {
                 </div>
 
                 {/* Buxton card */}
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(130px,19vh,204px)' }}>
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'271px' }}>
                   <AnimatePresence mode="wait">
                     <motion.div key={`buxton-${bottomImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                       <Image src={bottomImg} alt={currentTargetName} fill style={{ objectFit:'cover' }} sizes="33vw" />
@@ -442,7 +442,7 @@ export default function Hero() {
               </div>
 
               {/* Right */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(320px,46vh,500px)' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`right-${rightImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                     <Image src={rightImg} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
