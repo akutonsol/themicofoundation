@@ -323,7 +323,7 @@ export default function Hero() {
       )}
 
       {/* DESKTOP */}
-      <div className="hero-desktop" style={{ paddingBottom:'80px' }}>
+      <div className="hero-desktop" style={{ paddingBottom:'48px' }}>
 
         {[{ l:'118px', t:'270px' }, { l:'698px', t:'410px' }, { l:'1289px', t:'15ß0px' }].map((pos, i) => (
           <div key={i} style={{ position:'absolute', left:pos.l, top:pos.t, width:'523px', height:'523px', overflow:'hidden', pointerEvents:'none', zIndex:0, opacity:0.3 }}>
@@ -353,12 +353,12 @@ export default function Hero() {
           >
             <h1 style={{
               fontFamily:    "'Inter', sans-serif",
-              fontSize:      'clamp(2rem, 4.6vw, 4.75rem)',
+              fontSize:      'clamp(2.4rem, 6.8vw, 8rem)',
               fontWeight:    800,
               color:         '#040617',
               letterSpacing: '-2px',
               lineHeight:    '96%',
-              margin:        '0 0 16px',
+              margin:        '0 0 26px',
               textTransform: 'capitalize',
               width:         '100%',
               textAlign:     'center',
@@ -367,7 +367,7 @@ export default function Hero() {
             </h1>
             <p style={{
               fontFamily:    "'Inter', sans-serif",
-              fontSize:      'clamp(1.25rem, 2.2vw, 2.15rem)',
+              fontSize:      'clamp(1.5rem, 2.7vw, 2.9rem)',
               fontWeight:    600,
               color:         '#6F7181',
               letterSpacing: '-0.5px',
