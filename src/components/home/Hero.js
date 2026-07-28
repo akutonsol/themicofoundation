@@ -349,16 +349,16 @@ export default function Hero() {
         <div style={{ maxWidth:'1920px', margin:'0 auto', position:'relative', zIndex:2 }}>
           <motion.div
             initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}
-            style={{ textAlign:'center', padding:'clamp(28px,4vh,52px) clamp(24px, 8vw, 165px) 0', position:'relative', zIndex:3 }}
+            style={{ textAlign:'center', padding:'clamp(18px,2.6vh,36px) clamp(24px, 8vw, 165px) 0', position:'relative', zIndex:3 }}
           >
             <h1 style={{
               fontFamily:    "'Inter', sans-serif",
-              fontSize:      'clamp(2.5rem, 7.5vw, 9rem)',
+              fontSize:      'clamp(2rem, 4.6vw, 4.75rem)',
               fontWeight:    800,
               color:         '#040617',
               letterSpacing: '-2px',
               lineHeight:    '96%',
-              margin:        '0 0 24px',
+              margin:        '0 0 16px',
               textTransform: 'capitalize',
               width:         '100%',
               textAlign:     'center',
@@ -367,12 +367,12 @@ export default function Hero() {
             </h1>
             <p style={{
               fontFamily:    "'Inter', sans-serif",
-              fontSize:      'clamp(1.75rem, 3vw, 3.25rem)',
+              fontSize:      'clamp(1.25rem, 2.2vw, 2.15rem)',
               fontWeight:    600,
               color:         '#6F7181',
               letterSpacing: '-0.5px',
               lineHeight:    '1.2',
-              margin:        '0 0 32px',
+              margin:        '0 0 20px',
               textAlign:     'center',
             }}>
               {subheadline}
@@ -381,12 +381,12 @@ export default function Hero() {
 
           <motion.div
             initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.3 }}
-            style={{ padding:'0 clamp(24px, 8vw, 165px)', marginTop:'clamp(20px,3vh,36px)', position:'relative', zIndex:1 }}
+            style={{ padding:'0 clamp(24px, 8vw, 165px)', marginTop:'clamp(14px,2vh,26px)', position:'relative', zIndex:1 }}
           >
             <div className="hero-grid">
 
               {/* Left */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(360px,52vh,560px)' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(320px,46vh,500px)' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`left-${leftImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                     <Image src={leftImg} alt="Hero" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
@@ -404,8 +404,8 @@ export default function Hero() {
               </div>
 
               {/* Center */}
-              <div style={{ display:'flex', flexDirection:'column', gap:'20px', marginTop:'clamp(56px,10vh,120px)' }}>
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(190px,28vh,300px)' }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:'18px', marginTop:'clamp(24px,4.5vh,58px)' }}>
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(160px,24vh,258px)' }}>
                   <div className="video-background">
                     {bgVideoUrl
                       ? <NativeBackgroundVideo src={bgVideoUrl} playerKey="desktop" onReady={registerPlayer} />
@@ -428,7 +428,7 @@ export default function Hero() {
                 </div>
 
                 {/* Buxton card */}
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(150px,22vh,240px)' }}>
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(130px,19vh,204px)' }}>
                   <AnimatePresence mode="wait">
                     <motion.div key={`buxton-${bottomImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                       <Image src={bottomImg} alt={currentTargetName} fill style={{ objectFit:'cover' }} sizes="33vw" />
@@ -442,7 +442,7 @@ export default function Hero() {
               </div>
 
               {/* Right */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(360px,52vh,560px)' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'clamp(320px,46vh,500px)' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`right-${rightImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
                     <Image src={rightImg} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
