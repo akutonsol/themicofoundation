@@ -61,7 +61,9 @@ export default function PeopleImpact() {
 
         // Use CMS data if available, otherwise use static
         if (cmsQuotes && cmsQuotes.length > 0) {
-          const sized = url => url ? `${url}?w=900&h=1200&fit=crop&auto=format` : imgPersonPhoto
+          // Resize to a sensible width but keep the FULL image (no forced crop),
+          // so the whole person is shown and the yellow oval stays visible behind it.
+          const sized = url => url ? `${url}?w=800&auto=format` : imgPersonPhoto
           setQuotes(cmsQuotes.map((q, index) => ({
             id: index,
             name: q.name,
@@ -179,7 +181,7 @@ export default function PeopleImpact() {
                 animate={{ opacity:1, scale:1 }} 
                 exit={{ opacity:0, scale:0.97 }}
                 transition={{ duration:0.5 }}
-                style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top' }}
+                style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'90%', height:'94%', objectFit:'contain', objectPosition:'center bottom' }}
               />
             </AnimatePresence>
           </div>
@@ -218,7 +220,7 @@ export default function PeopleImpact() {
                 animate={{ opacity:1, scale:1 }} 
                 exit={{ opacity:0, scale:0.97 }}
                 transition={{ duration:0.5 }}
-                style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top' }}
+                style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'90%', height:'94%', objectFit:'contain', objectPosition:'center bottom' }}
               />
             </AnimatePresence>
           </div>
