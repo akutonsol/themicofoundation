@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { client, queries } from '@/sanity/lib/sanity'
+import { client, urlFor, queries } from '@/sanity/lib/sanity'
 
 // Static assets
 const imgPersonPhoto = "/images/home/woman.png"
@@ -61,9 +61,11 @@ export default function PeopleImpact() {
 
         // Use CMS data if available, otherwise use static
         if (cmsQuotes && cmsQuotes.length > 0) {
-          // Resize to a sensible width but keep the FULL image (no forced crop),
-          // so the whole person is shown and the yellow oval stays visible behind it.
-          const sized = url => url ? `${url}?w=800&auto=format` : imgPersonPhoto
+          // Crop each photo to the oval's portrait shape around the editor-set
+          // hotspot/crop, so the subject is always framed and fills the oval
+          // (instead of shrinking into a corner). Set the focus in Sanity → the
+          // image editor to control which part of the photo is shown.
+          const sized = src => src ? urlFor(src).width(560).height(900).fit('crop').auto('format').url() : imgPersonPhoto
           setQuotes(cmsQuotes.map((q, index) => ({
             id: index,
             name: q.name,
@@ -181,7 +183,7 @@ export default function PeopleImpact() {
                 animate={{ opacity:1, scale:1 }} 
                 exit={{ opacity:0, scale:0.97 }}
                 transition={{ duration:0.5 }}
-                style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'90%', height:'94%', objectFit:'contain', objectPosition:'center bottom' }}
+                style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'92%', height:'96%', objectFit:'cover', objectPosition:'center top' }}
               />
             </AnimatePresence>
           </div>
@@ -220,7 +222,7 @@ export default function PeopleImpact() {
                 animate={{ opacity:1, scale:1 }} 
                 exit={{ opacity:0, scale:0.97 }}
                 transition={{ duration:0.5 }}
-                style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'90%', height:'94%', objectFit:'contain', objectPosition:'center bottom' }}
+                style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'92%', height:'96%', objectFit:'cover', objectPosition:'center top' }}
               />
             </AnimatePresence>
           </div>

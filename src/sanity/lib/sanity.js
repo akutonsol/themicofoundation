@@ -152,8 +152,8 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
     name,
     role,
     quote,
-    "photo": photo.asset->url,
-    "mobilePhoto": coalesce(mobilePhoto.asset->url, photo.asset->url),
+    photo,
+    mobilePhoto,
     order
   }`,
 
