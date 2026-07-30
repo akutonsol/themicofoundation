@@ -179,12 +179,12 @@ export default function PeopleImpact() {
                 animate={{ opacity:1, scale:1 }} 
                 exit={{ opacity:0, scale:0.97 }}
                 transition={{ duration:0.5 }}
-                style={{ position:'absolute', width:'134.9%', left:'-18.88%', top:'-19.75%', height:'148.12%', objectFit:'cover', objectPosition:'top center' }} 
+                style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top' }}
               />
             </AnimatePresence>
           </div>
           <AnimatePresence mode="wait">
-            <motion.div 
+            <motion.div
               key={`name-${person.id}`}
               initial={{ opacity:0, y:10 }} 
               animate={{ opacity:1, y:0 }} 
@@ -218,12 +218,12 @@ export default function PeopleImpact() {
                 animate={{ opacity:1, scale:1 }} 
                 exit={{ opacity:0, scale:0.97 }}
                 transition={{ duration:0.5 }}
-                style={{ position:'absolute', width:'134.9%', left:'-18.88%', top:'-19.75%', height:'148.12%', objectFit:'cover', objectPosition:'top center' }} 
+                style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top' }}
               />
             </AnimatePresence>
           </div>
           <AnimatePresence mode="wait">
-            <motion.div 
+            <motion.div
               key={`mob-name-${person.id}`}
               initial={{ opacity:0, y:10 }} 
               animate={{ opacity:1, y:0 }} 
