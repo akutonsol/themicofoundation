@@ -28,7 +28,7 @@ const projects = [
     fullDescription: "The Buxton College Restoration project honors our rich educational heritage by preserving and modernizing historic campus buildings. This initiative combines architectural preservation with modern educational infrastructure, creating spaces that respect our past while serving future generations.",
     image: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1800&q=80",
     accent: "#5EDA71",
-    href: "/projectdetail?slug=buxton-college",
+    href: "/projectdetail/project-buxton-restore",
   },
   {
     id: 3,
