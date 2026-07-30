@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { client } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
-const ACCENTS = ["#FFD900", "#5EDA71", "#60A5FA", "#F97316"];
+const ACCENTS = ["#FFD900", "#5EDA71", "#F5C542", "#C9A227"];
 
 const galleryVariants = {
   initial: { opacity: 0, x: 24 },

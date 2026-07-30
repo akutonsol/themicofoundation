@@ -89,6 +89,7 @@ export const queries = {
     heroDescription,
     furtherDetailsImage,
     furtherDetailsBlocks,
+    "videoFileUrl": videoFile.asset->url,
     order
   }`,
 

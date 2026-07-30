@@ -49,7 +49,7 @@ const projects = [
     description: "Supporting outreach, inclusive learning initiatives, rural education programs, and community-centered development.",
     fullDescription: "Community Learning Programs extend educational opportunities beyond traditional campus boundaries. We operate mobile learning centers, provide adult education classes, support rural schools, and create inclusive programs for underserved communities.",
     image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1800&q=80",
-    accent: "#F97316",
+    accent: "#C9A227",
     href: "/projects",
   },
 ];

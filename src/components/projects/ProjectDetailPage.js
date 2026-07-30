@@ -62,7 +62,7 @@ function StatCounter({ value, label, prefix = "", suffix = "" }) {
   const [count, ref] = useCountUp(typeof value === "number" ? value : 0);
   return (
     <div ref={ref} style={{ textAlign: "center" }}>
-      <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(33px,4.6vw,73px)", fontWeight: 700, color: "#FFD900", margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
+      <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(26px,3vw,50px)", fontWeight: 700, color: "#FFD900", margin: 0, lineHeight: 1.05, letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
         {prefix}{typeof value === "number" ? count : value}{suffix}
       </p>
       <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.14em", margin: "10px 0 0", fontWeight: 500 }}>{label}</p>
@@ -96,6 +96,7 @@ export default function ProjectDetailPage({ slug }) {
               location: found.location,
               mediaUrl: found.image ? urlFor(found.image).width(2200).url() : staticProjects[0].mediaUrl,
               videoUrl: found.videoUrl || null,
+              videoFileUrl: found.videoFileUrl || null,
               progress,
               raised: formatCurrency(found.amountDonated),
               goal: formatCurrency(found.targetAmount),
@@ -167,6 +168,8 @@ export default function ProjectDetailPage({ slug }) {
   if (!project) return null;
 
   const videoId = getYouTubeId(project.videoUrl);
+  const hasVideo = !!(project.videoFileUrl || videoId);
+  const hasDetails = (project.furtherBlocks?.length > 0) || (project.description?.length > 0);
   const isBuxton = project.slug === 'project-buxton-restore';
 
   return (
@@ -207,7 +210,7 @@ export default function ProjectDetailPage({ slug }) {
 
       {/* ── VIDEO LIGHTBOX ── */}
       <AnimatePresence>
-        {showVideo && videoId && (
+        {showVideo && hasVideo && (
           <motion.div
             key="pd-lightbox"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -229,14 +232,24 @@ export default function ProjectDetailPage({ slug }) {
               >
                 <X size={20} />
               </button>
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
-                title={`${project.title} video`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                style={{ width: "100%", height: "100%", borderRadius: "14px", display: "block", boxShadow: "var(--shadow-dark-4)" }}
-              />
+              {project.videoFileUrl ? (
+                <video
+                  src={project.videoFileUrl}
+                  controls
+                  autoPlay
+                  playsInline
+                  style={{ width: "100%", height: "100%", borderRadius: "14px", display: "block", background: "#000", boxShadow: "var(--shadow-dark-4)" }}
+                />
+              ) : (
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+                  title={`${project.title} video`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{ width: "100%", height: "100%", borderRadius: "14px", display: "block", boxShadow: "var(--shadow-dark-4)" }}
+                />
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -244,7 +257,7 @@ export default function ProjectDetailPage({ slug }) {
 
       {/* ── FURTHER DETAILS POPUP ── */}
       <AnimatePresence>
-        {showDetails && project.furtherBlocks?.length > 0 && (
+        {showDetails && hasDetails && (
           <motion.div
             key="pd-details"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
@@ -272,14 +285,23 @@ export default function ProjectDetailPage({ slug }) {
                   : project.mediaUrl && <img src={project.mediaUrl} alt={project.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />}
               </div>
               <div style={{ padding: "clamp(32px,3.5vw,48px)", overflowY: "auto", maxHeight: "88vh" }}>
-                {project.furtherBlocks.map((b, i) => (
-                  <div key={i} style={{ marginBottom: i < project.furtherBlocks.length - 1 ? "28px" : 0 }}>
-                    {b.title && <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(18px,1.8vw,22px)", fontWeight: 700, letterSpacing: "-0.01em", color: "#FFD900", lineHeight: 1.25, margin: "0 0 10px" }}>{b.title}</h3>}
-                    {b.body && b.body.split(/\n{2,}/).map((para, j) => (
-                      <p key={j} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px" }}>{para.trim()}</p>
+                {project.furtherBlocks?.length > 0 ? (
+                  project.furtherBlocks.map((b, i) => (
+                    <div key={i} style={{ marginBottom: i < project.furtherBlocks.length - 1 ? "28px" : 0 }}>
+                      {b.title && <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(18px,1.8vw,22px)", fontWeight: 700, letterSpacing: "-0.01em", color: "#FFD900", lineHeight: 1.25, margin: "0 0 10px" }}>{b.title}</h3>}
+                      {b.body && b.body.split(/\n{2,}/).map((para, j) => (
+                        <p key={j} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px" }}>{para.trim()}</p>
+                      ))}
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(18px,1.8vw,22px)", fontWeight: 700, letterSpacing: "-0.01em", color: "#FFD900", lineHeight: 1.25, margin: "0 0 16px" }}>About This Project</h3>
+                    {project.description.map((para, i) => (
+                      <p key={i} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px" }}>{para}</p>
                     ))}
-                  </div>
-                ))}
+                  </>
+                )}
               </div>
             </motion.div>
           </motion.div>
@@ -329,7 +351,7 @@ export default function ProjectDetailPage({ slug }) {
 
             {/* Watch Video + Further Details CTAs */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "32px" }}>
-              {videoId && (
+              {hasVideo && (
                 <motion.button
                   type="button"
                   onClick={() => setShowVideo(true)}
@@ -341,7 +363,7 @@ export default function ProjectDetailPage({ slug }) {
                   <span>Watch the Video</span>
                 </motion.button>
               )}
-              {project.furtherBlocks?.length > 0 && (
+              {hasDetails && (
                 <motion.button
                   type="button"
                   onClick={() => setShowDetails(true)}
@@ -445,8 +467,8 @@ export default function ProjectDetailPage({ slug }) {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1px", background: "rgba(255,255,255,0.04)", borderRadius: "20px", overflow: "hidden", marginTop: "48px" }}>
             {[
-              { label: "Fundraising Goal", value: project.goalRaw || 20000000, prefix: "US$", suffix: "" },
-              { label: "Total Raised", value: project.raisedRaw || 14000000, prefix: "US$", suffix: "" },
+              { label: "Fundraising Goal", value: project.goal, prefix: "", suffix: "" },
+              { label: "Total Raised", value: project.raised, prefix: "", suffix: "" },
               { label: "Percent Funded", value: project.progress, prefix: "", suffix: "%" },
             ].map((s, i) => (
               <div key={i} style={{ padding: "32px 24px", background: i === 1 ? "rgba(255,217,0,0.06)" : "#08090F", borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>

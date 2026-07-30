@@ -6,7 +6,9 @@ import { ArrowUpRight, X, ArrowRight, ArrowLeft } from "lucide-react";
 import { client } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
-const ACCENTS = ["#FFD900", "#5EDA71", "#60A5FA", "#F97316", "#E879F9", "#FB7185"];
+// Foundation-blended palette: gold + green kept; off-brand orange/purple/pink
+// replaced with warm golds and muted greens/teal that sit on the navy theme.
+const ACCENTS = ["#FFD900", "#5EDA71", "#F5C542", "#7FC8A9", "#E0A93B", "#C9A227"];
 
 // Split a description so the card shows the opening and the modal continues it.
 function splitReading(text, previewChars = 220) {

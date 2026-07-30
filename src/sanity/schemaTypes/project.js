@@ -78,9 +78,16 @@ export default defineType({
     },
     {
       name: 'videoUrl',
-      title: 'Project Video (optional)',
+      title: 'Project Video — YouTube link (optional)',
       type: 'url',
       description: 'Paste a YouTube link to enable a "Watch Video" button on the project banner. Leave empty for no video.',
+    },
+    {
+      name: 'videoFile',
+      title: 'Project Video — Upload a file (optional)',
+      type: 'file',
+      options: { accept: 'video/*' },
+      description: 'Upload a video file (MP4/WebM) to play it directly on the project page. If both this and a YouTube link are set, the uploaded file is used.',
     },
     {
       name: 'targetAmount',
