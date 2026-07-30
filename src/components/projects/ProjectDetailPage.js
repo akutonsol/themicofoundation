@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowLeft, ArrowRight, MapPin, Play, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, MapPin, Play, X } from "lucide-react";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
 // Extract an 11-char YouTube id from a full URL, youtu.be link, or raw id.

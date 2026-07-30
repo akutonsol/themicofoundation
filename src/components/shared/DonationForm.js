@@ -614,10 +614,10 @@ function DonateMethodStep({ amount, setAmount, amountError, cardNumber, setCardN
         <div>
           <label style={{...inter,fontSize:mobile?"18px":"22px",fontWeight:600,color:"#040617",letterSpacing:"0.16px",display:"block",marginBottom:"10px"}}>Enter your donation amount</label>
           <div style={{position:"relative"}}>
-            <span style={{position:"absolute",left:"18px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"24px",lineHeight:"38px",color:amount?"#040617":"#9CA3AF",pointerEvents:"none",zIndex:1}}>$</span>
+            <span style={{position:"absolute",left:"18px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"24px",lineHeight:"38px",fontWeight:700,color:amount?"#040617":"#9CA3AF",pointerEvents:"none",zIndex:1}}>$</span>
             <input type="text" inputMode="decimal" placeholder="0.00" value={amount}
               onChange={e => setAmount(e.target.value.replace(/[^0-9.]/g,""))}
-              style={{...inter,width:"100%",border:"1px solid " + (amountError?"#EF4444":amount?"#FFD900":"#E5E6EB"),borderRadius:"12px",padding:"12px 20px 12px 44px",fontSize:"24px",lineHeight:"38px",color:"#040617",backgroundColor:"#FFFDF9",outline:"none",boxSizing:"border-box"}}/>
+              style={{...inter,width:"100%",border:"1px solid " + (amountError?"#EF4444":amount?"#FFD900":"#E5E6EB"),borderRadius:"12px",padding:"12px 20px 12px 44px",fontSize:"24px",lineHeight:"38px",fontWeight:700,color:"#040617",backgroundColor:"#FFFDF9",outline:"none",boxSizing:"border-box"}}/>
           </div>
           {amountError && <p style={{...inter,fontSize:"14px",color:"#EF4444",margin:"6px 0 0"}}>{amountError}</p>}
           <p style={{...inter,fontSize:"15px",color:"#6F7181",margin:"8px 0 0"}}>*All donations over $2 are tax deductible</p>
