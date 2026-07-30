@@ -17,8 +17,6 @@ function ArrowIcon({ size = 24, color = "#040617" }) {
   );
 }
 
-const AMOUNTS_MONTHLY = ["$5/Month","$10/Month","$30/Month","$100/Month","$50/Month","$20/Month"];
-const AMOUNTS_ONCE    = ["$10","$25","$30","$100","$50","$250"];
 const TOTAL_DESKTOP   = 40;
 const TOTAL_MOBILE    = 24;
 
@@ -244,13 +242,12 @@ const SELECT_STYLE = {
 };
 
 const STEPS = [
-  { num:1, title:"Donate Amount",  sub:"Choose your donation target and amount." },
-  { num:2, title:"Personal Info",  sub:"Fill required fields about you to continue." },
-  { num:3, title:"Donate Method",  sub:"Choose best option for you to send donation." },
+  { num:1, title:"Personal Info",  sub:"Fill required fields about you to continue." },
+  { num:2, title:"Donate Method",  sub:"Enter your amount and complete your donation." },
 ];
 
 function StepIndicator({ currentStep, mobile }) {
-  const display = Math.min(currentStep, 3);
+  const display = Math.min(currentStep, 2);
   if (mobile) return (
     <div style={{display:"flex",flexDirection:"column",gap:"16px",width:"100%"}}>
       {STEPS.map((s,i) => (
@@ -400,87 +397,6 @@ function ProjectCard({ projects, currentProject, onPrev, onNext, mobile }) {
   );
 }
 
-function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, error, onNext, mobile }) {
-  const amounts = tab === "monthly" ? AMOUNTS_MONTHLY : AMOUNTS_ONCE;
-  if (mobile) return (
-    <div style={{width:"100%",backgroundColor:"#FFFDF9",borderRadius:"16px",overflow:"hidden",border:"1px solid rgba(4,6,23,0.07)",display:"flex",flexDirection:"column",boxShadow:"var(--shadow-2)"}}>
-      <div style={{padding:"20px 24px 0",display:"flex",flexDirection:"column"}}>
-        <p style={{...inter,fontSize:"22px",fontWeight:600,color:"#040617",margin:0}}>Enter your donation amount</p>
-      </div>
-      <div style={{padding:"20px 24px 24px",display:"flex",flexDirection:"column",gap:"16px"}}>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"10px"}}>
-          {amounts.map(a => (
-            <button key={a} onClick={() => setSelected(a)}
-              style={{cursor:"pointer",border:"1px solid " + (selected===a?"#FFD900":"#E5E6EB"),background:selected===a?"#FFD900":"#FFFDF9",borderRadius:"12px",padding:"10px 32px",...inter,fontSize:"20px",lineHeight:"30px",color:"#040617",textAlign:"center",transition:"all 0.2s"}}>
-              {a}
-            </button>
-          ))}
-        </div>
-        <button onClick={() => setSelected("custom")}
-          style={{cursor:"pointer",border:"1px solid " + (selected==="custom"?"#FFD900":"#E5E6EB"),background:selected==="custom"?"#FFD900":"#FFFDF9",borderRadius:"12px",padding:"10px 32px",...inter,fontSize:"20px",color:"#040617",textAlign:"center"}}>
-          Custom
-        </button>
-        {selected === "custom" && (
-          <div>
-            <div className="field-wrapper-select" style={{position:"relative"}}>
-              <span style={{position:"absolute",left:"14px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"18px",color:"#040617",pointerEvents:"none",zIndex:1}}>$</span>
-              <input type="text" placeholder="0.00" value={custom} onChange={e => setCustom(e.target.value.replace(/[^0-9.]/g,""))}
-                style={{...inter,width:"100%",border:"1px solid " + (error?"#EF4444":"#FFD900"),borderRadius:"12px",padding:"12px 16px 12px 28px",fontSize:"18px",color:"#040617",outline:"none",boxSizing:"border-box"}}/>
-            </div>
-            {error && <p style={{...inter,fontSize:"14px",color:"#EF4444",margin:"4px 0 0"}}>{error}</p>}
-          </div>
-        )}
-        <p style={{...inter,fontSize:"16px",color:"#6F7181",textAlign:"center",margin:0}}>*All donations over $2 are tax deductible</p>
-        <button onClick={onNext} style={{...inter,display:"flex",alignItems:"center",justifyContent:"center",gap:"12px",backgroundColor:"#FFD900",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",border:"none",cursor:"pointer",width:"100%"}}>
-          Continue to Personal Info
-          <ArrowIcon size={20} color="#040617" />
-        </button>
-      </div>
-      <div style={{backgroundColor:"#E8E9EB",padding:"24px"}}>
-        <p style={{...inter,fontSize:"20px",color:"#636473",lineHeight:"30px",margin:0,textAlign:"center"}}>
-          Your <strong style={{color:"#040617"}}>{selected==="custom"?(custom||"$50"):selected}</strong> donation helps equip students with school supplies and a safe learning environment.
-        </p>
-      </div>
-    </div>
-  );
-  return (
-    <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",overflow:"hidden",display:"flex",flexDirection:"column",position:"relative",boxShadow:"var(--shadow-2)"}}>
-      <img src={imgSparkle} alt="" style={{position:"absolute",top:"105px",left:"138px",width:"523px",pointerEvents:"none",opacity:0.2,zIndex:0}}/>
-      <div style={{padding:"24px 24px 0",position:"relative",zIndex:1}}>
-        <p style={{...inter,fontSize:"26px",fontWeight:600,color:"#040617",margin:0}}>Enter your donation amount</p>
-      </div>
-      <div style={{padding:"20px 24px 24px",display:"flex",flexDirection:"column",flex:1,gap:"24px",position:"relative",zIndex:1}}>
-        <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}}>
-            {amounts.map(a => (
-              <button key={a} className={selected===a?"amt-btn active":"amt-btn"} onClick={() => setSelected(a)}>{a}</button>
-            ))}
-          </div>
-          <div>
-            <div className="field-wrapper-select" style={{position:"relative"}}>
-              <span style={{position:"absolute",left:"18px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"24px",color:custom?"#040617":"#9CA3AF",pointerEvents:"none",zIndex:1,lineHeight:"38px"}}>$</span>
-              <input type="text" placeholder="0.00" value={custom}
-                onChange={e => { setCustom(e.target.value.replace(/[^0-9.]/g,"")); setSelected("custom"); }}
-                style={{...inter,width:"100%",border:"1px solid " + (error?"#EF4444":selected==="custom"?"#FFD900":"#E5E6EB"),borderRadius:"20px",padding:"10px 32px 10px 44px",fontSize:"24px",lineHeight:"38px",color:"#040617",backgroundColor:"#FFFDF9",outline:"none",textAlign:"left",boxSizing:"border-box"}}/>
-            </div>
-            {error && <p style={{...inter,fontSize:"14px",color:"#EF4444",textAlign:"center",margin:"4px 0 0"}}>{error}</p>}
-          </div>
-          <p style={{...inter,fontSize:"16px",color:"#6F7181",textAlign:"center",margin:0}}>*All donations over $2 are tax deductible</p>
-        </div>
-        <button onClick={onNext} style={{...inter,display:"flex",alignItems:"center",justifyContent:"center",gap:"12px",backgroundColor:"#FFD900",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",border:"none",cursor:"pointer",width:"100%"}}>
-          Continue to Personal Info
-          <ArrowIcon size={20} color="#040617" />
-        </button>
-      </div>
-      <div style={{backgroundColor:"#E8E9EB",padding:"24px",position:"relative",zIndex:1}}>
-        <p style={{...inter,fontSize:"20px",color:"#636473",lineHeight:"30px",margin:0}}>
-          Your <strong style={{color:"#040617"}}>{selected==="custom"?(custom||"$50"):selected}</strong> donation helps equip students with school supplies, access to technology, and a safe learning environment.
-        </p>
-      </div>
-    </div>
-  );
-}
-
 function InputField({ label, placeholder, value, onChange, error }) {
   return (
     <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
@@ -582,7 +498,7 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
           )}
         </div>
         <div style={{display:"flex",gap:"16px",flexDirection:mobile?"column":"row"}}>
-          <button onClick={onBack} style={{...inter,background:"none",border:"1px solid rgba(4,6,23,0.07)",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Go Back</button>
+          {onBack && <button onClick={onBack} style={{...inter,background:"none",border:"1px solid rgba(4,6,23,0.07)",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Go Back</button>}
           <button onClick={onNext} style={{...inter,background:"#FFD900",border:"none",color:"#040617",fontSize:"16px",fontWeight:600,padding:"16px 24px",borderRadius:"18px",cursor:"pointer",flex:1}}>Continue to Donate Method</button>
         </div>
       </div>
@@ -590,7 +506,7 @@ function PersonalInfoStep({ form, setForm, errors, onBack, onNext, mobile }) {
   );
 }
 
-function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry, cardCvv, setCardCvv, error, loading, isProcessing, paymentSuccess, paymentResult, donationLabel, projectTitle, contributionPct, receiptUrl, onBack, onSubmit, mobile }) {
+function DonateMethodStep({ amount, setAmount, amountError, cardNumber, setCardNumber, cardExpiry, setCardExpiry, cardCvv, setCardCvv, error, loading, isProcessing, paymentSuccess, paymentResult, donationLabel, projectTitle, contributionPct, receiptUrl, onBack, onSubmit, mobile }) {
   const [tab, setTab] = useState("card");
   const expiryRef = useRef(null);
   const cvvRef = useRef(null);
@@ -694,6 +610,18 @@ function DonateMethodStep({ cardNumber, setCardNumber, cardExpiry, setCardExpiry
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="#040617" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           Go Back
         </button>
+
+        <div>
+          <label style={{...inter,fontSize:mobile?"18px":"22px",fontWeight:600,color:"#040617",letterSpacing:"0.16px",display:"block",marginBottom:"10px"}}>Enter your donation amount</label>
+          <div style={{position:"relative"}}>
+            <span style={{position:"absolute",left:"18px",top:"50%",transform:"translateY(-50%)",...inter,fontSize:"24px",lineHeight:"38px",color:amount?"#040617":"#9CA3AF",pointerEvents:"none",zIndex:1}}>$</span>
+            <input type="text" inputMode="decimal" placeholder="0.00" value={amount}
+              onChange={e => setAmount(e.target.value.replace(/[^0-9.]/g,""))}
+              style={{...inter,width:"100%",border:"1px solid " + (amountError?"#EF4444":amount?"#FFD900":"#E5E6EB"),borderRadius:"12px",padding:"12px 20px 12px 44px",fontSize:"24px",lineHeight:"38px",color:"#040617",backgroundColor:"#FFFDF9",outline:"none",boxSizing:"border-box"}}/>
+          </div>
+          {amountError && <p style={{...inter,fontSize:"14px",color:"#EF4444",margin:"6px 0 0"}}>{amountError}</p>}
+          <p style={{...inter,fontSize:"15px",color:"#6F7181",margin:"8px 0 0"}}>*All donations over $2 are tax deductible</p>
+        </div>
 
         {tab === "card" && (
           <div style={{display:"flex",flexDirection:"column",gap:"24px"}}>
@@ -915,9 +843,9 @@ export default function DonationForm() {
   const [projectsData,   setProjectsData]    = useState(null);
   const [loadingProj,    setLoadingProj]      = useState(true);
   const [currentProject, setCurrentProject]  = useState(0);
-  const [tab,            setTab]             = useState("once");
-  const [selected,       setSelected]        = useState("$50");
+  const [tab]                                = useState("once");
   const [custom,         setCustom]          = useState("");
+  const [amountErr,      setAmountErr]       = useState("");
   const [form,           setForm]            = useState({ firstName:"", lastName:"", email:"", phone:"", address1:"", address2:"", country:"Jamaica", city:"", zip:"", state:"" });
   const [errors,         setErrors]          = useState({});
   const [cardNumber,     setCardNumber]      = useState("");
@@ -975,7 +903,7 @@ export default function DonationForm() {
       const meta = donationMeta || {};
       setPayError("");
       setRedirectData(null);
-      setStep(3);
+      setStep(2);
       setIsProcessing(false);
       setPaymentResult(data);
       setPaymentSuccess(true);
@@ -985,7 +913,7 @@ export default function DonationForm() {
       processingRef.current = true;
       setPayError(data.message || "Authentication failed");
       setRedirectData(null);
-      setStep(3);
+      setStep(2);
     }
   };
 
@@ -1015,7 +943,7 @@ export default function DonationForm() {
           const meta = donationMeta || {};
           setPayError("");
           setRedirectData(null);
-          setStep(3);
+          setStep(2);
           setIsProcessing(false);
           setPaymentResult({
             success: true, approved: true,
@@ -1031,7 +959,7 @@ export default function DonationForm() {
           processingRef.current = true;
           active = false;
           setRedirectData(null);
-          setStep(3);
+          setStep(2);
           setIsProcessing(false);
           setPayError(d.error || "Payment was declined. Please try a different card.");
         }
@@ -1046,11 +974,8 @@ export default function DonationForm() {
   const prevProject = () => setCurrentProject(p => (p - 1 + (projectsData?.length||1)) % (projectsData?.length||1));
   const nextProject = () => setCurrentProject(p => (p + 1) % (projectsData?.length||1));
 
-  const numericAmount = () => {
-    if (selected === "custom") return parseFloat(custom) || 0;
-    return parseFloat(selected.replace(/[^0-9.]/g,"")) || 0;
-  };
-  const donationLabel = selected === "custom" ? "$" + (custom||"0") : selected;
+  const numericAmount = () => parseFloat(custom) || 0;
+  const donationLabel = "$" + (custom || "0");
 
   const contributionPct = (() => {
     const target = projectsData?.[currentProject]?.targetAmount || 0;
@@ -1059,11 +984,6 @@ export default function DonationForm() {
     const pct = (amt / target) * 100;
     return pct < 0.01 ? parseFloat(pct.toFixed(4)) : parseFloat(pct.toFixed(2));
   })();
-
-  const handleStep1Next = () => {
-    if (selected === "custom" && (!custom || parseFloat(custom) <= 0)) { setErrors({amount:"Please enter a valid amount"}); return; }
-    setErrors({}); setStep(2);
-  };
 
   const validateStep2 = () => {
     const e = {};
@@ -1083,6 +1003,7 @@ export default function DonationForm() {
   };
 
   const handlePayment = async () => {
+    if (numericAmount() <= 0) { setAmountErr("Please enter a donation amount"); return; }
     if (!cardNumber || !cardExpiry || !cardCvv) { setPayError("Please fill in all card fields"); return; }
     processingRef.current = false; // Reset guard for fresh attempt
     setAuth3dsProcessing(false);
@@ -1127,7 +1048,7 @@ export default function DonationForm() {
       try { sessionStorage.setItem("donationMeta", JSON.stringify(meta)); } catch(_) {}
       if (data.requiresRedirect && data.redirectData) {
         setRedirectData(data.redirectData);
-        setStep(4);
+        setStep(3);
         return;
       }
       if (data.spiToken) {
@@ -1153,10 +1074,9 @@ export default function DonationForm() {
   const selectedProject = projectsData?.[currentProject];
 
   const renderStep = (mobile) => {
-    if (step === 1) return <AmountStep tab={tab} setTab={setTab} selected={selected} setSelected={setSelected} custom={custom} setCustom={setCustom} error={errors.amount} onNext={handleStep1Next} mobile={mobile}/>;
-    if (step === 2) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={() => { setStep(1); setErrors({}); }} onNext={() => { if (validateStep2()) setStep(3); }} mobile={mobile}/>;
-    if (step === 3) return <DonateMethodStep cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(2); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
-    if (step === 4 && redirectData) return <AuthStep redirectData={redirectData} processing={auth3dsProcessing} onCancel={() => { setRedirectData(null); setAuth3dsProcessing(false); setStep(3); setPayError(""); processingRef.current = false; }}/>;
+    if (step === 1) return <PersonalInfoStep form={form} setForm={setForm} errors={errors} onBack={null} onNext={() => { if (validateStep2()) setStep(2); }} mobile={mobile}/>;
+    if (step === 2) return <DonateMethodStep amount={custom} setAmount={v => { setCustom(v); if (amountErr) setAmountErr(""); }} amountError={amountErr} cardNumber={cardNumber} setCardNumber={setCardNumber} cardExpiry={cardExpiry} setCardExpiry={setCardExpiry} cardCvv={cardCvv} setCardCvv={setCardCvv} error={payError} loading={loading} isProcessing={isProcessing} paymentSuccess={paymentSuccess} paymentResult={paymentResult} donationLabel={donationLabel} projectTitle={selectedProject?.title||"this project"} contributionPct={contributionPct} receiptUrl={receiptUrl} onBack={() => { setStep(1); setPayError(""); processingRef.current = false; }} onSubmit={handlePayment} mobile={mobile}/>;
+    if (step === 3 && redirectData) return <AuthStep redirectData={redirectData} processing={auth3dsProcessing} onCancel={() => { setRedirectData(null); setAuth3dsProcessing(false); setStep(2); setPayError(""); processingRef.current = false; }}/>;
     return null;
   };
 
