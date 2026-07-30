@@ -10,6 +10,9 @@ export default defineType({
     { name: 'name', title: 'Full Name', type: 'string' },
     { name: 'email', title: 'Email', type: 'string' },
     { name: 'endowmentType', title: 'Endowment Type', type: 'string' },
+    { name: 'giftDesignation', title: 'Gift Designation', type: 'string' },
+    { name: 'recognitionName', title: 'Recognition Name', type: 'string' },
+    { name: 'honorMemoryOf', title: 'In Honor / Memory Of', type: 'string' },
     { name: 'submittedAt', title: 'Submitted At', type: 'string' },
   ],
   preview: {

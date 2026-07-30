@@ -16,6 +16,9 @@ export async function POST(request) {
     const lastName = (body.lastName || '').trim()
     const email = (body.email || '').trim()
     const endowmentType = (body.endowmentType || '').trim()
+    const giftDesignation = (body.giftDesignation || '').trim()
+    const recognitionName = (body.recognitionName || '').trim()
+    const honorMemoryOf = (body.honorMemoryOf || '').trim()
     // Backward compatible: accept a single `name` too.
     const fullName = [firstName, lastName].filter(Boolean).join(' ') || (body.name || '').trim()
 
@@ -30,6 +33,9 @@ export async function POST(request) {
       name: fullName,
       email,
       endowmentType,
+      giftDesignation,
+      recognitionName,
+      honorMemoryOf,
       submittedAt: new Date().toISOString(),
     })
 

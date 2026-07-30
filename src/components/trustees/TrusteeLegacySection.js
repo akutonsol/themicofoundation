@@ -113,9 +113,9 @@ export default function TrusteeLegacySection() {
         .hero-title em { font-style: italic; color: #FFD900; }
         .hero-sub { font-family: 'Syne', sans-serif; font-size: clamp(15px, 1.4vw, 19px); font-weight: 400; color: rgba(255,255,255,0.4); margin: 32px 0 0; max-width: 560px; line-height: 1.65; letter-spacing: 0.01em; }
         .cap-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-        .read-msg-btn { display: inline-flex; align-items: center; gap: 9px; background: #FFD900; color: #040617; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.01em; padding: 12px 22px; border-radius: 100px; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s, color 0.2s; }
-        .read-msg-btn:hover { background: #fff; transform: translateY(-2px); }
-        .read-msg-btn svg { width: 16px; height: 16px; transition: transform 0.2s; }
+        .read-msg-btn { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #FFD900; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.02em; padding: 4px 0; border: none; border-bottom: 1px solid rgba(255,217,0,0.35); border-radius: 0; cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+        .read-msg-btn:hover { color: #fff; border-color: #fff; }
+        .read-msg-btn svg { width: 15px; height: 15px; transition: transform 0.2s; }
         .read-msg-btn:hover svg { transform: translateX(3px); }
         .read-msg-btn.secondary { background: transparent; color: #FFD900; border: 1px solid rgba(255,217,0,0.55); }
         .read-msg-btn.secondary:hover { background: #FFD900; color: #040617; transform: translateY(-2px); }

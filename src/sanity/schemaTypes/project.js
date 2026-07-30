@@ -113,6 +113,12 @@ export default defineType({
       initialValue: '#1A1600'
     },
     {
+      name: 'heroDescription',
+      title: 'Hero Description (short line under the title on the detail page)',
+      type: 'text',
+      rows: 3,
+    },
+    {
       name: 'furtherDetailsImage',
       title: 'Further Details — Image (left column of the popup)',
       type: 'image',

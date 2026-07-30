@@ -22,6 +22,8 @@ const ENDOWMENT_OPTIONS = [
   'Corporate Endowment Grant',
 ]
 
+const GIFT_DESIGNATIONS = ['Science', 'Scholarship', 'Housing', 'Other']
+
 function TypeCard({ type, index }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.08 }}
@@ -37,7 +39,7 @@ export default function EndowmentTypes() {
   const [types, setTypes] = useState(staticTypes)
   const [heading, setHeading] = useState('Support the Future with an Endowment')
   const [intro, setIntro] = useState(staticIntro)
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', endowmentType: '' })
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', endowmentType: '', giftDesignation: '', giftDesignationOther: '', recognitionName: '', honorMemoryOf: '' })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -68,6 +70,8 @@ export default function EndowmentTypes() {
     if (!form.firstName.trim()) e.firstName = 'Required'
     if (!form.email.trim()) e.email = 'Required'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Invalid email'
+    if (!form.giftDesignation.trim()) e.giftDesignation = 'Required'
+    else if (form.giftDesignation === 'Other' && !form.giftDesignationOther.trim()) e.giftDesignationOther = 'Please specify'
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -76,7 +80,11 @@ export default function EndowmentTypes() {
     if (!validate()) return
     setLoading(true)
     try {
-      const res = await fetch('/api/endowment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+      const payload = {
+        ...form,
+        giftDesignation: form.giftDesignation === 'Other' ? form.giftDesignationOther.trim() : form.giftDesignation,
+      }
+      const res = await fetch('/api/endowment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to submit')
       setSubmitted(true)
@@ -169,6 +177,33 @@ export default function EndowmentTypes() {
                       <option value="" disabled>Select an endowment type…</option>
                       {ENDOWMENT_OPTIONS.map(opt => <option key={opt} value={opt} style={{ color: '#040617' }}>{opt}</option>)}
                     </select>
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Gift Designation <span style={{ color: '#B8860B' }}>*</span></label>
+                    <select value={form.giftDesignation} onChange={update('giftDesignation')}
+                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                      style={{ ...inter, background: '#FFFDF9', color: form.giftDesignation ? '#040617' : '#9CA3AF', borderColor: errors.giftDesignation ? '#EF4444' : 'rgba(4,6,23,0.18)' }}>
+                      <option value="" disabled>Where should this gift be directed?</option>
+                      {GIFT_DESIGNATIONS.map(opt => <option key={opt} value={opt} style={{ color: '#040617' }}>{opt}</option>)}
+                    </select>
+                    {form.giftDesignation === 'Other' && (
+                      <input type="text" placeholder="Please specify…" value={form.giftDesignationOther} onChange={update('giftDesignationOther')}
+                        className="mt-3 h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                        style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: errors.giftDesignationOther ? '#EF4444' : 'rgba(4,6,23,0.18)' }} />
+                    )}
+                    {(errors.giftDesignation || errors.giftDesignationOther) && <span style={{ ...inter, fontSize: 13, color: '#EF4444' }}>{errors.giftDesignation || errors.giftDesignationOther}</span>}
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>Recognition Name <span style={{ color: '#9CA3AF' }}>(optional)</span></label>
+                    <input type="text" placeholder="Family or business name for public recognition" value={form.recognitionName} onChange={update('recognitionName')}
+                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                      style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: 'rgba(4,6,23,0.18)' }} />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>In Honor / Memory Of <span style={{ color: '#9CA3AF' }}>(optional)</span></label>
+                    <input type="text" placeholder="Name of person to honor or memorialize" value={form.honorMemoryOf} onChange={update('honorMemoryOf')}
+                      className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
+                      style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: 'rgba(4,6,23,0.18)' }} />
                   </div>
                   {errors.submit && <p style={{ ...inter, fontSize: 14, color: '#EF4444' }}>{errors.submit}</p>}
                   <button type="button" onClick={handleSubmit} disabled={loading}

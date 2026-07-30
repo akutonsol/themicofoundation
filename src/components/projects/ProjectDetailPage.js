@@ -62,7 +62,7 @@ function StatCounter({ value, label, prefix = "", suffix = "" }) {
   const [count, ref] = useCountUp(typeof value === "number" ? value : 0);
   return (
     <div ref={ref} style={{ textAlign: "center" }}>
-      <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(48px,6vw,88px)", fontWeight: 700, color: "#FFD900", margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
+      <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(33px,4.6vw,73px)", fontWeight: 700, color: "#FFD900", margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
         {prefix}{typeof value === "number" ? count : value}{suffix}
       </p>
       <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.14em", margin: "10px 0 0", fontWeight: 500 }}>{label}</p>
@@ -102,6 +102,7 @@ export default function ProjectDetailPage({ slug }) {
               raisedRaw: found.amountDonated,
               goalRaw: found.targetAmount,
               description: found.description ? found.description.split("\n\n").filter(Boolean) : [],
+              heroDescription: found.heroDescription || "",
               donationItems: found.completedItems || [],
               furtherImage: found.furtherDetailsImage ? urlFor(found.furtherDetailsImage).width(1200).url() : null,
               furtherBlocks: (found.furtherDetailsBlocks || []).filter(b => b?.title || b?.body),
@@ -166,6 +167,7 @@ export default function ProjectDetailPage({ slug }) {
   if (!project) return null;
 
   const videoId = getYouTubeId(project.videoUrl);
+  const isBuxton = project.slug === 'project-buxton-restore';
 
   return (
     <main style={{ background: "#05060F" }}>
@@ -186,6 +188,8 @@ export default function ProjectDetailPage({ slug }) {
         .pd-details-btn { display:inline-flex; align-items:center; gap:12px; padding:11px 22px 11px 11px; background:#FFD900; border:1px solid #FFD900; border-radius:100px; color:#040617; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.02em; cursor:pointer; transition:background 0.25s, transform 0.2s, box-shadow 0.25s; }
         .pd-details-btn:hover { background:#ffe24d; transform:translateY(-2px); box-shadow:var(--glow-gold-soft); }
         .pd-details-icon { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:rgba(4,6,23,0.12); flex-shrink:0; }
+        .pd-pledge-btn { display:inline-flex; align-items:center; gap:9px; padding:14px 24px; background:transparent; border:1px solid rgba(255,217,0,0.45); border-radius:100px; color:#FFD900; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.02em; text-decoration:none; cursor:pointer; transition:background 0.25s, color 0.25s, transform 0.2s; }
+        .pd-pledge-btn:hover { background:#FFD900; color:#040617; transform:translateY(-2px); }
         .pd-lb-close:hover { background:rgba(255,255,255,0.2) !important; }
 
         .pd-dm-modal { display:grid; grid-template-columns:0.95fr 1.05fr; }
@@ -309,12 +313,19 @@ export default function ProjectDetailPage({ slug }) {
             </motion.div>
 
             <motion.h1 initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(54px,7.5vw,124px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.88, letterSpacing: "-0.03em", margin: 0 }}>
+              style={{ fontFamily: "'Playfair Display',serif", fontSize: isBuxton ? "clamp(40px,5vw,78px)" : "clamp(54px,7.5vw,124px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.92, letterSpacing: "-0.03em", margin: 0, maxWidth: isBuxton ? "10ch" : "none" }}>
               {project.title}
             </motion.h1>
 
+            {project.heroDescription && (
+              <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}
+                style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.7, color: "rgba(255,255,255,0.55)", margin: "22px 0 0", maxWidth: "540px", fontWeight: 300 }}>
+                {project.heroDescription}
+              </motion.p>
+            )}
+
             <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
-              style={{ height: "2px", background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "36px", transformOrigin: "left" }} />
+              style={{ height: "2px", background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "32px", transformOrigin: "left" }} />
 
             {/* Watch Video + Further Details CTAs */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "32px" }}>
@@ -341,6 +352,14 @@ export default function ProjectDetailPage({ slug }) {
                   <span>Further Details</span>
                 </motion.button>
               )}
+              <motion.a
+                href="/pledge"
+                className="pd-pledge-btn"
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.64 }}
+              >
+                <span>Pledge Now</span>
+                <ArrowUpRight size={15} />
+              </motion.a>
             </div>
           </div>
 
@@ -386,7 +405,7 @@ export default function ProjectDetailPage({ slug }) {
           <div style={{ display: "flex", flexDirection: "column", gap: "clamp(40px,5vw,64px)" }}>
             {project.description.map((para, i) => (
               <motion.p key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.08 }}
-                style={{ fontFamily: i === 0 ? "'Playfair Display',serif" : "'Inter',sans-serif", fontSize: i === 0 ? "clamp(28px,3.2vw,46px)" : "clamp(18px,1.8vw,24px)", lineHeight: i === 0 ? 1.25 : 1.75, color: i === 0 ? "#040617" : "#4A4D5A", margin: 0, marginLeft: i % 2 === 1 ? "clamp(40px,8vw,140px)" : 0, fontWeight: i === 0 ? 700 : 300, letterSpacing: i === 0 ? "-0.02em" : "0" }}>
+                style={{ fontFamily: i === 0 ? "'Playfair Display',serif" : "'Inter',sans-serif", fontSize: i === 0 ? "clamp(24px,2.7vw,38px)" : "clamp(15px,1.5vw,18px)", lineHeight: i === 0 ? 1.3 : 1.8, color: i === 0 ? "#040617" : "#4A4D5A", margin: 0, marginLeft: i % 2 === 1 ? "clamp(40px,8vw,140px)" : 0, fontWeight: i === 0 ? 700 : 300, letterSpacing: i === 0 ? "-0.02em" : "0" }}>
                 {para}
               </motion.p>
             ))}

@@ -317,7 +317,7 @@ function ProjectCard({ projects, currentProject, onPrev, onNext, mobile }) {
       </div>
       <div style={{position:"relative",zIndex:1}}>
         <p style={{...inter,fontSize:"32px",fontWeight:600,color:"#040617",letterSpacing:"-0.32px",lineHeight:"46px",margin:0,textTransform:"capitalize"}}>{p.title}</p>
-        <a href={"/projectdetail?slug=" + p.slug} style={{...inter,fontSize:"24px",color:"#6F7181",textDecoration:"underline"}}>Learn more</a>
+        <a href={"/projectdetail/" + p.slug} style={{...inter,fontSize:"24px",color:"#6F7181",textDecoration:"underline"}}>Learn more</a>
       </div>
       <div style={{position:"relative",zIndex:1}}>
         <p style={{...inter,fontSize:"32px",color:"#5EDA71",textAlign:"center",margin:"0 0 4px"}}>{pct}%</p>
@@ -354,7 +354,7 @@ function ProjectCard({ projects, currentProject, onPrev, onNext, mobile }) {
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",position:"relative",zIndex:1}}>
         <div>
           <p style={{...inter,fontSize:"32px",fontWeight:600,color:"#040617",letterSpacing:"-0.32px",lineHeight:"46px",margin:0,textTransform:"capitalize"}}>{p.title}</p>
-          <a href={"/projectdetail?slug=" + p.slug} style={{...inter,fontSize:"24px",color:"#6F7181",letterSpacing:"0.24px",lineHeight:"38px",textDecoration:"underline"}}>Learn more</a>
+          <a href={"/projectdetail/" + p.slug} style={{...inter,fontSize:"24px",color:"#6F7181",letterSpacing:"0.24px",lineHeight:"38px",textDecoration:"underline"}}>Learn more</a>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
           <img src={imgLocation} alt="" style={{width:"24px",height:"24px"}}/>
@@ -404,17 +404,10 @@ function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, err
   const amounts = tab === "monthly" ? AMOUNTS_MONTHLY : AMOUNTS_ONCE;
   if (mobile) return (
     <div style={{width:"100%",backgroundColor:"#FFFDF9",borderRadius:"16px",overflow:"hidden",border:"1px solid rgba(4,6,23,0.07)",display:"flex",flexDirection:"column",boxShadow:"var(--shadow-2)"}}>
-      <div style={{display:"flex",borderBottom:"1px solid #E5E6EB"}}>
-        <button onClick={() => { setTab("once"); setSelected("$50"); }}
-          style={{flex:1,padding:"10px",...inter,fontSize:"24px",lineHeight:"38px",color:"#040617",background:"none",border:"none",borderBottom:tab==="once"?"2px solid #FFD900":"2px solid transparent",cursor:"pointer",opacity:tab==="once"?1:0.8}}>
-          Once
-        </button>
-        <button onClick={() => { setTab("monthly"); setSelected("$50/Month"); }}
-          style={{flex:1,padding:"10px",...inter,fontSize:"24px",lineHeight:"38px",color:"#040617",background:"none",border:"none",borderBottom:tab==="monthly"?"2px solid #FFD900":"2px solid transparent",cursor:"pointer",opacity:tab==="monthly"?1:0.8}}>
-          Monthly
-        </button>
+      <div style={{padding:"20px 24px 0",display:"flex",flexDirection:"column"}}>
+        <p style={{...inter,fontSize:"22px",fontWeight:600,color:"#040617",margin:0}}>Enter your donation amount</p>
       </div>
-      <div style={{padding:"24px",display:"flex",flexDirection:"column",gap:"16px"}}>
+      <div style={{padding:"20px 24px 24px",display:"flex",flexDirection:"column",gap:"16px"}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"10px"}}>
           {amounts.map(a => (
             <button key={a} onClick={() => setSelected(a)}
@@ -453,11 +446,10 @@ function AmountStep({ tab, setTab, selected, setSelected, custom, setCustom, err
   return (
     <div style={{backgroundColor:"#FFFDF9",border:"1px solid rgba(4,6,23,0.07)",borderRadius:"20px",overflow:"hidden",display:"flex",flexDirection:"column",position:"relative",boxShadow:"var(--shadow-2)"}}>
       <img src={imgSparkle} alt="" style={{position:"absolute",top:"105px",left:"138px",width:"523px",pointerEvents:"none",opacity:0.2,zIndex:0}}/>
-      <div style={{display:"flex",borderBottom:"1px solid #E5E6EB",position:"relative",zIndex:1}}>
-        <button className={tab==="once"?"tab-btn active":"tab-btn"} onClick={() => { setTab("once"); setSelected("$50"); }}>Donate Once</button>
-        <button className={tab==="monthly"?"tab-btn active":"tab-btn"} onClick={() => { setTab("monthly"); setSelected("$50/Month"); }}>Donate Monthly</button>
+      <div style={{padding:"24px 24px 0",position:"relative",zIndex:1}}>
+        <p style={{...inter,fontSize:"26px",fontWeight:600,color:"#040617",margin:0}}>Enter your donation amount</p>
       </div>
-      <div style={{padding:"24px",display:"flex",flexDirection:"column",flex:1,gap:"24px",position:"relative",zIndex:1}}>
+      <div style={{padding:"20px 24px 24px",display:"flex",flexDirection:"column",flex:1,gap:"24px",position:"relative",zIndex:1}}>
         <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}}>
             {amounts.map(a => (
@@ -923,8 +915,8 @@ export default function DonationForm() {
   const [projectsData,   setProjectsData]    = useState(null);
   const [loadingProj,    setLoadingProj]      = useState(true);
   const [currentProject, setCurrentProject]  = useState(0);
-  const [tab,            setTab]             = useState("monthly");
-  const [selected,       setSelected]        = useState("$50/Month");
+  const [tab,            setTab]             = useState("once");
+  const [selected,       setSelected]        = useState("$50");
   const [custom,         setCustom]          = useState("");
   const [form,           setForm]            = useState({ firstName:"", lastName:"", email:"", phone:"", address1:"", address2:"", country:"Jamaica", city:"", zip:"", state:"" });
   const [errors,         setErrors]          = useState({});

@@ -70,8 +70,10 @@ function BankingDetails({ country, method }) {
 }
 
 export default function PledgePage() {
-  const [project, setProject] = useState(staticProject);
+  const [projects, setProjects] = useState([staticProject]);
+  const [projIdx, setProjIdx] = useState(0);
   const [projectLoading, setProjectLoading] = useState(false);
+  const project = projects[projIdx] || staticProject;
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100.00");
   const [country, setCountry] = useState("Jamaica");
@@ -83,53 +85,33 @@ export default function PledgePage() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    async function fetchPledgeProject() {
+    async function fetchPledgeProjects() {
       try {
-        // First try: endowmentproject with showOnPledgePage = true
-        const pledgeProject = await client.fetch(
-          `*[_type == "endowmentproject" && showOnPledgePage == true][0]{
+        // All active projects — the visitor can pledge toward any of them.
+        const data = await client.fetch(
+          `*[_type == "project" && status == "active"] | order(order asc){
             title, "slug": slug.current, label, status,
             location, description,
             "image": image.asset->url
           }`
         );
-
-        if (pledgeProject) {
-          setProject({
-            title: pledgeProject.title,
-            status: pledgeProject.label || 'Active Project',
-            location: pledgeProject.location || '',
-            mediaUrl: pledgeProject.image || staticProject.mediaUrl,
-            description: pledgeProject.description || staticProject.description,
-          });
-          return;
-        }
-
-        // Fallback: first active endowmentproject
-        const activeProject = await client.fetch(
-          `*[_type == "endowmentproject" && status == "active"] | order(order asc) [0]{
-            title, "slug": slug.current, label, status,
-            location, description,
-            "image": image.asset->url
-          }`
-        );
-
-        if (activeProject) {
-          setProject({
-            title: activeProject.title,
-            status: activeProject.label || 'Active Project',
-            location: activeProject.location || '',
-            mediaUrl: activeProject.image || staticProject.mediaUrl,
-            description: activeProject.description || staticProject.description,
-          });
+        if (data?.length) {
+          setProjects(data.map(p => ({
+            title: p.title,
+            slug: p.slug,
+            status: p.label || 'Active Project',
+            location: p.location || '',
+            mediaUrl: p.image || staticProject.mediaUrl,
+            description: p.description || staticProject.description,
+          })));
         }
       } catch (error) {
-        console.error('Error fetching pledge project:', error);
+        console.error('Error fetching pledge projects:', error);
       } finally {
         setProjectLoading(false);
       }
     }
-    fetchPledgeProject();
+    fetchPledgeProjects();
   }, []);
 
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
@@ -227,6 +209,16 @@ export default function PledgePage() {
                   </div>
                 </div>
 
+                {projects.length > 1 && (
+                  <div style={{ marginTop: 28 }}>
+                    <label style={{ ...inter, display: "block", marginBottom: 8, fontSize: 15, fontWeight: 700, color: "#040617" }}>Select a project to support: <span style={{ color: "#E11D48" }}>*</span></label>
+                    <select value={projIdx} onChange={e => setProjIdx(Number(e.target.value))}
+                      style={{ ...inter, width: "100%", height: 56, borderRadius: 12, border: "1px solid #E5E6EB", background: "#FFFDF9", padding: "0 16px", fontSize: 16, color: "#040617", outline: "none", cursor: "pointer" }}>
+                      {projects.map((p, i) => <option key={i} value={i}>{p.title}</option>)}
+                    </select>
+                  </div>
+                )}
+
                 <div style={{ marginTop: 28 }}>
                   <label style={{ ...inter, display: "block", marginBottom: 10, fontSize: 15, fontWeight: 700, color: "#040617" }}>Make your pledge or donation by entering an Amount</label>
                   <div style={{ display: "flex", alignItems: "center", border: `2px solid ${errors.amount ? '#EF4444' : '#FFD900'}`, borderRadius: 14, overflow: "hidden", background: "#FFFDF9" }}>
@@ -295,7 +287,7 @@ export default function PledgePage() {
                     <p style={{ ...inter, fontSize: 36, fontWeight: 800, color: "#040617", margin: 0 }}>{formattedAmount}</p>
                     <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
                       <p style={{ ...inter, display: "flex", gap: 10, margin: 0, color: "#6F7181" }}><Mail size={18} color="#040617" />Confirmation will be sent by email.</p>
-                      <p style={{ ...inter, display: "flex", gap: 10, margin: 0, color: "#6F7181" }}><Phone size={18} color="#040617" />Our team may contact you for follow-up.</p>
+                      <p style={{ ...inter, display: "flex", gap: 10, margin: 0, color: "#6F7181" }}><Phone size={18} color="#040617" />Our team will contact you for follow-up.</p>
                     </div>
                   </div>
                   <BankingDetails country={country} method={method} />

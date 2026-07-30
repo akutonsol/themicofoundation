@@ -57,17 +57,18 @@ export default function PeopleImpact() {
   useEffect(() => {
     async function fetchQuotes() {
       try {
-        const cmsQuotes = await client.fetch(queries.peopleImpact)
-        
+        const cmsQuotes = await client.fetch(queries.peopleImpact, {}, { cache: 'no-store' })
+
         // Use CMS data if available, otherwise use static
         if (cmsQuotes && cmsQuotes.length > 0) {
+          const sized = url => url ? `${url}?w=900&h=1200&fit=crop&auto=format` : imgPersonPhoto
           setQuotes(cmsQuotes.map((q, index) => ({
             id: index,
             name: q.name,
             role: q.role,
             quote: q.quote,
-            photo: q.photo,
-            mobilePhoto: q.mobilePhoto
+            photo: sized(q.photo),
+            mobilePhoto: sized(q.mobilePhoto || q.photo)
           })))
           console.log('✅ Loaded', cmsQuotes.length, 'quotes from CMS')
         } else {

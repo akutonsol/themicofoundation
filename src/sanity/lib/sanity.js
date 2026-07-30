@@ -86,6 +86,7 @@ export const queries = {
     targetAmount,
     amountDonated,
     buttonText,
+    heroDescription,
     furtherDetailsImage,
     furtherDetailsBlocks,
     order
