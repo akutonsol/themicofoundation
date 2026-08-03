@@ -91,19 +91,27 @@ export default function PledgePage() {
         const data = await client.fetch(
           `*[_type == "project" && status == "active"] | order(order asc){
             title, "slug": slug.current, label, status,
-            location, description,
+            location, description, pledgeDescription,
             "image": image.asset->url
           }`
         );
         if (data?.length) {
-          setProjects(data.map(p => ({
+          const mapped = data.map(p => ({
             title: p.title,
             slug: p.slug,
             status: p.label || 'Active Project',
             location: p.location || '',
             mediaUrl: p.image || staticProject.mediaUrl,
-            description: p.description || staticProject.description,
-          })));
+            // Custom pledge-form description takes priority over the default project description.
+            description: p.pledgeDescription || p.description || staticProject.description,
+          }));
+          setProjects(mapped);
+          // Preselect the project passed via ?project=<slug> (e.g. from a "Pledge Now" button).
+          const wanted = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('project') : null;
+          if (wanted) {
+            const idx = mapped.findIndex(p => p.slug === wanted);
+            if (idx >= 0) setProjIdx(idx);
+          }
         }
       } catch (error) {
         console.error('Error fetching pledge projects:', error);
@@ -180,6 +188,10 @@ export default function PledgePage() {
           {/* RIGHT — Form */}
           <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.1 }}
             style={{ background: "#FFFFFF", border: "1px solid rgba(4,6,23,0.07)", borderRadius: 30, padding: 38, boxShadow: "var(--shadow-3)" }}>
+
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+              <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" style={{ height: 64, width: "auto" }} />
+            </div>
 
             <h2 style={{ ...inter, fontSize: 38, fontWeight: 700, letterSpacing: "-0.05em", color: "#040617", margin: "0 0 8px" }}>Pledge Form</h2>
             <p style={{ ...inter, fontSize: 17, color: "#6F7181", margin: "0 0 30px" }}>Choose your pledge amount, donation method, and banking location.</p>
@@ -302,6 +314,10 @@ export default function PledgePage() {
                     <ArrowRight size={22} />
                   </button>
                 </div>
+
+                <p style={{ ...inter, marginTop: 22, fontSize: 13, color: "#9CA3AF", textAlign: "center", lineHeight: 1.5 }}>
+                  All contributions are tax deductible in accordance with the applicable laws.
+                </p>
               </>
             )}
           </motion.form>

@@ -128,6 +128,9 @@ export default function EndowmentTypes() {
           <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}
             className="sticky top-[120px] rounded-[20px] p-8"
             style={{ background: '#FFFDF9', border: '2px solid #040617', boxShadow: 'inset 0 0 0 5px #FFFDF9, inset 0 0 0 6px #f3af19, var(--shadow-3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
+              <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" style={{ height: 60, width: 'auto' }} />
+            </div>
             <span style={{ ...inter, display: 'inline-block', fontSize: 12, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: 12 }}>Get Involved</span>
             <h2 className="text-[28px] font-bold leading-[1.2] tracking-[-0.03em]" style={{ ...inter, color: '#040617' }}>Endowment Commitment</h2>
             <p className="mt-4 text-[16px] leading-[1.6] tracking-[0.01em]" style={{ ...inter, color: '#6F7181' }}>
@@ -209,7 +212,7 @@ export default function EndowmentTypes() {
                   <button type="button" onClick={handleSubmit} disabled={loading}
                     className="mt-1 h-[56px] w-full rounded-[14px] text-[16px] font-bold text-[#141210]"
                     style={{ ...inter, background: loading ? 'rgba(255,255,255,0.2)' : 'linear-gradient(180deg, #FFD54A 0%, #f3af19 100%)', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, boxShadow: '0 12px 30px rgba(243,175,25,0.32)' }}>
-                    {loading ? 'Submitting...' : 'Donate Now'}
+                    {loading ? 'Submitting...' : 'Make Endowment'}
                   </button>
                 </div>
               </>

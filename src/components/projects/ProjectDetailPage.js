@@ -104,6 +104,9 @@ export default function ProjectDetailPage({ slug }) {
               goalRaw: found.targetAmount,
               description: found.description ? found.description.split("\n\n").filter(Boolean) : [],
               heroDescription: found.heroDescription || "",
+              showTitle: found.showTitle !== false,
+              titleLogoUrl: found.titleLogo ? urlFor(found.titleLogo).width(700).url() : null,
+              titleLogoDescription: found.titleLogoDescription || "",
               donationItems: found.completedItems || [],
               furtherImage: found.furtherDetailsImage ? urlFor(found.furtherDetailsImage).width(1200).url() : null,
               furtherBlocks: (found.furtherDetailsBlocks || []).filter(b => b?.title || b?.body),
@@ -334,10 +337,21 @@ export default function ProjectDetailPage({ slug }) {
               <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em" }}>{project.location}</span>
             </motion.div>
 
-            <motion.h1 initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              style={{ fontFamily: "'Playfair Display',serif", fontSize: isBuxton ? "clamp(40px,5vw,78px)" : "clamp(54px,7.5vw,124px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.92, letterSpacing: "-0.03em", margin: 0, maxWidth: isBuxton ? "10ch" : "none" }}>
-              {project.title}
-            </motion.h1>
+            {project.showTitle === false && project.titleLogoUrl ? (
+              <motion.div initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
+                <img src={project.titleLogoUrl} alt={project.title} style={{ maxWidth: "min(420px, 80%)", height: "auto", display: "block" }} />
+                {project.titleLogoDescription && (
+                  <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(24px,3vw,44px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.1, letterSpacing: "-0.02em", margin: "22px 0 0", maxWidth: "14ch" }}>
+                    {project.titleLogoDescription}
+                  </p>
+                )}
+              </motion.div>
+            ) : (
+              <motion.h1 initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                style={{ fontFamily: "'Playfair Display',serif", fontSize: isBuxton ? "clamp(40px,5vw,78px)" : "clamp(54px,7.5vw,124px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.92, letterSpacing: "-0.03em", margin: 0, maxWidth: isBuxton ? "10ch" : "none" }}>
+                {project.title}
+              </motion.h1>
+            )}
 
             {project.heroDescription && (
               <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}
@@ -375,7 +389,7 @@ export default function ProjectDetailPage({ slug }) {
                 </motion.button>
               )}
               <motion.a
-                href="/pledge"
+                href={`/pledge?project=${project.slug}`}
                 className="pd-pledge-btn"
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.64 }}
               >

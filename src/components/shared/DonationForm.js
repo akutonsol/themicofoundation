@@ -839,7 +839,7 @@ function AuthStep({ redirectData, onCancel, processing }) {
   );
 }
 
-export default function DonationForm() {
+export default function DonationForm({ defaultProject } = {}) {
   const [projectsData,   setProjectsData]    = useState(null);
   const [loadingProj,    setLoadingProj]      = useState(true);
   const [currentProject, setCurrentProject]  = useState(0);
@@ -874,11 +874,17 @@ export default function DonationForm() {
           goal:formatCurrency(p.targetAmount), raised:formatCurrency(p.amountDonated),
         }));
         setProjectsData(active);
+        // Preselect the project passed in (via prop from the project page, or ?project=<slug>).
+        const wanted = defaultProject || (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("project") : null);
+        if (wanted) {
+          const idx = active.findIndex(p => p.slug === wanted);
+          if (idx >= 0) setCurrentProject(idx);
+        }
       } catch(e) { console.error(e); }
       finally { setLoadingProj(false); }
     }
     load();
-  }, []);
+  }, [defaultProject]);
 
   // postMessage from 3DS callback iframe.
   // Callback now returns immediately (payment runs in background via after()).

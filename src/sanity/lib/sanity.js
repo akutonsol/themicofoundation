@@ -90,6 +90,10 @@ export const queries = {
     furtherDetailsImage,
     furtherDetailsBlocks,
     "videoFileUrl": videoFile.asset->url,
+    showTitle,
+    titleLogo,
+    titleLogoDescription,
+    pledgeDescription,
     order
   }`,
 

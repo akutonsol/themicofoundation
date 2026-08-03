@@ -138,7 +138,7 @@ export default function Projects() {
       {/* ── DESKTOP ─────────────────────────────────────────────────────────── */}
       <div className="proj-desktop">
         <div style={{ position:'relative', zIndex:1, maxWidth:'1150px', margin:'0 auto', textAlign:'center', paddingBottom:'clamp(40px,4.5vw,64px)' }}>
-          <p style={{ ...inter, fontSize:'clamp(19px,1.9vw,28px)', fontWeight:600, lineHeight:1.5, letterSpacing:'-0.2px', color:'#FFFDF9', margin:0 }}>
+          <p style={{ ...inter, fontSize:'clamp(26px,2.7vw,42px)', fontWeight:600, lineHeight:1.4, letterSpacing:'-0.4px', color:'#FFFDF9', margin:0 }}>
             Driven by purpose and inspired by service, The Mico Foundation&rsquo;s projects create opportunities and are catalysts for hope, dignity, and lasting impact that will endure for generations.
           </p>
         </div>
@@ -235,7 +235,7 @@ export default function Projects() {
       {/* ── MOBILE ──────────────────────────────────────────────────────────── */}
       <div className="proj-mobile" style={{ flexDirection:'column', gap:'32px', padding:'52px 24px 40px' }}>
 
-        <p style={{ ...inter, position:'relative', zIndex:1, fontSize:'18px', fontWeight:600, lineHeight:1.5, color:'#FFFDF9', textAlign:'center', margin:0 }}>
+        <p style={{ ...inter, position:'relative', zIndex:1, fontSize:'23px', fontWeight:600, lineHeight:1.45, color:'#FFFDF9', textAlign:'center', margin:0 }}>
           Driven by purpose and inspired by service, The Mico Foundation&rsquo;s projects create opportunities and are catalysts for hope, dignity, and lasting impact that will endure for generations.
         </p>
 

@@ -72,7 +72,7 @@ function DetailModal({ project, onClose }) {
             <a href={project.href} style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', border: `1px solid ${project.accent}`, color: project.accent, fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none' }}>
               Learn More <ArrowUpRight size={14} />
             </a>
-            <a href="/pledge" style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', background: project.accent, color: '#040617', fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none' }}>
+            <a href={`/pledge?project=${project.slug}`} style={{ ...inter, display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', borderRadius: '100px', background: project.accent, color: '#040617', fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', textDecoration: 'none' }}>
               Pledge Now <ArrowUpRight size={14} />
             </a>
           </div>
@@ -109,6 +109,7 @@ export default function FoundationProjectsDeck() {
               restDesc: continuation,
               image: p.image || null,
               accent: ACCENTS[i % ACCENTS.length],
+              slug: p.slug,
               href: `/projectdetail/${p.slug}`,
             };
           }));

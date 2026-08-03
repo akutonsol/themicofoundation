@@ -386,10 +386,10 @@ export default function Hero() {
             <div className="hero-grid">
 
               {/* Left */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px', backgroundColor:'#0A0D18' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`left-${leftImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
-                    <Image src={leftImg} alt="Hero" fill style={{ objectFit:'cover' }} sizes="33vw" priority />
+                    <Image src={leftImg} alt="Hero" fill style={{ objectFit:'contain' }} sizes="33vw" priority />
                   </motion.div>
                 </AnimatePresence>
                 <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(-0.95deg,rgba(0,0,0,0.6) 0.68%,rgba(0,0,0,0) 23.88%),linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 35.42%)', zIndex:1 }} />
@@ -397,9 +397,9 @@ export default function Hero() {
                   <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
                   <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'16px', color:'#fff' }}>{locationText}</span>
                 </div>
-                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'16px', padding:'16px', zIndex:2 }}>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'42px', fontWeight:600, color:'#13531D', lineHeight:1, margin:0 }}>{totalMoneyDonated}</p>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'24px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>{totalMoneyDonatedText}</p>
+                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'12px', padding:'10px 14px', zIndex:2 }}>
+                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'26px', fontWeight:600, color:'#13531D', lineHeight:1.05, margin:0 }}>{totalMoneyDonated}</p>
+                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'15px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>{totalMoneyDonatedText}</p>
                 </div>
               </div>
 
@@ -428,10 +428,10 @@ export default function Hero() {
                 </div>
 
                 {/* Buxton card */}
-                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'271px' }}>
+                <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'271px', backgroundColor:'#0A0D18' }}>
                   <AnimatePresence mode="wait">
                     <motion.div key={`buxton-${bottomImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
-                      <Image src={bottomImg} alt={currentTargetName} fill style={{ objectFit:'cover' }} sizes="33vw" />
+                      <Image src={bottomImg} alt={currentTargetName} fill style={{ objectFit:'contain' }} sizes="33vw" />
                     </motion.div>
                   </AnimatePresence>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)', zIndex:1 }} />
@@ -442,10 +442,10 @@ export default function Hero() {
               </div>
 
               {/* Right */}
-              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px' }}>
+              <div style={{ position:'relative', borderRadius:'16px', overflow:'hidden', height:'638px', backgroundColor:'#0A0D18' }}>
                 <AnimatePresence mode="wait">
                   <motion.div key={`right-${rightImg}`} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }} style={{ position:'absolute', inset:0 }}>
-                    <Image src={rightImg} alt="Volunteer" fill style={{ objectFit:'cover' }} sizes="33vw" />
+                    <Image src={rightImg} alt="Volunteer" fill style={{ objectFit:'contain' }} sizes="33vw" />
                   </motion.div>
                 </AnimatePresence>
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 29.7%)', zIndex:1 }} />
