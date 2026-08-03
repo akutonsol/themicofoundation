@@ -315,7 +315,7 @@ export default function PledgePage() {
                   </button>
                 </div>
 
-                <p style={{ ...inter, marginTop: 22, fontSize: 13, color: "#9CA3AF", textAlign: "center", lineHeight: 1.5 }}>
+                <p style={{ ...inter, marginTop: 22, fontSize: 15, fontWeight: 700, color: "#040617", textAlign: "center", lineHeight: 1.5 }}>
                   All contributions are tax deductible in accordance with the applicable laws.
                 </p>
               </>
