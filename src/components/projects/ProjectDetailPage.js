@@ -339,9 +339,9 @@ export default function ProjectDetailPage({ slug }) {
 
             {project.showTitle === false && project.titleLogoUrl ? (
               <motion.div initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
-                <img src={project.titleLogoUrl} alt={project.title} style={{ maxWidth: "min(260px, 62%)", height: "auto", display: "block" }} />
+                <img src={project.titleLogoUrl} alt={project.title} style={{ maxWidth: "min(360px, 74%)", height: "auto", display: "block" }} />
                 {project.titleLogoDescription && (
-                  <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(16px,1.5vw,24px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.25, letterSpacing: "-0.01em", margin: "18px 0 0", maxWidth: "26ch" }}>
+                  <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(21px,2.2vw,34px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.2, letterSpacing: "-0.02em", margin: "20px 0 0", maxWidth: "22ch" }}>
                     {project.titleLogoDescription}
                   </p>
                 )}
