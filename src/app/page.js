@@ -24,7 +24,7 @@ export default function Home() {
       <div className="home-stack">
         <Hero />
         <FeaturedMessage />
-        <Mission />
+        <div className="tight-top"><Mission /></div>
         <LegacyImpactSection />
         <Projects />
         {/*   <Messages />  */}

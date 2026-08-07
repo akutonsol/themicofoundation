@@ -174,6 +174,7 @@ export default function ProjectDetailPage({ slug }) {
   const hasVideo = !!(project.videoFileUrl || videoId);
   const hasDetails = (project.furtherBlocks?.length > 0) || (project.description?.length > 0);
   const isBuxton = project.slug === 'project-buxton-restore';
+  const logoHero = project.showTitle === false && !!project.titleLogoUrl;
 
   return (
     <main style={{ background: "#05060F" }}>
@@ -330,21 +331,23 @@ export default function ProjectDetailPage({ slug }) {
           </div>
 
           {/* Main title block */}
-          <div>
+          <div style={logoHero ? { display: "flex", flexDirection: "column", alignItems: "center" } : undefined}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}
               style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "28px" }}>
               <MapPin size={14} color="rgba(255,255,255,0.35)" />
               <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em" }}>{project.location}</span>
             </motion.div>
 
-            {project.showTitle === false && project.titleLogoUrl ? (
-              <motion.div initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
-                <img src={project.titleLogoUrl} alt={project.title} style={{ maxWidth: "min(360px, 74%)", height: "auto", display: "block" }} />
+            {logoHero ? (
+              // Logo mode: story/description first, then the logo (title) — block centered, text left-aligned.
+              <motion.div initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 {project.titleLogoDescription && (
-                  <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(21px,2.2vw,34px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.2, letterSpacing: "-0.02em", margin: "20px 0 0", maxWidth: "22ch" }}>
+                  <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(21px,2.2vw,34px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.2, letterSpacing: "-0.02em", margin: "0 0 24px", maxWidth: "22ch", textAlign: "left" }}>
                     {project.titleLogoDescription}
                   </p>
                 )}
+                <img src={project.titleLogoUrl} alt={project.title} style={{ maxWidth: "min(360px, 74%)", height: "auto", display: "block" }} />
               </motion.div>
             ) : (
               <motion.h1 initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
@@ -361,10 +364,10 @@ export default function ProjectDetailPage({ slug }) {
             )}
 
             <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
-              style={{ height: "2px", background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "32px", transformOrigin: "left" }} />
+              style={{ height: "2px", width: logoHero ? "260px" : undefined, background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "32px", transformOrigin: "left" }} />
 
             {/* Watch Video + Further Details CTAs */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "32px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "32px", justifyContent: logoHero ? "center" : undefined }}>
               {hasVideo && (
                 <motion.button
                   type="button"

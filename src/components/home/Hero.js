@@ -397,9 +397,9 @@ export default function Hero() {
                   <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
                   <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'16px', color:'#fff' }}>{locationText}</span>
                 </div>
-                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'12px', padding:'10px 14px', zIndex:2 }}>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'26px', fontWeight:600, color:'#13531D', lineHeight:1.05, margin:0 }}>{totalMoneyDonated}</p>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'15px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>{totalMoneyDonatedText}</p>
+                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'10px', padding:'8px 12px', zIndex:2 }}>
+                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', fontWeight:700, color:'#13531D', lineHeight:1.15, margin:0 }}>{totalMoneyDonated}</p>
+                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'13px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>{totalMoneyDonatedText}</p>
                 </div>
               </div>
 

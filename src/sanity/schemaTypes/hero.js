@@ -96,8 +96,7 @@ export default defineType({
       name: 'completedProjects',
       title: 'Completed Projects Count',
       type: 'string',
-      description: 'Display value for completed projects (e.g., "45+")',
-      validation: Rule => Rule.required(),
+      description: 'Display value for completed projects (e.g., "45+"). Optional.',
       initialValue: '45+'
     },
     {

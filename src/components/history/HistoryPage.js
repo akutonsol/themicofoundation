@@ -8,21 +8,25 @@ import { client, urlFor, queries } from "@/sanity/lib/sanity";
 const inter = { fontFamily: "'Inter', sans-serif" };
 
 const staticConversation = [
-  { name: "John Brown", side: "left", label: "Asked about the legacy", text: "I always knew The Mico had history, but I didn't realize the Foundation helped protect so much of that legacy." },
-  { name: "Eric Campbell", side: "right", label: "Shared the history", text: "Yes. The Foundation was created to help safeguard the assets, partnerships, and long-term support behind The Mico's mission." },
-  { name: "John Brown", side: "left", label: "Asked about the mission", text: "So it is not just about preserving buildings. It is about protecting the future of education too." },
-  { name: "Eric Campbell", side: "right", label: "Explained the purpose", text: "Exactly. Every project connects the institution's history with the needs of future generations." },
-  { name: "John Brown", side: "left", label: "Reflected on impact", text: "That makes the work feel bigger. It is stewardship, restoration, and opportunity all at once." },
-  { name: "Eric Campbell", side: "right", label: "Connected past and future", text: "That is the heart of the Foundation: honoring what came before while helping build what comes next." },
-  { name: "John Brown", side: "left", label: "Asked about support", text: "So each donation, project, and partnership becomes part of The Mico story." },
-  { name: "Eric Campbell", side: "right", label: "Closed the thought", text: "Yes. It keeps the legacy moving forward, generation after generation." },
-];
-
-const staticTimeline = [
-  { year: "1836", title: "A Historic Beginning", text: "The Mico began its journey as one of the oldest teacher-training institutions in the Western Hemisphere." },
-  { year: "1970s", title: "A Need For Expansion", text: "As the institution grew, leadership recognized the need to protect and privately manage assets connected to its development." },
-  { year: "1981", title: "The Foundation Was Established", text: "The Mico Foundation was created as a registered company in Jamaica to support, protect, and manage resources for The Mico." },
-  { year: "Today", title: "Legacy In Motion", text: "The Foundation continues to support educational development, restoration, partnerships, and future growth." },
+  {
+    title: "The 1950s and 1960s",
+    side: "left",
+    paragraphs: [
+      "Marked one of the most transformative periods in the history of The Mico University College (then known as Mico College). During these two decades, the College evolved from a traditional male teacher-training institution into a modern, co-educational college that played a central role in Jamaica's educational expansion before and after independence in 1962.",
+      "Overall, the 1950s were characterized by modernization, co-education, and curriculum reform, while the 1960s were defined by rapid expansion, alignment with Jamaica's Independence, and the broadening of teacher education into the secondary sector. These changes established the foundation for Mico's later evolution into one of the Caribbean's foremost institutions for teacher education.",
+    ],
+  },
+  {
+    title: "The 1970s",
+    side: "right",
+    paragraphs: [
+      "Marked one of the most transformative decades in the history of The Mico University College. Under the leadership of Dr. Errol Miller, who assumed the principalship in 1972, the institution expanded its national footprint to support Jamaica's sweeping educational reforms.",
+      "Key developments from this era include:",
+      "Secondary Education Expansion: Moving beyond its historical focus on primary and junior secondary training, Mico restructured its curriculum to prepare teachers across the full secondary spectrum with dual subject specializations. By the decade's end, Mico had become Jamaica's primary and largest producer of secondary school educators.",
+      "Special Education & Mico CARE: When the Jamaican government integrated special education into the public funding framework in 1974, it selected Mico as the designated national training institution for the field. In the late 1970s, Dr. Miller partnered with the Dutch government to establish the Child Assessment and Research in Education (CARE) Center—also known as the Diagnostic and Therapeutic Center.",
+      "Infrastructure Growth: To support its growing student body, the campus expanded significantly. Projects included a 300-bed female residence hall on Arnold Road (later named Errol Miller Hall), a new auditorium, a modern cafeteria (now the Bonham Carter Building), dedicated facilities for the Mico CARE Center, and initial architectural planning for a new library.",
+    ],
+  },
 ];
 
 const staticStory = [
@@ -40,7 +44,6 @@ const staticContent = {
   storyHeading: "The Story Behind The Foundation",
   storyParagraphs: staticStory,
   conversation: staticConversation,
-  timeline: staticTimeline,
   ctaHeading: "Help continue the legacy.",
   ctaButtonText: "Explore Projects",
   ctaButtonLink: "/projects",
@@ -56,104 +59,31 @@ function BackgroundTexture() {
   );
 }
 
-function TypewriterText({ text, active }) {
-  const [displayText, setDisplayText] = useState(active ? "" : text);
-  useEffect(() => {
-    if (!active) { setDisplayText(text); return; }
-    setDisplayText("");
-    let index = 0;
-    const interval = setInterval(() => {
-      index += 1;
-      setDisplayText(text.slice(0, index));
-      if (index >= text.length) clearInterval(interval);
-    }, 24);
-    return () => clearInterval(interval);
-  }, [text, active]);
-  return (
-    <>
-      {displayText}
-      {active && displayText.length < text.length && (
-        <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ duration: 0.7, repeat: Infinity }}>|</motion.span>
-      )}
-    </>
-  );
-}
-
-function TypingDots({ isLeft }) {
-  return (
-    <div className={`mt-6 flex items-center gap-1 ${isLeft ? "justify-start" : "justify-end"}`}>
-      {[0, 1, 2].map((dot) => (
-        <motion.span key={dot} animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: dot * 0.15 }}
-          className={`h-2 w-2 rounded-full ${isLeft ? "bg-[#24180A]/30" : "bg-[#24180A]/45"}`} />
-      ))}
-    </div>
-  );
-}
-
-function ChatBubble({ message, index, activeIndex }) {
+function ChatBubble({ message }) {
   const isLeft = message.side === "left";
-  const isVisible = index <= activeIndex;
-  const isTyping = index === activeIndex;
-  if (!isVisible) return null;
+  const paras = message.paragraphs || (message.text ? [message.text] : []);
   return (
-    <motion.div initial={{ opacity: 0, y: 48, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-      className={`flex flex-col ${isLeft ? "items-start" : "items-end"}`}>
-      <div className={`mb-4 flex items-center gap-3 ${isLeft ? "ml-2" : "mr-2 flex-row-reverse"}`}>
-        <div className={`flex h-11 w-11 items-center justify-center rounded-full text-[15px] font-bold ${isLeft ? "bg-[#24180A] text-[#FFFDF7]" : "bg-[#FFD900] text-[#24180A]"}`} style={inter}>
-          {message.name.split(" ").map((w) => w[0]).join("")}
+    <motion.div
+      initial={{ opacity: 0, y: 48 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`flex w-full flex-col ${isLeft ? "items-start" : "items-end"}`}>
+      <div className={`relative w-full max-w-[760px] rounded-[26px] border p-7 shadow-[var(--shadow-2)] sm:p-9 ${isLeft ? "rounded-tl-[6px] border-[#24180A]/15 bg-white text-[#24180A]" : "rounded-tr-[6px] border-[#24180A]/20 bg-[#FFD900] text-[#24180A]"}`}>
+        <h3 className="m-0 mb-4 text-[20px] font-bold tracking-[-0.03em] sm:text-[24px]" style={inter}>{message.title || message.name}</h3>
+        <div className="space-y-3">
+          {paras.map((p, i) => (
+            <p key={i} className="m-0 text-[14px] font-normal leading-[1.6] text-[#24180A]/85 sm:text-[15px]" style={inter}>{p}</p>
+          ))}
         </div>
-        <div className={isLeft ? "text-left" : "text-right"}>
-          <p className="m-0 text-[15px] font-bold uppercase tracking-[0.12em] text-[#24180A]" style={inter}>{message.name}</p>
-          <p className="m-0 mt-1 text-[13px] font-medium text-[#24180A]/50" style={inter}>{isTyping ? "Typing..." : message.label}</p>
-        </div>
-      </div>
-      <div className={`relative max-w-[620px] rounded-[30px] border p-8 shadow-[var(--shadow-2)] ${isLeft ? "rounded-tl-[6px] border-[#24180A]/15 bg-white text-[#24180A]" : "rounded-tr-[6px] border-[#24180A]/20 bg-[#FFD900] text-[#24180A]"}`}>
-        <p className="m-0 min-h-[132px] text-[28px] font-semibold leading-[1.25] tracking-[-0.04em] sm:text-[34px]" style={inter}>
-          <TypewriterText text={message.text} active={isTyping} />
-        </p>
-        {isTyping ? <TypingDots isLeft={isLeft} /> : (
-          <div className={`mt-6 flex items-center gap-1 ${isLeft ? "justify-start" : "justify-end"}`}>
-            {[0, 1, 2].map((dot) => (<span key={dot} className={`h-2 w-2 rounded-full ${isLeft ? "bg-[#24180A]/25" : "bg-[#24180A]/35"}`} />))}
-          </div>
-        )}
       </div>
     </motion.div>
   );
 }
 
 function ConversationSequence({ conversation }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  useEffect(() => {
-    const current = conversation[activeIndex];
-    if (!current) return;
-    const typingTime = Math.min(Math.max(current.text.length * 24 + 900, 2400), 5200);
-    const timer = setTimeout(() => {
-      if (activeIndex < conversation.length - 1) setActiveIndex(activeIndex + 1);
-      else setTimeout(() => setActiveIndex(0), 3000);
-    }, typingTime);
-    return () => clearTimeout(timer);
-  }, [activeIndex, conversation]);
-
-  // Build pairs
-  const pairs = [];
-  for (let i = 0; i < conversation.length; i += 2) pairs.push(i);
-
   return (
-    <div className="mx-auto max-w-[1500px] space-y-28">
-      {pairs.map((startIndex) => (
-        <motion.div key={startIndex}
-          initial={{ opacity: 0, y: 80 }}
-          animate={{ opacity: activeIndex >= startIndex ? 1 : 0.12, y: activeIndex >= startIndex ? 0 : 40 }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          className="grid gap-10 lg:grid-cols-2 lg:items-start"
-        >
-          <ChatBubble message={conversation[startIndex]} index={startIndex} activeIndex={activeIndex} />
-          {conversation[startIndex + 1] && (
-            <div className="pt-16 lg:pt-28">
-              <ChatBubble message={conversation[startIndex + 1]} index={startIndex + 1} activeIndex={activeIndex} />
-            </div>
-          )}
-        </motion.div>
+    <div className="mx-auto flex max-w-[1400px] flex-col gap-12">
+      {conversation.map((message, i) => (
+        <ChatBubble key={i} message={message} />
       ))}
     </div>
   );
@@ -175,7 +105,6 @@ export default function HistoryPage() {
             storyHeading: data.storyHeading || staticContent.storyHeading,
             storyParagraphs: data.storyParagraphs?.length > 0 ? data.storyParagraphs : staticContent.storyParagraphs,
             conversation: data.conversation?.length > 0 ? data.conversation : staticContent.conversation,
-            timeline: data.timeline?.length > 0 ? data.timeline : staticContent.timeline,
             ctaHeading: data.ctaHeading || staticContent.ctaHeading,
             ctaButtonText: data.ctaButtonText || staticContent.ctaButtonText,
             ctaButtonLink: data.ctaButtonLink || staticContent.ctaButtonLink,
@@ -246,24 +175,6 @@ export default function HistoryPage() {
           </div>
         </div>
       </motion.section>
-
-      {/* ── TIMELINE ── */}
-      <section className="bg-[#24180A] px-6 py-24 text-[#FFFDF7] sm:px-10 lg:px-20">
-        <div className="mx-auto max-w-[1500px]">
-          <motion.h2 initial={{ opacity: 0, y: 42 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ duration: 0.65 }}
-            className="mb-16 text-[64px] font-semibold leading-[0.95] tracking-[-0.07em] sm:text-[96px]" style={inter}>Historical Timeline</motion.h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {content.timeline.map((item, index) => (
-              <motion.div key={item.year} initial={{ opacity: 0, y: 46 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, amount: 0.25 }} transition={{ duration: 0.55, delay: index * 0.08 }}
-                className="rounded-[28px] border border-white/10 bg-white/[0.04] p-7">
-                <p className="mb-8 text-[46px] font-semibold tracking-[-0.06em] text-[#FFD900]" style={inter}>{item.year}</p>
-                <h3 className="mb-4 text-[28px] font-semibold tracking-[-0.04em]" style={inter}>{item.title}</h3>
-                <p className="text-[18px] leading-[1.55] text-white/70" style={inter}>{item.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA ── */}
       <section className="px-6 py-24 sm:px-10 lg:px-20">

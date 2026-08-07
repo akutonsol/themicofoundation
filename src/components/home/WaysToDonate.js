@@ -59,7 +59,7 @@ const ways = [
     tagColor: "#0A3D14",
     desc:   "Establish a named endowment fund that generates ongoing support for The Mico Foundation in perpetuity. An endowment is a lasting legacy — your gift continues to give long after it is made.",
     href:   "/endowments",
-    btnText: "Learn About Endowments",
+    btnText: "Your Endowment",
     btnBg:  "#5EDA71",
     accent: "#5EDA71",
     icon: (

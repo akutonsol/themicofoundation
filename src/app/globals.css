@@ -174,5 +174,7 @@ select:focus-visible,
 .home-stack > * + * { margin-top: clamp(48px, 6vw, 104px); }
 /* the marquee ribbon sits closer to its neighbours */
 .home-stack > .no-gap, .home-stack > .no-gap + * { margin-top: clamp(24px, 3vw, 48px); }
+/* chairman message → mission/vision sit closer together */
+.home-stack > .tight-top { margin-top: clamp(8px, 1.2vw, 20px); }
 
  
