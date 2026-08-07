@@ -338,17 +338,11 @@ export default function ProjectDetailPage({ slug }) {
               <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em" }}>{project.location}</span>
             </motion.div>
 
+            {/* Logo mode order: logo → story → title (all centered as a block, text left-aligned). */}
             {logoHero ? (
-              // Logo mode: story/description first, then the logo (title) — block centered, text left-aligned.
-              <motion.div initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                {project.titleLogoDescription && (
-                  <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(21px,2.2vw,34px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.2, letterSpacing: "-0.02em", margin: "0 0 24px", maxWidth: "22ch", textAlign: "left" }}>
-                    {project.titleLogoDescription}
-                  </p>
-                )}
-                <img src={project.titleLogoUrl} alt={project.title} style={{ maxWidth: "min(360px, 74%)", height: "auto", display: "block" }} />
-              </motion.div>
+              <motion.img src={project.titleLogoUrl} alt={project.title}
+                initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                style={{ maxWidth: "min(360px, 74%)", height: "auto", display: "block" }} />
             ) : (
               <motion.h1 initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                 style={{ fontFamily: "'Playfair Display',serif", fontSize: isBuxton ? "clamp(40px,5vw,78px)" : "clamp(54px,7.5vw,124px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.92, letterSpacing: "-0.03em", margin: 0, maxWidth: isBuxton ? "10ch" : "none" }}>
@@ -358,8 +352,15 @@ export default function ProjectDetailPage({ slug }) {
 
             {project.heroDescription && (
               <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}
-                style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.7, color: "rgba(255,255,255,0.55)", margin: "22px 0 0", maxWidth: "540px", fontWeight: 300 }}>
+                style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.7, color: "rgba(255,255,255,0.55)", margin: "22px 0 0", maxWidth: "540px", fontWeight: 300, textAlign: "left" }}>
                 {project.heroDescription}
+              </motion.p>
+            )}
+
+            {logoHero && project.titleLogoDescription && (
+              <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.32 }}
+                style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(21px,2.2vw,34px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.2, letterSpacing: "-0.02em", margin: "24px 0 0", maxWidth: "22ch", textAlign: "left" }}>
+                {project.titleLogoDescription}
               </motion.p>
             )}
 

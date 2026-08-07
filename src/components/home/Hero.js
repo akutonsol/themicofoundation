@@ -154,7 +154,7 @@ export default function Hero() {
   const locationText          = heroData?.locationText           || 'Jamaica, Buxton'
   const totalMoneyDonated     = heroData?.totalMoneyDonated      || '$34M'
   const totalMoneyDonatedText = heroData?.totalMoneyDonatedText  || 'Total money donated.'
-  const completedProjects     = heroData?.completedProjects      || '45+'
+  const completedProjects     = heroData?.completedProjects      || ''
   const completedProjectsText = heroData?.completedProjectsText  || 'Completed Projects.'
   const currentTargetName     = heroData?.currentTargetName      || 'Buxton Project'
   const targetAmount          = heroData?.targetAmount           || 10000000
@@ -453,10 +453,12 @@ export default function Hero() {
                   <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
                   <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'16px', color:'#fff' }}>{locationText}</span>
                 </div>
-                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#FFF7CC', borderRadius:'16px', padding:'16px', zIndex:2 }}>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'42px', fontWeight:600, color:'#665700', lineHeight:1, margin:0 }}>{completedProjects}</p>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'24px', color:'#998200', margin:0, whiteSpace:'nowrap' }}>{completedProjectsText}</p>
-                </div>
+                {completedProjects && (
+                  <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#FFF7CC', borderRadius:'16px', padding:'16px', zIndex:2 }}>
+                    <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'42px', fontWeight:600, color:'#665700', lineHeight:1, margin:0 }}>{completedProjects}</p>
+                    <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'24px', color:'#998200', margin:0, whiteSpace:'nowrap' }}>{completedProjectsText}</p>
+                  </div>
+                )}
               </div>
 
             </div>
@@ -515,10 +517,12 @@ export default function Hero() {
 
           {/* Stats */}
           <div style={{ display:'flex', gap:'16px', width:'100%' }}>
+            {completedProjects && (
             <div style={{ flex:1, backgroundColor:'#FFF7CC', borderRadius:'12px', padding:'8px', textAlign:'center' }}>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#665700', lineHeight:'46px', margin:0 }}>{completedProjects}</p>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', color:'#998200', margin:0 }}>{completedProjectsText}</p>
             </div>
+            )}
             <div style={{ flex:1, backgroundColor:'#D6F5DA', borderRadius:'12px', padding:'8px', textAlign:'center' }}>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#13531D', lineHeight:'46px', margin:0 }}>{totalMoneyDonated}</p>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', color:'#1D7C2B', margin:0 }}>{totalMoneyDonatedText}</p>
