@@ -27,6 +27,18 @@ const staticConversation = [
       "Infrastructure Growth: To support its growing student body, the campus expanded significantly. Projects included a 300-bed female residence hall on Arnold Road (later named Errol Miller Hall), a new auditorium, a modern cafeteria (now the Bonham Carter Building), dedicated facilities for the Mico CARE Center, and initial architectural planning for a new library.",
     ],
   },
+  {
+    title: "1996 - 2014",
+    side: "left",
+    paragraphs: [
+      "Professor Claude Montgomery Packer assumed leadership of The Mico Teachers' College in 1996. He was considered to be a visionary leader whose work has created a lasting legacy from which generations will benefit. His successful transition of The Mico Teachers' College to The Mico University College in 2006 could be considered his defining achievement. As Principal and later President of The Mico University College, The Mico experienced significant institutional transformation, academic expansion, and modernization.",
+      "Under his leadership, The Mico became a degree-granting tertiary institution. This milestone modernized the College's governance structure, replacing the traditional teacher-training model with a university system of faculties, academic boards, strengthened institutional management, expanding research capabilities, and a capacity for research, scholarship, and academic innovation. Beginning in 2004 and continuing through 2008, Packer spearheaded the introduction and expansion of undergraduate and graduate degree programmes.",
+      "Leveraging his background as a mathematician, Packer placed a strong emphasis on expanding and elevating Mathematics, Science, and Technology education across teacher training curricula, which pioneered STEM Education at The Mico.",
+      "Although the concept of The Mico Museum had its birth under R. A. Shirley, it was Packer who, through partnership with the Institute of Jamaica, oversaw the opening of the Mico Museum on the main campus in 2004. It was created to preserve historical artifacts related to the development of education in Jamaica from pre-emancipation to the modern era.",
+      "Packer worked with the Ministry of Education to develop national educational standards to align Mico's offerings with national requirements mandating degree-level qualifications for all teachers. Among his other achievements were partnerships with the Jamaican Police Academy to offer specialized training programmes to equip police instructors with structured teaching skills and the development of the Institute of Technology and Education Research (ITER) to serve as the research and outreach arm of The Mico.",
+      "Packer's vision was for The Mico to be an institution recognized not only for teaching but also for educational scholarship. In this regard, he partnered with academic institutions mainly in North America to improve the qualifications of the academic staff and joint programmes for both staff and students.",
+    ],
+  },
 ];
 
 const staticStory = [
