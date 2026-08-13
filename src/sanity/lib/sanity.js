@@ -80,6 +80,7 @@ export const queries = {
     status,
     location,
     description,
+    projectStory,
     completedItems,
     image,
     videoUrl,

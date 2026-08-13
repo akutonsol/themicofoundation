@@ -103,6 +103,7 @@ export default function ProjectDetailPage({ slug }) {
               raisedRaw: found.amountDonated,
               goalRaw: found.targetAmount,
               description: found.description ? found.description.split("\n\n").filter(Boolean) : [],
+              storyParagraphs: (found.projectStory || found.description || "").split("\n\n").map(s => s.trim()).filter(Boolean),
               heroDescription: found.heroDescription || "",
               showTitle: found.showTitle !== false,
               titleLogoUrl: found.titleLogo ? urlFor(found.titleLogo).width(700).url() : null,
@@ -345,7 +346,7 @@ export default function ProjectDetailPage({ slug }) {
                 style={{ maxWidth: "min(360px, 74%)", height: "auto", display: "block" }} />
             ) : (
               <motion.h1 initial={{ opacity: 0, y: 48 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                style={{ fontFamily: "'Playfair Display',serif", fontSize: isBuxton ? "clamp(40px,5vw,78px)" : "clamp(54px,7.5vw,124px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.92, letterSpacing: "-0.03em", margin: 0, maxWidth: isBuxton ? "10ch" : "none" }}>
+                style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(40px,5vw,78px)", fontWeight: 900, color: "#FFFFFF", lineHeight: 0.92, letterSpacing: "-0.03em", margin: 0, maxWidth: "12ch" }}>
                 {project.title}
               </motion.h1>
             )}
@@ -443,7 +444,7 @@ export default function ProjectDetailPage({ slug }) {
           </motion.div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "clamp(40px,5vw,64px)" }}>
-            {project.description.map((para, i) => (
+            {(project.storyParagraphs?.length ? project.storyParagraphs : project.description).map((para, i) => (
               <motion.p key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.08 }}
                 style={{ fontFamily: i === 0 ? "'Playfair Display',serif" : "'Inter',sans-serif", fontSize: i === 0 ? "clamp(24px,2.7vw,38px)" : "clamp(15px,1.5vw,18px)", lineHeight: i === 0 ? 1.3 : 1.8, color: i === 0 ? "#040617" : "#4A4D5A", margin: 0, marginLeft: i % 2 === 1 ? "clamp(40px,8vw,140px)" : 0, fontWeight: i === 0 ? 700 : 300, letterSpacing: i === 0 ? "-0.02em" : "0" }}>
                 {para}

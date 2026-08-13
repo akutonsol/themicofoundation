@@ -84,7 +84,7 @@ export default function Projects() {
 
   useEffect(() => {
     if (projects.length === 0) return
-    const timer = setInterval(() => next(), 5000)
+    const timer = setInterval(() => next(), 8000)
     return () => clearInterval(timer)
   }, [current, projects.length])
 
@@ -113,7 +113,7 @@ export default function Projects() {
         @media (max-width: 1100px) {
           .proj-inner { flex-direction: column; align-items: flex-start; gap: 40px; }
           .proj-text-col { flex: 1 1 auto !important; width: 100% !important; }
-          .proj-heading { font-size: clamp(48px, 8vw, 100px) !important; line-height: 1.02 !important; }
+          .proj-heading { font-size: clamp(36px, 6vw, 64px) !important; line-height: 1.04 !important; }
         }
         @media (max-width: 768px) {
           .proj-desktop { display: none !important; }
@@ -155,7 +155,7 @@ export default function Projects() {
               <div className="proj-text-col" style={{ flex:'0 0 816px', display:'flex', flexDirection:'column', gap:'16px' }}>
                 <div style={{ paddingBottom:'8px' }}>
                   <p style={{ ...inter, fontSize:'clamp(20px,2.4vw,32px)', fontWeight:600, color:'#6F7181', letterSpacing:'-0.32px', lineHeight:1.4, margin:0, textTransform:'capitalize' }}>{p.label}</p>
-                  <h2 className="proj-heading" style={{ ...inter, fontSize:'clamp(54px,7vw,100px)', fontWeight:800, color:'#FFFFFF', letterSpacing:'-1px', lineHeight:'96.93%', margin:0, textTransform:'capitalize' }}>{p.title}</h2>
+                  <h2 className="proj-heading" style={{ ...inter, fontSize:'clamp(40px,5vw,72px)', fontWeight:800, color:'#FFFFFF', letterSpacing:'-1px', lineHeight:1.02, margin:0, textTransform:'capitalize' }}>{p.title}</h2>
                 </div>
 
                 {p.type === 'active' ? (
@@ -173,7 +173,7 @@ export default function Projects() {
                   </div>
                 )}
 
-                <a href="/projects" style={{ ...inter, fontSize:'24px', color:p.learnColor, letterSpacing:'0.24px', lineHeight:'38px', textDecoration:'underline' }}>Learn more</a>
+                <a href={`/projects?project=${p.slug}`} style={{ ...inter, fontSize:'24px', color:p.learnColor, letterSpacing:'0.24px', lineHeight:'38px', textDecoration:'underline' }}>Learn more</a>
 
                 <div style={{ marginTop:'32px', position:'relative' }}>
                   <div style={{ height:'46px', position:'relative' }}>
@@ -214,9 +214,9 @@ export default function Projects() {
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                   </button>
-                  <div style={{ display:'flex', gap:'8px' }}>
+                  <div style={{ display:'flex', gap:'8px', flexWrap:'wrap', justifyContent:'center', maxWidth:'46%' }}>
                     {projects.map((_,i) => (
-                      <button key={i} onClick={() => goTo(i)} style={{ width:'52px', height:'12px', borderRadius:'90px', backgroundColor:i===current?'#FFD900':'#d9d9d9', opacity:i===current?1:0.4, border:'none', cursor:'pointer', padding:0, transition:'all 0.3s', outline:'none' }} />
+                      <button key={i} onClick={() => goTo(i)} style={{ width:i===current?'32px':'20px', height:'10px', borderRadius:'90px', backgroundColor:i===current?'#FFD900':'#d9d9d9', opacity:i===current?1:0.4, border:'none', cursor:'pointer', padding:0, transition:'all 0.3s', outline:'none', flexShrink:0 }} />
                     ))}
                   </div>
                   <button onClick={next} style={{ display:'flex', alignItems:'center', gap:'16px', background:'none', border:'none', cursor:'pointer', padding:0, outline:'none' }}>
@@ -264,7 +264,7 @@ export default function Projects() {
             <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
               <div style={{ paddingBottom:'8px' }}>
                 <p style={{ ...inter, fontSize:'24px', fontWeight:600, color:'#6F7181', letterSpacing:'-0.24px', lineHeight:'34px', margin:0, textTransform:'capitalize', textAlign:'center' }}>{p.label}</p>
-                <h2 style={{ ...inter, fontSize:'56px', fontWeight:700, color:'#FFFFFF', letterSpacing:'-1.12px', lineHeight:'60px', margin:0, textAlign:'center' }}>{p.title}</h2>
+                <h2 style={{ ...inter, fontSize:'42px', fontWeight:700, color:'#FFFFFF', letterSpacing:'-0.9px', lineHeight:'46px', margin:0, textAlign:'center' }}>{p.title}</h2>
               </div>
               {p.type === 'active' ? (
                 <div style={{ borderLeft:'1px solid #E5E6EB', paddingLeft:'8px', marginLeft:'8px' }}>
@@ -280,7 +280,7 @@ export default function Projects() {
                   ))}
                 </div>
               )}
-              <a href="/projects" style={{ ...inter, fontSize:'20px', color:p.learnColor, letterSpacing:'0.2px', lineHeight:'32px', textDecoration:'underline' }}>Learn more</a>
+              <a href={`/projects?project=${p.slug}`} style={{ ...inter, fontSize:'20px', color:p.learnColor, letterSpacing:'0.2px', lineHeight:'32px', textDecoration:'underline' }}>Learn more</a>
             </div>
 
             {/* Photo */}

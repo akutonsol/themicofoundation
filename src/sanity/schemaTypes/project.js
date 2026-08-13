@@ -59,8 +59,15 @@ export default defineType({
       name: 'description',
       title: 'Project Description',
       type: 'text',
-      description: 'Description shown for active projects',
+      description: 'Short description shown for active projects (cards, sliders).',
       hidden: ({ document }) => document?.status === 'complete'
+    },
+    {
+      name: 'projectStory',
+      title: 'Project Story (full — for the "Project Story" section on the detail page)',
+      type: 'text',
+      rows: 16,
+      description: 'The full story shown in the "Project Story" section of the project detail page. Separate paragraphs with a blank line. If empty, the Project Description is used.',
     },
     {
       name: 'completedItems',

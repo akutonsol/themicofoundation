@@ -98,7 +98,7 @@ export default function FoundationProjectsDeck() {
           }
         `);
         if (data?.length > 0) {
-          setProjects(data.map((p, i) => {
+          const mapped = data.map((p, i) => {
             const { preview, continuation } = splitReading(p.description || '');
             return {
               id: p._id,
@@ -112,7 +112,14 @@ export default function FoundationProjectsDeck() {
               slug: p.slug,
               href: `/projectdetail/${p.slug}`,
             };
-          }));
+          });
+          setProjects(mapped);
+          // Preselect the project passed via ?project=<slug> (e.g. from a homepage "Learn more").
+          const wanted = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('project') : null;
+          if (wanted) {
+            const idx = mapped.findIndex(p => p.slug === wanted);
+            if (idx >= 0) setActive(idx);
+          }
         }
       } catch (err) {
         console.error('Error fetching active projects:', err);
