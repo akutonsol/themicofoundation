@@ -152,11 +152,11 @@ export default function Hero() {
   const videoId               = heroData?.videoId                || 'dQw4w9WgXcQ'
   const bgVideoUrl            = heroData?.backgroundVideoUrl     || null
   const locationText          = heroData?.locationText           || 'Jamaica, Buxton'
-  const totalMoneyDonated     = heroData?.totalMoneyDonated      || '$34M'
-  const totalMoneyDonatedText = heroData?.totalMoneyDonatedText  || 'Total money donated.'
+  const totalMoneyDonated     = heroData?.totalMoneyDonated      || ''
+  const totalMoneyDonatedText = heroData?.totalMoneyDonatedText  || ''
   const completedProjects     = heroData?.completedProjects      || ''
   const completedProjectsText = heroData?.completedProjectsText  || 'Completed Projects.'
-  const currentTargetName     = heroData?.currentTargetName      || 'Buxton Project'
+  const currentTargetName     = heroData?.currentTargetName      || ''
   const targetAmount          = heroData?.targetAmount           || 10000000
   const amountDonated         = heroData?.amountDonated          || 6500000
 
@@ -397,10 +397,12 @@ export default function Hero() {
                   <Image src={staticAssets.icons.location} alt="" width={24} height={24} />
                   <span style={{ fontFamily:"'Inter',sans-serif", fontSize:'16px', color:'#fff' }}>{locationText}</span>
                 </div>
-                <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'10px', padding:'8px 12px', zIndex:2 }}>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', fontWeight:700, color:'#13531D', lineHeight:1.15, margin:0 }}>{totalMoneyDonated}</p>
-                  <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'13px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>{totalMoneyDonatedText}</p>
-                </div>
+                {(totalMoneyDonated || totalMoneyDonatedText) && (
+                  <div style={{ position:'absolute', bottom:'24px', right:'24px', backgroundColor:'#D6F5DA', borderRadius:'10px', padding:'8px 12px', zIndex:2 }}>
+                    {totalMoneyDonated && <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', fontWeight:700, color:'#13531D', lineHeight:1.15, margin:0 }}>{totalMoneyDonated}</p>}
+                    {totalMoneyDonatedText && <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'13px', color:'#1D7C2B', margin:0, whiteSpace:'nowrap' }}>{totalMoneyDonatedText}</p>}
+                  </div>
+                )}
               </div>
 
               {/* Center */}
@@ -436,7 +438,7 @@ export default function Hero() {
                   </AnimatePresence>
                   <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)', zIndex:1 }} />
                   <div style={{ position:'absolute', top:'24px', left:'24px', zIndex:2 }}>
-                    <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#fff', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{currentTargetName}</p>
+                    {currentTargetName && <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#fff', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{currentTargetName}</p>}
                   </div>
                 </div>
               </div>
@@ -510,9 +512,11 @@ export default function Hero() {
           <div style={{ width:'100%', height:'271px', borderRadius:'12px', overflow:'hidden', position:'relative' }}>
             <Image src={bottomImg} alt="Campus" fill style={{ objectFit:'cover' }} sizes="100vw" />
             <div style={{ position:'absolute', inset:0, backgroundColor:'rgba(0,0,0,0.45)' }} />
+            {currentTargetName && (
             <div style={{ position:'absolute', top:'12px', left:'50%', transform:'translateX(-50%)', textAlign:'center', width:'262px' }}>
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'white', lineHeight:'46px', margin:0, textTransform:'capitalize' }}>{currentTargetName}</p>
             </div>
+            )}
           </div>
 
           {/* Stats */}
@@ -523,10 +527,12 @@ export default function Hero() {
               <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', color:'#998200', margin:0 }}>{completedProjectsText}</p>
             </div>
             )}
+            {(totalMoneyDonated || totalMoneyDonatedText) && (
             <div style={{ flex:1, backgroundColor:'#D6F5DA', borderRadius:'12px', padding:'8px', textAlign:'center' }}>
-              <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#13531D', lineHeight:'46px', margin:0 }}>{totalMoneyDonated}</p>
-              <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', color:'#1D7C2B', margin:0 }}>{totalMoneyDonatedText}</p>
+              {totalMoneyDonated && <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'32px', fontWeight:600, color:'#13531D', lineHeight:'46px', margin:0 }}>{totalMoneyDonated}</p>}
+              {totalMoneyDonatedText && <p style={{ fontFamily:"'Inter',sans-serif", fontSize:'18px', color:'#1D7C2B', margin:0 }}>{totalMoneyDonatedText}</p>}
             </div>
+            )}
           </div>
         </motion.div>
       </div>
