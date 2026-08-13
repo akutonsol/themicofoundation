@@ -443,10 +443,10 @@ export default function ProjectDetailPage({ slug }) {
             <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "12px", fontWeight: 600, color: "#040617", textTransform: "uppercase", letterSpacing: "0.16em" }}>Project Story</span>
           </motion.div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(40px,5vw,64px)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(28px,3vw,44px)" }}>
             {(project.storyParagraphs?.length ? project.storyParagraphs : project.description).map((para, i) => (
-              <motion.p key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.08 }}
-                style={{ fontFamily: i === 0 ? "'Playfair Display',serif" : "'Inter',sans-serif", fontSize: i === 0 ? "clamp(24px,2.7vw,38px)" : "clamp(15px,1.5vw,18px)", lineHeight: i === 0 ? 1.3 : 1.8, color: i === 0 ? "#040617" : "#4A4D5A", margin: 0, marginLeft: i % 2 === 1 ? "clamp(40px,8vw,140px)" : 0, fontWeight: i === 0 ? 700 : 300, letterSpacing: i === 0 ? "-0.02em" : "0" }}>
+              <motion.p key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.06 }}
+                style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.4vw,34px)", lineHeight: 1.35, color: "#040617", margin: 0, fontWeight: 700, letterSpacing: "-0.02em" }}>
                 {para}
               </motion.p>
             ))}

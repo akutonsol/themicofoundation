@@ -13,14 +13,12 @@ export default defineType({
       title: 'Main Headline',
       type: 'string',
       description: 'Primary hero headline',
-      validation: Rule => Rule.required()
     },
     {
       name: 'subHeadLine',
       title: 'Sub Headline',
       type: 'text',
       description: 'Supporting text under main headline',
-      validation: Rule => Rule.required()
     },
     {
       name: 'heroImages',
@@ -59,7 +57,6 @@ export default defineType({
       title: 'YouTube Video ID',
       type: 'string',
       description: 'Just the video ID from YouTube URL (e.g., dQw4w9WgXcQ). Used as a fallback if no background MP4 is uploaded.',
-      validation: Rule => Rule.required()
     },
     {
       name: 'backgroundVideo',
@@ -73,7 +70,6 @@ export default defineType({
       title: 'Location Description',
       type: 'string',
       description: 'Location text displayed on images (e.g., "Jamaica, Buxton")',
-      validation: Rule => Rule.required(),
       initialValue: 'Jamaica, Buxton'
     },
     {
@@ -81,7 +77,6 @@ export default defineType({
       title: 'Total Money Donated',
       type: 'string',
       description: 'Display value for total donations (e.g., "$34M")',
-      validation: Rule => Rule.required(),
       initialValue: '$34M'
     },
     {
@@ -89,7 +84,6 @@ export default defineType({
       title: 'Total Money Donated Label',
       type: 'string',
       description: 'Label text below the amount',
-      validation: Rule => Rule.required(),
       initialValue: 'Total money donated.'
     },
     {
@@ -104,7 +98,6 @@ export default defineType({
       title: 'Completed Projects Label',
       type: 'string',
       description: 'Label text below the count',
-      validation: Rule => Rule.required(),
       initialValue: 'Completed Projects.'
     },
     {
@@ -112,7 +105,6 @@ export default defineType({
       title: 'Current Target Name',
       type: 'string',
       description: 'Name of the current target (e.g., "Bruxton College")',
-      validation: Rule => Rule.required(),
       initialValue: 'Bruxton College'
     },
     {
@@ -120,7 +112,7 @@ export default defineType({
       title: 'Target Amount ($)',
       type: 'number',
       description: 'Total target amount in dollars (e.g., 10000000 for $10M)',
-      validation: Rule => Rule.required().min(0),
+      validation: Rule => Rule.min(0),
       initialValue: 10000000
     },
     {
@@ -128,7 +120,7 @@ export default defineType({
       title: 'Amount Donated ($)',
       type: 'number',
       description: 'Current amount donated in dollars (e.g., 6500000 for $6.5M)',
-      validation: Rule => Rule.required().min(0),
+      validation: Rule => Rule.min(0),
       initialValue: 6500000
     },
     {
@@ -136,14 +128,12 @@ export default defineType({
       title: 'Total Donations Count',
       type: 'string',
       description: 'Display text for total donations (e.g., "12391+")',
-      validation: Rule => Rule.required()
     },
     {
       name: 'donationText',
       title: 'Donation Count Label',
       type: 'string',
       description: 'Text shown next to donation count',
-      validation: Rule => Rule.required()
     },
     {
       name: 'ctaButton',
@@ -154,13 +144,11 @@ export default defineType({
           name: 'text',
           title: 'Button Text',
           type: 'string',
-          validation: Rule => Rule.required()
         },
         {
           name: 'link',
           title: 'Button Link',
           type: 'string',
-          validation: Rule => Rule.required()
         }
       ]
     }
