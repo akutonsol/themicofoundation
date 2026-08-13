@@ -28,8 +28,21 @@ const staticConversation = [
     ],
   },
   {
-    title: "1996 - 2014",
+    title: "1980s & 1990s",
     side: "left",
+    paragraphs: [
+      "1981–1995 was the era of Renford A. Shirley. He led a period of major physical expansion, academic innovation, and community outreach. Building on the expansion initiated by his predecessor, Errol Lawrence Miller, Shirley shifted the institution from primarily expanding enrollment to strengthening its academic, physical, and professional capacity. His administration laid much of the foundation for Mico's eventual transition to university college status in 2006.",
+      "R. A. Shirley's tenure saw the development of The Mico Foundation. Although it was conceptualized in 1979 under the then-principal Errol Lawrence Miller, it was consolidated during R. A. Shirley's tenure to help manage institutional assets, land, and endowment funds independently.",
+      "Shirley expanded the special education programme through a partnership with the University of the West Indies (UWI) to introduce a joint Bachelor of Education degree in Special Education. This made Mico a major regional hub for special education teacher training.",
+      "He built on the Child Assessment Research and Education (CARE) by continuing to engage the financial and technical support from the Government of the Netherlands to allow the CARE Center to become a premier facility for diagnosing and supporting children with learning challenges and special needs in the English-speaking Caribbean. He spearheaded the construction of the New Library building, which now bears his name, to support tertiary-level research and expanded academic offerings.",
+      "The Indian, African, and Caribbean (INAFCA) Museum was integrated into the library facility to preserve cultural heritage and integrate historical artifacts into the educational curriculum.",
+      "His collaboration with the Kiwanis Club of North St. Andrew resulted in the building of a facility that housed The Mico Youth Counselling & Development Center to help provide counselling for emotional, behavioural, and substance abuse issues in the surrounding community, while serving as a practical training lab for students of guidance and counselling.",
+      "By expanding degree programmes, enlarging physical capacity, and deepening research facilities, Shirley's administration laid essential groundwork for Mico's eventual elevation to full University College status in 2006.",
+    ],
+  },
+  {
+    title: "1996 - 2014",
+    side: "right",
     paragraphs: [
       "Professor Claude Montgomery Packer assumed leadership of The Mico Teachers' College in 1996. He was considered to be a visionary leader whose work has created a lasting legacy from which generations will benefit. His successful transition of The Mico Teachers' College to The Mico University College in 2006 could be considered his defining achievement. As Principal and later President of The Mico University College, The Mico experienced significant institutional transformation, academic expansion, and modernization.",
       "Under his leadership, The Mico became a degree-granting tertiary institution. This milestone modernized the College's governance structure, replacing the traditional teacher-training model with a university system of faculties, academic boards, strengthened institutional management, expanding research capabilities, and a capacity for research, scholarship, and academic innovation. Beginning in 2004 and continuing through 2008, Packer spearheaded the introduction and expansion of undergraduate and graduate degree programmes.",
