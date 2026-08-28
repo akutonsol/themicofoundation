@@ -32,9 +32,9 @@ const dropdownCols = [
 const navLinks = [
   { label: 'Home',          href: '/' },
   { label: 'About Us',      href: '/about', dropdown: true },
-  { label: 'Endowments',    href: '/endowments' },
   { label: 'Projects',      href: '/project-overview' },
   { label: 'News & Events', href: '/news' },
+  { label: 'Endowments',    href: '/endowments' },
   { label: 'Pledge',        href: '/pledge' },
 ]
 

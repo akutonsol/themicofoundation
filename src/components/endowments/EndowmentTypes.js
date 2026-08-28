@@ -214,6 +214,11 @@ export default function EndowmentTypes() {
                     style={{ ...inter, background: loading ? 'rgba(255,255,255,0.2)' : 'linear-gradient(180deg, #FFD54A 0%, #f3af19 100%)', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, boxShadow: '0 12px 30px rgba(243,175,25,0.32)' }}>
                     {loading ? 'Submitting...' : 'Make Endowment'}
                   </button>
+                  <a href="/endowments/fund-management"
+                    className="mt-1 block text-center text-[15px] underline underline-offset-4"
+                    style={{ ...inter, color: '#6F7181' }}>
+                    How your fund is managed
+                  </a>
                 </div>
               </>
             )}

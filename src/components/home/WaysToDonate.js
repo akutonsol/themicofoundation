@@ -53,7 +53,7 @@ const ways = [
   },
   {
     number: "03",
-    title:  "Create an Endowment",
+    title:  "Make an Endowment",
     tag:    "Legacy Giving",
     tagBg:  "#5EDA71",
     tagColor: "#0A3D14",

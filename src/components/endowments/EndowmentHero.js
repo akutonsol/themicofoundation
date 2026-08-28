@@ -154,9 +154,14 @@ export default function EndowmentsHero() {
         {/* Center content */}
         <div style={{ position: 'relative', zIndex: 10, maxWidth: '940px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '800px', textAlign: 'center', padding: '0 20px' }}>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            style={{ ...sora, fontSize: 'clamp(34px, 5vw, 64px)', fontWeight: 700, color: '#040617', lineHeight: 1.05, letterSpacing: '-0.03em', margin: '0 0 80px', maxWidth: '900px' }}>
+            style={{ ...sora, fontSize: 'clamp(24px, 3.2vw, 40px)', fontWeight: 700, color: '#040617', lineHeight: 1.1, letterSpacing: '-0.03em', margin: '0 0 16px', maxWidth: '900px' }}>
             {content.heroHeading}
           </motion.h1>
+
+          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
+            style={{ ...manrope, fontSize: 'clamp(16px, 1.8vw, 20px)', color: '#6F7181', lineHeight: 1.5, margin: '0 0 80px', maxWidth: '640px' }}>
+            Grow your endowment
+          </motion.p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '80px 100px', width: '100%', marginBottom: '60px' }}>
             {content.stats.map((stat, i) => (
