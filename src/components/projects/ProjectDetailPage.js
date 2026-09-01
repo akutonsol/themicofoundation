@@ -360,7 +360,7 @@ export default function ProjectDetailPage({ slug }) {
 
             {logoHero && project.titleLogoDescription && (
               <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.32 }}
-                style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(21px,2.2vw,34px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.2, letterSpacing: "-0.02em", margin: "24px 0 0", maxWidth: "22ch", textAlign: "left" }}>
+                style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(18px,1.9vw,26px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.25, letterSpacing: "-0.02em", margin: "24px 0 0", maxWidth: "38ch", textAlign: "left" }}>
                 {project.titleLogoDescription}
               </motion.p>
             )}

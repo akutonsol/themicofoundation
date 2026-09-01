@@ -119,25 +119,24 @@ export default function PeopleImpact() {
 
       {/* DESKTOP */}
       <div className="impact-desktop">
-        <div style={{ display:'flex', flexDirection:'column', gap:'48px' }}>
-          <motion.h2 
-            initial={{ opacity:0, y:20 }} 
-            whileInView={{ opacity:1, y:0 }} 
-            viewport={{ once:true }} 
+        <div style={{ display:'flex', flexDirection:'column', gap:'20px' }}>
+          <motion.h2
+            initial={{ opacity:0, y:20 }}
+            whileInView={{ opacity:1, y:0 }}
+            viewport={{ once:true }}
             transition={{ duration:0.6 }}
             style={{ ...inter, fontSize:'75px', fontWeight:600, color:'#040617', letterSpacing:'-0.75px', lineHeight:'85px', margin:0 }}>
             The People Behind the Impact
           </motion.h2>
 
           <AnimatePresence mode="wait">
-            <motion.div 
+            <motion.div
               key={person.id}
               initial={{ opacity:0, x: direction > 0 ? 30 : -30 }}
               animate={{ opacity:1, x:0 }}
               exit={{ opacity:0, x: direction > 0 ? -30 : 30 }}
               transition={{ duration:0.4 }}
               style={{ display:'flex', flexDirection:'column', gap:0 }}>
-              <p style={{ ...inter, fontSize:'32px', fontWeight:600, color:'#6F7181', letterSpacing:'-0.32px', lineHeight:'46px', margin:0 }}>"</p>
               <p style={{ ...inter, fontSize:'32px', fontWeight:600, color:'#6F7181', letterSpacing:'-0.32px', lineHeight:'46px', margin:0 }}>{person.quote}</p>
             </motion.div>
           </AnimatePresence>
@@ -253,7 +252,6 @@ export default function PeopleImpact() {
             exit={{ opacity:0, x: direction > 0 ? -30 : 30 }}
             transition={{ duration:0.4 }}
             style={{ textAlign:'center', width:'100%' }}>
-            <p style={{ ...inter, fontSize:'26px', fontWeight:600, color:'#6F7181', letterSpacing:'-0.26px', lineHeight:'40px', margin:'0 0 0' }}>"</p>
             <p style={{ ...inter, fontSize:'26px', fontWeight:600, color:'#6F7181', letterSpacing:'-0.26px', lineHeight:'40px', margin:0 }}>
               {person.quote}
             </p>
