@@ -204,10 +204,24 @@ export default function FoundationProjectsDeck() {
                 <div style={{ padding: '32px 36px 36px' }}>
                   <h3 style={{ ...inter, fontSize: 'clamp(28px,3vw,42px)', fontWeight: 700, color: '#FFFFFF', lineHeight: 1, letterSpacing: '-0.04em', margin: '0 0 16px' }}>{activeProject.title}</h3>
                   <p style={{ ...inter, fontSize: '17px', lineHeight: 1.65, color: 'rgba(255,255,255,0.55)', margin: '0 0 32px' }}>{activeProject.previewDesc}{activeProject.restDesc ? '…' : ''}</p>
-                  <div style={{ display: 'flex', gap: '6px', marginBottom: '28px' }}>
-                    {projects.map((_, i) => (
-                      <button key={i} onClick={() => setActive(i)} style={{ height: '4px', width: i === active ? '32px' : '8px', borderRadius: '100px', background: i === active ? activeProject.accent : 'rgba(255,255,255,0.15)', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease' }} />
-                    ))}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px' }}>
+                    <div style={{ display: 'flex', gap: '6px', flex: 1 }}>
+                      {projects.map((_, i) => (
+                        <button key={i} onClick={() => setActive(i)} style={{ height: '4px', width: i === active ? '32px' : '8px', borderRadius: '100px', background: i === active ? activeProject.accent : 'rgba(255,255,255,0.15)', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease' }} />
+                      ))}
+                    </div>
+                    {projects.length > 1 && (
+                      <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                        <button onClick={prev} aria-label="Previous project"
+                          style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white', flexShrink: 0 }}>
+                          <ArrowLeft size={14} />
+                        </button>
+                        <button onClick={next} aria-label="Next project"
+                          style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white', flexShrink: 0 }}>
+                          <ArrowRight size={14} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <button onClick={() => setModalProject(activeProject)}
