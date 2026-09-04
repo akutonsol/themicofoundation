@@ -61,7 +61,7 @@ export default function SecretaryManager() {
         <motion.h2
           initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.65 }}
-          className="text-[72px] font-semibold leading-[0.9] tracking-[-0.08em] text-[#040617] sm:text-[110px] lg:text-[150px]"
+          className="text-[40px] font-semibold leading-[0.95] tracking-[-0.04em] text-[#040617] sm:text-[52px] lg:text-[64px]"
           style={inter}
         >
           Secretary Managers

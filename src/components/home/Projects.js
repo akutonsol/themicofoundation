@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
-import { client, urlFor, queries } from '@/sanity/lib/sanity'
+import { client, urlFor, queries, pickProjectImage } from '@/sanity/lib/sanity'
 
 const imgLocation     = "/images/home-static/location-pin.svg"
 const imgCheck        = "/images/home-static/check.png"
@@ -64,7 +64,7 @@ export default function Projects() {
       location:       project.location,
       desc:           project.description,
       completedItems: project.completedItems || [],
-      photo:          urlFor(project.image).width(1200).url(),
+      photo:          urlFor(pickProjectImage(project, 'homeSlider')).width(1200).url(),
       percent:        percentage,
       filled,
       mobileFilled,

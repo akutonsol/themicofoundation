@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, X, ArrowRight, ArrowLeft } from "lucide-react";
-import { client } from "@/sanity/lib/sanity";
+import { client, urlFor, pickProjectImage } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
 // Foundation-blended palette: gold + green kept; off-brand orange/purple/pink
@@ -94,12 +94,13 @@ export default function FoundationProjectsDeck() {
         const data = await client.fetch(`
           *[_type == "project" && status == "active"] | order(order asc) {
             _id, title, "slug": slug.current, label, status,
-            location, description, "image": image.asset->url, order
+            location, description, image, gallery[]{ image, alt, placements }, order
           }
         `);
         if (data?.length > 0) {
           const mapped = data.map((p, i) => {
             const { preview, continuation } = splitReading(p.description || '');
+            const placementImage = pickProjectImage(p, 'projectsPage');
             return {
               id: p._id,
               num: String(i + 1).padStart(2, '0'),
@@ -107,7 +108,7 @@ export default function FoundationProjectsDeck() {
               title: p.title,
               previewDesc: preview,
               restDesc: continuation,
-              image: p.image || null,
+              image: placementImage ? urlFor(placementImage).width(1200).url() : null,
               accent: ACCENTS[i % ACCENTS.length],
               slug: p.slug,
               href: `/projectdetail/${p.slug}`,

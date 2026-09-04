@@ -185,25 +185,57 @@ export default defineType({
 {
   name: 'gallery',
   title: 'Photo Gallery',
-  description: 'Select multiple images at once: click Add item → hold Cmd/Ctrl and select all photos → Upload',
+  description: 'Upload images for this project and choose where each one should be used across the site. If no image is tagged for a given placement, the main "Project Image" above is used there instead.',
   type: 'array',
   of: [
     {
-      type: 'image',
-      options: { 
-        hotspot: true,
-        accept: 'image/*',
-        storeOriginalFilename: true,
-      },
+      type: 'object',
+      name: 'galleryImage',
       fields: [
-        { 
-          name: 'alt', 
-          title: 'Alt Text', 
+        {
+          name: 'image',
+          title: 'Image',
+          type: 'image',
+          options: {
+            hotspot: true,
+            accept: 'image/*',
+            storeOriginalFilename: true,
+          },
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'alt',
+          title: 'Alt Text',
           type: 'string',
-          description: 'Optional caption for this photo'
-        }
-      ]
-    }
+          description: 'Optional caption for this photo',
+        },
+        {
+          name: 'placements',
+          title: 'Show this image on',
+          type: 'array',
+          of: [{ type: 'string' }],
+          options: {
+            list: [
+              { title: 'Homepage Slider', value: 'homeSlider' },
+              { title: 'Projects Page', value: 'projectsPage' },
+              { title: 'Project Detail Page', value: 'projectDetail' },
+            ],
+            layout: 'grid',
+          },
+          description: 'Select every place this image should be used. Leave empty to use it as a gallery-only photo (not shown in a specific slot).',
+        },
+      ],
+      preview: {
+        select: { media: 'image', alt: 'alt', placements: 'placements' },
+        prepare({ media, alt, placements }) {
+          return {
+            title: alt || 'Untitled image',
+            subtitle: (placements || []).length > 0 ? placements.join(', ') : 'Gallery only',
+            media,
+          }
+        },
+      },
+    },
   ],
   options: {
     layout: 'grid',

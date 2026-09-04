@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight, MapPin, Play, X } from "lucide-react";
-import { client, urlFor, queries } from "@/sanity/lib/sanity";
+import { client, urlFor, queries, pickProjectImage } from "@/sanity/lib/sanity";
 
 // Extract an 11-char YouTube id from a full URL, youtu.be link, or raw id.
 function getYouTubeId(url) {
@@ -94,7 +94,10 @@ export default function ProjectDetailPage({ slug }) {
               label: found.label,
               title: found.title,
               location: found.location,
-              mediaUrl: found.image ? urlFor(found.image).width(2200).url() : staticProjects[0].mediaUrl,
+              mediaUrl: (() => {
+                const img = pickProjectImage(found, 'projectDetail');
+                return img ? urlFor(img).width(2200).url() : staticProjects[0].mediaUrl;
+              })(),
               videoUrl: found.videoUrl || null,
               videoFileUrl: found.videoFileUrl || null,
               progress,

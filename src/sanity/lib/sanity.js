@@ -15,6 +15,14 @@ export function urlFor(source) {
   return builder.image(source)
 }
 
+// Picks the gallery image tagged for a given placement ('homeSlider' | 'projectsPage' | 'projectDetail'),
+// falling back to the project's main image if none is tagged. Pass the raw project object
+// (with `image` and `gallery[]{ image, alt, placements }` from the `projects` query).
+export function pickProjectImage(project, placement) {
+  const tagged = project?.gallery?.find(g => g?.image && g?.placements?.includes(placement))
+  return tagged?.image || project?.image || null
+}
+
 export const queries = {
   hero: `*[_type == "hero"][0]{
     mainHeadline,
@@ -83,6 +91,7 @@ export const queries = {
     projectStory,
     completedItems,
     image,
+    gallery[]{ image, alt, placements },
     videoUrl,
     targetAmount,
     amountDonated,

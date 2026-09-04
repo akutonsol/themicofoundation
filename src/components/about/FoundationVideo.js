@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Play, X } from "lucide-react";
 import { client, queries } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
@@ -64,28 +64,9 @@ function HeroDeck({ deck, videoId, onPlay }) {
   );
 }
 
-// Deck 2+ — full width reading content
-function TextDeck({ deck }) {
-  return (
-    <div className="absolute inset-0 z-20 flex flex-col justify-center p-8 sm:p-12 lg:p-16">
-      <div className="w-full">
-        <div className="mb-8 h-1 w-16 bg-[#FFD900] rounded-full" />
-        <h3 className="w-full text-[40px] font-semibold leading-[1.05] tracking-[-0.04em] text-white sm:text-[56px] lg:text-[72px]" style={inter}>
-          {deck.title}
-        </h3>
-        <p className="mt-8 w-full text-[20px] leading-[1.8] text-white/70 sm:text-[24px] lg:text-[28px]" style={inter}>
-          {deck.body}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export default function FoundationVideo() {
   const [content, setContent] = useState(staticContent);
-  const [currentDeck, setCurrentDeck] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     async function fetchContent() {
@@ -107,22 +88,6 @@ export default function FoundationVideo() {
     }
     fetchContent();
   }, []);
-
-  const totalDecks = content.decks.length;
-
-  const goTo = useCallback((index, dir = 1) => {
-    setDirection(dir);
-    setCurrentDeck(index);
-  }, []);
-
-  const prev = () => goTo((currentDeck - 1 + totalDecks) % totalDecks, -1);
-  const next = () => goTo((currentDeck + 1) % totalDecks, 1);
-
-  const variants = {
-    enter: (dir) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir) => ({ x: dir > 0 ? -80 : 80, opacity: 0 }),
-  };
 
   return (
     <section className="relative overflow-hidden bg-[#040617] px-6 py-24 sm:px-10 lg:px-20 lg:py-32">
@@ -172,54 +137,8 @@ export default function FoundationVideo() {
           {/* Dark overlay */}
           <div className="absolute inset-0 z-10 bg-black/20" />
 
-          {/* Sliding deck content */}
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={currentDeck}
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0"
-            >
-              {currentDeck === 0
-                ? <HeroDeck deck={content.decks[0]} videoId={content.videoId} onPlay={() => setIsPlaying(true)} />
-                : <TextDeck deck={content.decks[currentDeck]} />
-              }
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Navigation dots + arrows */}
-          {totalDecks > 1 && (
-            <div className="absolute bottom-8 left-0 right-0 z-30 flex items-center justify-center gap-6">
-              <button onClick={prev} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 border border-white/10">
-                <ChevronLeft size={18} />
-              </button>
-              <div className="flex gap-2">
-                {content.decks.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => goTo(i, i > currentDeck ? 1 : -1)}
-                    style={{
-                      width: i === currentDeck ? "28px" : "8px",
-                      height: "8px",
-                      borderRadius: "100px",
-                      background: i === currentDeck ? "#FFD900" : "rgba(255,255,255,0.3)",
-                      border: "none",
-                      cursor: "pointer",
-                      transition: "all 0.3s ease",
-                      padding: 0,
-                    }}
-                  />
-                ))}
-              </div>
-              <button onClick={next} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 border border-white/10">
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          )}
+          {/* Static hero content — media button + narrative (no slider) */}
+          <HeroDeck deck={content.decks[0]} videoId={content.videoId} onPlay={() => setIsPlaying(true)} />
         </motion.div>
       </div>
 
