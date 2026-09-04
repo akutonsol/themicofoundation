@@ -79,9 +79,32 @@ export default defineType({
     },
     {
       name: 'image',
-      title: 'Project Image',
+      title: 'Project Image (default — used everywhere below is left empty)',
       type: 'image',
+      options: { hotspot: true },
+      description: 'The main photo for this project. Used on the Homepage Slider, the Projects page, and the Project Detail page — unless you upload a specific image for one of those below.',
       validation: Rule => Rule.required()
+    },
+    {
+      name: 'homeSliderImage',
+      title: 'Image — Homepage Slider (optional)',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Upload an image here to use it ONLY on the homepage project slider. Leave empty to use the Project Image above.',
+    },
+    {
+      name: 'projectsPageImage',
+      title: 'Image — Projects Page (optional)',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Upload an image here to use it ONLY on the /projects page. Leave empty to use the Project Image above.',
+    },
+    {
+      name: 'projectDetailImage',
+      title: 'Image — Project Detail Page (optional)',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Upload an image here to use it ONLY on this project\'s detail page (the large hero photo). Leave empty to use the Project Image above.',
     },
     {
       name: 'videoUrl',
@@ -184,58 +207,26 @@ export default defineType({
     },
 {
   name: 'gallery',
-  title: 'Photo Gallery',
-  description: 'Upload images for this project and choose where each one should be used across the site. If no image is tagged for a given placement, the main "Project Image" above is used there instead.',
+  title: 'Photo Gallery (additional photos, not tied to a specific page)',
+  description: 'Select multiple images at once: click Add item → hold Cmd/Ctrl and select all photos → Upload. To control which image shows on the Homepage Slider, Projects page, or Project Detail page, use the dedicated image fields near the top of this document instead.',
   type: 'array',
   of: [
     {
-      type: 'object',
-      name: 'galleryImage',
+      type: 'image',
+      options: {
+        hotspot: true,
+        accept: 'image/*',
+        storeOriginalFilename: true,
+      },
       fields: [
-        {
-          name: 'image',
-          title: 'Image',
-          type: 'image',
-          options: {
-            hotspot: true,
-            accept: 'image/*',
-            storeOriginalFilename: true,
-          },
-          validation: Rule => Rule.required(),
-        },
         {
           name: 'alt',
           title: 'Alt Text',
           type: 'string',
-          description: 'Optional caption for this photo',
-        },
-        {
-          name: 'placements',
-          title: 'Show this image on',
-          type: 'array',
-          of: [{ type: 'string' }],
-          options: {
-            list: [
-              { title: 'Homepage Slider', value: 'homeSlider' },
-              { title: 'Projects Page', value: 'projectsPage' },
-              { title: 'Project Detail Page', value: 'projectDetail' },
-            ],
-            layout: 'grid',
-          },
-          description: 'Select every place this image should be used. Leave empty to use it as a gallery-only photo (not shown in a specific slot).',
-        },
-      ],
-      preview: {
-        select: { media: 'image', alt: 'alt', placements: 'placements' },
-        prepare({ media, alt, placements }) {
-          return {
-            title: alt || 'Untitled image',
-            subtitle: (placements || []).length > 0 ? placements.join(', ') : 'Gallery only',
-            media,
-          }
-        },
-      },
-    },
+          description: 'Optional caption for this photo'
+        }
+      ]
+    }
   ],
   options: {
     layout: 'grid',

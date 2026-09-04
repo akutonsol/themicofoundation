@@ -15,12 +15,18 @@ export function urlFor(source) {
   return builder.image(source)
 }
 
-// Picks the gallery image tagged for a given placement ('homeSlider' | 'projectsPage' | 'projectDetail'),
-// falling back to the project's main image if none is tagged. Pass the raw project object
-// (with `image` and `gallery[]{ image, alt, placements }` from the `projects` query).
+// Picks the dedicated image set for a placement ('homeSlider' | 'projectsPage' | 'projectDetail'),
+// falling back to the project's main image if none was uploaded for that slot. Pass the raw
+// project object (with `image`, `homeSliderImage`, `projectsPageImage`, `projectDetailImage`
+// from the `projects` query).
+const PLACEMENT_FIELD = {
+  homeSlider: 'homeSliderImage',
+  projectsPage: 'projectsPageImage',
+  projectDetail: 'projectDetailImage',
+}
 export function pickProjectImage(project, placement) {
-  const tagged = project?.gallery?.find(g => g?.image && g?.placements?.includes(placement))
-  return tagged?.image || project?.image || null
+  const field = PLACEMENT_FIELD[placement]
+  return (field && project?.[field]) || project?.image || null
 }
 
 export const queries = {
@@ -91,7 +97,9 @@ export const queries = {
     projectStory,
     completedItems,
     image,
-    gallery[]{ image, alt, placements },
+    homeSliderImage,
+    projectsPageImage,
+    projectDetailImage,
     videoUrl,
     targetAmount,
     amountDonated,

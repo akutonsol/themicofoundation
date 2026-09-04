@@ -11,12 +11,6 @@ const staticContent = {
   heading: "About The Foundation",
   subheading: "Discover the legacy, mission, and continued impact of The Mico Foundation through education, philanthropy, and community transformation across generations.",
   videoId: "",
-  decks: [
-    {
-      title: "Empowering education and preserving legacy through generations.",
-      body: "The Mico Foundation continues to advance educational development, institutional sustainability, and community impact across Jamaica and beyond.",
-    },
-  ],
 };
 
 function BackgroundGrid() {
@@ -35,35 +29,6 @@ function BackgroundGrid() {
   );
 }
 
-// Deck 1 — hero card, always first, fixed design
-function HeroDeck({ deck, videoId, onPlay }) {
-  return (
-    <div className="absolute inset-0 z-20 flex flex-col justify-between p-8 sm:p-12 lg:p-16">
-      <div className="flex items-center justify-between">
-        <div className="rounded-full border border-white/15 bg-white/10 px-5 py-2 text-[14px] font-medium text-white backdrop-blur-sm" style={inter}>
-          Foundation Story
-        </div>
-        {videoId && (
-          <button
-            onClick={onPlay}
-            className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD900] text-[#040617] transition hover:scale-[1.04]"
-          >
-            <Play className="ml-1 h-7 w-7 fill-current" />
-          </button>
-        )}
-      </div>
-      <div>
-        <h3 className="max-w-[920px] text-[48px] font-semibold leading-[1] tracking-[-0.06em] text-white sm:text-[68px] lg:text-[92px]" style={inter}>
-          {deck.title}
-        </h3>
-        <p className="mt-6 max-w-[720px] text-[20px] leading-[1.6] text-white/75 sm:text-[24px]" style={inter}>
-          {deck.body}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export default function FoundationVideo() {
   const [content, setContent] = useState(staticContent);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -77,9 +42,6 @@ export default function FoundationVideo() {
             heading: data.heading || staticContent.heading,
             subheading: data.subheading || staticContent.subheading,
             videoId: data.videoId || "",
-            decks: data.decks?.length > 0
-              ? [staticContent.decks[0], ...data.decks]
-              : staticContent.decks,
           });
         }
       } catch (error) {
@@ -94,8 +56,7 @@ export default function FoundationVideo() {
       <BackgroundGrid />
 
       <div className="relative mx-auto max-w-[1650px]">
-        {/* Header */}
-        <div className="mb-14 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <motion.h2
             initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65 }}
@@ -108,38 +69,22 @@ export default function FoundationVideo() {
           <motion.div
             initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08 }}
-            className="border-l border-white/10 pl-6"
+            className="flex flex-col items-center gap-8 text-center"
           >
+            {content.videoId && (
+              <button
+                onClick={() => setIsPlaying(true)}
+                aria-label="Watch the Foundation video"
+                className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD900] text-[#040617] transition hover:scale-[1.04]"
+              >
+                <Play className="ml-1 h-7 w-7 fill-current" />
+              </button>
+            )}
             <p className="max-w-[760px] text-[22px] leading-[1.6] tracking-[-0.03em] text-white/70 sm:text-[26px] lg:text-[30px]" style={inter}>
               {content.subheading}
             </p>
           </motion.div>
         </div>
-
-        {/* Card Container */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }} transition={{ duration: 0.7 }}
-          className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#0a0d1f]"
-          style={{ height: "760px", boxShadow: "var(--shadow-dark-4)" }}
-        >
-          {/* Static dark background with subtle gradient */}
-          <div className="absolute inset-0" style={{
-            background: "linear-gradient(135deg, #0a0d1f 0%, #001432 50%, #040617 100%)"
-          }} />
-
-          {/* Subtle pattern overlay */}
-          <div className="absolute inset-0 opacity-[0.03]" style={{
-            backgroundImage: "radial-gradient(circle, #FFD900 1px, transparent 1px)",
-            backgroundSize: "48px 48px"
-          }} />
-
-          {/* Dark overlay */}
-          <div className="absolute inset-0 z-10 bg-black/20" />
-
-          {/* Static hero content — media button + narrative (no slider) */}
-          <HeroDeck deck={content.decks[0]} videoId={content.videoId} onPlay={() => setIsPlaying(true)} />
-        </motion.div>
       </div>
 
       {/* Video modal — only opens on play button click */}

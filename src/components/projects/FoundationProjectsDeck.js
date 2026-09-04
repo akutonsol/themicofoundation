@@ -94,7 +94,7 @@ export default function FoundationProjectsDeck() {
         const data = await client.fetch(`
           *[_type == "project" && status == "active"] | order(order asc) {
             _id, title, "slug": slug.current, label, status,
-            location, description, image, gallery[]{ image, alt, placements }, order
+            location, description, image, homeSliderImage, projectsPageImage, projectDetailImage, order
           }
         `);
         if (data?.length > 0) {
