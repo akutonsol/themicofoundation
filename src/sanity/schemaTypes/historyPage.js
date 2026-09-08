@@ -35,18 +35,18 @@ export default defineType({
     // ── CONVERSATION ──
     {
       name: 'conversation',
-      title: 'Conversation Bubbles',
-      description: 'Chat-style bubbles shown in pairs. Must be even number. Left = first person, Right = second person.',
+      title: 'History Chat Boxes',
+      description: 'One box per era. Alternate Left/Right for visual rhythm. Add a photo to show it beside the box.',
       type: 'array',
       of: [{
         type: 'object',
         fields: [
-          { name: 'name', title: 'Speaker Name', type: 'string' },
+          { name: 'title', title: 'Title (e.g. "1950s and 60s — Principal Glenville H. Owen")', type: 'string' },
           { name: 'side', title: 'Side', type: 'string', options: { list: [{ title: 'Left', value: 'left' }, { title: 'Right', value: 'right' }] } },
-          { name: 'label', title: 'Label (shown below name)', type: 'string' },
-          { name: 'text', title: 'Message Text', type: 'text' },
+          { name: 'paragraphs', title: 'Paragraphs', type: 'array', of: [{ type: 'text' }], description: 'Each entry is one paragraph.' },
+          { name: 'image', title: 'Photo (optional — shown to the right of the box)', type: 'image', options: { hotspot: true } },
         ],
-        preview: { select: { title: 'name', subtitle: 'text' } }
+        preview: { select: { title: 'title', subtitle: 'side', media: 'image' } }
       }]
     },
 

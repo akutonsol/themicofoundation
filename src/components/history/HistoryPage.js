@@ -9,11 +9,12 @@ const inter = { fontFamily: "'Inter', sans-serif" };
 
 const staticConversation = [
   {
-    title: "The 1950s and 1960s",
+    title: "1950s and 60s — Principal Glenville H. Owen",
     side: "left",
+    imageUrl: null,
     paragraphs: [
-      "Marked one of the most transformative periods in the history of The Mico University College (then known as Mico College). During these two decades, the College evolved from a traditional male teacher-training institution into a modern, co-educational college that played a central role in Jamaica's educational expansion before and after independence in 1962.",
-      "Overall, the 1950s were characterized by modernization, co-education, and curriculum reform, while the 1960s were defined by rapid expansion, alignment with Jamaica's Independence, and the broadening of teacher education into the secondary sector. These changes established the foundation for Mico's later evolution into one of the Caribbean's foremost institutions for teacher education.",
+      "This era marked one of the most transformative periods in the history of The Mico University College (then known as Mico Teachers' College). During these two decades, the College evolved from a long-standing male teacher-training institution into a modern, co-educational college that played a central role in Jamaica's educational expansion before and after independence in 1962.",
+      "Overall, the 1950s were characterized by modernization, co-education, and curriculum reform, while the 1960s were defined by rapid expansion, alignment with Jamaica's independence, and the broadening of teacher education into the secondary sector. A massive building programme was undertaken in preparation for the changing role in teacher training, and in particular to meet the needs of the expanding school system of the 1960s. These changes established the foundation for Mico's later evolution into one of the Caribbean's foremost institutions for teacher education.",
     ],
   },
   {
@@ -87,19 +88,27 @@ function BackgroundTexture() {
 function ChatBubble({ message }) {
   const isLeft = message.side === "left";
   const paras = message.paragraphs || (message.text ? [message.text] : []);
+  const bubble = (
+    <div className={`relative w-full max-w-[760px] rounded-[26px] border p-7 shadow-[var(--shadow-2)] sm:p-9 ${isLeft ? "rounded-tl-[6px] border-[#24180A]/15 bg-white text-[#24180A]" : "rounded-tr-[6px] border-[#24180A]/20 bg-[#FFD900] text-[#24180A]"}`}>
+      <h3 className="m-0 mb-4 text-[20px] font-bold tracking-[-0.03em] sm:text-[24px]" style={inter}>{message.title || message.name}</h3>
+      <div className="space-y-3">
+        {paras.map((p, i) => (
+          <p key={i} className="m-0 text-[14px] font-normal leading-[1.6] text-[#24180A]/85 sm:text-[15px]" style={inter}>{p}</p>
+        ))}
+      </div>
+    </div>
+  );
   return (
     <motion.div
       initial={{ opacity: 0, y: 48 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`flex w-full flex-col ${isLeft ? "items-start" : "items-end"}`}>
-      <div className={`relative w-full max-w-[760px] rounded-[26px] border p-7 shadow-[var(--shadow-2)] sm:p-9 ${isLeft ? "rounded-tl-[6px] border-[#24180A]/15 bg-white text-[#24180A]" : "rounded-tr-[6px] border-[#24180A]/20 bg-[#FFD900] text-[#24180A]"}`}>
-        <h3 className="m-0 mb-4 text-[20px] font-bold tracking-[-0.03em] sm:text-[24px]" style={inter}>{message.title || message.name}</h3>
-        <div className="space-y-3">
-          {paras.map((p, i) => (
-            <p key={i} className="m-0 text-[14px] font-normal leading-[1.6] text-[#24180A]/85 sm:text-[15px]" style={inter}>{p}</p>
-          ))}
+      className={`flex w-full flex-col gap-6 sm:flex-row sm:items-stretch ${isLeft ? "" : "sm:justify-end"}`}>
+      {bubble}
+      {message.imageUrl && (
+        <div className="w-full flex-shrink-0 overflow-hidden rounded-[26px] border border-[#24180A]/15 shadow-[var(--shadow-2)] sm:w-[220px] lg:w-[260px]">
+          <img src={message.imageUrl} alt={message.title || ""} className="h-[260px] w-full object-cover sm:h-full" />
         </div>
-      </div>
+      )}
     </motion.div>
   );
 }
@@ -129,7 +138,9 @@ export default function HistoryPage() {
             heroImageUrl: data.heroImage ? urlFor(data.heroImage).width(1800).url() : staticContent.heroImageUrl,
             storyHeading: data.storyHeading || staticContent.storyHeading,
             storyParagraphs: data.storyParagraphs?.length > 0 ? data.storyParagraphs : staticContent.storyParagraphs,
-            conversation: data.conversation?.length > 0 ? data.conversation : staticContent.conversation,
+            conversation: data.conversation?.length > 0
+              ? data.conversation.map(c => ({ ...c, imageUrl: c.image ? urlFor(c.image).width(700).url() : null }))
+              : staticContent.conversation,
             ctaHeading: data.ctaHeading || staticContent.ctaHeading,
             ctaButtonText: data.ctaButtonText || staticContent.ctaButtonText,
             ctaButtonLink: data.ctaButtonLink || staticContent.ctaButtonLink,
