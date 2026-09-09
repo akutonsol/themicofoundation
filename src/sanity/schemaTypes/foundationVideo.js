@@ -12,6 +12,12 @@ export default defineType({
       initialValue: 'About The Foundation',
     },
     {
+      name: 'headingNarrative',
+      title: 'Heading Narrative (shown below the Section Heading)',
+      type: 'string',
+      initialValue: 'A limited Liability Company not for profit',
+    },
+    {
       name: 'subheading',
       title: 'Section Subheading',
       type: 'text',

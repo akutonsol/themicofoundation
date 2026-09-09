@@ -357,7 +357,7 @@ aboutContent: `*[_type == "aboutContent"][0]{
 }`,
 
 foundationVideo: `*[_type == "foundationVideo"][0]{
-  heading, subheading, videoId, decks
+  heading, headingNarrative, subheading, videoId, decks
 }`,
 
 ourMission: `*[_type == "ourMission"][0]{
@@ -393,7 +393,7 @@ magazines: `*[_type == "magazine" && isActive == true] | order(order desc) {
 }`,
 
 historyPage: `*[_type == "historyPage"][0]{
-  heroLabel, heroHeading, heroSubtext, heroImage,
+  heroLabel, heroHeading, heroSubtext, heroNarrative, heroImage,
   conversation, storyHeading, storyParagraphs,
   timeline, ctaHeading, ctaButtonText, ctaButtonLink
 }`,

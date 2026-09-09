@@ -33,7 +33,7 @@ export default function Home() {
         <WaysToDonate />
         {/*    <DonationForm showTitle={false} compact={true} /> */}
         {/*   <DonationForm />  */}
-        <PeopleImpact />
+        <div className="tight-top"><PeopleImpact /></div>
         <NewsEvents />
         {/*    <Publications />  */}
         <Newsletter />

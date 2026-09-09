@@ -9,6 +9,7 @@ const inter = { fontFamily: "'Inter', sans-serif" };
 
 const staticContent = {
   heading: "About The Foundation",
+  headingNarrative: "A limited Liability Company not for profit",
   subheading: "Discover the legacy, mission, and continued impact of The Mico Foundation through education, philanthropy, and community transformation across generations.",
   videoId: "",
 };
@@ -40,6 +41,7 @@ export default function FoundationVideo() {
         if (data) {
           setContent({
             heading: data.heading || staticContent.heading,
+            headingNarrative: data.headingNarrative || staticContent.headingNarrative,
             subheading: data.subheading || staticContent.subheading,
             videoId: data.videoId || "",
           });
@@ -57,14 +59,26 @@ export default function FoundationVideo() {
 
       <div className="relative mx-auto max-w-[1650px]">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <motion.h2
-            initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.65 }}
-            className="text-[72px] font-semibold leading-[0.9] tracking-[-0.08em] text-white sm:text-[110px] lg:text-[150px]"
-            style={inter}
-          >
-            {content.heading}
-          </motion.h2>
+          <div>
+            <motion.h2
+              initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.65 }}
+              className="text-[72px] font-semibold leading-[0.9] tracking-[-0.08em] text-white sm:text-[110px] lg:text-[150px]"
+              style={inter}
+            >
+              {content.heading}
+            </motion.h2>
+            {content.headingNarrative && (
+              <motion.p
+                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08 }}
+                className="mt-4 text-[18px] font-medium tracking-[-0.01em] text-white/50 sm:text-[20px]"
+                style={inter}
+              >
+                {content.headingNarrative}
+              </motion.p>
+            )}
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}

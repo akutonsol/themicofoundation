@@ -66,6 +66,7 @@ const staticContent = {
   heroLabel: "The Mico Foundation History",
   heroHeading: "A Legacy Built\nTo Protect The Future.",
   heroSubtext: "From historic stewardship to future impact.",
+  heroNarrative: "Since its inception in 1836, The Mico has undergone remarkable transformations, cementing its position as the premier educational institution in the Caribbean. While the decades that followed were marked by significant growth, this excerpt focuses on two pivotal eras in The Mico Foundation's history: the transformative years leading up to its founding and the critical decades during which it established itself as a cornerstone of the University College.",
   heroImageUrl: "https://themico.edu.jm/wp-content/uploads/2024/05/DSC8377-Pano.jpg",
   storyHeading: "The Story Behind The Foundation",
   storyParagraphs: staticStory,
@@ -105,8 +106,8 @@ function ChatBubble({ message }) {
       className={`flex w-full flex-col gap-6 sm:flex-row sm:items-stretch ${isLeft ? "" : "sm:justify-end"}`}>
       {bubble}
       {message.imageUrl && (
-        <div className="w-full flex-shrink-0 overflow-hidden rounded-[26px] border border-[#24180A]/15 shadow-[var(--shadow-2)] sm:w-[220px] lg:w-[260px]">
-          <img src={message.imageUrl} alt={message.title || ""} className="h-[260px] w-full object-cover sm:h-full" />
+        <div className="w-full flex-shrink-0 overflow-hidden rounded-[26px] border border-[#24180A]/15 shadow-[var(--shadow-2)] sm:w-[300px] lg:w-[360px]">
+          <img src={message.imageUrl} alt={message.title || ""} className="h-[320px] w-full object-cover sm:h-full" />
         </div>
       )}
     </motion.div>
@@ -135,6 +136,7 @@ export default function HistoryPage() {
             heroLabel: data.heroLabel || staticContent.heroLabel,
             heroHeading: data.heroHeading || staticContent.heroHeading,
             heroSubtext: data.heroSubtext || staticContent.heroSubtext,
+            heroNarrative: data.heroNarrative || staticContent.heroNarrative,
             heroImageUrl: data.heroImage ? urlFor(data.heroImage).width(1800).url() : staticContent.heroImageUrl,
             storyHeading: data.storyHeading || staticContent.storyHeading,
             storyParagraphs: data.storyParagraphs?.length > 0 ? data.storyParagraphs : staticContent.storyParagraphs,
@@ -181,6 +183,9 @@ export default function HistoryPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#24180A]/80 via-[#24180A]/15 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8">
               <p className="max-w-[850px] text-[46px] font-semibold leading-[1] tracking-[-0.06em] text-white" style={inter}>{content.heroSubtext}</p>
+              {content.heroNarrative && (
+                <p className="mt-5 max-w-[720px] text-[17px] leading-[1.65] text-white/80 sm:text-[19px]" style={inter}>{content.heroNarrative}</p>
+              )}
             </div>
           </motion.div>
         </div>

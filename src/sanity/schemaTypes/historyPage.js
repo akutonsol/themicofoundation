@@ -25,6 +25,12 @@ export default defineType({
       initialValue: 'From historic stewardship to future impact.',
     },
     {
+      name: 'heroNarrative',
+      title: 'Hero Image Narrative (shown below the Subtext)',
+      type: 'text',
+      rows: 4,
+    },
+    {
       name: 'heroImage',
       title: 'Hero Image',
       type: 'image',
