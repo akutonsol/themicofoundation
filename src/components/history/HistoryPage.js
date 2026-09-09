@@ -99,17 +99,17 @@ function ChatBubble({ message }) {
       </div>
     </div>
   );
+  const photo = message.imageUrl && (
+    <div className="w-full flex-shrink-0 overflow-hidden rounded-[26px] border border-[#24180A]/15 shadow-[var(--shadow-2)] sm:w-[340px] lg:w-[400px]">
+      <img src={message.imageUrl} alt={message.title || ""} className="h-[320px] w-full object-cover sm:h-full" />
+    </div>
+  );
   return (
     <motion.div
       initial={{ opacity: 0, y: 48 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`flex w-full flex-col gap-6 sm:flex-row sm:items-stretch ${isLeft ? "" : "sm:justify-end"}`}>
-      {bubble}
-      {message.imageUrl && (
-        <div className="w-full flex-shrink-0 overflow-hidden rounded-[26px] border border-[#24180A]/15 shadow-[var(--shadow-2)] sm:w-[300px] lg:w-[360px]">
-          <img src={message.imageUrl} alt={message.title || ""} className="h-[320px] w-full object-cover sm:h-full" />
-        </div>
-      )}
+      {isLeft ? (<>{bubble}{photo}</>) : (<>{photo}{bubble}</>)}
     </motion.div>
   );
 }
@@ -182,10 +182,12 @@ export default function HistoryPage() {
             <img src={content.heroImageUrl} alt="Historic building" className="h-full w-full object-cover sepia" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#24180A]/80 via-[#24180A]/15 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8">
-              <p className="max-w-[850px] text-[46px] font-semibold leading-[1] tracking-[-0.06em] text-white" style={inter}>{content.heroSubtext}</p>
-              {content.heroNarrative && (
-                <p className="mt-5 max-w-[720px] text-[17px] leading-[1.65] text-white/80 sm:text-[19px]" style={inter}>{content.heroNarrative}</p>
-              )}
+              <div className="inline-block max-w-[820px] rounded-[22px] bg-[#161008]/80 px-6 py-6 backdrop-blur-sm sm:px-8">
+                <p className="text-[36px] font-semibold leading-[1.05] tracking-[-0.05em] text-white sm:text-[46px]" style={inter}>{content.heroSubtext}</p>
+                {content.heroNarrative && (
+                  <p className="mt-5 max-w-[720px] text-[17px] leading-[1.65] text-white/85 sm:text-[19px]" style={inter}>{content.heroNarrative}</p>
+                )}
+              </div>
             </div>
           </motion.div>
         </div>

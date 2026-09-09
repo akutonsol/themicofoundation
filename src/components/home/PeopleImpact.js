@@ -105,7 +105,7 @@ export default function PeopleImpact() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-        .impact-desktop { display: grid; grid-template-columns: 780px 1fr; gap: clamp(24px, 8vw, 165px); align-items: center; padding: 80px clamp(24px, 8vw, 165px); }
+        .impact-desktop { display: grid; grid-template-columns: 780px 1fr; gap: clamp(24px, 8vw, 165px); align-items: center; padding: 16px clamp(24px, 8vw, 165px) 80px; }
         .impact-mobile  { display: none; }
 
         @media (max-width: 1200px) {
@@ -202,7 +202,7 @@ export default function PeopleImpact() {
       </div>
 
       {/* MOBILE */}
-      <div className="impact-mobile" style={{ flexDirection:'column', gap:'48px', alignItems:'center', padding:'60px 24px', position:'relative', zIndex:1 }}>
+      <div className="impact-mobile" style={{ flexDirection:'column', gap:'48px', alignItems:'center', padding:'16px 24px 60px', position:'relative', zIndex:1 }}>
         <h2 style={{ ...inter, fontSize:'75px', fontWeight:600, color:'#040617', letterSpacing:'-0.75px', lineHeight:'85px', margin:0, textAlign:'center', width:'100%' }}>
           People Behind Impact
         </h2>
