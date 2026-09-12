@@ -64,7 +64,7 @@ export default function Chairmen() {
           className="text-[40px] font-semibold leading-[0.95] tracking-[-0.04em] text-[#040617] sm:text-[52px] lg:text-[64px]"
           style={inter}
         >
-          Chairmans
+          Chairmen
         </motion.h2>
         <div className="mt-16 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
           {chairmen.map((person, index) => (
