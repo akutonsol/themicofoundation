@@ -168,7 +168,6 @@ export default function TrusteeLegacySection() {
               onError={(e) => { if (e.currentTarget.src !== joeBartleyFallback) e.currentTarget.src = joeBartleyFallback; }}
             />
             <div className="hero-image-cap">
-              <p className="cap-role">{leader.role}</p>
               <p className="cap-name">{leader.name}</p>
               <p className="cap-subrole">Chairman, The Lady Mico Trust</p>
               <div className="cap-btns">

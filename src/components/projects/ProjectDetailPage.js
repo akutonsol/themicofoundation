@@ -361,12 +361,29 @@ export default function ProjectDetailPage({ slug }) {
               </motion.p>
             )}
 
-            {logoHero && project.titleLogoDescription && (
-              <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.32 }}
-                style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(19px,2vw,26px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.45, letterSpacing: "0", margin: "24px 0 0", maxWidth: "38ch", textAlign: "left" }}>
-                {project.titleLogoDescription}
-              </motion.p>
-            )}
+            {logoHero && project.titleLogoDescription && (() => {
+              // Split off the "wall of recognition" line so it can render at a smaller size than the rest.
+              const desc = project.titleLogoDescription;
+              const splitAt = desc.search(/get your name/i);
+              const mainText = splitAt >= 0 ? desc.slice(0, splitAt).trim() : desc;
+              const smallText = splitAt >= 0 ? desc.slice(splitAt).trim() : "";
+              return (
+                <>
+                  {mainText && (
+                    <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.32 }}
+                      style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(19px,2vw,26px)", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.45, letterSpacing: "0", margin: "24px 0 0", maxWidth: "38ch", textAlign: "left" }}>
+                      {mainText}
+                    </motion.p>
+                  )}
+                  {smallText && (
+                    <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.38 }}
+                      style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.5, letterSpacing: "0", margin: "8px 0 0", maxWidth: "38ch", textAlign: "left" }}>
+                      {smallText}
+                    </motion.p>
+                  )}
+                </>
+              );
+            })()}
 
             <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
               style={{ height: "2px", width: logoHero ? "260px" : undefined, background: "linear-gradient(to right, #FFD900, transparent)", marginTop: "32px", transformOrigin: "left" }} />
