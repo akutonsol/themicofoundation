@@ -79,8 +79,8 @@ export default function BoardOfDirectorsSection() {
   return (
     <>
       <section>
-        <div className="mb-10 grid gap-8 lg:grid-cols-[1fr_200px_520px] lg:items-start">
-          <h1 className="text-[56px] font-semibold leading-[0.95] tracking-[-0.06em] text-[#040617] sm:text-[78px] lg:text-[88px]" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="mb-10 grid gap-8 lg:grid-cols-[1fr_280px_520px] lg:items-start">
+          <h1 className="text-[40px] font-semibold leading-[0.95] tracking-[-0.05em] text-[#040617] sm:text-[52px] lg:text-[64px]" style={{ fontFamily: "'Inter', sans-serif" }}>
             Board of Directors
           </h1>
           {chairman && <BoardCard member={chairman} onOpen={setSelectedMember} />}
