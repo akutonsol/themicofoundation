@@ -149,7 +149,7 @@ export default function TeamProfileFeature() {
         .ct-head { max-width: 720px; }
         .ct-chair { border-left: 1px solid rgba(255,255,255,0.12); padding-left: clamp(24px,3vw,40px); }
         @media (max-width: 900px) { .ct-chair { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 28px; } }
-        .ct-chair-link { display:inline-flex; align-items:center; gap:8px; background:transparent; color:#FFD900; font-family:'Inter',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.02em; padding:4px 0; margin:0 0 14px; border:none; border-bottom:1px solid rgba(255,217,0,0.4); text-decoration:none; transition: color 0.2s, border-color 0.2s; }
+        .ct-chair-link { display:inline-flex; align-items:center; gap:8px; background:transparent; color:#FFD900; font-family:'Inter',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.02em; padding:4px 0; margin:0 0 14px; border:none; border-bottom:1px solid rgba(255,217,0,0.4); text-decoration:none; cursor:pointer; transition: color 0.2s, border-color 0.2s; }
         .ct-chair-link:hover { color:#fff; border-color:#fff; }
         .ct-chair-name { font-family:'Inter',sans-serif; font-size: clamp(24px,2.4vw,32px); font-weight:800; letter-spacing:-0.02em; color:#fff; margin:0 0 16px; line-height:1.05; }
         .ct-chair-body p { font-family:'Inter',sans-serif; font-size:15px; line-height:1.75; color:rgba(255,255,255,0.6); margin:0 0 12px; }
@@ -210,10 +210,10 @@ export default function TeamProfileFeature() {
           <motion.div className="ct-chair"
             initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <a href="#chairmans-message-btn" className="ct-chair-link">
+            <button type="button" className="ct-chair-link" onClick={() => window.dispatchEvent(new Event('open-chairmans-message'))}>
               Chairman&rsquo;s Message
               <svg viewBox="0 0 20 20" fill="none" aria-hidden width="14" height="14"><path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </a>
+            </button>
             <h3 className="ct-chair-name">{chair.name}</h3>
             <div className="ct-chair-body">
               {chair.profile.map((para, i) => <p key={i}>{para}</p>)}

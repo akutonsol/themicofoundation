@@ -92,6 +92,14 @@ export default function TrusteeLegacySection() {
     fetchLeader();
   }, []);
 
+  // Allows the "Chairman's Message" link elsewhere on the page (e.g. the trustee
+  // grid section) to open this panel without needing a visible trigger here.
+  useEffect(() => {
+    const openMsg = () => setShowMsg(true);
+    window.addEventListener('open-chairmans-message', openMsg);
+    return () => window.removeEventListener('open-chairmans-message', openMsg);
+  }, []);
+
   return (
     <>
       <style>{`
@@ -108,7 +116,7 @@ export default function TrusteeLegacySection() {
         .hero-image-cap { position: absolute; left: 16px; bottom: 16px; right: 16px; background: linear-gradient(to top, rgba(5,8,15,0.92) 30%, rgba(5,8,15,0)); border-radius: 0 0 24px 24px; padding: 22px 22px 16px; }
         .hero-image-cap .cap-role { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #FFD900; margin: 0 0 4px; }
         .hero-image-cap .cap-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: #fff; margin: 0; line-height: 1.05; letter-spacing: -0.02em; }
-        .hero-image-cap .cap-subrole { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6); margin: 6px 0 0; letter-spacing: 0.01em; }
+        .hero-image-cap .cap-subrole { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 600; color: #FFD900; margin: 8px 0 0; letter-spacing: 0.01em; }
         .hero-eyebrow { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #FFD900; margin: 0 0 28px; }
         .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 6.5vw, 100px); font-weight: 300; line-height: 0.92; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; }
         .hero-title em { font-style: italic; color: #FFD900; }
@@ -170,14 +178,6 @@ export default function TrusteeLegacySection() {
             <div className="hero-image-cap">
               <p className="cap-name">{leader.name}</p>
               <p className="cap-subrole">Chairman, The Lady Mico Trust</p>
-              <div className="cap-btns">
-                <button type="button" id="chairmans-message-btn" className="read-msg-btn" onClick={() => setShowMsg(true)}>
-                  Chairman&rsquo;s Message
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden>
-                    <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
             </div>
           </div>
         </motion.div>

@@ -106,7 +106,7 @@ export default function FormerTrusteesSection() {
         .ft-inner { position: relative; z-index: 1; max-width: 1480px; margin: 0 auto; }
 
         .ft-chair-link-wrap { display:flex; justify-content:center; margin: 0 0 20px; }
-        .ft-chair-link { display:inline-flex; align-items:center; gap:8px; background:transparent; color:#B8860B; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.02em; padding:4px 0; border:none; border-bottom:1px solid rgba(184,134,11,0.4); text-decoration:none; transition: color 0.2s, border-color 0.2s; }
+        .ft-chair-link { display:inline-flex; align-items:center; gap:8px; background:transparent; color:#B8860B; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.02em; padding:4px 0; border:none; border-bottom:1px solid rgba(184,134,11,0.4); text-decoration:none; cursor:pointer; transition: color 0.2s, border-color 0.2s; }
         .ft-chair-link:hover { color:#040617; border-color:#040617; }
         .ft-eyebrow { display:flex; align-items:center; justify-content:center; gap:12px; margin: 0 0 14px; }
         .ft-eyebrow span { font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#B8860B; }
@@ -153,9 +153,9 @@ export default function FormerTrusteesSection() {
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
         >
           <div className="ft-chair-link-wrap">
-            <a href="#chairmans-message-btn" className="ft-chair-link">
+            <button type="button" className="ft-chair-link" onClick={() => window.dispatchEvent(new Event('open-chairmans-message'))}>
               Chairman&rsquo;s Message
-            </a>
+            </button>
           </div>
           <div className="ft-eyebrow">
             <span className="bar" />
