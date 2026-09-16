@@ -78,9 +78,14 @@ export default function StaffSection() {
     <>
       <section className="mt-24">
         <div className="mb-10 grid gap-8 lg:grid-cols-[1fr_520px] lg:items-start">
-          <h1 className="text-[56px] font-semibold leading-[0.95] tracking-[-0.06em] text-[#040617] sm:text-[78px] lg:text-[88px]" style={{ fontFamily: "'Inter', sans-serif" }}>
-            Staff
-          </h1>
+          <div>
+            <h1 className="text-[56px] font-semibold leading-[0.95] tracking-[-0.06em] text-[#040617] sm:text-[78px] lg:text-[88px]" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Staff
+            </h1>
+            <p className="mt-3 text-[18px] font-normal leading-[1.4] text-[#040617] sm:text-[20px]" style={{ fontFamily: "'Inter', sans-serif" }}>
+              The Mico Foundation
+            </p>
+          </div>
           <div className="lg:border-l lg:border-[rgba(4,6,23,0.07)] lg:pl-6">
             <p className="max-w-[520px] text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
               A steady, purpose-driven, and dedicated team committed to a shared vision, unwavering commitment to excellence, and high standards of professionalism even in the face of challenges and uncertainty.

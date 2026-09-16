@@ -43,7 +43,8 @@ export default function FundManagementPage() {
     <main style={{ background: '#FFFDF9', minHeight: '70vh' }}>
       <style>{`
         .fm-wrap { max-width: 900px; margin: 0 auto; padding: clamp(56px,8vw,110px) clamp(24px,6vw,64px); }
-        .fm-body p { font-family: 'Inter', sans-serif; font-size: clamp(16px,1.4vw,18px); line-height: 1.85; color: #3F3F46; margin: 0 0 24px; }
+        .fm-body p { font-family: 'Inter', sans-serif; font-size: clamp(16px,1.4vw,18px); line-height: 1.85; color: #3F3F46; margin: 0 0 24px; text-align: justify; text-justify: inter-word; }
+        .fm-body p:last-child { margin-bottom: 0; }
       `}</style>
 
       <div className="fm-wrap">

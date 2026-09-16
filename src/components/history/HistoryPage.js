@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, BookOpen, Landmark } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
@@ -182,12 +182,7 @@ export default function HistoryPage() {
             <img src={content.heroImageUrl} alt="Historic building" className="h-full w-full object-cover sepia" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#24180A]/80 via-[#24180A]/15 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8">
-              <div className="inline-block max-w-[820px] rounded-[22px] bg-[#161008]/80 px-6 py-6 backdrop-blur-sm sm:px-8">
-                <p className="text-[36px] font-semibold leading-[1.05] tracking-[-0.05em] text-white sm:text-[46px]" style={inter}>{content.heroSubtext}</p>
-                {content.heroNarrative && (
-                  <p className="mt-5 max-w-[720px] text-[17px] leading-[1.65] text-white/85 sm:text-[19px]" style={inter}>{content.heroNarrative}</p>
-                )}
-              </div>
+              <p className="max-w-[850px] text-[46px] font-semibold leading-[1] tracking-[-0.06em] text-white" style={inter}>{content.heroSubtext}</p>
             </div>
           </motion.div>
         </div>
@@ -205,7 +200,7 @@ export default function HistoryPage() {
           <div>
             <div className="sticky top-28">
               <motion.div initial={{ opacity: 0, rotate: -12, scale: 0.8 }} whileInView={{ opacity: 1, rotate: 0, scale: 1 }} viewport={{ once: false }} transition={{ duration: 0.65 }}>
-                <Landmark className="mb-6 h-12 w-12 text-[#B28300]" />
+                <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" className="mb-6 h-14 w-auto" />
               </motion.div>
               <h2 className="text-[58px] font-semibold leading-[0.95] tracking-[-0.07em] sm:text-[82px]" style={inter}>{content.storyHeading}</h2>
             </div>
