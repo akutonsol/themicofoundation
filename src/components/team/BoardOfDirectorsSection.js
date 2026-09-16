@@ -79,26 +79,12 @@ export default function BoardOfDirectorsSection() {
   return (
     <>
       <section>
-        <div className="mb-10 grid gap-8 lg:grid-cols-[1fr_520px] lg:items-start">
+        <div className="mb-10 grid gap-8 lg:grid-cols-[1fr_200px_520px] lg:items-start">
           <h1 className="text-[56px] font-semibold leading-[0.95] tracking-[-0.06em] text-[#040617] sm:text-[78px] lg:text-[88px]" style={{ fontFamily: "'Inter', sans-serif" }}>
             Board of Directors
           </h1>
+          {chairman && <BoardCard member={chairman} onOpen={setSelectedMember} />}
           <div className="lg:border-l lg:border-[rgba(4,6,23,0.07)] lg:pl-6">
-            {chairman && (
-              <button
-                type="button"
-                onClick={() => setSelectedMember(chairman)}
-                className="mb-5 flex items-center gap-4 text-left"
-              >
-                <div className="h-[64px] w-[64px] flex-shrink-0 overflow-hidden rounded-full border border-[rgba(4,6,23,0.07)]" style={{ boxShadow: "var(--shadow-2)" }}>
-                  <img src={chairman.image} alt={chairman.name} className="h-full w-full object-cover object-top" />
-                </div>
-                <div>
-                  <p className="text-[14px] leading-[1.2] text-[#8A8E9D]" style={{ fontFamily: "'Inter', sans-serif" }}>{chairman.role}</p>
-                  <h3 className="mt-0.5 text-[18px] font-semibold leading-[1.2] tracking-[-0.02em] text-[#040617]" style={{ fontFamily: "'Inter', sans-serif" }}>{chairman.name}</h3>
-                </div>
-              </button>
-            )}
             <p className="max-w-[520px] text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
               The Mico Foundation is led by a 12-member Board of Directors with equal reps from the Trustees, University College, and Alumni (MOSA). Key roles like the President and Trustee serve as ex-officio members during their tenure.
             </p>
