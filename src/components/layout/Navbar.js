@@ -26,6 +26,7 @@ const dropdownCols = [
   ],
   [
     { label: 'Contact Us', href: '/contact' },
+    { label: 'History', href: 'history' },
   ],
 ]
 

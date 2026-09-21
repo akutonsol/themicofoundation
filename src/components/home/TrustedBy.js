@@ -25,19 +25,19 @@ export default function TrustedBy() {
   const heading = trustedByData?.heading || 'Trusted By'
   const animationSpeed = trustedByData?.animationSpeed || 30
   
-  // Convert Sanity images to URLs
+  // Convert Sanity images to URLs. Every logo renders at the same box height
+  // (see .trusted-logo-box) regardless of its native pixel dimensions, so the
+  // strip reads as one consistent, premium lockup rather than a mix of sizes.
   const logos = trustedByData?.logos?.map(logo => ({
-    src: urlFor(logo.image).width(300).url(),
+    src: urlFor(logo.image).width(400).url(),
     name: logo.name,
-    w: logo.width,
-    h: logo.height
   })) || []
 
   // Fallback if no CMS data
   const fallbackLogos = [
-    { src: "/images/home/spons-logo1.png", name: "Sponsor 1", w: 150, h: 52 },
-    { src: "/images/home/spons-logo1.png", name: "Sponsor 2", w: 150, h: 36 },
-    { src: "/images/home/spons-logo1.png", name: "Sponsor 3", w: 150, h: 52 },
+    { src: "/images/home/spons-logo1.png", name: "Sponsor 1" },
+    { src: "/images/home/spons-logo1.png", name: "Sponsor 2" },
+    { src: "/images/home/spons-logo1.png", name: "Sponsor 3" },
   ]
 
   const displayLogos = logos.length > 0 ? logos : fallbackLogos
@@ -88,6 +88,30 @@ export default function TrustedBy() {
           padding: 40px 0;
         }
 
+        /* Uniform logo lockup: every logo shares the same box height and scales
+           to fit it, so the strip reads as one consistent, premium row instead
+           of a mix of arbitrary sizes. Grayscale by default, full color on hover. */
+        .trusted-logo-box {
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .trusted-logo-box img {
+          height: 100%;
+          width: auto;
+          max-width: 160px;
+          object-fit: contain;
+          filter: grayscale(100%);
+          opacity: 0.7;
+          transition: filter 0.25s ease, opacity 0.25s ease;
+        }
+        .trusted-logo-box:hover img {
+          filter: grayscale(0%);
+          opacity: 1;
+        }
+
         /* Mobile — show heading above marquee */
         @media (max-width: 768px) {
           .trusted-heading {
@@ -102,15 +126,17 @@ export default function TrustedBy() {
             padding: 16px 0 0;
             margin: 0;
           }
-          .trusted-wrap { 
-            padding: 16px 0 24px; 
+          .trusted-wrap {
+            padding: 16px 0 24px;
           }
-          .trusted-track { 
-            gap: 20px; 
+          .trusted-track {
+            gap: 32px;
           }
-          .trusted-logo { 
-            transform: scale(0.75); 
-            transform-origin: center; 
+          .trusted-logo-box {
+            height: 30px;
+          }
+          .trusted-logo-box img {
+            max-width: 110px;
           }
         }
       `}</style>
@@ -127,24 +153,8 @@ export default function TrustedBy() {
         <div style={{ display: 'flex', overflow: 'hidden' }}>
           <div className="trusted-track">
             {[...displayLogos, ...displayLogos].map((logo, i) => (
-              <div 
-                key={i} 
-                className="trusted-logo" 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  flexShrink: 0, 
-                  mixBlendMode: 'luminosity', 
-                  width: `${logo.w}px`, 
-                  height: `${logo.h}px` 
-                }}
-              >
-                <img 
-                  src={logo.src} 
-                  alt={logo.name || ''} 
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
-                />
+              <div key={i} className="trusted-logo-box">
+                <img src={logo.src} alt={logo.name || ''} />
               </div>
             ))}
           </div>
