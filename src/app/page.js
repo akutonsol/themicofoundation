@@ -23,6 +23,7 @@ export default function Home() {
       <Navbar />
       <div className="home-stack">
         <Hero />
+        <TrustedBy />
         <FeaturedMessage />
         <div className="tight-top"><Mission /></div>
         <LegacyImpactSection />
@@ -38,7 +39,6 @@ export default function Home() {
         {/*    <Publications />  */}
         <Newsletter />
         <FAQ />
-        <TrustedBy />
       </div>
       <Footer />
     </main>
