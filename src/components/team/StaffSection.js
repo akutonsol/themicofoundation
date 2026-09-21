@@ -35,7 +35,7 @@ function StaffCard({ member, onOpen }) {
       <div className="relative overflow-hidden rounded-[20px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] shadow-[var(--shadow-2)] transition-shadow duration-300 group-hover:shadow-[var(--shadow-4)]">
         <div className="pointer-events-none absolute right-3 top-3 opacity-20"><Sparkle /></div>
         <div className="aspect-[0.84/1] overflow-hidden">
-          <img src={member.image} alt={member.name} className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.03]" />
+          <img src={member.image} alt={member.name} className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.03]" />
         </div>
       </div>
       <div className="mt-3">
@@ -46,9 +46,21 @@ function StaffCard({ member, onOpen }) {
   );
 }
 
+function CardSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="aspect-[0.84/1] rounded-[20px] bg-[rgba(4,6,23,0.06)]" />
+      <div className="mt-3 space-y-2">
+        <div className="h-[14px] w-2/3 rounded bg-[rgba(4,6,23,0.06)]" />
+        <div className="h-[18px] w-5/6 rounded bg-[rgba(4,6,23,0.08)]" />
+      </div>
+    </div>
+  );
+}
+
 export default function StaffSection() {
   const [selectedMember, setSelectedMember] = useState(null);
-  const [members, setMembers] = useState(staticStaffMembers);
+  const [members, setMembers] = useState(null);
 
   useEffect(() => {
     async function fetchMembers() {
@@ -66,13 +78,18 @@ export default function StaffSection() {
             image: m.photo ? urlFor(m.photo).width(800).url() : staticStaffMembers[0].image,
           })));
           console.log('✅ Loaded staff members from CMS:', data.length);
+        } else {
+          setMembers(staticStaffMembers);
         }
       } catch (error) {
         console.error('Error fetching staff members:', error);
+        setMembers(staticStaffMembers);
       }
     }
     fetchMembers();
   }, []);
+
+  const loading = members === null;
 
   return (
     <>
@@ -93,7 +110,9 @@ export default function StaffSection() {
           </div>
         </div>
         <div className="grid gap-x-5 gap-y-10 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-          {members.map(member => <StaffCard key={member.id} member={member} onOpen={setSelectedMember} />)}
+          {loading
+            ? Array.from({ length: 5 }).map((_, i) => <CardSkeleton key={i} />)
+            : members.map(member => <StaffCard key={member.id} member={member} onOpen={setSelectedMember} />)}
         </div>
       </section>
 

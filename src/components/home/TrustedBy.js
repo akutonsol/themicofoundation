@@ -73,12 +73,19 @@ export default function TrustedBy() {
         }
         .trusted-track:hover { animation-play-state: paused; }
 
-        /* Desktop — no heading, just marquee strip */
-        .trusted-heading { 
-          display: none; 
+        .trusted-heading {
+          display: block;
+          font-family: 'Sora', sans-serif;
+          font-size: 32px;
+          font-weight: 600;
+          color: #040617;
+          letter-spacing: -0.32px;
+          text-align: center;
+          padding: 40px 0 0;
+          margin: 0;
         }
-        .trusted-wrap { 
-          padding: 40px 0; 
+        .trusted-wrap {
+          padding: 40px 0;
         }
 
         /* Mobile — show heading above marquee */

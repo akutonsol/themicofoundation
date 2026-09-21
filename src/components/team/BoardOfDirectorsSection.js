@@ -34,7 +34,7 @@ function BoardCard({ member, onOpen }) {
       <div className="relative overflow-hidden rounded-[20px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] shadow-[var(--shadow-2)] transition-shadow duration-300 group-hover:shadow-[var(--shadow-4)]">
         <div className="pointer-events-none absolute right-3 top-3 opacity-20"><Sparkle /></div>
         <div className="aspect-[0.84/1] overflow-hidden">
-          <img src={member.image} alt={member.name} className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.03]" />
+          <img src={member.image} alt={member.name} className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.03]" />
         </div>
       </div>
       <div className="mt-3">
@@ -45,9 +45,21 @@ function BoardCard({ member, onOpen }) {
   );
 }
 
+function CardSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="aspect-[0.84/1] rounded-[20px] bg-[rgba(4,6,23,0.06)]" />
+      <div className="mt-3 space-y-2">
+        <div className="h-[14px] w-2/3 rounded bg-[rgba(4,6,23,0.06)]" />
+        <div className="h-[18px] w-5/6 rounded bg-[rgba(4,6,23,0.08)]" />
+      </div>
+    </div>
+  );
+}
+
 export default function BoardOfDirectorsSection() {
   const [selectedMember, setSelectedMember] = useState(null);
-  const [members, setMembers] = useState(staticBoardMembers);
+  const [members, setMembers] = useState(null);
 
   useEffect(() => {
     async function fetchMembers() {
@@ -65,16 +77,20 @@ export default function BoardOfDirectorsSection() {
             image: m.photo ? urlFor(m.photo).width(800).url() : staticBoardMembers[0].image,
           })));
           console.log('✅ Loaded board members from CMS:', data.length);
+        } else {
+          setMembers(staticBoardMembers);
         }
       } catch (error) {
         console.error('Error fetching board members:', error);
+        setMembers(staticBoardMembers);
       }
     }
     fetchMembers();
   }, []);
 
-  const chairman = members[0];
-  const restMembers = members.slice(1);
+  const loading = members === null;
+  const chairman = members?.[0];
+  const restMembers = members ? members.slice(1) : [];
 
   return (
     <>
@@ -85,7 +101,7 @@ export default function BoardOfDirectorsSection() {
               Board of Directors
             </h1>
           </div>
-          {chairman && <BoardCard member={chairman} onOpen={setSelectedMember} />}
+          {loading ? <CardSkeleton /> : chairman && <BoardCard member={chairman} onOpen={setSelectedMember} />}
           <div className="lg:border-l lg:border-[rgba(4,6,23,0.07)] lg:pl-6">
             <p className="max-w-[520px] text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
               The Mico Foundation is led by a 12-member Board of Directors with equal reps from the Trustees, University College, and Alumni (MOSA). Key roles like the President and Trustee serve as ex-officio members during their tenure.
@@ -93,7 +109,9 @@ export default function BoardOfDirectorsSection() {
           </div>
         </div>
         <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
-          {restMembers.map(member => <BoardCard key={member.id} member={member} onOpen={setSelectedMember} />)}
+          {loading
+            ? Array.from({ length: 11 }).map((_, i) => <CardSkeleton key={i} />)
+            : restMembers.map(member => <BoardCard key={member.id} member={member} onOpen={setSelectedMember} />)}
         </div>
       </section>
 
