@@ -188,7 +188,7 @@ export default function HistoryPage() {
 
           {content.heroNarrative && (
             <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.28 }}
-              className="mt-8 max-w-[900px] text-[15px] font-bold leading-[1.6] text-[#24180A]" style={inter}>
+              className="mt-8 max-w-[900px] text-[20px] font-bold leading-[1.6] text-[#24180A]" style={inter}>
               {content.heroNarrative}
             </motion.p>
           )}
