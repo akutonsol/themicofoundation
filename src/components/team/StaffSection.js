@@ -35,7 +35,7 @@ function StaffCard({ member, onOpen }) {
       <div className="relative overflow-hidden rounded-[20px] border border-[rgba(4,6,23,0.07)] bg-[#FFFDF9] shadow-[var(--shadow-2)] transition-shadow duration-300 group-hover:shadow-[var(--shadow-4)]">
         <div className="pointer-events-none absolute right-3 top-3 opacity-20"><Sparkle /></div>
         <div className="aspect-[0.84/1] overflow-hidden">
-          <img src={member.image} alt={member.name} className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.03]" />
+          <img src={member.image} alt={member.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" style={{ objectPosition: "50% 18%" }} />
         </div>
       </div>
       <div className="mt-3">
