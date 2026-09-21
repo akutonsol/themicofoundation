@@ -202,13 +202,15 @@ export default function HistoryPage() {
 
       {/* ── STORY ── */}
       <motion.section initial={{ opacity: 0, y: 120 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, amount: 0.2 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="relative px-6 py-28 sm:px-10 lg:px-20">
-        <div className="mx-auto grid max-w-[1500px] gap-16 lg:grid-cols-[0.75fr_1.25fr]">
+        className="relative overflow-hidden px-6 py-28 sm:px-10 lg:px-20">
+        {/* Large watermark crest — mix-blend-mode:multiply drops the logo's white
+            card background into the section's own cream background. */}
+        <img src="/images/home/the_mico_foundation.png" alt="" aria-hidden="true"
+          className="pointer-events-none absolute -right-24 top-1/2 hidden w-[720px] -translate-y-1/2 opacity-[0.08] mix-blend-multiply sm:block lg:w-[900px]" />
+
+        <div className="relative mx-auto grid max-w-[1500px] gap-16 lg:grid-cols-[0.75fr_1.25fr]">
           <div>
             <div className="sticky top-28">
-              <motion.div initial={{ opacity: 0, rotate: -12, scale: 0.8 }} whileInView={{ opacity: 1, rotate: 0, scale: 1 }} viewport={{ once: false }} transition={{ duration: 0.65 }}>
-                <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" className="mx-auto mb-6 h-24 w-auto" />
-              </motion.div>
               <h2 className="text-[58px] font-semibold leading-[0.95] tracking-[-0.07em] sm:text-[82px]" style={inter}>{content.storyHeading}</h2>
             </div>
           </div>
