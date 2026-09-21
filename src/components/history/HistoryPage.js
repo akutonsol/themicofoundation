@@ -207,7 +207,7 @@ export default function HistoryPage() {
           <div>
             <div className="sticky top-28">
               <motion.div initial={{ opacity: 0, rotate: -12, scale: 0.8 }} whileInView={{ opacity: 1, rotate: 0, scale: 1 }} viewport={{ once: false }} transition={{ duration: 0.65 }}>
-                <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" className="mb-6 h-14 w-auto" />
+                <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" className="mx-auto mb-6 h-24 w-auto" />
               </motion.div>
               <h2 className="text-[58px] font-semibold leading-[0.95] tracking-[-0.07em] sm:text-[82px]" style={inter}>{content.storyHeading}</h2>
             </div>
