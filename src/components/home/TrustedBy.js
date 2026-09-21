@@ -60,7 +60,7 @@ export default function TrustedBy() {
 
         @keyframes marquee-scroll {
           0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-25%); }
         }
 
         .trusted-track {
@@ -92,7 +92,7 @@ export default function TrustedBy() {
            to fit it, so the strip reads as one consistent, premium row instead
            of a mix of arbitrary sizes. Grayscale by default, full color on hover. */
         .trusted-logo-box {
-          height: 44px;
+          height: 72px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -101,7 +101,7 @@ export default function TrustedBy() {
         .trusted-logo-box img {
           height: 100%;
           width: auto;
-          max-width: 160px;
+          max-width: 220px;
           object-fit: contain;
           filter: grayscale(100%);
           opacity: 0.7;
@@ -133,10 +133,10 @@ export default function TrustedBy() {
             gap: 32px;
           }
           .trusted-logo-box {
-            height: 30px;
+            height: 48px;
           }
           .trusted-logo-box img {
-            max-width: 110px;
+            max-width: 150px;
           }
         }
       `}</style>
@@ -149,10 +149,12 @@ export default function TrustedBy() {
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '120px', background: 'linear-gradient(to right, #FFFDF9 0%, rgba(255,253,249,0) 100%)', zIndex: 2, pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '120px', background: 'linear-gradient(to left, #FFFDF9 0%, rgba(255,253,249,0) 100%)', zIndex: 2, pointerEvents: 'none' }} />
 
-        {/* Marquee — doubled for seamless loop */}
+        {/* Marquee — repeated 4x (animating exactly 1/4 of the track width) so the
+            loop is seamless and always wide enough to fill the row, however many
+            logos are configured in the CMS. */}
         <div style={{ display: 'flex', overflow: 'hidden' }}>
           <div className="trusted-track">
-            {[...displayLogos, ...displayLogos].map((logo, i) => (
+            {[...displayLogos, ...displayLogos, ...displayLogos, ...displayLogos].map((logo, i) => (
               <div key={i} className="trusted-logo-box">
                 <img src={logo.src} alt={logo.name || ''} />
               </div>
