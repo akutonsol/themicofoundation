@@ -216,7 +216,7 @@ export default function NewsEventsPage() {
   useEffect(() => {
     sanityClient
       .fetch(
-        `*[_type == "newsEvent"] | order(date desc) {
+        `*[_type == "newsEvent" && approved == true] | order(date desc) {
           _id, title, "slug": slug.current, type, date, location,
           excerpt, description, time, category, author, isFeatured,
           "image": coalesce(featuredImage.asset->url, thumbnailImage.asset->url)

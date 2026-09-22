@@ -86,7 +86,7 @@ export const queries = {
     ctaEyebrow, ctaTitle, ctaSubtitle, ctaButtonText, ctaButtonLink
   }`,
 
-  projects: `*[_type == "project"] | order(order asc){
+  projects: `*[_type == "project" && approved == true] | order(order asc){
     _id,
     title,
     "slug": slug.current,
@@ -135,7 +135,7 @@ export const queries = {
   }`,
 
   
-messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
+messages: `*[_type == "teamMessage" && isActive == true && approved == true] | order(order asc){
     _id,
     name,
     role,
@@ -148,7 +148,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
  
 
  
-  messageBySlug: (slug) => `*[_type == "teamMessage" && slug.current == "${slug}"][0] {
+  messageBySlug: (slug) => `*[_type == "teamMessage" && slug.current == "${slug}" && approved == true][0] {
     _id,
     name,
     role,
@@ -160,7 +160,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
     order
   }`,
  
-  allMessages: `*[_type == "teamMessage" && isActive == true] | order(order asc) {
+  allMessages: `*[_type == "teamMessage" && isActive == true && approved == true] | order(order asc) {
     _id,
     name,
     "slug": slug.current,
@@ -180,7 +180,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
   }`,
 
   // FIX: slug returned as plain string
-  newsEventsFeatured: `*[_type == "newsEvent" && isActive == true && isFeatured == true] | order(order asc)[0] {
+  newsEventsFeatured: `*[_type == "newsEvent" && isActive == true && isFeatured == true && approved == true] | order(order asc)[0] {
     _id,
     title,
     "slug": slug.current,
@@ -193,7 +193,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
   }`,
 
   // FIX: slug returned as plain string
-  newsEventsSide: `*[_type == "newsEvent" && isActive == true && isFeatured == false] | order(order asc)[0...3] {
+  newsEventsSide: `*[_type == "newsEvent" && isActive == true && isFeatured == false && approved == true] | order(order asc)[0...3] {
     _id,
     title,
     "slug": slug.current,
@@ -205,7 +205,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
   }`,
 
   // FIX: slug returned as plain string
-  newsArticleBySlug: (slug) => `*[_type == "newsEvent" && slug.current == "${slug}"][0] {
+  newsArticleBySlug: (slug) => `*[_type == "newsEvent" && slug.current == "${slug}" && approved == true][0] {
     _id,
     title,
     "slug": slug.current,
@@ -218,7 +218,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
     order
   }`,
 
-  allNewsArticles: `*[_type == "newsEvent" && isActive == true] | order(date desc) {
+  allNewsArticles: `*[_type == "newsEvent" && isActive == true && approved == true] | order(date desc) {
     _id,
     title,
     "slug": slug.current,
@@ -226,7 +226,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
     date
   }`,
 
-  upcomingEventBySlug: (slug) => `*[_type == "newsEvent" && slug.current == "${slug}" && type == "upcoming"][0] {
+  upcomingEventBySlug: (slug) => `*[_type == "newsEvent" && slug.current == "${slug}" && type == "upcoming" && approved == true][0] {
     _id,
     title,
     "slug": slug.current,
@@ -242,7 +242,7 @@ messages: `*[_type == "teamMessage" && isActive == true] | order(order asc){
     "details": eventDetails
   }`,
 
-  allUpcomingEvents: `*[_type == "newsEvent" && isActive == true && type == "upcoming"] | order(date asc) {
+  allUpcomingEvents: `*[_type == "newsEvent" && isActive == true && type == "upcoming" && approved == true] | order(date asc) {
     _id,
     title,
     "slug": slug.current,
@@ -278,7 +278,7 @@ faqs: `*[_type == "faq" && isActive == true] | order(order asc) {
 }`,
 
 // about page
- boardMembers: `*[_type == "teamMember" && type == "board" && isActive == true] | order(order asc) {
+ boardMembers: `*[_type == "teamMember" && type == "board" && isActive == true && approved == true] | order(order asc) {
     _id,
     name,
     role,
@@ -290,7 +290,7 @@ faqs: `*[_type == "faq" && isActive == true] | order(order asc) {
     order
   }`,
 
-  trustees: `*[_type == "teamMember" && type == "trustee" && isActive == true] | order(order asc) {
+  trustees: `*[_type == "teamMember" && type == "trustee" && isActive == true && approved == true] | order(order asc) {
     _id,
     name,
     role,
@@ -302,7 +302,7 @@ faqs: `*[_type == "faq" && isActive == true] | order(order asc) {
     order
   }`,
  
-  staffMembers: `*[_type == "teamMember" && type == "staff" && isActive == true] | order(order asc) {
+  staffMembers: `*[_type == "teamMember" && type == "staff" && isActive == true && approved == true] | order(order asc) {
     _id,
     name,
     role,
@@ -375,7 +375,7 @@ anniversaryPopup: `*[_type == "anniversaryPopup"][0]{
   "pageImageUrl": pageImage.asset->url
 }`,
 
-resourceCategories: `*[_type == "resourceCategory" && isActive == true] | order(order asc) {
+resourceCategories: `*[_type == "resourceCategory" && isActive == true && approved == true] | order(order asc) {
   _id, title, description,
   date,
   theme, topLabel, bottomLabel, order,

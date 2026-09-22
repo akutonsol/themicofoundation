@@ -1,4 +1,5 @@
 import { defineType } from 'sanity'
+import { approvedField, approvalStatusPrefix } from '../lib/workflowFields'
 
 export default defineType({
   name: 'teamMember',
@@ -70,9 +71,13 @@ export default defineType({
       type: 'boolean',
       initialValue: true,
     },
+    approvedField,
   ],
   preview: {
-    select: { title: 'name', subtitle: 'role', media: 'photo' },
+    select: { title: 'name', subtitle: 'role', media: 'photo', approved: 'approved' },
+    prepare({ title, subtitle, media, approved }) {
+      return { title: `${approvalStatusPrefix(approved)}${title}`, subtitle, media }
+    },
   },
   orderings: [
     {

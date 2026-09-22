@@ -22,7 +22,7 @@ export default function FeaturedMessage() {
     async function fetchFeatured() {
       try {
         const data = await client.fetch(`
-          *[_type == "teamMessage"] | order(order asc) [0] {
+          *[_type == "teamMessage" && approved == true] | order(order asc) [0] {
             _id, name, role, quote, fullMessage, slug,
             "photo": photo.asset->url
           }

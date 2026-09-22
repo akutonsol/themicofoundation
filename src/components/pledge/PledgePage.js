@@ -89,7 +89,7 @@ export default function PledgePage() {
       try {
         // All active projects — the visitor can pledge toward any of them.
         const data = await client.fetch(
-          `*[_type == "project" && status == "active"] | order(order asc){
+          `*[_type == "project" && status == "active" && approved == true] | order(order asc){
             title, "slug": slug.current, label, status,
             location, description, pledgeDescription,
             "image": image.asset->url

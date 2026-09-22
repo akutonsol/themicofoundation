@@ -1,4 +1,5 @@
 import { defineType } from 'sanity'
+import { approvedField, approvalStatusPrefix } from '../lib/workflowFields'
 
 export default defineType({
   name: 'teamMessage',
@@ -72,19 +73,21 @@ export default defineType({
       type: 'boolean',
       description: 'Show this message in the carousel?',
       initialValue: true
-    }
+    },
+    approvedField,
   ],
   preview: {
     select: {
       title: 'name',
       subtitle: 'role',
       media: 'photo',
-      order: 'order'
+      order: 'order',
+      approved: 'approved'
     },
     prepare(selection) {
-      const { title, subtitle, media, order } = selection
+      const { title, subtitle, media, order, approved } = selection
       return {
-        title: title,
+        title: `${approvalStatusPrefix(approved)}${title}`,
         subtitle: `${subtitle} • Order: ${order}`,
         media: media
       }

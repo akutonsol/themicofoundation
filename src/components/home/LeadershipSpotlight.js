@@ -35,7 +35,7 @@ export default function LeadershipSpotlight() {
       try {
         // Fetch team members and trustees from Sanity
         const [teamData, trusteesData] = await Promise.all([
-          client.fetch(`*[_type == "teamMember"] | order(order asc) [0...4] {
+          client.fetch(`*[_type == "teamMember" && approved == true] | order(order asc) [0...4] {
             _id, name, role, "photo": photo.asset->url, order
           }`),
           client.fetch(`*[_type == "trustee"] | order(order asc) [0...4] {

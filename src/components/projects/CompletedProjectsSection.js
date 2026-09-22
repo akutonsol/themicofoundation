@@ -145,7 +145,7 @@ export default function CompletedProjectsSection() {
       try {
         // Match both "complete" and "completed" status values
         const data = await client.fetch(`
-          *[_type == "project" && (status == "completed" || status == "complete")] | order(order asc) {
+          *[_type == "project" && (status == "completed" || status == "complete") && approved == true] | order(order asc) {
             _id, title, "slug": slug.current, label, status,
             "images": gallery[]{
               "url": asset->url,

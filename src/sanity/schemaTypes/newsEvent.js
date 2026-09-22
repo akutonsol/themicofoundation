@@ -1,3 +1,5 @@
+import { approvedField, approvalStatusPrefix } from '../lib/workflowFields'
+
 export default {
   name: 'newsEvent',
   title: 'News & Events',
@@ -161,7 +163,8 @@ export default {
       type: 'boolean',
       initialValue: true,
       description: 'Show this article/event on the website'
-    }
+    },
+    approvedField,
   ],
   preview: {
     select: {
@@ -170,13 +173,14 @@ export default {
       date: 'date',
       media: 'featuredImage',
       isFeatured: 'isFeatured',
-      isActive: 'isActive'
+      isActive: 'isActive',
+      approved: 'approved'
     },
-    prepare({ title, type, date, media, isFeatured, isActive }) {
+    prepare({ title, type, date, media, isFeatured, isActive, approved }) {
       const labels = { news: '📰', newsroom: '📰', upcoming: '📅', event: '✅', announcement: '📢' }
       const formattedDate = date ? new Date(date).toLocaleDateString() : 'No date'
       return {
-        title: `${labels[type] || ''} ${title}`,
+        title: `${approvalStatusPrefix(approved)}${labels[type] || ''} ${title}`,
         subtitle: `${type} - ${formattedDate}${isFeatured ? ' ⭐' : ''}${!isActive ? ' (Inactive)' : ''}`,
         media
       }

@@ -108,7 +108,7 @@ export default function EventDetailPage() {
   useEffect(() => {
     if (!slug) return;
     sanityClient
-      .fetch(`*[_type == "newsEvent" && type == "event"] | order(date desc) {
+      .fetch(`*[_type == "newsEvent" && type == "event" && approved == true] | order(date desc) {
         _id, title, "slug": slug.current, date, location, description, excerpt,
         "image": featuredImage.asset->url,
         "gallery": gallery[]{

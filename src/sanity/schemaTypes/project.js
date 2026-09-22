@@ -1,4 +1,5 @@
 import { defineType } from 'sanity'
+import { approvedField, approvalStatusPrefix } from '../lib/workflowFields'
 
 export default defineType({
   name: 'project',
@@ -239,7 +240,8 @@ export default defineType({
       type: 'number',
       description: 'Order in carousel (0, 1, 2, 3...)',
       validation: Rule => Rule.required().min(0)
-    }
+    },
+    approvedField,
   ],
   preview: {
     select: {
@@ -249,21 +251,22 @@ export default defineType({
       status: 'status',
       donated: 'amountDonated',
       target: 'targetAmount',
-      slug: 'slug'
+      slug: 'slug',
+      approved: 'approved'
     },
     prepare(selection) {
-      const { title, subtitle, media, status, donated, target, slug } = selection
+      const { title, subtitle, media, status, donated, target, slug, approved } = selection
       const percentage = target > 0 ? Math.round((donated / target) * 100) : 0
-      
+
       // Format currency
       const formatCurrency = (amount) => {
         if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`
         if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`
         return `$${amount}`
       }
-      
+
       return {
-        title: title,
+        title: `${approvalStatusPrefix(approved)}${title}`,
         subtitle: `${subtitle} • ${status} • ${percentage}% • /${slug?.current || 'no-slug'}`,
         media: media
       }

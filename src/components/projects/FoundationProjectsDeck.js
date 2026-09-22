@@ -92,7 +92,7 @@ export default function FoundationProjectsDeck() {
     async function fetchProjects() {
       try {
         const data = await client.fetch(`
-          *[_type == "project" && status == "active"] | order(order asc) {
+          *[_type == "project" && status == "active" && approved == true] | order(order asc) {
             _id, title, "slug": slug.current, label, status,
             location, description, image, homeSliderImage, projectsPageImage, projectDetailImage, order
           }
