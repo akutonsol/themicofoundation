@@ -30,7 +30,7 @@ function TypeCard({ type, index }) {
       className="rounded-[16px] border-2 border-[#D6C288] bg-[#FFFDF9] p-6">
       <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full border border-[#D6C288] text-[22px] text-[#040617]">{type.icon}</div>
       <h3 className="text-[26px] font-bold leading-[1.15] tracking-[-0.04em] text-[#040617]" style={inter}>{type.title}</h3>
-      <p className="mt-3 text-[16px] leading-[1.5] tracking-[0.01em] text-[#6F7181]" style={inter}>{type.desc}</p>
+      <p className="mt-3 text-justify text-[16px] leading-[1.5] tracking-[0.01em] text-[#6F7181]" style={inter}>{type.desc}</p>
     </motion.div>
   )
 }
@@ -109,7 +109,7 @@ export default function EndowmentTypes() {
           <div className="flex flex-col gap-12">
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}>
               {introLines.map((line, i) => (
-                <p key={i} className={`max-w-[900px] text-[18px] leading-[1.75] tracking-[0.01em] text-[#6F7181] ${i > 0 ? 'mt-4' : ''}`} style={inter}>{line}</p>
+                <p key={i} className={`max-w-[900px] text-justify text-[18px] leading-[1.75] tracking-[0.01em] text-[#6F7181] ${i > 0 ? 'mt-4' : ''}`} style={inter}>{line}</p>
               ))}
             </motion.div>
 
@@ -133,7 +133,7 @@ export default function EndowmentTypes() {
             </div>
             <span style={{ ...inter, display: 'inline-block', fontSize: 12, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: 12 }}>Get Involved</span>
             <h2 className="text-[28px] font-bold leading-[1.2] tracking-[-0.03em]" style={{ ...inter, color: '#040617' }}>Endowment Commitment</h2>
-            <p className="mt-4 text-[16px] leading-[1.6] tracking-[0.01em]" style={{ ...inter, color: '#6F7181' }}>
+            <p className="mt-4 text-justify text-[16px] leading-[1.6] tracking-[0.01em]" style={{ ...inter, color: '#6F7181' }}>
               Thank you for your interest in supporting the Mico University College through your endowment. Please complete this form to indicate your interest. Once your submission is received a member of our team will contact you for the next step.
             </p>
 

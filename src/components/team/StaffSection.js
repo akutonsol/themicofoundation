@@ -104,7 +104,7 @@ export default function StaffSection() {
             </p>
           </div>
           <div className="lg:border-l lg:border-[rgba(4,6,23,0.07)] lg:pl-6">
-            <p className="max-w-[520px] text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <p className="max-w-[520px] text-justify text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
               A steady, purpose-driven, and dedicated team committed to a shared vision, unwavering commitment to excellence, and high standards of professionalism even in the face of challenges and uncertainty.
             </p>
           </div>

@@ -231,7 +231,7 @@ export default function ResourceCenter() {
               viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08 }}
               style={{ borderLeft: '1px solid #E5E6EB', paddingLeft: '32px', marginTop: '8px' }}
             >
-              <p style={{ ...inter, maxWidth: '660px', fontSize: '28px', lineHeight: '1.45', letterSpacing: '-0.03em', color: '#7A7D8B', margin: 0 }}>
+              <p style={{ ...inter, maxWidth: '660px', fontSize: '28px', lineHeight: '1.45', letterSpacing: '-0.03em', color: '#7A7D8B', margin: 0, textAlign: 'justify' }}>
                 We make all of The Mico Foundation evaluation and research reports available for public access in accordance with our Accountability Policy. These are available at our Evaluation Library.
               </p>
             </motion.div>

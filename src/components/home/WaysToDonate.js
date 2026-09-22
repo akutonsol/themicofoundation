@@ -149,7 +149,7 @@ export default function WaysToDonate() {
                   <h3 style={{ ...inter, fontSize:'32px', fontWeight:700, color:'#040617', letterSpacing:'-0.5px', lineHeight:'1.2', margin:'0 0 14px' }}>
                     {w.title}
                   </h3>
-                  <p style={{ ...inter, fontSize:'18px', color:'#6F7181', lineHeight:'1.7', margin:0 }}>
+                  <p style={{ ...inter, fontSize:'18px', color:'#6F7181', lineHeight:'1.7', margin:0, textAlign:'justify' }}>
                     {w.desc}
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export default function WaysToDonate() {
                 <h3 style={{ ...inter, fontSize:'26px', fontWeight:700, color:'#040617', letterSpacing:'-0.5px', lineHeight:'1.2', margin:0 }}>
                   {w.title}
                 </h3>
-                <p style={{ ...inter, fontSize:'16px', color:'#6F7181', lineHeight:'1.7', margin:0 }}>
+                <p style={{ ...inter, fontSize:'16px', color:'#6F7181', lineHeight:'1.7', margin:0, textAlign:'justify' }}>
                   {w.desc}
                 </p>
                 <a href={w.href}

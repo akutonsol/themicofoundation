@@ -94,7 +94,7 @@ function ChatBubble({ message }) {
       <h3 className="m-0 mb-4 text-[20px] font-bold tracking-[-0.03em] sm:text-[24px]" style={inter}>{message.title || message.name}</h3>
       <div className="space-y-3">
         {paras.map((p, i) => (
-          <p key={i} className="m-0 text-[14px] font-normal leading-[1.6] text-[#24180A]/85 sm:text-[15px]" style={inter}>{p}</p>
+          <p key={i} className="m-0 text-justify text-[14px] font-normal leading-[1.6] text-[#24180A]/85 sm:text-[15px]" style={inter}>{p}</p>
         ))}
       </div>
     </div>
@@ -188,7 +188,7 @@ export default function HistoryPage() {
 
           {content.heroNarrative && (
             <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.28 }}
-              className="mt-8 max-w-[900px] text-[20px] font-bold leading-[1.6] text-[#24180A]" style={inter}>
+              className="mt-8 w-full text-justify text-[20px] font-bold leading-[1.6] text-[#24180A]" style={inter}>
               {content.heroNarrative}
             </motion.p>
           )}
@@ -216,7 +216,7 @@ export default function HistoryPage() {
           <div className="space-y-10 border-l border-[#24180A]/20 pl-8">
             {content.storyParagraphs.map((p, i) => (
               <motion.p key={i} initial={{ opacity: 0, y: 42 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, amount: 0.3 }} transition={{ duration: 0.55, delay: i * 0.08 }}
-                className="text-[26px] leading-[1.65] tracking-[-0.03em] text-[#3F352A]" style={inter}>{p}</motion.p>
+                className="text-justify text-[26px] leading-[1.65] tracking-[-0.03em] text-[#3F352A]" style={inter}>{p}</motion.p>
             ))}
           </div>
         </div>

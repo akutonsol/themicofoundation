@@ -317,10 +317,10 @@ export default function LegacyImpactSection() {
                         </div>
 
                         {/* Full description — flows around the image and continues to the end */}
-                        <p style={{ ...inter, fontSize:'18px', color:'rgba(255,255,255,0.82)', lineHeight:'1.9', margin:'0 0 22px' }}>
+                        <p style={{ ...inter, fontSize:'18px', color:'rgba(255,255,255,0.82)', lineHeight:'1.9', margin:'0 0 22px', textAlign:'justify' }}>
                           {paragraph1}
                         </p>
-                        <p style={{ ...inter, fontSize:'18px', color:'rgba(255,255,255,0.7)', lineHeight:'1.9', margin:'0 0 28px' }}>
+                        <p style={{ ...inter, fontSize:'18px', color:'rgba(255,255,255,0.7)', lineHeight:'1.9', margin:'0 0 28px', textAlign:'justify' }}>
                           {paragraph2}
                         </p>
 

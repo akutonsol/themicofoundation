@@ -158,7 +158,7 @@ export default function NewsDetailPage({ slug }) {
           transition={{ duration: 0.55, delay: 0.08 }}
           className="mx-auto mt-16 max-w-[1380px]"
         >
-          <div className="space-y-10 text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[28px] lg:text-[32px]" style={inter}>
+          <div className="space-y-10 text-justify text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[28px] lg:text-[32px]" style={inter}>
             {(article.content || article.excerpt || "Content coming soon.")
               .trim()
               .split("\n\n")

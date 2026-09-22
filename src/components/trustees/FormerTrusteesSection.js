@@ -114,7 +114,7 @@ export default function FormerTrusteesSection() {
         .ft-title { text-align:center; font-family:'Inter',sans-serif; font-size: clamp(42px,6vw,72px); font-weight:800; letter-spacing:-0.04em; color:#040617; line-height:1; margin:0 0 clamp(24px,3.5vw,36px); }
         .ft-reading-block { margin-top: clamp(28px,3.5vw,44px); padding-top: 0; }
         .ft-reading { max-width: 860px; margin: 0 auto; }
-        .ft-reading p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,19px); line-height:1.85; color:#4A4C5A; margin:0 0 20px; }
+        .ft-reading p { font-family:'Inter',sans-serif; font-size: clamp(16px,1.35vw,19px); line-height:1.85; color:#4A4C5A; margin:0 0 20px; text-align: justify; }
         .ft-reading p:last-child { margin-bottom:0; }
         .ft-reading p:first-child::first-letter { font-size: 3.4em; line-height:0.8; font-weight:800; float:left; margin:6px 12px 0 0; color:#B8860B; }
         .ft-reading-cols { clear:both; max-width:820px; margin: clamp(32px,5vw,52px) auto 0; display:grid; grid-template-columns:1fr 1fr; gap: clamp(20px,3vw,36px); align-items:stretch; }
@@ -125,7 +125,7 @@ export default function FormerTrusteesSection() {
         .ft-reading-cols > .ft-rc-col:first-child .ft-rc-imgwrap { flex:1; }
         .ft-reading-cols > .ft-rc-col:first-child .ft-rc-imgwrap img { height:100%; object-fit:cover; }
         .ft-rc-narrative { margin-top:18px; }
-        .ft-rc-narrative p { font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; color:#4A4C5A; margin:0 0 14px; }
+        .ft-rc-narrative p { font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; color:#4A4C5A; margin:0 0 14px; text-align: justify; }
         .ft-rc-narrative p:last-child { margin-bottom:0; }
         @media (max-width:640px) { .ft-reading-cols { grid-template-columns:1fr; max-width:420px; } }
 
@@ -142,7 +142,7 @@ export default function FormerTrusteesSection() {
         .ft-years { width:fit-content; background:#FFF7CC; color:#8A6D00; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:6px 14px; border-radius:100px; }
         .ft-name { font-family:'Inter',sans-serif; font-size:22px; font-weight:700; line-height:1.2; letter-spacing:-0.02em; color:#040617; margin:0; }
         .ft-divider { height:1px; width:100%; background:rgba(4,6,23,0.07); }
-        .ft-bio { font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; color:#5A5C6B; margin:0; }
+        .ft-bio { font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; color:#5A5C6B; margin:0; text-align: justify; }
       `}</style>
 
       <div className="ft-glow-a" />

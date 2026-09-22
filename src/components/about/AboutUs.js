@@ -22,7 +22,7 @@ const staticContent = {
 };
 
 const paragraphClass =
-  "text-[24px] leading-[1.65] tracking-[-0.03em] text-[#040617] sm:text-[30px] lg:text-[36px]";
+  "text-justify text-[24px] leading-[1.65] tracking-[-0.03em] text-[#040617] sm:text-[30px] lg:text-[36px]";
 
 function BackgroundGrid() {
   return (

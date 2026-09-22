@@ -298,7 +298,7 @@ export default function ProjectDetailPage({ slug }) {
                     <div key={i} style={{ marginBottom: i < project.furtherBlocks.length - 1 ? "28px" : 0 }}>
                       {b.title && <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(18px,1.8vw,22px)", fontWeight: 700, letterSpacing: "-0.01em", color: "#FFD900", lineHeight: 1.25, margin: "0 0 10px" }}>{b.title}</h3>}
                       {b.body && b.body.split(/\n{2,}/).map((para, j) => (
-                        <p key={j} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px" }}>{para.trim()}</p>
+                        <p key={j} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px", textAlign: "justify" }}>{para.trim()}</p>
                       ))}
                     </div>
                   ))
@@ -306,7 +306,7 @@ export default function ProjectDetailPage({ slug }) {
                   <>
                     <h3 style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(18px,1.8vw,22px)", fontWeight: 700, letterSpacing: "-0.01em", color: "#FFD900", lineHeight: 1.25, margin: "0 0 16px" }}>About This Project</h3>
                     {project.description.map((para, i) => (
-                      <p key={i} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px" }}>{para}</p>
+                      <p key={i} style={{ fontFamily: "'Inter',sans-serif", fontSize: "15px", lineHeight: 1.75, color: "rgba(255,255,255,0.72)", margin: "0 0 12px", textAlign: "justify" }}>{para}</p>
                     ))}
                   </>
                 )}
@@ -466,7 +466,7 @@ export default function ProjectDetailPage({ slug }) {
           <div style={{ display: "flex", flexDirection: "column", gap: "clamp(28px,3vw,44px)" }}>
             {(project.storyParagraphs?.length ? project.storyParagraphs : project.description).map((para, i) => (
               <motion.p key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, delay: i * 0.06 }}
-                style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.4vw,34px)", lineHeight: 1.35, color: "#040617", margin: 0, fontWeight: 700, letterSpacing: "-0.02em" }}>
+                style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(22px,2.4vw,34px)", lineHeight: 1.35, color: "#040617", margin: 0, fontWeight: 700, letterSpacing: "-0.02em", textAlign: "justify" }}>
                 {para}
               </motion.p>
             ))}
@@ -485,7 +485,7 @@ export default function ProjectDetailPage({ slug }) {
               How Your<br /><em style={{ color: "#FFD900" }}>Donation</em><br />Is Used
             </motion.h2>
             <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}
-              style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(16px,1.6vw,20px)", color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0, fontWeight: 300 }}>
+              style={{ fontFamily: "'Inter',sans-serif", fontSize: "clamp(16px,1.6vw,20px)", color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0, fontWeight: 300, textAlign: "justify" }}>
               Every dollar donated goes directly toward restoring and transforming {project.title} into a world-class educational institution.
             </motion.p>
           </div>

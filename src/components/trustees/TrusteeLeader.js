@@ -88,7 +88,7 @@ export default function TrusteeLeader() {
         .leader-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px,4.6vw,64px); font-weight: 600; color: #040617; margin: 0 0 28px; line-height: 1.04; letter-spacing: -0.03em; }
         .leader-heading em { font-style: italic; color: #1A8C4A; }
         .leader-quote-mark { font-family: 'Cormorant Garamond', serif; font-size: 100px; line-height: 0.4; color: rgba(255,217,0,0.4); height: 40px; display: block; }
-        .leader-msg p { font-family: 'Syne', sans-serif; font-size: clamp(16px,1.5vw,19px); line-height: 1.85; color: #3A3D4A; margin: 0 0 22px; font-weight: 400; }
+        .leader-msg p { font-family: 'Syne', sans-serif; font-size: clamp(16px,1.5vw,19px); line-height: 1.85; color: #3A3D4A; margin: 0 0 22px; font-weight: 400; text-align: justify; }
         .leader-divider { height: 1px; background: rgba(4,6,23,0.07); margin: 32px 0; }
         .leader-sign-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #9CA3AF; margin: 0 0 8px; }
         .leader-sign { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 36px; color: #040617; margin: 0; letter-spacing: -0.5px; }

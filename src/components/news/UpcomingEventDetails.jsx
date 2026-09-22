@@ -170,7 +170,7 @@ export default function UpcomingEventDetails({ slug }) {
             <h2 className="text-[34px] font-semibold tracking-[-0.05em] text-[#040617] sm:text-[44px]" style={inter}>
               Event Details
             </h2>
-            <p className="mt-5 text-[22px] leading-[1.6] tracking-[-0.02em] text-[#7A7D8B] sm:text-[26px]" style={inter}>
+            <p className="mt-5 text-justify text-[22px] leading-[1.6] tracking-[-0.02em] text-[#7A7D8B] sm:text-[26px]" style={inter}>
               {event.description}
             </p>
             {event.details && event.details.length > 0 && (

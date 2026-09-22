@@ -105,7 +105,7 @@ function NewsCard({ item }) {
             >
               {item.title}
             </h3>
-            <p className="mt-4 max-w-[980px] text-[20px] leading-[1.55] text-[#7A7D8B] sm:text-[22px]" style={inter}>
+            <p className="mt-4 max-w-[980px] text-justify text-[20px] leading-[1.55] text-[#7A7D8B] sm:text-[22px]" style={inter}>
               {item.excerpt}
             </p>
           </div>
@@ -156,7 +156,7 @@ function EventLayout({ item, badge, badgeColor, badgeTextColor, children }) {
             >
               {item.title}
             </h3>
-            <p className="mt-4 text-[20px] leading-[1.5] text-[#7A7D8B]" style={inter}>
+            <p className="mt-4 text-justify text-[20px] leading-[1.5] text-[#7A7D8B]" style={inter}>
               {item.description || item.excerpt}
             </p>
           </div>

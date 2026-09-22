@@ -104,10 +104,10 @@ export default function SponsorshipForm() {
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} className="pt-2">
           <h2 className="text-[34px] font-semibold tracking-[-0.05em] text-[#040617] sm:text-[42px]" style={inter}>Become Our Sponsor</h2>
           <div className="mt-8 max-w-[720px] border-l border-[#E5E6EB] pl-5">
-            <p className="text-[20px] leading-[1.5] tracking-[-0.02em] text-[#7A7D8B]" style={inter}>
+            <p className="text-justify text-[20px] leading-[1.5] tracking-[-0.02em] text-[#7A7D8B]" style={inter}>
               The Mico University College has served Jamaica, the wider Caribbean and beyond for more than 180 years. This tradition of endurance and resilience in delivering quality teacher education made The Mico an iconic institution of profound worth in the western hemisphere during the 21st century.
             </p>
-            <p className="mt-4 text-[20px] leading-[1.5] tracking-[-0.02em] text-[#7A7D8B]" style={inter}>
+            <p className="mt-4 text-justify text-[20px] leading-[1.5] tracking-[-0.02em] text-[#7A7D8B]" style={inter}>
               Have a project in mind? Need our expertise? Please complete the form below and we will be in touch with you as soon as possible.
             </p>
           </div>

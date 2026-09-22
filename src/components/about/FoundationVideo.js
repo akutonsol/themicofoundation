@@ -94,7 +94,7 @@ export default function FoundationVideo() {
                 <Play className="ml-1 h-7 w-7 fill-current" />
               </button>
             )}
-            <p className="max-w-[760px] text-[22px] leading-[1.6] tracking-[-0.03em] text-white/70 sm:text-[26px] lg:text-[30px]" style={inter}>
+            <p className="max-w-[760px] text-justify text-[22px] leading-[1.6] tracking-[-0.03em] text-white/70 sm:text-[26px] lg:text-[30px]" style={inter}>
               {content.subheading}
             </p>
           </motion.div>

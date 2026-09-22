@@ -219,7 +219,7 @@ export default function AnnouncementDetailPage({ slug }) {
         >
           {/* Body Content */}
           <div
-            className="space-y-9 text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[27px] lg:text-[30px]"
+            className="space-y-9 text-justify text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[27px] lg:text-[30px]"
             style={inter}
           >
             {announcement.content
