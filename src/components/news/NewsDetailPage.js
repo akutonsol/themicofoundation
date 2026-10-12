@@ -135,7 +135,7 @@ export default function NewsDetailPage({ slug }) {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
-          className="max-w-[1450px] text-[54px] font-semibold leading-[0.92] tracking-[-0.07em] text-[#040617] sm:text-[82px] lg:text-[118px]"
+          className="max-w-[1450px] text-[36px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#040617] sm:text-[48px] lg:text-[64px]"
           style={inter}
         >
           {article.title}
@@ -158,7 +158,7 @@ export default function NewsDetailPage({ slug }) {
           transition={{ duration: 0.55, delay: 0.08 }}
           className="mx-auto mt-16 max-w-[1380px]"
         >
-          <div className="space-y-10 text-justify text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[28px] lg:text-[32px]" style={inter}>
+          <div className="space-y-7 text-justify text-[17px] leading-[1.75] tracking-[-0.01em] text-[#1A1D28] sm:text-[18px] lg:text-[20px]" style={inter}>
             {(article.content || article.excerpt || "Content coming soon.")
               .trim()
               .split("\n\n")

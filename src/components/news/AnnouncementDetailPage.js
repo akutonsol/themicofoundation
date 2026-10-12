@@ -180,7 +180,7 @@ export default function AnnouncementDetailPage({ slug }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
-          className="max-w-[1420px] text-[52px] font-semibold leading-[0.93] tracking-[-0.07em] text-[#040617] sm:text-[80px] lg:text-[114px]"
+          className="max-w-[1420px] text-[36px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#040617] sm:text-[48px] lg:text-[64px]"
           style={inter}
         >
           {announcement.title}
@@ -219,7 +219,7 @@ export default function AnnouncementDetailPage({ slug }) {
         >
           {/* Body Content */}
           <div
-            className="space-y-9 text-justify text-[24px] leading-[1.7] tracking-[-0.03em] text-[#1A1D28] sm:text-[27px] lg:text-[30px]"
+            className="space-y-7 text-justify text-[17px] leading-[1.75] tracking-[-0.01em] text-[#1A1D28] sm:text-[18px] lg:text-[20px]"
             style={inter}
           >
             {announcement.content
