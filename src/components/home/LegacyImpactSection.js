@@ -26,7 +26,7 @@ function CloseIcon({ size = 20 }) {
 
 const STAT_LINKS = [
   { href: "https://themico.edu.jm", external: true  },
-  { href: "/contact",               external: false },
+  { href: "/year1981",              external: false },
   { href: "https://www.mucfa.org",  external: true  },
 ]
 
