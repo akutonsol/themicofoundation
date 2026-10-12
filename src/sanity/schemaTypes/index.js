@@ -38,6 +38,7 @@ import projectInitiative from './projectInitiative'
 import historicalPerspective from './historicalPerspective'
 import projectOverview from './projectOverview'
 import healthCheck from './healthCheck'
+import year1981Page from './year1981Page'
 
 export const schema = {
   types: [
@@ -80,6 +81,7 @@ export const schema = {
      projectInitiative,
      historicalPerspective,
      projectOverview,
-     healthCheck
+     healthCheck,
+     year1981Page
   ],
 }

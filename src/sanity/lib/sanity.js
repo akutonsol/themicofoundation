@@ -398,6 +398,11 @@ historyPage: `*[_type == "historyPage"][0]{
   timeline, ctaHeading, ctaButtonText, ctaButtonLink
 }`,
 
+year1981Page: `*[_type == "year1981Page" && approved == true][0]{
+  title, tagline, body, checklist[]{ label, link },
+  plaqueHeading, plaqueText, photo
+}`,
+
 contactSettings: `*[_type == "contactSettings"][0]{
   heading, address, email, phones, mapEmbedUrl
 }`,

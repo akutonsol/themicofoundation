@@ -1,18 +1,49 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CircleCheckBig } from "lucide-react";
+import { client, urlFor, queries } from "@/sanity/lib/sanity";
 
-const CHECK_ITEMS = [
-  { label: "Donations",  href: "/donate" },
-  { label: "Pledges",    href: "/pledge" },
-  { label: "Endowments", href: "/endowments" },
-];
+const DEFAULTS = {
+  title: "THE MICO\nFOUNDATION",
+  tagline: "Service, Donate Create",
+  body: "Be a part of history. Join the community of donors and help to transform The Mico University College and shape the future of education together.",
+  checklist: [
+    { label: "Donations",  link: "/donate" },
+    { label: "Pledges",    link: "/pledge" },
+    { label: "Endowments", link: "/endowments" },
+  ],
+  plaqueHeading: "Be a part of history.",
+  plaqueText: "Get your name, your company, or a family member’s name on the historical recognition plaque.",
+  photoUrl: "/images/year1981/cheque-presentation.jpg",
+  photoAlt: "Mico Foundation donation presentation",
+};
 
 const ease = [0.22, 1, 0.36, 1];
 
 export default function Year1981Page() {
+  const [content, setContent] = useState(DEFAULTS);
+
+  useEffect(() => {
+    client.fetch(queries.year1981Page)
+      .then((data) => {
+        if (!data) return;
+        setContent({
+          title: data.title || DEFAULTS.title,
+          tagline: data.tagline || DEFAULTS.tagline,
+          body: data.body || DEFAULTS.body,
+          checklist: data.checklist?.length ? data.checklist : DEFAULTS.checklist,
+          plaqueHeading: data.plaqueHeading || DEFAULTS.plaqueHeading,
+          plaqueText: data.plaqueText || DEFAULTS.plaqueText,
+          photoUrl: data.photo?.asset ? urlFor(data.photo).width(1400).height(1007).fit("crop").url() : DEFAULTS.photoUrl,
+          photoAlt: data.photo?.alt || DEFAULTS.photoAlt,
+        });
+      })
+      .catch((error) => console.error("Error fetching Year 1981 page:", error));
+  }, []);
+
   return (
     <section className="y81">
       <style>{`
@@ -191,36 +222,32 @@ export default function Year1981Page() {
             className="y81-oval"
             initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, ease, delay: 0.15 }}
           >
-            <img src="/images/year1981/cheque-presentation.jpg" alt="Mico Foundation donation presentation" />
+            <img src={content.photoUrl} alt={content.photoAlt} />
           </motion.div>
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }}>
-          <h1 className="y81-title">THE MICO<br />FOUNDATION</h1>
-          <p className="y81-script">Service, Donate Create</p>
+          <h1 className="y81-title" style={{ whiteSpace: "pre-line" }}>{content.title}</h1>
+          <p className="y81-script">{content.tagline}</p>
         </motion.div>
 
         <motion.div className="y81-lower" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease, delay: 0.2 }}>
-          <p className="y81-body">
-            Be a part of history. Join the community of donors and help to transform The Mico University College and shape the future of education together.
-          </p>
+          <p className="y81-body">{content.body}</p>
 
           <div className="y81-checks">
-            {CHECK_ITEMS.map((item) => (
-              <Link key={item.label} href={item.href} className="y81-check">
-                <CircleCheckBig strokeWidth={2.4} />
-                {item.label}
-              </Link>
-            ))}
+            {content.checklist.map((item) => {
+              const inner = (<><CircleCheckBig strokeWidth={2.4} />{item.label}</>);
+              return /^https?:\/\//.test(item.link)
+                ? <a key={item.label} href={item.link} target="_blank" rel="noopener noreferrer" className="y81-check">{inner}</a>
+                : <Link key={item.label} href={item.link} className="y81-check">{inner}</Link>;
+            })}
           </div>
 
           <div className="y81-divider" />
 
           <div className="y81-plaque">
-            <p className="y81-plaque-h">Be a part of history.</p>
-            <p className="y81-plaque-p">
-              Get your name, your company, or a family member&rsquo;s name on the historical recognition plaque.
-            </p>
+            <p className="y81-plaque-h">{content.plaqueHeading}</p>
+            <p className="y81-plaque-p">{content.plaqueText}</p>
           </div>
         </motion.div>
       </div>

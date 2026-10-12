@@ -64,6 +64,13 @@ export const structure = (S) =>
 
       S.divider(),
 
+      // ── YEAR 1981 ─────────────────────────────────
+      S.listItem()
+        .title('🏅 Year 1981 Page')
+        .child(S.document().schemaType('year1981Page').documentId('year1981Page').title('Year 1981 Page')),
+
+      S.divider(),
+
       // ── TEAM ──────────────────────────────────────
       S.listItem()
         .title('👥 Team')
