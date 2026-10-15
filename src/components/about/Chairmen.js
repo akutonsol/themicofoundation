@@ -66,18 +66,17 @@ export default function Chairmen() {
         >
           Chairmen
         </motion.h2>
-        <div className="mt-16 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:auto-cols-fr lg:grid-flow-col lg:grid-cols-none">
           {chairmen.map((person, index) => (
             <motion.article key={person.id}
               initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.55, delay: index * 0.08 }}
-              className="max-w-[280px]"
             >
               <div className="overflow-hidden rounded-[18px] border border-[rgba(4,6,23,0.07)] bg-white" style={{ boxShadow: "var(--shadow-2)" }}>
-                <img src={person.image} alt={person.name} className="h-[300px] w-full object-cover object-top" />
+                <img src={person.image} alt={person.name} className="aspect-[4/5] w-full object-cover object-top" />
               </div>
-              <p className="mt-4 text-[18px] leading-[1.2] text-[#7A7D8B]" style={inter}>{person.years}</p>
-              <h3 className="mt-1 text-[28px] font-semibold leading-[1.18] tracking-[-0.05em] text-[#040617] sm:text-[30px]" style={inter}>{person.name}</h3>
+              <p className="mt-4 text-[15px] leading-[1.2] text-[#7A7D8B]" style={inter}>{person.years}</p>
+              <h3 className="mt-1 text-[18px] font-semibold leading-[1.25] tracking-[-0.02em] text-[#040617] lg:text-[20px]" style={inter}>{person.name}</h3>
             </motion.article>
           ))}
         </div>

@@ -22,7 +22,7 @@ const staticContent = {
 };
 
 const paragraphClass =
-  "text-justify text-[24px] leading-[1.65] tracking-[-0.03em] text-[#040617] sm:text-[30px] lg:text-[36px]";
+  "text-justify text-[17px] leading-[1.75] tracking-[-0.01em] text-[#040617] sm:text-[18px] lg:text-[20px]";
 
 function BackgroundGrid() {
   return (
@@ -67,7 +67,7 @@ export default function AboutUs() {
         <motion.h1
           initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.7 }}
-          className="text-center text-[64px] font-semibold leading-[0.9] tracking-[-0.06em] text-[#040617] sm:text-[100px] lg:text-[150px]"
+          className="text-center text-[36px] font-semibold leading-[1.05] tracking-[-0.04em] text-[#040617] sm:text-[48px] lg:text-[64px]"
           style={inter}
         >
           {content.heading}
