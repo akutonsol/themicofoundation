@@ -355,7 +355,7 @@ export default function MagazineSection() {
               Publications
             </p>
             <h2 style={{ ...inter, fontSize:"clamp(48px,6vw,88px)", fontWeight:600, color:"#040617", margin:0, lineHeight:0.92, letterSpacing:"-0.04em" }}>
-              Our Magazine
+              Annual Reports
             </h2>
           </div>
           <p style={{ ...inter, fontSize:"clamp(16px,1.6vw,20px)", color:"#7A7D8B", lineHeight:1.65, maxWidth:"480px", textAlign:"right" }}>
