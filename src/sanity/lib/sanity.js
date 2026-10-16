@@ -398,6 +398,11 @@ historyPage: `*[_type == "historyPage"][0]{
   timeline, ctaHeading, ctaButtonText, ctaButtonLink
 }`,
 
+leadershipNarratives: `*[_id == "leadershipNarratives"][0]{
+  chairmen{ linkText, title, body },
+  secretaries{ linkText, title, body }
+}`,
+
 year1981Page: `*[_type == "year1981Page" && approved == true][0]{
   title, tagline, body, checklist[]{ label, link },
   plaqueHeading, plaqueText, photo

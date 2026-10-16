@@ -62,6 +62,9 @@ export const structure = (S) =>
                   .apiVersion('2024-01-01')
                   .filter('_type == "historicalPerson" && type == "secretary"')
               ),
+              S.listItem().title('Chairmen & Secretary Managers — Narratives').child(
+                S.document().schemaType('leadershipNarratives').documentId('leadershipNarratives').title('Chairmen & Secretary Managers — Narratives')
+              ),
             ])
         ),
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { client, urlFor, queries } from "@/sanity/lib/sanity";
+import LeadershipNarrative from "./LeadershipNarrative";
 
 const inter = { fontFamily: "'Inter', sans-serif" };
 
@@ -66,6 +67,7 @@ export default function SecretaryManager() {
         >
           Secretary Managers
         </motion.h2>
+        <LeadershipNarrative section="secretaries" />
         <div className="mt-16 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
           {managers.map((person, index) => (
             <motion.article key={person.id}
