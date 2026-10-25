@@ -81,9 +81,9 @@ export default function CommunityImpact() {
     </section>
   )
 
-  const photoLeftTop     = urlFor(communityData.photoLeftTop).width(480).url()
-  const photoLeftBottom  = urlFor(communityData.photoLeftBottom).width(480).url()
-  const photoRightTop    = urlFor(communityData.photoRightTop).width(480).url()
+  const photoLeftTop     = urlFor(communityData.photoLeftTop).width(750).url()
+  const photoLeftBottom  = urlFor(communityData.photoLeftBottom).width(750).url()
+  const photoRightTop    = urlFor(communityData.photoRightTop).width(750).url()
   const photoRightBottom = urlFor(communityData.photoRightBottom).width(750).url()
 
   return (
@@ -107,10 +107,10 @@ export default function CommunityImpact() {
         <motion.div className="comm-photo"
           initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.7 }}
           style={{ flexDirection:'column', gap:'24px', flexShrink:0 }}>
-          <div style={{ width:'240px', height:'402px', borderRadius:'20px', overflow:'hidden' }}>
+          <div style={{ width:'min(375px, 22vw)', aspectRatio:'375 / 309', borderRadius:'20px', overflow:'hidden' }}>
             <img src={photoLeftTop} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
           </div>
-          <div style={{ width:'240px', height:'191px', borderRadius:'14px', overflow:'hidden' }}>
+          <div style={{ width:'min(375px, 22vw)', aspectRatio:'375 / 309', borderRadius:'20px', overflow:'hidden' }}>
             <img src={photoLeftBottom} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
           </div>
         </motion.div>
@@ -138,11 +138,11 @@ export default function CommunityImpact() {
 
         <motion.div className="comm-photo"
           initial={{ opacity:0, x:30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.7 }}
-          style={{ flexDirection:'column', gap:'24px', flexShrink:0, alignItems:'flex-end' }}>
-          <div style={{ width:'240px', height:'309px', borderRadius:'20px', overflow:'hidden', alignSelf:'flex-end' }}>
+          style={{ flexDirection:'column', gap:'24px', flexShrink:0 }}>
+          <div style={{ width:'min(375px, 22vw)', aspectRatio:'375 / 309', borderRadius:'20px', overflow:'hidden' }}>
             <img src={photoRightTop} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
           </div>
-          <div style={{ width:'375px', height:'309px', borderRadius:'20px', overflow:'hidden' }}>
+          <div style={{ width:'min(375px, 22vw)', aspectRatio:'375 / 309', borderRadius:'20px', overflow:'hidden' }}>
             <img src={photoRightBottom} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
           </div>
         </motion.div>

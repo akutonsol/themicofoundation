@@ -78,8 +78,8 @@ export default function SecretaryManager() {
               <div className="overflow-hidden rounded-[18px] border border-[rgba(4,6,23,0.07)] bg-white" style={{ boxShadow: "var(--shadow-2)" }}>
                 <img src={person.image} alt={person.name} className="h-[300px] w-full object-cover object-top" />
               </div>
-              <p className="mt-4 text-[18px] leading-[1.2] text-[#7A7D8B]" style={inter}>{person.years}</p>
-              <h3 className="mt-1 text-[28px] font-semibold leading-[1.18] tracking-[-0.05em] text-[#040617] sm:text-[30px]" style={inter}>{person.name}</h3>
+              <p className="mt-4 text-[15px] leading-[1.2] text-[#7A7D8B]" style={inter}>{person.years}</p>
+              <h3 className="mt-1 text-[18px] font-semibold leading-[1.25] tracking-[-0.02em] text-[#040617] lg:text-[20px]" style={inter}>{person.name}</h3>
             </motion.article>
           ))}
         </div>

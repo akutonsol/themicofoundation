@@ -37,7 +37,7 @@ export const structure = (S) =>
       // ── ANNIVERSARY POPUP ─────────────────────────
       S.listItem()
         .title('🎉 Anniversary Popup')
-        .child(S.documentTypeList('anniversaryPopup').title('Anniversary Popup')),
+        .child(S.document().schemaType('anniversaryPopup').documentId('ee943e45-813a-4834-8f07-064ab7503bf7').title('Anniversary Popup')),
 
       S.divider(),
 

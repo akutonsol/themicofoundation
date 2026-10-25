@@ -11,9 +11,10 @@ export default defineType({
   fields: [
     {
       name: 'enabled',
-      title: 'Show Popup',
+      title: 'Popup — ON / OFF',
       type: 'boolean',
-      description: 'Turn the site-entry popup on or off.',
+      options: { layout: 'switch' },
+      description: 'ON: the popup appears when visitors enter the site. OFF: it is hidden everywhere. Click Publish after changing this.',
       initialValue: true,
       group: 'popup',
     },
@@ -80,7 +81,11 @@ export default defineType({
     },
   ],
   preview: {
-    select: { title: 'pageHeading', media: 'logo' },
-    prepare: ({ title, media }) => ({ title: title || 'Anniversary Popup', media }),
+    select: { title: 'pageHeading', media: 'logo', enabled: 'enabled' },
+    prepare: ({ title, media, enabled }) => ({
+      title: title || 'Anniversary Popup',
+      subtitle: enabled === false ? '🔴 Popup is OFF' : '🟢 Popup is ON',
+      media,
+    }),
   },
 })

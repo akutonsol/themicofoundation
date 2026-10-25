@@ -103,8 +103,8 @@ export default function BoardOfDirectorsSection() {
           </div>
           {loading ? <CardSkeleton /> : chairman && <BoardCard member={chairman} onOpen={setSelectedMember} />}
           <div className="lg:border-l lg:border-[rgba(4,6,23,0.07)] lg:pl-6">
-            <p className="max-w-[520px] text-justify text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
-              The Mico Foundation is led by a 12-member Board of Directors with equal reps from the Trustees, University College, and Alumni (MOSA). Key roles like the President and Trustee serve as ex-officio members during their tenure.
+            <p className="max-w-[520px] text-left text-[22px] leading-[1.45] text-[#7A7D8B] sm:text-[24px]" style={{ fontFamily: "'Inter', sans-serif" }}>
+              The Mico Foundation is led by a 12-member Board of Directors with equal representatives from the Trustees, University College, and Alumni Association (MOSA). Key roles like the President and Trustee serve as ex-officio members during their tenure.
             </p>
           </div>
         </div>
