@@ -256,6 +256,9 @@ export const structure = (S) =>
           S.list()
             .title('Donations')
             .items([
+              S.listItem().title('Donate Page Hero').child(
+                S.document().schemaType('donateHero').documentId('donateHero').title('Donate Page Hero')
+              ),
               S.listItem().title('Donation Records').child(S.documentTypeList('donation').title('Donation Records')),
             ])
         ),

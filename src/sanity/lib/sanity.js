@@ -408,6 +408,10 @@ year1981Page: `*[_type == "year1981Page" && approved == true][0]{
   plaqueHeading, plaqueText, photo
 }`,
 
+donateHero: `*[_type == "donateHero" && approved == true][0]{
+  title, subtitle, logo, script, tagline, buttonText, buttonLink, leftImage, rightImage
+}`,
+
 contactSettings: `*[_type == "contactSettings"][0]{
   heading, address, email, phones, mapEmbedUrl
 }`,
