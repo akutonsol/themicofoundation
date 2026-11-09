@@ -223,16 +223,16 @@ export default function PledgePage() {
 
                 {projects.length > 1 && (
                   <div style={{ marginTop: 28 }}>
-                    <label style={{ ...inter, display: "block", marginBottom: 8, fontSize: 15, fontWeight: 700, color: "#040617" }}>Select a project to support: <span style={{ color: "#E11D48" }}>*</span></label>
+                    <label style={{ ...inter, display: "block", marginBottom: 12, fontSize: 24, fontWeight: 800, lineHeight: 1.25, letterSpacing: "-0.01em", color: "#040617" }}>Select a project to support: <span style={{ color: "#E11D48" }}>*</span></label>
                     <select value={projIdx} onChange={e => setProjIdx(Number(e.target.value))}
-                      style={{ ...inter, width: "100%", height: 56, borderRadius: 12, border: "1px solid #E5E6EB", background: "#FFFDF9", padding: "0 16px", fontSize: 16, color: "#040617", outline: "none", cursor: "pointer" }}>
+                      style={{ ...inter, width: "100%", height: 60, borderRadius: 12, border: "2px solid #FFD900", background: "#FFFDF9", padding: "0 16px", fontSize: 18, fontWeight: 600, color: "#040617", outline: "none", cursor: "pointer" }}>
                       {projects.map((p, i) => <option key={i} value={i}>{p.title}</option>)}
                     </select>
                   </div>
                 )}
 
                 <div style={{ marginTop: 28 }}>
-                  <label style={{ ...inter, display: "block", marginBottom: 10, fontSize: 15, fontWeight: 700, color: "#040617" }}>Make your pledge or donation by entering an Amount</label>
+                  <label style={{ ...inter, display: "block", marginBottom: 12, fontSize: 24, fontWeight: 800, lineHeight: 1.25, letterSpacing: "-0.01em", color: "#040617" }}>Make your pledge or donation by entering an Amount</label>
                   <div style={{ display: "flex", alignItems: "center", border: `2px solid ${errors.amount ? '#EF4444' : '#FFD900'}`, borderRadius: 14, overflow: "hidden", background: "#FFFDF9" }}>
                     <span style={{ ...inter, padding: "0 18px", fontSize: 22, fontWeight: 800, color: "#040617", borderRight: "1px solid #E5E6EB" }}>{currency}</span>
                     <input type="number" value={amount} onChange={e => { setAmount(e.target.value); setErrors(prev => ({ ...prev, amount: '' })) }}
