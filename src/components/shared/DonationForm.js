@@ -839,7 +839,7 @@ function AuthStep({ redirectData, onCancel, processing }) {
   );
 }
 
-export default function DonationForm({ defaultProject } = {}) {
+export default function DonationForm({ defaultProject, hideIntro = false } = {}) {
   const [projectsData,   setProjectsData]    = useState(null);
   const [loadingProj,    setLoadingProj]      = useState(true);
   const [currentProject, setCurrentProject]  = useState(0);
@@ -1107,6 +1107,7 @@ export default function DonationForm({ defaultProject } = {}) {
       `}</style>
 
       <div className="don-desktop">
+        {!hideIntro && (
         <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}
           style={{textAlign:"center",margin:"0 0 42px"}}>
           <p style={{...inter,fontSize:"15px",fontWeight:600,color:"#FFD900",backgroundColor:"#040617",display:"inline-block",padding:"4px 18px",borderRadius:"100px",margin:"0 0 18px",letterSpacing:"0.05em"}}>
@@ -1119,6 +1120,7 @@ export default function DonationForm({ defaultProject } = {}) {
             Every donation directly supports scholarships, heritage restoration, and community programs across Jamaica and the Caribbean. Choose your amount, tell us about yourself, and complete your gift in minutes.
           </p>
         </motion.div>
+        )}
         <StepIndicator currentStep={step}/>
         <div className="don-grid">
           <ProjectCard projects={projectsData} currentProject={currentProject} onPrev={prevProject} onNext={nextProject}/>
@@ -1131,6 +1133,7 @@ export default function DonationForm({ defaultProject } = {}) {
       </div>
 
       <div className="don-mobile" style={{flexDirection:"column",gap:"24px",padding:"48px 24px",position:"relative",zIndex:1}}>
+        {!hideIntro && (
         <div style={{textAlign:"center",width:"100%"}}>
           <p style={{...inter,fontSize:"13px",fontWeight:600,color:"#FFD900",backgroundColor:"#040617",display:"inline-block",padding:"4px 16px",borderRadius:"100px",margin:"0 0 14px",letterSpacing:"0.05em"}}>
             Make an Impact
@@ -1140,6 +1143,7 @@ export default function DonationForm({ defaultProject } = {}) {
             Support scholarships, heritage restoration, and community programs across Jamaica and the Caribbean.
           </p>
         </div>
+        )}
         <StepIndicator currentStep={step} mobile={true}/>
         <ProjectCard projects={projectsData} currentProject={currentProject} onPrev={prevProject} onNext={nextProject} mobile={true}/>
         <AnimatePresence mode="wait">

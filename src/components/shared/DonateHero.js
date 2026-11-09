@@ -67,10 +67,19 @@ export default function DonateHero() {
             linear-gradient(180deg, #17253f 0%, #1e3058 45%, #242e47 100%); }
         .dh-title { font-family:'Cormorant SC', serif; font-weight:500; font-size:clamp(26px, 3.1vw, 62px); line-height:1.1; letter-spacing:.02em; margin:0; }
         .dh-sub { font-family:'Cormorant SC', serif; font-weight:500; font-size:clamp(14px, 1.55vw, 31px); letter-spacing:.04em; margin:.35em 0 0; }
-        .dh-logo { width:clamp(110px, 13vw, 260px); height:auto; margin: clamp(10px, 1.6vw, 32px) 0 clamp(6px, 1vw, 20px); -webkit-mask-image:radial-gradient(ellipse at center, #000 38%, transparent 82%); mask-image:radial-gradient(ellipse at center, #000 38%, transparent 82%); }
+        .dh-logo { width:clamp(110px, 13vw, 260px); height:auto; margin: clamp(10px, 1.6vw, 32px) 0 clamp(6px, 1vw, 20px); -webkit-mask-image:radial-gradient(ellipse at center, #000 58%, transparent 100%); mask-image:radial-gradient(ellipse at center, #000 58%, transparent 100%); }
         .dh-script { font-family:'Pinyon Script', cursive; color:#fff; font-size:clamp(34px, 4.4vw, 88px); line-height:1.1; margin:0; }
         .dh-tag { font-family:'Cormorant Garamond', serif; font-weight:500; font-size:clamp(14px, 1.75vw, 35px); line-height:1.35; margin:clamp(8px, 1.2vw, 24px) 0 0; white-space:pre-line; }
         .dh-btn { margin-top:clamp(10px,1.4vw,28px); display:inline-block; padding:.7em 1.6em; border-radius:999px; background:${GOLD}; color:#0f1b40; font-family:'Cormorant Garamond', serif; font-weight:600; font-size:clamp(13px,1.2vw,22px); text-decoration:none; }
+        @media (min-width: 768px) {
+          .dh-root { height:100%; }
+          .dh-grid { aspect-ratio:auto; height:100%; }
+          .dh-title { font-size:clamp(22px, min(3.1vw, 5vh), 62px); }
+          .dh-sub { font-size:clamp(12px, min(1.55vw, 2.5vh), 31px); }
+          .dh-logo { width:clamp(90px, min(13vw, 21vh), 260px); margin:clamp(6px, 1.6vh, 32px) 0 clamp(4px, 1vh, 20px); }
+          .dh-script { font-size:clamp(30px, min(4.4vw, 7vh), 88px); }
+          .dh-tag { font-size:clamp(12px, min(1.75vw, 2.8vh), 35px); margin-top:clamp(6px, 1.2vh, 24px); }
+        }
         @media (max-width: 767px) {
           .dh-grid { grid-template-columns: 1fr 1fr; aspect-ratio:auto; }
           .dh-panel { grid-column: 1 / -1; grid-row: 1; padding: 48px 24px; }
