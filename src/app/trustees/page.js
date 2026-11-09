@@ -3,6 +3,7 @@ import Footer from "@/components/layout/Footer";
 import TrusteeLegacySection from "@/components/trustees/TrusteeLegacySection";
 import TeamProfileFeature from "@/components/trustees/TeamProfileFeature";
 import FormerTrusteesSection from "@/components/trustees/FormerTrusteesSection";
+import TrusteeGallery from "@/components/trustees/TrusteeGallery";
 
 export default function TrusteesPage() {
   return (
@@ -12,6 +13,7 @@ export default function TrusteesPage() {
         <TrusteeLegacySection />
         <TeamProfileFeature />
         <FormerTrusteesSection />
+        <TrusteeGallery />
       </main>
       <Footer />
     </>

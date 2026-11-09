@@ -41,6 +41,7 @@ import healthCheck from './healthCheck'
 import year1981Page from './year1981Page'
 import leadershipNarratives from './leadershipNarratives'
 import donateHero from './donateHero'
+import trusteeGallery from './trusteeGallery'
 
 export const schema = {
   types: [
@@ -86,6 +87,7 @@ export const schema = {
      healthCheck,
      year1981Page,
      leadershipNarratives,
-     donateHero
+     donateHero,
+     trusteeGallery
   ],
 }

@@ -412,6 +412,10 @@ donateHero: `*[_type == "donateHero" && approved == true][0]{
   title, subtitle, logo, script, tagline, buttonText, buttonLink, leftImage, rightImage
 }`,
 
+trusteeGallery: `*[_id == "trusteeGallery"][0]{
+  heading, intro, images[]{ _key, title, description, image }
+}`,
+
 contactSettings: `*[_type == "contactSettings"][0]{
   heading, address, email, phones, mapEmbedUrl
 }`,

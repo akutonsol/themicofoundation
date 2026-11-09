@@ -122,6 +122,7 @@ export const structure = (S) =>
               S.listItem().title('Legacy Section Content').child(S.documentTypeList('trusteeLegacy').title('Legacy Section Content')),
               S.listItem().title('Lead Trustee Message').child(S.documentTypeList('trusteeLeader').title('Lead Trustee Message')),
               S.listItem().title('Historical Perspective (Reading + Image)').child(S.documentTypeList('historicalPerspective').title('Historical Perspective')),
+              S.listItem().title('Image Gallery').child(S.document().schemaType('trusteeGallery').documentId('trusteeGallery').title('Trustees Image Gallery')),
               S.listItem().title('Current Trustees').child(
                 S.documentList().title('Current Trustees')
                   .apiVersion('2024-01-01')
