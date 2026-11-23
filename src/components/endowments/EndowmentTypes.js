@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { X } from 'lucide-react'
 import { client, queries } from '@/sanity/lib/sanity'
 
 const inter = { fontFamily: "'Inter', sans-serif" }
@@ -43,6 +44,24 @@ export default function EndowmentTypes() {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [navH, setNavH] = useState(108)
+
+  useEffect(() => {
+    const measure = () => { const nav = document.querySelector('nav'); if (nav) setNavH(nav.offsetHeight) }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
+  }, [open])
 
   useEffect(() => {
     async function fetchContent() {
@@ -99,13 +118,18 @@ export default function EndowmentTypes() {
 
   return (
     <section id="endowment-form" className="bg-[#FFFDF9] px-6 py-24 sm:px-10 lg:px-20">
-      <div className="mx-auto max-w-[1590px]">
+      <style>{`
+        .et-heading { font-size: min(96px, calc((100vw - 56px) / 18.6)); }
+        @media (min-width: 640px) { .et-heading { font-size: min(96px, calc((100vw - 88px) / 18.6)); } }
+        @media (min-width: 1024px) { .et-heading { font-size: min(96px, calc((100vw - 168px) / 18.6)); } }
+      `}</style>
+      <div className="mx-auto w-full max-w-[1920px]">
         <motion.h1 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="mb-16 max-w-[1100px] text-[40px] font-extrabold leading-[0.98] tracking-[-0.05em] text-[#040617] sm:text-[56px] lg:text-[72px]" style={inter}>
+          className="et-heading mb-16 w-full font-extrabold leading-[1.05] tracking-[-0.05em] text-[#040617]" style={{ ...inter, whiteSpace: 'nowrap', textWrap: 'nowrap' }}>
           {heading}
         </motion.h1>
 
-        <div className="grid gap-20 lg:grid-cols-[1fr_480px] lg:items-start">
+        <div>
           <div className="flex flex-col gap-12">
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}>
               {introLines.map((line, i) => (
@@ -118,16 +142,32 @@ export default function EndowmentTypes() {
                 Through your generosity, you create a permanent source of support that enables the University College to nurture talent, embrace new opportunities, and respond to emerging needs.
               </p>
               <h3 className="mb-6 text-[22px] font-bold tracking-[-0.03em] text-[#040617]" style={inter}>Your Endowments Funds Go Towards</h3>
-              <div className="grid gap-6 sm:grid-cols-2">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {types.map((type, i) => <TypeCard key={type.id} type={type} index={i} />)}
+              </div>
+              <div className="mt-12 flex justify-center">
+                <button type="button" onClick={() => setOpen(true)}
+                  className="h-[60px] rounded-[14px] px-10 text-[17px] font-bold text-[#141210]"
+                  style={{ ...inter, background: 'linear-gradient(180deg, #FFD54A 0%, #f3af19 100%)', boxShadow: '0 12px 30px rgba(243,175,25,0.32)', cursor: 'pointer' }}>
+                  Complete your endowment form
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Sticky form */}
-          <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}
-            className="sticky top-[120px] rounded-[20px] p-8"
-            style={{ background: '#FFFDF9', border: '2px solid #040617', boxShadow: 'inset 0 0 0 5px #FFFDF9, inset 0 0 0 6px #f3af19, var(--shadow-3)' }}>
+          <AnimatePresence>
+            {open && (
+              <motion.div role="dialog" aria-modal="true" aria-label="Endowment form"
+                initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+                transition={{ type: 'spring', stiffness: 260, damping: 32 }}
+                style={{ position: 'fixed', left: 0, right: 0, bottom: 0, top: navH, zIndex: 40, background: '#FFFDF9', overflowY: 'auto', padding: '24px 16px 48px' }}>
+                <div style={{ position: 'relative', maxWidth: 560, margin: '0 auto' }}>
+                  <button type="button" aria-label="Close endowment form" onClick={() => setOpen(false)}
+                    style={{ position: 'absolute', top: 14, right: 14, zIndex: 5, width: 44, height: 44, borderRadius: '50%', border: '1px solid #E5E6EB', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 14px rgba(4,6,23,.12)' }}>
+                    <X size={22} color="#040617" />
+                  </button>
+                  <div className="rounded-[20px] p-8"
+                    style={{ background: '#FFFDF9', border: '2px solid #040617', boxShadow: 'inset 0 0 0 5px #FFFDF9, inset 0 0 0 6px #f3af19, var(--shadow-3)' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
               <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" style={{ height: 60, width: 'auto' }} />
             </div>
@@ -222,7 +262,11 @@ export default function EndowmentTypes() {
                 </div>
               </>
             )}
-          </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>

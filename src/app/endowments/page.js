@@ -12,7 +12,7 @@ export default function EndowmentPage() {
       <EndowmentLegacy />   {/* hero + cards section (under the banner) */}
       <EndowmentTypes />
       <MarqueeLines />
-      <EndowmentHero />   {/* stats section at the bottom */}
+      {/* <EndowmentHero /> — "A legacy shaped by you" stats section, hidden */}
       <Footer />
     </main>
   );
