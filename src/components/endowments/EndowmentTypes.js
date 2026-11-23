@@ -45,17 +45,12 @@ export default function EndowmentTypes() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [open, setOpen] = useState(false)
-  const [navH, setNavH] = useState(108)
-
-  useEffect(() => {
-    const measure = () => { const nav = document.querySelector('nav'); if (nav) setNavH(nav.offsetHeight) }
-    measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [])
+  const [navH, setNavH] = useState(0)
 
   useEffect(() => {
     if (!open) return
+    const nav = document.querySelector('nav')
+    setNavH(nav ? Math.max(0, Math.round(nav.getBoundingClientRect().bottom)) : 0)
     const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -125,23 +120,23 @@ export default function EndowmentTypes() {
       `}</style>
       <div className="mx-auto w-full max-w-[1920px]">
         <motion.h1 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="et-heading mb-16 w-full font-extrabold leading-[1.05] tracking-[-0.05em] text-[#040617]" style={{ ...inter, whiteSpace: 'nowrap', textWrap: 'nowrap' }}>
+          className="et-heading mb-16 w-full text-center font-extrabold leading-[1.05] tracking-[-0.05em] text-[#040617]" style={{ ...inter, whiteSpace: 'nowrap', textWrap: 'nowrap' }}>
           {heading}
         </motion.h1>
 
         <div>
-          <div className="flex flex-col gap-12">
+          <div className="mx-auto flex max-w-[1180px] flex-col gap-12">
             <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}>
               {introLines.map((line, i) => (
-                <p key={i} className={`max-w-[900px] text-justify text-[18px] leading-[1.75] tracking-[0.01em] text-[#6F7181] ${i > 0 ? 'mt-4' : ''}`} style={inter}>{line}</p>
+                <p key={i} className={`mx-auto max-w-[1100px] text-justify text-[18px] leading-[1.75] tracking-[0.01em] text-[#6F7181] ${i > 0 ? 'mt-4' : ''}`} style={inter}>{line}</p>
               ))}
             </motion.div>
 
             <div>
-              <p className="mb-10 max-w-[980px] text-[22px] font-extrabold leading-[1.25] tracking-[-0.02em] text-[#040617] sm:text-[30px] lg:text-[36px]" style={inter}>
+              <p className="mx-auto mb-10 max-w-[1100px] text-center text-[22px] font-extrabold leading-[1.25] tracking-[-0.02em] text-[#040617] sm:text-[30px] lg:text-[36px]" style={inter}>
                 Through your generosity, you create a permanent source of support that enables the University College to nurture talent, embrace new opportunities, and respond to emerging needs.
               </p>
-              <h3 className="mb-6 text-[22px] font-bold tracking-[-0.03em] text-[#040617]" style={inter}>Your Endowments Funds Go Towards</h3>
+              <h3 className="mb-6 text-center text-[22px] font-bold tracking-[-0.03em] text-[#040617]" style={inter}>Your Endowments Funds Go Towards</h3>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {types.map((type, i) => <TypeCard key={type.id} type={type} index={i} />)}
               </div>
@@ -160,16 +155,16 @@ export default function EndowmentTypes() {
               <motion.div role="dialog" aria-modal="true" aria-label="Endowment form"
                 initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
                 transition={{ type: 'spring', stiffness: 260, damping: 32 }}
-                style={{ position: 'fixed', left: 0, right: 0, bottom: 0, top: navH, zIndex: 40, background: '#FFFDF9', overflowY: 'auto', padding: '24px 16px 48px' }}>
-                <div style={{ position: 'relative', maxWidth: 560, margin: '0 auto' }}>
+                style={{ position: 'fixed', left: 0, right: 0, bottom: 0, top: navH, zIndex: 40, background: '#FFFDF9', overflowY: 'auto', padding: '16px 16px 32px' }}>
+                <div style={{ position: 'relative', maxWidth: 1040, margin: '0 auto' }}>
                   <button type="button" aria-label="Close endowment form" onClick={() => setOpen(false)}
                     style={{ position: 'absolute', top: 14, right: 14, zIndex: 5, width: 44, height: 44, borderRadius: '50%', border: '1px solid #E5E6EB', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 14px rgba(4,6,23,.12)' }}>
                     <X size={22} color="#040617" />
                   </button>
-                  <div className="rounded-[20px] p-8"
+                  <div className="rounded-[20px] p-8 md:px-12 md:py-8"
                     style={{ background: '#FFFDF9', border: '2px solid #040617', boxShadow: 'inset 0 0 0 5px #FFFDF9, inset 0 0 0 6px #f3af19, var(--shadow-3)' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
-              <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" style={{ height: 60, width: 'auto' }} />
+              <img src="/images/home/the_mico_foundation.png" alt="The Mico Foundation" style={{ height: 48, width: 'auto' }} />
             </div>
             <span style={{ ...inter, display: 'inline-block', fontSize: 12, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: 12 }}>Get Involved</span>
             <h2 className="text-[28px] font-bold leading-[1.2] tracking-[-0.03em]" style={{ ...inter, color: '#040617' }}>Endowment Commitment</h2>
@@ -189,8 +184,8 @@ export default function EndowmentTypes() {
             ) : (
               <>
                 <p className="mt-5 text-[18px] font-bold" style={{ ...inter, color: '#040617' }}>Complete this form to confirm your commitment.</p>
-                <div className="mt-7 flex flex-col gap-5">
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="mt-5 grid gap-x-6 gap-y-4 md:grid-cols-2">
+                  <div className="grid grid-cols-2 gap-6 md:col-span-2">
                     <div>
                       <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>First Name</label>
                       <input type="text" placeholder="First name" value={form.firstName} onChange={update('firstName')}
@@ -242,20 +237,20 @@ export default function EndowmentTypes() {
                       className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
                       style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: 'rgba(4,6,23,0.18)' }} />
                   </div>
-                  <div>
+                  <div className="md:col-span-2">
                     <label className="mb-2 block text-[16px]" style={{ ...inter, color: '#040617' }}>In Honor / Memory Of <span style={{ color: '#9CA3AF' }}>(optional)</span></label>
                     <input type="text" placeholder="Name of person to honor or memorialize" value={form.honorMemoryOf} onChange={update('honorMemoryOf')}
                       className="h-[52px] w-full rounded-[8px] border px-4 text-[16px] outline-none placeholder:text-[#9CA3AF] focus:border-[#f3af19] focus:shadow-[0_0_0_3px_rgba(243,175,25,0.15)]"
                       style={{ ...inter, background: '#FFFDF9', color: '#040617', borderColor: 'rgba(4,6,23,0.18)' }} />
                   </div>
-                  {errors.submit && <p style={{ ...inter, fontSize: 14, color: '#EF4444' }}>{errors.submit}</p>}
+                  {errors.submit && <p className="md:col-span-2" style={{ ...inter, fontSize: 14, color: '#EF4444' }}>{errors.submit}</p>}
                   <button type="button" onClick={handleSubmit} disabled={loading}
-                    className="mt-1 h-[56px] w-full rounded-[14px] text-[16px] font-bold text-[#141210]"
+                    className="mt-1 h-[56px] w-full rounded-[14px] md:col-span-2 md:mx-auto md:max-w-[420px] text-[16px] font-bold text-[#141210]"
                     style={{ ...inter, background: loading ? 'rgba(255,255,255,0.2)' : 'linear-gradient(180deg, #FFD54A 0%, #f3af19 100%)', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, boxShadow: '0 12px 30px rgba(243,175,25,0.32)' }}>
                     {loading ? 'Submitting...' : 'Make Endowment'}
                   </button>
                   <a href="/endowments/fund-management"
-                    className="mt-1 block text-center text-[15px] underline underline-offset-4"
+                    className="mt-1 block text-center text-[15px] md:col-span-2 underline underline-offset-4"
                     style={{ ...inter, color: '#6F7181' }}>
                     How your fund is managed
                   </a>
